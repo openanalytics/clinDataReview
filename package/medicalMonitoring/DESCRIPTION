@@ -1,0 +1,10 @@
+Package: medicalMonitoring
+Type: Package
+Title: Medical Monitoring Reporting Tool
+Version: 0.0.1
+Date: 2020-02-05
+Author: Arne De Roeck, Laure Cougnaud
+Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
+Description: Creation of semi-automated report for medical monitoring
+  during a clinical trial.
+RoxygenNote: 6.1.0

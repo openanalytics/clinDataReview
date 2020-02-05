@@ -1,0 +1,6 @@
+*.Rcheck
+*.Rd
+.project
+*.html
+tests
+*.tar.gz
