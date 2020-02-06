@@ -38,9 +38,11 @@ annotateData <- function(
 	subjectVar = "USUBJID") {
 
 	# if multiple annotations are specified: nested call
-	isNest <- 
-		(is.list(annotations) && any(sapply(annotations, function(x) !is.data.frame(x) && "data" %in% names(x)))) ||
-		(is.character(annotations) && length(annotations) > 1)
+	isNest <- ifelse(
+		is.list(annotations), 
+		!any(c("data", "dataset") %in% names(annotations)),
+		length(annotations) > 1
+	)
 	if(isNest){
 		for(par in annotations){	
 			data <- annotateData(data = data, dataPath = dataPath, annotations = par)
@@ -57,10 +59,8 @@ annotateData <- function(
 			'demographics' = {
 		
 				## Requirements: data needs to have a column with "USUBJID", dataPath needs to be specified and must contain dm.sas7bdat
-				custom_df <- if(!is.null(dataAnnot)){
-					annotDataPath <- file.path(dataPath, "dm.sas7bdat")
-					loadDataADaMSDTM(annotDataPath)[[1]]
-				}else	dataAnnot
+				annotDataPath <- file.path(dataPath, "dm.sas7bdat")
+				custom_df <- loadDataADaMSDTM(annotDataPath)[[1]]
 				varsDM <- c(subjectVar,"AGE","SEX","RACE","ETHNIC","COUNTRY","SITEID","RFSTDTC","RFENDTC","RFXSTDTC","RFXENDTC")
 				varsDM <- intersect(varsDM, colnames(custom_df))
 				if(!subjectVar %in% varsDM)
@@ -74,10 +74,8 @@ annotateData <- function(
 		
 				## Requirements: data needs to have a column with "USUBJID", dataPath needs to be specified and must contain ex.sas7bdat
 				## Requirements2: expects that non-exposed individuals have an empty ("") value for EXSTDTC ==> check that only dates and empty values are present
-				custom_df <- if(!is.null(dataAnnot)){
-					annotDataPath <- file.path(dataPath, "ex.sas7bdat")
-					ex <- loadDataADaMSDTM(annotDataPath)[[1]]
-				}else	dataAnnot
+				annotDataPath <- file.path(dataPath, "ex.sas7bdat")
+				custom_df <- loadDataADaMSDTM(annotDataPath)[[1]]
 				if(!subjectVar %in% colnames(custom_df))
 					stop("Exposure data not imported because doesn't contain variable:", subjectVar, ".")
 				custom_df <- subset(custom_df, EXSTDTC != "" & !is.na(EXSTDTC))

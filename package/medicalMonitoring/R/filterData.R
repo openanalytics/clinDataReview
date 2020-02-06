@@ -50,16 +50,16 @@ filterData <- function(data, filters, verbose = FALSE){
 	if(is.null(rev))	rev <- FALSE
 	
 	# extract records matching condition
-	isFiltered <- match.fun(op)(x = data[, var], table = value)
-	if(rev)	isFiltered <- !isFiltered
+	isKept <- match.fun(op)(x = data[, var], table = value)
+	if(rev)	isKept <- !isKept
 	
-	idxKept <- which(!isFiltered)
+	idxKept <- which(isKept)
 	
 	if(length(idxKept) == 0)
 		warning("No data is retained based on the filtering on the variable")
 	
 	if(verbose)
-		message(paste(length(isFiltered), "records with", varST, 
+		message(paste(sum(!isKept), "records with", varST, 
 			if(rev)	"not",
 			op, valueST, "are filtered.")
 		)
