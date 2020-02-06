@@ -3,4 +3,3 @@
 export(annotateData)
 export(filterData)
 export(getMdHeader)
-importFrom(dplyr,left_join)

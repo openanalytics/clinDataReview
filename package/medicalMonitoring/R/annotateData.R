@@ -29,7 +29,6 @@
 #' }
 #' @param subjectVar String with subject ID variable, 'USUBJID' by default.
 #' @return Annotated \code{data}
-#' @importFrom dplyr left_join
 #' @export
 annotateData <- function(
 	data, 
@@ -50,6 +49,19 @@ annotateData <- function(
 		return(data)
 	}
 	
+	# custom 'left-join' function without ordering of rows and columns in x
+	leftJoinBase <- function(x, y, ...){
+		res <- merge(
+			x = x, y = y, 
+			all.x = TRUE, all.y = FALSE, # left join
+			sort = FALSE, # doesn't sort rows
+			...)
+		colsX <- colnames(x)
+		cols <- c(colsX, setdiff(colnames(res), colsX))
+		res <- res[, cols, drop = FALSE]
+		return(res)
+	}
+	
 	if(is.character(annotations)){
 	
 		annotations <- match.arg(annotations, choices = c("demographics", "exposed_subjects"))
@@ -66,7 +78,7 @@ annotateData <- function(
 				if(!subjectVar %in% varsDM)
 					stop("Demographics data not imported because doesn't contain variable:", subjectVar, ".")
 				custom_df <- custom_df[, varsDM]
-				data <- left_join(data, custom_df, by = subjectVar)
+				data <- leftJoinBase(data, custom_df, by = subjectVar)
 			
 			},
 			
@@ -124,7 +136,7 @@ annotateData <- function(
 			annotVar <- unique(c(subjectVar, annotVar))	
 			annotData <- annotData[, annotVar]
 
-			data <- left_join(data, annotData, by = subjectVar)
+			data <- leftJoinBase(data, annotData, by = subjectVar)
 		}
 		
 	}
