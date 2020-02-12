@@ -2,4 +2,10 @@
 
 export(annotateData)
 export(filterData)
+export(formatHoverText)
 export(getMdHeader)
+export(scatterplotMonitoring)
+import(ggplot2)
+importFrom(plotly,ggplotly)
+importFrom(plotly,highlight_key)
+importFrom(plyr,ddply)

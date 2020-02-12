@@ -7,5 +7,5 @@ Author: Arne De Roeck, Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring
   during a clinical trial.
-Imports: glpgUtilityFct
+Imports: glpgUtilityFct, ggplot2, plotly
 RoxygenNote: 6.1.0
