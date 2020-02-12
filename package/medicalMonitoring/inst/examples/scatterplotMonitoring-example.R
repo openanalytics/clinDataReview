@@ -4,7 +4,8 @@ data(SDTMDataPelican)
 data(labelVarsSDTMPelican)
 
 dataLB <- SDTMDataPelican$LB
-data(SDTMDataPelican)
+dataDM <- SDTMDataPelican$DM
+dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
 labelVars <- labelVarsSDTMPelican
 
 ## pairwise comparison plot of two parameters of interest:
@@ -38,5 +39,25 @@ scatterplotMonitoring(
 	aesPointVar = list(color = "VISIT", shape = "VISIT"),
 	aesLineVar = list(group = "USUBJID"),
 	labelVars = labelVars
+)
+
+# patient profiles:
+
+dataPlot <- subset(dataLB, LBTESTCD == "ALT")
+visitLab <- with(dataPlot, tapply(LBDY, VISIT, median))
+names(visitLab) <- sub("-", "\n", names(visitLab))
+
+scatterplotMonitoring(
+	data = dataPlot, 
+	xVar = "LBDY", yVar = "LBSTRESN",
+	aesPointVar = list(color = "ACTARM", shape = "USUBJID"),
+	aesLineVar = list(group = "USUBJID", color = "ACTARM"),
+	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
+	labelVars = labelVars,
+	xPars = list(breaks = visitLab, labels = names(visitLab)),
+	themePars = list(legend.position = "none"),
+	title = paste("Actual value of", 
+		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+	)
 )
 

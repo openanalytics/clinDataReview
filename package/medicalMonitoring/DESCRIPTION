@@ -8,4 +8,5 @@ Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring
   during a clinical trial.
 Imports: glpgUtilityFct, ggplot2, plotly
+Suggests: pander
 RoxygenNote: 6.1.0

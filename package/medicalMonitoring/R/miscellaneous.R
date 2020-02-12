@@ -22,3 +22,34 @@ formatHoverText <- function(x, label, width = 50){
 		)
 	)
 }
+
+#' Get Javascript custom scripts required for specific
+#' the medical monitoring functionalities.
+#' @return list of \code{\link[htmltools]{htmlDependency}}.
+#' To include this dependency in a report e.g. generated with rmarkdown,
+#' these should be passed to the: \code{extra_dependencies} parameter
+#' of the \code{output_format} specific function, e.g.:
+#' \code{rmarkdown::render(...,	
+#' output_format = rmarkdown::html_document(extra_dependencies = dep))
+#' }
+#' @importFrom htmltools htmlDependency
+#' @author Laure Cougnaud
+#' @export
+getJsDepMedicalMonitoring <- function(){
+	
+	jsPath <- system.file("js", package = "medicalMonitoring")
+	jsDepNames <- list.files(jsPath)
+	
+	htmlDep <- lapply(jsDepNames, function(jsDep){
+		srcDep <- file.path(jsPath, jsDep)
+		htmltools::htmlDependency(
+			name = jsDep,
+			version = packageVersion("medicalMonitoring"),
+			src = c(file = srcDep),
+			script = list.files(srcDep)
+		)
+	})
+
+	return(htmlDep)
+	
+}

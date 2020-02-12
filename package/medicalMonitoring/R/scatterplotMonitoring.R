@@ -1,7 +1,51 @@
 #' Scatterplot of variables of interest for medical monitoring.
+#' @param data Data.frame with input data.
+#' @param xVar String with column of \code{data} containing x-variable.
+#' @param yVar String with column of \code{data} containing y-variable.
+#' @param xLab String with label for \code{xVar}.
+#' @param yLab String with label for \code{xVar}.
+#' @param aesPointVar List with specification of aesthetic variable(s),
+#' for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
+#' e.g. \code{list(color = "TRTP")}.
+#' @param aesLineVar List with specification of aesthetic variable(s),
+#' for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
+#' e.g. \code{list(group = "USUBJID")}.
+#' @param aesLab Named character vector with labels for each aesthetic variable.
+#' @param xTrans,yTrans Transformation for the x/y- variables,
+#' passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
+#' \code{\link[ggplot2]{scale_y_continuous}}.
+#' @param xPars,yPars List with extra parameters for x/y axis, passed to the
+#' \code{\link[ggplot2]{scale_x_continuous}}/
+#' \code{\link[ggplot2]{scale_y_continuous}} functions,
+#' besides \code{trans} and \code{limits}.
+#' @param  List with extra parameters for the \code{\link[ggplot2]{scale_x_continuous}},
+#' besides \code{trans} and \code{limits}.
+#' @param xLim,yLim Numeric vector of length 2 with limits for the x/y axes.
+#' @param title String with title for the plot.
+#' @param titleExtra String with extra title for the plot (appended after \code{title}).
+#' @param facetPars List with facetting parameters, passed to the facetting function.
+#' @param facetType String with facetting type, either:
+#' \itemize{
+#' \item{'wrap': }{\code{\link[ggplot2]{facet_wrap}}}
+#' \item{'grid': }{\code{\link[ggplot2]{facet_grid}}}
+#' }
+#' @param themePars List with general theme parameters (see \code\link[ggplot2]{theme}).
+#' @param labelVars Named character vector containing variable labels,
+#' used by default for all labels in the plot.
+#' @param width, height Width/height of the plot in pixels.
+#' @param hoverVar Character vector with variables to be displayed in the hover,
+#' by default \code{xVar}, \code{yVar} and any aesthetic variables.
+#' @param hoverLab Named character vector with labels for \code{hoverVar}.
+#' @param idVar Character vector with variable containing subject ID.
+#' @param pathVar String with variable of \code{data} containing path
+#' to a subject-specific report (e.g. patient profiles).
+#' This report will be downloaded if the user clicks on the 'Alt'+'P' key
+#' when hovering on a point.
+#' @return \code{\link[plotly]{plotly}} object
 #' @import ggplot2
-#' @importFrom plotly highlight_key ggplotly
+#' @import plotly
 #' @importFrom plyr ddply
+#' @importFrom htmlwidgets onRender
 #' @author Laure Cougnaud
 #' @example inst/examples/filterData-example.R
 #' @export
@@ -17,26 +61,19 @@ scatterplotMonitoring <- function(
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
-	xLog = FALSE, yLog = FALSE,
-	idVar = "USUBJID",
+	yLim = NULL, xLim = NULL, 
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+	facetPars = list(), facetType = c("wrap", "grid"),
+	themePars = list(legend.position = "bottom"),
+	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
 	hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))), 
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
-	lineVar = NULL,
-	splitVar = NULL, 
-	hLine = NULL, threshold = NULL, 
-	labelVars = NULL,
-	yLim = NULL, 
-	xLim = NULL, 
-	abline = NULL, ablineType = "solid",
-	footnote = NULL,
-	facetPars = list(), facetType = c("wrap", "grid"),
-	themePars = list(legend.position = "bottom"),
-	urlVar = NULL){
+	idVar = "USUBJID",
+	pathVar = NULL){
 	
 	facetType <- match.arg(facetType)
 
@@ -76,19 +113,20 @@ scatterplotMonitoring <- function(
 				)
 			})
 			hoverText <- Reduce(function(...) paste(..., sep = "<br>"), hoverTextList)
-			cbind(dataPoint, hover = hoverText)
+			cbind.data.frame(dataPoint, hover = hoverText, stringsAsFactors = )
 		})
 	}
 	
 	# SharedData object:
-	dataPlot <- highlight_key(data = data, key = idVar)
+	keyFm <- as.formula(paste("~", idVar))
+	dataPlot <- highlight_key(data = data, key = keyFm)
 	
 	## create static plot:
 	
 	# base plot
 	aesBase <- c(
 		list(x = xVar, y = yVar),
-		if(!is.null(hoverVar))	list(label = "hover")
+		if(!is.null(hoverVar))	list(text = "hover", label = "hover", key = "test")
 	)
 	gg <- ggplot(data = dataPlot, mapping = do.call(aes_string, aesBase))
 		
@@ -107,15 +145,16 @@ scatterplotMonitoring <- function(
 	gg <- gg + do.call(geom_point, argsGeomPoint)
 	
 	# axis specification
-	setAxis <- function(gg, trans, pars){
+	setAxis <- function(gg, trans, pars, lims, axis){
 		res <- if(trans != "identity" | length(pars) > 0){
-			argsScale <- c(list(trans = "identity"), pars)
-			gg <- do.call(scale_x_continuous, argsScale)
+			argsScale <- c(list(trans = trans, limits = lims), pars)
+			scaleFct <- get(paste("scale", axis, "continuous", sep = "_"))
+			gg <- gg + do.call(scaleFct, argsScale)
 		}else	gg
 		return(res)
 	}
-	gg <- setAxis(gg = gg, trans = xTrans, pars = xPars)
-	gg <- setAxis(gg = gg, trans = yTrans, pars = yPars)
+	gg <- setAxis(gg = gg, trans = xTrans, pars = xPars, lims = xLim, axis = "x")
+	gg <- setAxis(gg = gg, trans = yTrans, pars = yPars, lims = yLim, axis = "y")
 	
 	# labels
 	labsArgs <- c(list(x = xLab, y = yLab), as.list(aesLab))
@@ -139,12 +178,28 @@ scatterplotMonitoring <- function(
 	
 
 	## interactive plot
-	res <- ggplotly(
+	pl <- ggplotly(
 		p = gg, 
 		width = width, height = height, 
-		tooltip = if(!is.null(hoverVar))	"label"
+		tooltip = if(!is.null(hoverVar))	"text",
+		customdata = iris
 	)
-
-	return(res)
+	
+	# to check attributes available in the plotly object:
+#	plotly_json(pl)
+	
+	if(!is.null(pathVar)){
+		
+		dataPPDf <- unique(data[, c(idVar, pathVar)])
+		if(any(duplicated(dataPPDf[, idVar])))
+			stop("Duplicated ", idVar, " for specific ", pathVar, ".")
+		dataPP <- as.list(setNames(dataPPDf[, pathVar], dataPPDf[, idVar]))
+		pl <- pl %>% onRender(
+			jsCode = "function(el, x, data){downloadPatientProfilesPlotly(el, x, data);}",
+			data = dataPP
+		)
+		
+	}
+	return(pl)
 
 }

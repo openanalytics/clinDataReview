@@ -1,0 +1,199 @@
+---
+title: "Vignette of the `medicalMonitoring` package"
+author: "Laure Cougnaud"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output: glpgStyle::html_report
+vignette: >
+  %\VignetteIndexEntry{medicalMonitoring package}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# Introduction
+
+The functionality to download the patient profiles require additional _Javascript_ functions:
+
+* custom _Javascript_ functions, included in the `medicalMonitoring` package
+* external _Javascript_ dependencies: _JSZip_, _JSZipUtils_
+
+These dependencies are included once for all visualizations of the report by using:
+
+```{r runReport, eval = FALSE}
+
+	dep <- c(
+		list(
+			# downloaded from: http://github.com/Stuk/jszip/zipball/master
+			htmltools::htmlDependency(
+				name = "jszip",
+				version = "3.2.2",
+				src = c(file = "js/Stuk-jszip-3109282/dist"),
+				script = "jszip.js"
+			),
+			# clone from: https://github.com/Stuk/jszip-utils
+			htmltools::htmlDependency(
+				name = "jszip-utils",
+				version = "0.1.0",
+				src = c(file = "js/jszip-utils/dist"),
+				script = "jszip-utils.js"
+			),
+			# clone from: https://github.com/eligrey/FileSaver.js/
+			htmltools::htmlDependency(
+				name = "FileSaver",
+				version = "1.3.8",
+				src = c(file = "js/FileSaver.js/dist"),
+				script = "FileSaver.js"
+			)
+		),
+		getJsDepMedicalMonitoring()
+	)
+
+	# run the report
+	rmarkdown::render(
+		input = "medicalMonitoring-vignette.Rmd",
+		output_format = rmarkdown::html_document(extra_dependencies = dep)
+	)
+	
+```	
+
+```{r options, echo = FALSE}
+	
+	library(knitr)
+	opts_chunk$set(
+		echo = TRUE, results = 'asis', warning = FALSE, 
+		error = FALSE, message = FALSE, cache = FALSE,
+		fig.width = 8, fig.height = 7,
+		fig.path = "./figures_vignette/",
+		#out.width = '0.7\\textwidth', 
+		fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
+	options(width = 170)#, stringsAsFactors = FALSE
+	options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
+	
+	heightLineIn  <- 0.2
+	
+```
+
+This package `medicalMonitoring` contains visualizations/reporting functionalities
+for medical monitoring.
+
+```{r loadPackages}
+
+	library(medicalMonitoring)
+
+```
+
+## Data format
+
+The input dataset for the workflow should be a data.frame, 
+usually loaded from a _SAS_ data file (`sas7bdat` format).
+The label of the variables stored in the `SAS` datasets is also used
+for title/captions. 
+
+The function `loadDataADaMSDTM` can be used to load your custom `SAS` dataset(s) of
+interest.
+This function returns two objects:
+
+* a list of `data.frame` containing the data for each _SAS_ dataset(s), stored
+  in the `$data` slot
+* a vector containing the labels for each column of the data (used e.g. for
+  default titles of the figures), stored in the `$labelVars` slot
+
+A few `sdtm` datasets from the _Pelican_ study are included in the
+`glpgUtilityFct` package for the demonstration, via the dataset
+`SDTMDataPelican` and corresponding variable labels `labelVarsSDTMPelican`.
+
+```{r loadData}	
+	
+	library(glpgUtilityFct)
+	
+	data(SDTMDataPelican)
+	data(labelVarsSDTMPelican)
+	
+	dataLB <- SDTMDataPelican$LB
+	dataDM <- SDTMDataPelican$DM
+	labelVars <- labelVarsSDTMPelican
+
+```
+
+# Data pre-processing
+
+## Add data annotation
+
+The `annotateData` enables to add metadata for a specific domain/dataset.
+
+```{r annotateData}
+dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
+```
+
+# Visualizations
+
+## Interactive scatterplot
+
+### Time profiles
+
+```{r timeProfiles}
+
+dataPlot <- subset(dataLB, LBTESTCD == "ALT")
+visitLab <- with(dataPlot, tapply(LBDY, VISIT, median))
+names(visitLab) <- sub("-", "\n", names(visitLab))
+
+# link to patient profiles
+dataPlot$subjectPatientProfilePath <- paste0(
+	"patientProfiles/subjectProfile-", 
+	sub("/", "-", dataPlot$USUBJID), ".pdf"
+)
+
+pl <- scatterplotMonitoring(
+	data = dataPlot, 
+	xVar = "LBDY", yVar = "LBSTRESN",
+	aesPointVar = list(color = "ACTARM", shape = "USUBJID"),
+	aesLineVar = list(group = "USUBJID", color = "ACTARM"),
+	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
+	labelVars = labelVars,
+	xPars = list(breaks = visitLab, labels = names(visitLab)),
+	themePars = list(legend.position = "none"),
+	title = paste("Actual value of", 
+		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+	),
+	# include link to patient profiles:
+	pathVar = "subjectPatientProfilePath"
+)
+pl
+
+```
+
+### Scatterplot
+
+```{r scatterplot}
+
+# format data long -> wide format (one column per lab param)
+dataPlot <- subset(dataLB, LBTESTCD %in% c("ALT", "ALB"))
+library(reshape2)
+dataPlotWide <- dcast(
+	data = dataPlot,
+	formula = USUBJID + VISIT + VISITNUM ~ LBTESTCD, 
+	value.var = "LBSTRESN",
+	fun.aggregate = mean
+)
+
+# scatterplot per visit
+scatterplotMonitoring(
+	data = dataPlotWide, 
+	xVar = "ALT", yVar = "ALB",
+	aesPointVar = list(color = "USUBJID"),
+	themePars = list(legend.position = "none"),
+	facetPars = list(facets = ~ VISIT),
+	labelVars = labelVars
+)
+
+```
+
+# Appendix
+
+## Session information
+
+```{r includeSessionInfo, echo = FALSE}
+
+	library(pander)
+	pander(sessionInfo())
+
+```

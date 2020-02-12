@@ -4,3 +4,5 @@
 *.html
 tests
 *.tar.gz
+js
+!package/medicalMonitoring/inst/js
