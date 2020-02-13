@@ -67,6 +67,7 @@ scatterplotMonitoring <- function(
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	facetPars = list(), facetType = c("wrap", "grid"),
 	themePars = list(legend.position = "bottom"),
+	linePars = NULL,
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
@@ -124,9 +125,10 @@ scatterplotMonitoring <- function(
 	## create static plot:
 	
 	# base plot
+	# specify data in 'ggplot' call, e.g. to have line from variable correctly facetted
 	aesBase <- c(
 		list(x = xVar, y = yVar),
-		if(!is.null(hoverVar))	list(text = "hover", label = "hover", key = "test")
+		if(!is.null(hoverVar))	list(text = "hover")
 	)
 	gg <- ggplot(data = dataPlot, mapping = do.call(aes_string, aesBase))
 		
@@ -162,6 +164,38 @@ scatterplotMonitoring <- function(
 	if(length(labsArgs) > 0)
 		gg <- gg + do.call(labs, labsArgs)
 	
+	if(!is.null(linePars)){
+		for(i in seq_along(linePars)){
+			
+			linePar <- linePars[[i]]
+			ggLineFct <- c(
+				xintercept = "vline", yintercept = "hline", 
+				slope = "abline", intercept = "abline"
+			)
+			lineParAes <- linePar[intersect(names(ggLineFct), names(linePar))]
+			ggLineFct <- unique(ggLineFct[names(lineParAes)])
+			if(length(ggLineFct) == 0 | length(ggLineFct) > 1)
+				stop(
+					"Line parameters should contain at least",
+					"fixed combinaisons of the",
+					"'xintercept'/'yintercept'/'slope'/'intercept' parameters."
+				)
+			geomLineFct <- paste("geom", ggLineFct, sep = "_")
+			
+			# format input data for lines
+			isLineAes <- all(sapply(lineParAes, function(x) any(x %in% colnames(data))))
+			data[, c(unlist(lineParAes), if(!is.null(facetPars))	facetVars)]
+			# TODO:
+#			if(names(linePars)[i] != "")
+#				lineParAes <- c(lineParAes, list(name = "test"))
+			lineAes <- do.call(aes_string, lineParAes)
+			lineParOther <- linePar[setdiff(names(linePar), names(lineParAes))]
+			lineFctPars <- c(list(mapping = lineAes, show.legend = FALSE), lineParOther)
+			gg <- gg + do.call(geomLineFct, lineFctPars)
+			
+		}
+	}
+	
 	if(!is.null(title))
 		gg <- gg + ggtitle(title)
 		
@@ -181,8 +215,7 @@ scatterplotMonitoring <- function(
 	pl <- ggplotly(
 		p = gg, 
 		width = width, height = height, 
-		tooltip = if(!is.null(hoverVar))	"text",
-		customdata = iris
+		tooltip = if(!is.null(hoverVar))	"text"
 	)
 	
 	# to check attributes available in the plotly object:
@@ -196,7 +229,7 @@ scatterplotMonitoring <- function(
 		dataPP <- as.list(setNames(dataPPDf[, pathVar], dataPPDf[, idVar]))
 		pl <- pl %>% onRender(
 			jsCode = "function(el, x, data){downloadPatientProfilesPlotly(el, x, data);}",
-			data = dataPP
+			data = dataPPDf
 		)
 		
 	}

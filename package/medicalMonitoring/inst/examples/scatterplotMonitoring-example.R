@@ -26,8 +26,8 @@ scatterplotMonitoring(
 	xVar = "ALT", yVar = "ALB",
 	aesPointVar = list(color = "USUBJID"),
 	themePars = list(legend.position = "none"),
-	facetPars = list(facets = ~ VISIT),
-	labelVars = labelVars, hoverVar = NULL
+	facetPars = list(facets = "VISIT"),
+	labelVars = labelVars
 )
 
 # scatterplot with all visits, link subjects
@@ -37,27 +37,42 @@ scatterplotMonitoring(
 	xLab = getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
 	yLab = getLabelParamcd(paramcd = "ALB", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
 	aesPointVar = list(color = "VISIT", shape = "VISIT"),
-	aesLineVar = list(group = "USUBJID"),
+	aesLineVar = list(group = "USUBJID", linetype = "VISIT"),
 	labelVars = labelVars
 )
 
-# patient profiles:
+# scatterplot of different visits versus baseline
 
+# add baseline as extra column:
 dataPlot <- subset(dataLB, LBTESTCD == "ALT")
-visitLab <- with(dataPlot, tapply(LBDY, VISIT, median))
-names(visitLab) <- sub("-", "\n", names(visitLab))
+dataPlotBL <- subset(dataPlot, VISIT == "Screening (D-28 to D-1)")
+dataPlotBL <- dataPlotBL[with(dataPlotBL, order(USUBJID, -LBDY)), ]
+dataPlotBL <- dataPlotBL[!duplicated(dataPlotBL$USUBJID), ]
+dataPlot$LBSTRESNBL <- dataPlot[match(dataPlot$USUBJID, dataPlotBL$USUBJID), "LBSTRESN"]
+
+# sort visits:
+dataPlot$VISIT <- with(dataPlot, reorder(VISIT, VISITNUM))
 
 scatterplotMonitoring(
 	data = dataPlot, 
-	xVar = "LBDY", yVar = "LBSTRESN",
-	aesPointVar = list(color = "ACTARM", shape = "USUBJID"),
-	aesLineVar = list(group = "USUBJID", color = "ACTARM"),
+	xVar = "LBSTRESNBL", xLab = paste(labelVars["LBSTRESN"], "for last screening visit"),
+	yVar = "LBSTRESN", yLab = paste(labelVars["LBSTRESN"], "at visit X"),
+	aesPointVar = list(color = "USUBJID"),
+	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
 	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
 	labelVars = labelVars,
-	xPars = list(breaks = visitLab, labels = names(visitLab)),
+	facetPars = list(facets = "VISIT"),
 	themePars = list(legend.position = "none"),
-	title = paste("Actual value of", 
-		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+	title = paste("Comparison of actual value of", 
+		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
+		"at each visit versus baseline"
+	),
+	linePars = c(
+		list(diagonal = list(slope = 1, intercept = 0, linetype = 1, color = "black")),
+		list(
+			list(yintercept = "LBSTNRLO", linetype = 2, color = "orange"),
+			list(yintercept = "LBSTNRHI", linetype = 2, color = "orange")
+		)
 	)
 )
 

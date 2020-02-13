@@ -69,7 +69,7 @@ function downloadPatientProfilesPlotly(el, x, data) {
 			if(keyPress){
 				console.log('ALT + p key pressed.')
 			}
-
+			console.log(plObj)
 			//alert('Export of the patient profiles in progress!');
 
 			if(plObj != null && keyPress){
@@ -86,7 +86,7 @@ function downloadPatientProfilesPlotly(el, x, data) {
 				ids = plObj.data.key;
 				console.log(ids);
 				console.log(data);
-				linksArray = data[ids].toArray();
+				linksArray = data[ids];
 				console.log(linksArray);
 				
 				// extract label for the zip file name, here 'label' of the sunburst region
