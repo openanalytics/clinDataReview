@@ -61,18 +61,18 @@ scatterplotMonitoring(
 	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
 	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
 	labelVars = labelVars,
-	facetPars = list(facets = "VISIT"),
+#	facetPars = list(facets = "VISIT"),
 	themePars = list(legend.position = "none"),
 	title = paste("Comparison of actual value of", 
 		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
 		"at each visit versus baseline"
 	),
-	linePars = c(
-		list(diagonal = list(slope = 1, intercept = 0, linetype = 1, color = "black")),
-		list(
-			list(yintercept = "LBSTNRLO", linetype = 2, color = "orange"),
-			list(yintercept = "LBSTNRHI", linetype = 2, color = "orange")
-		)
+	refLinePars = list(
+		list(slope = 1, intercept = 0, linetype = 1, color = "black", label = FALSE),
+		list(xintercept = "LBSTNRLO", linetype = 2, color = "orange"),
+		list(yintercept = "LBSTNRLO", linetype = 2, color = "orange"),
+		list(xintercept = "LBSTNRHI", linetype = 2, color = "orange"),
+		list(yintercept = "LBSTNRHI", linetype = 2, color = "orange", label = "Reference Range Upper Limit")
 	)
 )
 

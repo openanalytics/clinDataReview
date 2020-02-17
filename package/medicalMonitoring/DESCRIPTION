@@ -9,4 +9,4 @@ Description: Creation of semi-automated report for medical monitoring
   during a clinical trial.
 Imports: glpgUtilityFct, ggplot2, plotly
 Suggests: pander
-RoxygenNote: 6.1.0
+RoxygenNote: 7.0.2

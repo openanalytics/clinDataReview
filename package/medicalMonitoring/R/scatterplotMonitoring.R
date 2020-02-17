@@ -1,7 +1,5 @@
 #' Scatterplot of variables of interest for medical monitoring.
 #' @param data Data.frame with input data.
-#' @param xVar String with column of \code{data} containing x-variable.
-#' @param yVar String with column of \code{data} containing y-variable.
 #' @param xLab String with label for \code{xVar}.
 #' @param yLab String with label for \code{xVar}.
 #' @param aesPointVar List with specification of aesthetic variable(s),
@@ -20,16 +18,15 @@
 #' besides \code{trans} and \code{limits}.
 #' @param  List with extra parameters for the \code{\link[ggplot2]{scale_x_continuous}},
 #' besides \code{trans} and \code{limits}.
-#' @param xLim,yLim Numeric vector of length 2 with limits for the x/y axes.
 #' @param title String with title for the plot.
 #' @param titleExtra String with extra title for the plot (appended after \code{title}).
-#' @param facetPars List with facetting parameters, passed to the facetting function.
 #' @param facetType String with facetting type, either:
 #' \itemize{
 #' \item{'wrap': }{\code{\link[ggplot2]{facet_wrap}}}
 #' \item{'grid': }{\code{\link[ggplot2]{facet_grid}}}
 #' }
-#' @param themePars List with general theme parameters (see \code\link[ggplot2]{theme}).
+#' @param themePars List with general theme parameters 
+#' (see \code{\link[ggplot2]{theme}}).
 #' @param labelVars Named character vector containing variable labels,
 #' used by default for all labels in the plot.
 #' @param width, height Width/height of the plot in pixels.
@@ -41,6 +38,7 @@
 #' to a subject-specific report (e.g. patient profiles).
 #' This report will be downloaded if the user clicks on the 'Alt'+'P' key
 #' when hovering on a point.
+#' @inheritParams medicalMonitoring-common-args
 #' @return \code{\link[plotly]{plotly}} object
 #' @import ggplot2
 #' @import plotly
@@ -67,7 +65,7 @@ scatterplotMonitoring <- function(
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	facetPars = list(), facetType = c("wrap", "grid"),
 	themePars = list(legend.position = "bottom"),
-	linePars = NULL,
+	refLinePars = NULL,
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
@@ -96,10 +94,7 @@ scatterplotMonitoring <- function(
 	# extract variables that defines uniquely one point in the plot:
 	idVars <- c(xVar, yVar)
 	if(!is.null(facetPars)){
-		facetVars <- lapply(facetPars[c("facets", "rows", "cols")], function(par)
-			if(inherits(par, "formula"))	all.vars(par)	else	par
-		)
-		facetVars <- unique(unlist(facetVars))
+		facetVars <- getFacetVars(facetPars)
 		idVars <- unique(c(idVars, facetVars))
 	}
 	
@@ -126,10 +121,7 @@ scatterplotMonitoring <- function(
 	
 	# base plot
 	# specify data in 'ggplot' call, e.g. to have line from variable correctly facetted
-	aesBase <- c(
-		list(x = xVar, y = yVar),
-		if(!is.null(hoverVar))	list(text = "hover")
-	)
+	aesBase <- list(x = xVar, y = yVar)
 	gg <- ggplot(data = dataPlot, mapping = do.call(aes_string, aesBase))
 		
 	# line
@@ -137,13 +129,18 @@ scatterplotMonitoring <- function(
 		if(!"group" %in% names(aesLineVar)){
 			warning("'group' should be specified in the 'aesLineVar'; no line is created.")
 		}else{
-			argsGeomLine <- if(length(aesLineVar))	list(mapping = do.call(aes_string, aesLineVar))
+			argsGeomLine <- if(length(aesLineVar)){
+				list(mapping = do.call(aes_string, aesLineVar))
+			}
 			gg <- gg + do.call(geom_line, argsGeomLine)
 		}
 	}
 	
 	# scatter
-	argsGeomPoint <- if(length(aesPointVar))	list(mapping = do.call(aes_string, aesPointVar))
+	aesPoint <- c(aesPointVar, if(!is.null(hoverVar))	list(text = "hover"))
+	argsGeomPoint <- if(length(aesPoint)){
+		list(mapping = do.call(aes_string, aesPoint))
+	}
 	gg <- gg + do.call(geom_point, argsGeomPoint)
 	
 	# axis specification
@@ -164,37 +161,13 @@ scatterplotMonitoring <- function(
 	if(length(labsArgs) > 0)
 		gg <- gg + do.call(labs, labsArgs)
 	
-	if(!is.null(linePars)){
-		for(i in seq_along(linePars)){
-			
-			linePar <- linePars[[i]]
-			ggLineFct <- c(
-				xintercept = "vline", yintercept = "hline", 
-				slope = "abline", intercept = "abline"
-			)
-			lineParAes <- linePar[intersect(names(ggLineFct), names(linePar))]
-			ggLineFct <- unique(ggLineFct[names(lineParAes)])
-			if(length(ggLineFct) == 0 | length(ggLineFct) > 1)
-				stop(
-					"Line parameters should contain at least",
-					"fixed combinaisons of the",
-					"'xintercept'/'yintercept'/'slope'/'intercept' parameters."
-				)
-			geomLineFct <- paste("geom", ggLineFct, sep = "_")
-			
-			# format input data for lines
-			isLineAes <- all(sapply(lineParAes, function(x) any(x %in% colnames(data))))
-			data[, c(unlist(lineParAes), if(!is.null(facetPars))	facetVars)]
-			# TODO:
-#			if(names(linePars)[i] != "")
-#				lineParAes <- c(lineParAes, list(name = "test"))
-			lineAes <- do.call(aes_string, lineParAes)
-			lineParOther <- linePar[setdiff(names(linePar), names(lineParAes))]
-			lineFctPars <- c(list(mapping = lineAes, show.legend = FALSE), lineParOther)
-			gg <- gg + do.call(geomLineFct, lineFctPars)
-			
-		}
-	}
+	# add reference lines (if any)
+	gg <- addReferenceLinesMonitoringPlot(
+		gg = gg, 
+		data = data, 
+		xVar = xVar, yVar = yVar, 
+		refLinePars = refLinePars, facetPars = facetPars
+	)
 	
 	if(!is.null(title))
 		gg <- gg + ggtitle(title)
