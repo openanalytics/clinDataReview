@@ -61,7 +61,7 @@ scatterplotMonitoring(
 	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
 	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
 	labelVars = labelVars,
-#	facetPars = list(facets = "VISIT"),
+	facetPars = list(facets = "VISIT"),
 	themePars = list(legend.position = "none"),
 	title = paste("Comparison of actual value of", 
 		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
