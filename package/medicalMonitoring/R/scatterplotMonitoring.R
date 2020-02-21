@@ -55,7 +55,7 @@ scatterplotMonitoring <- function(
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetics specifications
 	aesPointVar = list(), aesLineVar = list(),
-	aesLab = getLabelVar(unlist(c(aesPointVar, aesLineVar)), labelVars = labelVars),
+	aesLab,
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
@@ -78,11 +78,16 @@ scatterplotMonitoring <- function(
 
 	## checks:
 
-	# only one variable per aesthetic:
-	aesVarCommon <- intersect(names(aesPointVar), names(aesLineVar))
-	if(length(aesVarCommon) > 0){
-		if(!identical(aesPointVar[aesVarCommon], aesLineVar[aesVarCommon]))
-			stop("Different variables are set for the same aesthetic (", toString(aesVarCommon), ").")
+#	# only one variable per aesthetic:
+#	aesVarCommon <- intersect(names(aesPointVar), names(aesLineVar))
+#	if(length(aesVarCommon) > 0){
+#		if(!identical(aesPointVar[aesVarCommon], aesLineVar[aesVarCommon]))
+#			stop("Different variables are set for the same aesthetic (", toString(aesVarCommon), ").")
+#	}
+	
+	if(missing(aesLab)){
+		aesVar <- unlist(c(aesPointVar, aesLineVar))
+		aesLab <- setNames(getLabelVar(aesVar, labelVars = labelVars), names(aesVar))
 	}
 	
 	# limits are of length 2
@@ -156,7 +161,7 @@ scatterplotMonitoring <- function(
 	gg <- setAxis(gg = gg, trans = yTrans, pars = yPars, lims = yLim, axis = "y")
 	
 	# labels
-	labsArgs <- c(list(x = xLab, y = yLab), as.list(aesLab))
+	labsArgs <- c(list(x = unname(xLab), y = unname(yLab)), as.list(aesLab))
 	labsArgs <- labsArgs[!sapply(labsArgs, is.null)]
 	if(length(labsArgs) > 0)
 		gg <- gg + do.call(labs, labsArgs)
