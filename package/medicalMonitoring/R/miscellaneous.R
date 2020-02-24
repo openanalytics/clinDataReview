@@ -48,9 +48,57 @@ getJsDepMedicalMonitoring <- function(){
 			src = c(file = srcDep),
 			script = list.files(srcDep)
 		)
+	
 	})
 
-	return(htmlDep)
-	
 }
 
+#' Function to create collapse with button in html output
+#' @param input Object to be included within the button.
+#' @param id String with button ID. If not specified,
+#' a random id, as 'button:x' is used.
+#' @param title String with button title.
+#' @param color String witn button color.
+#' @param borderColor String with button color border.
+#' @return \code{\link[htmltools]{HTML}} object
+#' @author Kirsten Van Hoorde, Laure Cougnaud
+#' @importFrom htmltools tag tagList div 
+#' @export
+includeInButton <- function(
+	input, 
+	id, 
+	title = "Click to show or hide",  
+	color = glpgStyle::glpgColor()["green"], 
+	borderColor = glpgStyle::glpgColor()["orange"]){
+
+	if(missing(id)){
+		id <- paste0("button:", sample.int(n = 1000, size = 1))
+	}
+	
+	# create button
+	id <- gsub(" ", "", id)#[[:punct:]]|
+	btnStyle <- paste0(
+		"color:", color, " !important;",
+		"border-color:", borderColor, " !important;",
+		"background-color: 'white' !important"
+	)
+	btn <- tag(
+		"button", 
+		varArgs = list(
+			type = "button", class = "btn",
+			style = btnStyle,
+			'data-toggle'= "collapse",
+			title = title,
+			'data-target' = paste0("#", id),
+			title
+		)
+	)
+	
+	# create content
+	btnContent <- div(id = id, class= "collapse buttonArrow", input)
+	
+	res <- tagList(btn, btnContent, br(), br(), br())
+	
+	return(res)
+	
+}

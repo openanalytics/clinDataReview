@@ -65,9 +65,9 @@ function downloadPatientProfilesPlotly(el, x, data) {
 
 			console.log('pressed key', key)
 
-			keyPress = event.altKey && key == 'p'
+			keyPress = event.ctrlKey && key == 'Enter'
 			if(keyPress){
-				console.log('ALT + p key pressed.')
+				console.log('Ctrl + Enter key pressed.')
 			}
 			console.log(plObj)
 			//alert('Export of the patient profiles in progress!');

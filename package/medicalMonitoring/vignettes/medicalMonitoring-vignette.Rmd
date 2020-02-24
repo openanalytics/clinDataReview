@@ -4,7 +4,7 @@ author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: glpgStyle::html_report
 vignette: >
-  %\VignetteIndexEntry{medicalMonitoring package}
+  %\VignetteIndexEntry{Introduction to the medicalMonitoring package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -20,37 +20,25 @@ These dependencies are included once for all visualizations of the report by usi
 
 ```{r runReport, eval = FALSE}
 
-	dep <- c(
-		list(
-			# downloaded from: http://github.com/Stuk/jszip/zipball/master
-			htmltools::htmlDependency(
-				name = "jszip",
-				version = "3.2.2",
-				src = c(file = "js/Stuk-jszip-3109282/dist"),
-				script = "jszip.js"
-			),
-			# clone from: https://github.com/Stuk/jszip-utils
-			htmltools::htmlDependency(
-				name = "jszip-utils",
-				version = "0.1.0",
-				src = c(file = "js/jszip-utils/dist"),
-				script = "jszip-utils.js"
-			),
-			# clone from: https://github.com/eligrey/FileSaver.js/
-			htmltools::htmlDependency(
-				name = "FileSaver",
-				version = "1.3.8",
-				src = c(file = "js/FileSaver.js/dist"),
-				script = "FileSaver.js"
-			)
-		),
-		getJsDepMedicalMonitoring()
-	)
+	library(medicalMonitoring)
+#	dep <- c(
+#		list(
+#			# clone from: https://github.com/eligrey/FileSaver.js/
+#			htmltools::htmlDependency(
+#				name = "FileSaver",
+#				version = "1.3.8",
+#				src = c(file = "js/FileSaver.js/dist"),
+#				script = "FileSaver.js"
+#			)
+#		),
+#		getJsDepMedicalMonitoring()
+#	)
 
 	# run the report
+	# currently Js dep for plotly/table should be included manually when rendering the document
 	rmarkdown::render(
 		input = "medicalMonitoring-vignette.Rmd",
-		output_format = rmarkdown::html_document(extra_dependencies = dep)
+		output_format = glpgStyle::html_report(extra_dependencies = getJsDepMedicalMonitoring())
 	)
 	
 ```	
@@ -58,8 +46,11 @@ These dependencies are included once for all visualizations of the report by usi
 ```{r options, echo = FALSE}
 	
 	library(knitr)
+	library(plotly)
 	opts_chunk$set(
-		echo = TRUE, results = 'asis', warning = FALSE, 
+		echo = TRUE, 
+#		results = 'asis', 
+		warning = FALSE, 
 		error = FALSE, message = FALSE, cache = FALSE,
 		fig.width = 8, fig.height = 7,
 		fig.path = "./figures_vignette/",
@@ -122,6 +113,12 @@ The `annotateData` enables to add metadata for a specific domain/dataset.
 
 ```{r annotateData}
 dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
+pander(
+	head(dataLB), 
+	caption = paste("Laboratory parameters annotated with",
+		"demographics information with the `annotatedData` function"
+	)
+)
 ```
 
 # Visualizations
@@ -142,7 +139,7 @@ dataPlot$subjectPatientProfilePath <- paste0(
 	sub("/", "-", dataPlot$USUBJID), ".pdf"
 )
 
-pl <- scatterplotMonitoring(
+scatterplotMonitoring(
 	data = dataPlot, 
 	xVar = "LBDY", yVar = "LBSTRESN",
 	aesPointVar = list(color = "ACTARM", shape = "USUBJID"),
@@ -157,7 +154,6 @@ pl <- scatterplotMonitoring(
 	# include link to patient profiles:
 	pathVar = "subjectPatientProfilePath"
 )
-pl
 
 ```
 
@@ -179,11 +175,44 @@ dataPlotWide <- dcast(
 scatterplotMonitoring(
 	data = dataPlotWide, 
 	xVar = "ALT", yVar = "ALB",
+	xLab = getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
+	yLab = getLabelParamcd(paramcd = "ALB", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
 	aesPointVar = list(color = "USUBJID"),
 	themePars = list(legend.position = "none"),
 	facetPars = list(facets = ~ VISIT),
 	labelVars = labelVars
 )
+
+
+```
+
+### eDish plot
+
+```{r eDishPlot}
+
+	dataALT <- subset(dataLB, LBTESTCD == "ALT")
+	dataBILI <- subset(dataLB, LBTESTCD == "BILI")
+	byVar <- c("USUBJID", "VISIT")
+	dataPlot <- merge(
+		x = dataALT, y = dataBILI[, c(byVar, "LBSTRESN")], 
+		by = c("USUBJID", "VISIT"), 
+		suffixes = c(".ALT", ".BILI"),
+		all = TRUE
+	)
+	
+	# scatterplot per visit
+	scatterplotMonitoring(
+		data = dataPlot, 
+		xVar = "LBSTRESN.ALT", yVar = "LBSTRESN.BILI",
+		xLab = getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
+		yLab = getLabelParamcd(paramcd = "BILI", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
+		aesPointVar = list(color = "VISIT", shape = "ACTARM"),
+		xTrans = "log10", yTrans = "log10",
+		hoverVar = c("USUBJID"),
+		themePars = list(legend.position = "bottom"),
+		labelVars = labelVars,
+		table = TRUE, id = "eDish"
+	)
 
 ```
 

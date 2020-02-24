@@ -39,3 +39,36 @@ getMdHeader <- function(title, depth = 1, settings = NULL){
 	return(headerST)
 	
 }
+
+#' Print \code{medicalMonitoringTable} object in a knitted document
+#' (e.g. Rmarkdown document).
+#' @param x Object of class \code{medicalMonitoring}
+#' @param ... Extra parameters for \code{\link[knitr]{knit_print}},
+#' not used by default.
+#' @importFrom knitr knit_print
+#' @importFrom htmltools tagList knit_print.shiny.tag.list
+#' @author Laure Cougnaud
+#' @export
+knit_print.medicalMonitoring <- function(x, ...){
+
+	# extract plot
+	plot <- x$plot
+		
+	# extract table and include it within a button if required
+	table <- x$table
+	xMetadata <- attributes(table)$metadata
+	if(!is.null(xMetadata$button) && xMetadata$button){
+		
+		table <- includeInButton(
+			input = table, 
+			id = xMetadata$buttonId, 
+			title = xMetadata$buttonTitle
+		)
+	
+	}
+	
+	res <- tagList(plot, table)
+	
+	htmltools::knit_print.shiny.tag.list(res)
+	
+}
