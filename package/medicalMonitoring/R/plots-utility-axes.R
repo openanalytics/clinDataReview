@@ -2,6 +2,7 @@
 #' from the input dataset.
 #' @param refLineData Data used for the reference lines, as
 #' output of the \code{\link{getDataReferenceLines}} function.
+#' @inheritParams medicalMonitoring-common-args
 #' @return Data.frame with limits of the:
 #' \itemize{
 #' \item{x-axis: }{'xmin'/'xmax'}
@@ -9,6 +10,7 @@
 #' }
 #' for each element of the facetting variable (if any).
 #' @importFrom plyr ddply rbind.fill
+#' @importFrom stats na.omit setNames
 getAxisLimPlot <- function(data, 
 	xVar, yVar, 
 	xLim = NULL, yLim = NULL, 

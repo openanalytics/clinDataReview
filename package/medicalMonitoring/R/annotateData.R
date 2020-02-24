@@ -4,6 +4,7 @@
 #' parameter \code{annotType}. Custom dataset/variables of interest
 #' are specified via the \code{annotDataset}/\code{annotVar} parameters.
 #' @param data Data.frame with input data to annotate.
+#' @param dataPath String with path to the data.
 #' @param annotations Annotations (or list of those) either as a:
 #' \itemize{
 #' \item{string with standard annotation type, among:
@@ -29,6 +30,7 @@
 #' }
 #' @param subjectVar String with subject ID variable, 'USUBJID' by default.
 #' @return Annotated \code{data}
+#' @importFrom glpgUtilityFct loadDataADaMSDTM
 #' @export
 annotateData <- function(
 	data, 
@@ -72,7 +74,7 @@ annotateData <- function(
 		
 				## Requirements: data needs to have a column with "USUBJID", dataPath needs to be specified and must contain dm.sas7bdat
 				annotDataPath <- file.path(dataPath, "dm.sas7bdat")
-				custom_df <- loadDataADaMSDTM(annotDataPath)[[1]]
+				custom_df <- loadDataADaMSDTM(annotDataPath)$DM
 				varsDM <- c(subjectVar,"AGE","SEX","RACE","ETHNIC","COUNTRY","SITEID","RFSTDTC","RFENDTC","RFXSTDTC","RFXENDTC")
 				varsDM <- intersect(varsDM, colnames(custom_df))
 				if(!subjectVar %in% varsDM)
@@ -87,10 +89,11 @@ annotateData <- function(
 				## Requirements: data needs to have a column with "USUBJID", dataPath needs to be specified and must contain ex.sas7bdat
 				## Requirements2: expects that non-exposed individuals have an empty ("") value for EXSTDTC ==> check that only dates and empty values are present
 				annotDataPath <- file.path(dataPath, "ex.sas7bdat")
-				custom_df <- loadDataADaMSDTM(annotDataPath)[[1]]
+				custom_df <- loadDataADaMSDTM(annotDataPath)$EX
 				if(!subjectVar %in% colnames(custom_df))
 					stop("Exposure data not imported because doesn't contain variable:", subjectVar, ".")
-				custom_df <- subset(custom_df, EXSTDTC != "" & !is.na(EXSTDTC))
+				idxWithST <- with(custom_df, which(EXSTDTC != "" & !is.na(EXSTDTC)))
+				custom_df <- custom_df[idxWithST, ]
 				data$EXFL <- data[, subjectVar] %in% custom_df[, subjectVar]
 				
 			}

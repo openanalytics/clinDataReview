@@ -33,6 +33,7 @@ formatHoverText <- function(x, label, width = 50){
 #' output_format = rmarkdown::html_document(extra_dependencies = dep))
 #' }
 #' @importFrom htmltools htmlDependency
+#' @importFrom utils packageVersion
 #' @author Laure Cougnaud
 #' @export
 getJsDepMedicalMonitoring <- function(){
@@ -64,7 +65,7 @@ getJsDepMedicalMonitoring <- function(){
 #' @param borderColor String with button color border.
 #' @return \code{\link[htmltools]{HTML}} object
 #' @author Kirsten Van Hoorde, Laure Cougnaud
-#' @importFrom htmltools tag tagList div 
+#' @importFrom htmltools tag tagList div br
 #' @export
 includeInButton <- function(
 	input, 

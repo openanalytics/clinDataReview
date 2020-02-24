@@ -4,5 +4,6 @@
 *.html
 tests
 *.tar.gz
+# comments all js folder, excepted in the package
 js
 !package/medicalMonitoring/inst/js

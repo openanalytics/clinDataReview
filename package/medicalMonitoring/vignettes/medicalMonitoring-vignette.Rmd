@@ -21,19 +21,7 @@ These dependencies are included once for all visualizations of the report by usi
 ```{r runReport, eval = FALSE}
 
 	library(medicalMonitoring)
-#	dep <- c(
-#		list(
-#			# clone from: https://github.com/eligrey/FileSaver.js/
-#			htmltools::htmlDependency(
-#				name = "FileSaver",
-#				version = "1.3.8",
-#				src = c(file = "js/FileSaver.js/dist"),
-#				script = "FileSaver.js"
-#			)
-#		),
-#		getJsDepMedicalMonitoring()
-#	)
-
+	
 	# run the report
 	# currently Js dep for plotly/table should be included manually when rendering the document
 	rmarkdown::render(
@@ -69,6 +57,7 @@ for medical monitoring.
 ```{r loadPackages}
 
 	library(medicalMonitoring)
+	library(pander)
 
 ```
 

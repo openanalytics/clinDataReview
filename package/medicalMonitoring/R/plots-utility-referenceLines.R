@@ -16,25 +16,11 @@ getFacetVars <- function(facetPars = NULL){
 
 #' Add reference (horizontal/vertical/diagonal) lines
 #' to a medical monitoring plot.
-#' @param refLinePars (optional) List of parameters for reference line(s):
-#' \itemize{
-#' \item{aesthetic value(s) or variable(s)
-#' (in this case column names of \code{data}) for reference lines.
-#' The line position is controlled by the aesthetics supported in
-#' \code{\link[ggplot2]{geom_vline}}, \code{\link[ggplot2]{geom_hline}} 
-#' and \code{\link[ggplot2]{geom_abline}}.
-#' }
-#' \item{'label': }{(optional) Logical specifying if the line
-#' should be annotated (\code{FALSE} to not annotate the line)
-#' or string with annotation label. By default, the value
-#' of the horizontal/vertical line is displayed or the equation
-#' for diagonal line.
-#' }
-#' }
 #' @inheritParams medicalMonitoring-common-args
 #' @return Updated \code{\link[ggplot2]{ggplot}} object.
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
+#' @importFrom stats setNames
 #' @export
 addReferenceLinesMonitoringPlot <- function(
 	gg, data, 

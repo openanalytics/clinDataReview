@@ -1,5 +1,5 @@
 #' Scatterplot of variables of interest for medical monitoring.
-#' @param width, height Width/height of the plot in pixels.
+#' @param width,height Width/height of the plot in pixels.
 #' @param hoverVar Character vector with variables to be displayed in the hover,
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
 #' @param hoverLab Named character vector with labels for \code{hoverVar}.
@@ -31,8 +31,9 @@
 #' @import plotly
 #' @importFrom plyr ddply
 #' @importFrom htmlwidgets onRender JS
-#' @importFrom glpgUtilityFct toDTGLPG
+#' @importFrom glpgUtilityFct toDTGLPG getLabelVar
 #' @importFrom crosstalk bscols
+#' @importFrom stats as.formula
 #' @author Laure Cougnaud
 #' @example inst/examples/scatterplotMonitoring-example.R
 #' @export
