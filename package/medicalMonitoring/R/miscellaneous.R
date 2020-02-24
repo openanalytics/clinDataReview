@@ -79,7 +79,7 @@ includeInButton <- function(
 	}
 	
 	# create button
-	id <- gsub(" ", "", id)#[[:punct:]]|
+	id <- gsub("[[:punct:]]| ", "", id)
 	btnStyle <- paste0(
 		"color:", color, " !important;",
 		"border-color:", borderColor, " !important;",
