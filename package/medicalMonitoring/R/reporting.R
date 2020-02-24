@@ -69,6 +69,7 @@ knit_print.medicalMonitoring <- function(x, ...){
 	
 	res <- tagList(plot, table)
 	
+	requireNamespace("htmltools")
 	htmltools::knit_print.shiny.tag.list(res)
 	
 }

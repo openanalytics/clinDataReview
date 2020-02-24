@@ -30,7 +30,7 @@
 #' }
 #' @import plotly
 #' @importFrom plyr ddply
-#' @importFrom htmlwidgets onRender
+#' @importFrom htmlwidgets onRender JS
 #' @importFrom glpgUtilityFct toDTGLPG
 #' @importFrom crosstalk bscols
 #' @author Laure Cougnaud
@@ -147,9 +147,10 @@ scatterplotMonitoring <- function(
 		if(any(duplicated(dataPPDf[, idVar])))
 			stop("Duplicated ", idVar, " for specific ", pathVar, ".")
 		dataPP <- dataPPDf[, c(idVar, pathVar)]
+		colnames(dataPP) <- c("key", "path")
 		pl <- pl %>% onRender(
-			jsCode = "function(el, x, data){downloadPatientProfilesPlotly(el, x, data);}",
-			data = dataPPDf
+			jsCode = JS("function(el, x, data){downloadPatientProfilesPlotly(el, x, data);}"),
+			data = dataPP
 		)
 		
 	}

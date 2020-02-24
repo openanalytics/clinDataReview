@@ -51,6 +51,8 @@ getJsDepMedicalMonitoring <- function(){
 	
 	})
 
+	return(htmlDep)
+
 }
 
 #' Function to create collapse with button in html output

@@ -45,6 +45,8 @@ function downloadPatientProfilesDT(el){
     downloadPatientProfiles(pathPatientProfiles=linksArray, fileLabel='');
 };
 
+// el: plotly object, with 'key' element containing patient IDs
+// data: array of dictionaries, containing: 'key': patient IDs, 'path': path to patient profiles
 function downloadPatientProfilesPlotly(el, x, data) {
 
 		// get plotly data from hover
@@ -69,25 +71,18 @@ function downloadPatientProfilesPlotly(el, x, data) {
 			if(keyPress){
 				console.log('Ctrl + Enter key pressed.')
 			}
-			console.log(plObj)
+			//console.log(plObj)
 			//alert('Export of the patient profiles in progress!');
 
 			if(plObj != null && keyPress){
 
-				// test to open a progress window:
-				//var new_win = window.open('test.html','','menubar=no,resizable=yes,toolbar=no,status=no,hotkeys=no,titlebar=no,scrollbars=yes,height=50,width=50');
-				//new_win.document.write('Create patient profiles');
+        // extract patient IDs (passed as 'key' of plotly object)
+				ids = plObj.data["key"];
+				console.log('Selected IDs:', ids);
 				
-				// string with patient profiles
-				//links = plObj.customdata; 
-				// convert to an array of patient profile path
-				//linksArray = links.split(',');
-				console.log(plObj);
-				ids = plObj.data.key;
-				console.log(ids);
-				console.log(data);
-				linksArray = data[ids];
-				console.log(linksArray);
+				// filter data to only ids
+				linksArray = data.filter(e => e.key.includes(ids)).map(el => el.path);
+				console.log('Patient profile path:', linksArray);
 				
 				// extract label for the zip file name, here 'label' of the sunburst region
 				//plLabel=plObj.label;
