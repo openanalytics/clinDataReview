@@ -3,17 +3,18 @@
 #' @param hoverVar Character vector with variables to be displayed in the hover,
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
 #' @param hoverLab Named character vector with labels for \code{hoverVar}.
-#' @param idVar Character vector with variable containing subject ID.
 #' @param pathVar String with variable of \code{data} containing path
 #' to a subject-specific report (e.g. patient profiles).
-#' This report will be downloaded if the user clicks on the 'Ctrl'+'Enter' key
-#' when hovering on a point.
+#' The report should be unique by element of \code{idVar}.
+#' This report will be:
+#' \itemize{
+#' \item{downloaded if the user clicks on the 'Ctrl'+'Enter' key
+#' when hovering on a point of the plot}
+#' \item{opened in a brower via hyperlink in the \code{idVar} of the table 
+#' column (if specified via \code{tableVars})}
+#' }
 #' @param table Logical, if TRUE (FALSE by default)
 #' returns also a \code{datatable} containing the plot data.
-#' @param tableButton Logical, if TRUE (by default)
-#' the table is included within an HTML button.
-#' @param tablePars List with parameters passed to the
-#' \code{\link[glpgUtilityFct]{toDTGLPG}} function.
 #' @param id String with general id for the plot:
 #' \itemize{
 #' \item{'SharedData:[id]' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
@@ -32,7 +33,6 @@
 #' @importFrom plyr ddply
 #' @importFrom htmlwidgets onRender JS
 #' @importFrom glpgUtilityFct toDTGLPG getLabelVar
-#' @importFrom crosstalk bscols
 #' @importFrom stats as.formula
 #' @author Laure Cougnaud
 #' @example inst/examples/scatterplotMonitoring-example.R
@@ -61,17 +61,18 @@ scatterplotMonitoring <- function(
 	width = NULL, height = NULL,
 	hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))), 
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
-	idVar = "USUBJID",
+	idVar = "USUBJID", 
 	pathVar = NULL,
-	table = FALSE, tableButton = TRUE, tablePars = list(),
+	table = FALSE, 
+	tableVars = unique(c(idVar, xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
+	tableLab = getLabelVar(tableVars, labelVars = labelVars),
+	tableButton = TRUE, tablePars = list(),
 	id){
 	
 	facetType <- match.arg(facetType)
 	
-	if(missing(id)){
+	if(missing(id))
 		id <- paste0("scatterplotMonitoring", sample.int(n = 1000, size = 1))
-	}
-
 	## checks:
 
 #	# only one variable per aesthetic:
@@ -99,18 +100,18 @@ scatterplotMonitoring <- function(
 				)
 			})
 			hoverText <- Reduce(function(...) paste(..., sep = "<br>"), hoverTextList)
-			cbind.data.frame(dataPoint, hover = hoverText, stringsAsFactors = )
+			cbind.data.frame(dataPoint, hover = unname(hoverText), stringsAsFactors = FALSE)
 		})
 	}
 	
 	# SharedData object:
 	keyFm <- as.formula(paste("~", idVar))
 	group <- paste0("SharedData:", id)
-	dataPlot <- highlight_key(data = data, key = keyFm, group = group)
+	dataSharedData <- highlight_key(data = data, key = keyFm, group = group)
 	
 	## create static plot:
 	gg <- scatterplotMonitoringStatic(
-		data = dataPlot, 
+		data = dataSharedData, 
 		# x/y variables:
 		xVar = xVar, yVar = yVar, 
 		xLab = xLab, yLab = yLab, 
@@ -138,6 +139,8 @@ scatterplotMonitoring <- function(
 		width = width, height = height, 
 		tooltip = if(!is.null(hoverVar))	"text"
 	)
+	# turn-off selection by double-clicking on the graph
+	pl <- pl %>% highlight(on = "plotly_click", off = "plotly_doubleclick")
 	
 	# to check attributes available in the plotly object:
 #	plotly_json(pl)
@@ -158,19 +161,15 @@ scatterplotMonitoring <- function(
 	
 	if(table){
 		
-		# create table
-		argsToDTGLPG <- c(list(data = dataPlot), tablePars)
-		table <- do.call(toDTGLPG, argsToDTGLPG)
-		
-		if(tableButton){
-			idButton <- paste0("button:", id)
-#			class(table) <- c("medicalMonitoringTable", class(table))
-			attributes(table)$metadata <- list(
-				button = tableButton, 
-				buttonId = idButton,
-				buttonTitle = "Click to show or hide the data associated to the plot"
-			)
-		}
+		table <- tableMonitoring(
+			data = data, 
+			idVar = idVar, 
+			pathVar = pathVar ,
+			tableVars = tableVars,
+			tableLab = tableLab,
+			tableButton = tableButton, tablePars = tablePars,
+			id = id
+		)
 		res <- list(plot = pl, table = table)
 	
 		class(res) <- c("medicalMonitoring", class(res))

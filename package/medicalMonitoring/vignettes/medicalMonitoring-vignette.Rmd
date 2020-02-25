@@ -118,7 +118,8 @@ pander(
 
 ```{r timeProfiles}
 
-dataPlot <- subset(dataLB, LBTESTCD == "ALT")
+labParam <- "ALT"
+dataPlot <- subset(dataLB, LBTESTCD == labParam)
 visitLab <- with(dataPlot, tapply(LBDY, VISIT, median))
 names(visitLab) <- sub("-", "\n", names(visitLab))
 
@@ -138,10 +139,11 @@ scatterplotMonitoring(
 	xPars = list(breaks = visitLab, labels = names(visitLab)),
 	themePars = list(legend.position = "none"),
 	title = paste("Actual value of", 
-		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+		getLabelParamcd(paramcd = labParam, data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
 	),
 	# include link to patient profiles:
-	pathVar = "subjectPatientProfilePath"
+	pathVar = "subjectPatientProfilePath",
+	table = TRUE, id = paste("subjectProfile", labParam, sep = "-")
 )
 
 ```
@@ -188,6 +190,11 @@ scatterplotMonitoring(
 		suffixes = c(".ALT", ".BILI"),
 		all = TRUE
 	)
+	labelVars[paste0("LBSTRESN.", c("ALT", "BILI"))] <-
+		paste(
+			"Actual value of", 
+			getLabelParamcd(paramcd = c("ALT", "BILI"), data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+		)
 	
 	# scatterplot per visit
 	scatterplotMonitoring(
