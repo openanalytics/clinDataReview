@@ -4,6 +4,8 @@ data(SDTMDataPelican)
 
 dataDM <- SDTMDataPelican$DM
 
+## single filter
+
 # filter with inclusion criteria:
 filterData(dataDM, filters = list(var = "SEX", value = "M"), verbose = TRUE)
 
@@ -24,11 +26,24 @@ filterData(dataDMNA, filters = list(var = "AGE", value = 20, op = "<=", keepNA =
 # retain only missing values
 filterData(dataDMNA, filters = list(var = "AGE", value = NA, keepNA = FALSE), verbose = TRUE)
 
-# multiple filters
+## multiple filters
+
+# by default the records fulfilling all conditions are retained ('AND')
 filterData(
 	data = dataDM, 
 	filters = list(
 		list(var = "AGE", value = 20, op = "<="),
+		list(var = "SEX", value = "M")
+	), 
+	verbose = TRUE
+)
+
+# custom operator:
+filterData(
+	data = dataDM, 
+	filters = list(
+		list(var = "AGE", value = 20, op = "<="),
+		"|",
 		list(var = "SEX", value = "M")
 	), 
 	verbose = TRUE
