@@ -1,7 +1,7 @@
 #' Scatterplot of variables of interest for medical monitoring.
 #' @param id String with general id for the plot:
 #' \itemize{
-#' \item{'SharedData:[id]' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+#' \item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
 #' \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 #' }
 #' If not specified, a random id, as 'scatterplotMonitoringX' is used.
@@ -100,7 +100,8 @@ scatterplotMonitoring <- function(
 	# convert static to interactive plot
 	pl <- formatPlotlyMonitoring(
 		data = data, pl = pl,
-		idVar = idVar, pathVar = pathVar
+		idVar = idVar, pathVar = pathVar,
+		id = id
 	)
 	
 	# create associated table

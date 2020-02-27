@@ -34,12 +34,11 @@ formatDataForPlotMonitoring <- function(
 	}
 	
 	# SharedData object:
-	group <- paste0("SharedData:", id)
 	if(!is.null(keyVar) && length(keyVar) > 1){
 		data$key <- do.call(interaction, data[, keyVar])
 		keyVar <- "key"
 	}
-	argsHighlightKey <- list(data = data, group = group)
+	argsHighlightKey <- list(data = data, group = id)
 	if(!is.null(keyVar)){
 		keyFm <- as.formula(paste("~", keyVar))
 		argsHighlightKey <- c(argsHighlightKey, list(key = keyFm))

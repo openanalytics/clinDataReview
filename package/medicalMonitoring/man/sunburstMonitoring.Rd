@@ -12,6 +12,7 @@ sunburstMonitoring(
   childLab = getLabelVar(childVar, labelVars = labelVars),
   valueVar,
   valueLab = getLabelVar(valueVar, labelVars = labelVars),
+  valueType = "relative",
   titleExtra = NULL,
   title = paste(paste(valueLab, "of", paste(c(parentLab, childLab), collapse = " and "),
     titleExtra), collapse = "<br>"),
@@ -30,6 +31,10 @@ sunburstMonitoring(
 \arguments{
 \item{data}{Data.frame with data.}
 
+\item{valueType}{String with type of values in \code{valueVar}
+(\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
+among others: 'relative' (default), or 'total' (only if sum(child) <= to parent).}
+
 \item{width}{Width/height of the plot in pixels.}
 
 \item{height}{Width/height of the plot in pixels.}
@@ -39,7 +44,7 @@ to a subject-specific report (e.g. patient profiles).
 The report should be unique by element of \code{idVar}.
 This report will be:
 \itemize{
-\item{downloaded if the user clicks on the 'Ctrl'+'Enter' key
+\item{downloaded if the user clicks on the 'p' (a.k.a 'profile') key
 when hovering on a point of the plot}
 \item{opened in a brower via hyperlink in the \code{idVar} of the table 
 column (if specified via \code{tableVars})}

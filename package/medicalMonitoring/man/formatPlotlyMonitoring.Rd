@@ -11,12 +11,25 @@ formatPlotlyMonitoring(
   data,
   idVar = "USUBJID",
   pathVar = NULL,
+  idFromDataPlot = TRUE,
+  idVarPlot = "key",
   highlightOn = "plotly_click",
-  highlightOff = "plotly_doubleclick"
+  highlightOff = "plotly_doubleclick",
+  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))
 )
 }
 \arguments{
 \item{pl}{\code{\link[plotly]{ggplotly}} object.}
+
+\item{idVar}{String with variable of \code{data}
+containing plot element.}
+
+\item{idFromDataPlot}{Logical, if TRUE (by default) \code{idVarPlot}
+is extracted from the data of the plot object, otherwise
+directly from the plot object.}
+
+\item{idVarPlot}{String with variable in the \code{\link[plotly]{plotly}}
+output containing IDs.}
 
 \item{highlightOn}{String with event to turn on the selection
 (\code{on} parameter of \code{\link[plotly]{highlight}}),
@@ -27,7 +40,7 @@ formatPlotlyMonitoring(
 'plotly_doubleclick' by default.}
 }
 \value{
-Updated \code{\link[plotly]{ggplotly}} object.
+Updated \code{\link[plotly]{plotly}} object.
 }
 \description{
 Format interactive plot,

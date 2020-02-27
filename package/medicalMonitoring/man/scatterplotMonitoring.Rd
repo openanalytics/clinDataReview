@@ -134,7 +134,7 @@ to a subject-specific report (e.g. patient profiles).
 The report should be unique by element of \code{idVar}.
 This report will be:
 \itemize{
-\item{downloaded if the user clicks on the 'Ctrl'+'Enter' key
+\item{downloaded if the user clicks on the 'p' (a.k.a 'profile') key
 when hovering on a point of the plot}
 \item{opened in a brower via hyperlink in the \code{idVar} of the table 
 column (if specified via \code{tableVars})}
@@ -145,7 +145,7 @@ returns also a \code{datatable} containing the plot data.}
 
 \item{id}{String with general id for the plot:
 \itemize{
-\item{'SharedData:[id]' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
 \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
 If not specified, a random id, as 'scatterplotMonitoringX' is used.}

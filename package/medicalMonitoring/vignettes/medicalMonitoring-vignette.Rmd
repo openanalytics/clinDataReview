@@ -290,6 +290,8 @@ for each subgroup is extracted.
 
 	dataSunburst <- tableAE
 	
+	dataSunburst$n <- as.numeric(dataSunburst$n)
+	
 	# Reformat summary statistics data.frame to include the label
 	# of each group in the AEDECOD column for the total
 	dataSunburst['parent'] = with(dataSunburst, 
@@ -303,9 +305,9 @@ for each subgroup is extracted.
 		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
 		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
 		valueVar = "n", valueLab = "Number of patients",
-		table = TRUE, pathVar = "patientProfilePath"
+		pathVar = "patientProfilePath"
 	)
-
+	
 ```
 
 # Appendix

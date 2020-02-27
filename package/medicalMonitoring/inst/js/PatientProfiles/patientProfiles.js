@@ -47,11 +47,16 @@ function downloadPatientProfilesDT(el){
 
 // el: plotly object, with 'key' element containing patient IDs
 // data: array of dictionaries, containing: 'key': patient IDs, 'path': path to patient profiles
-function downloadPatientProfilesPlotly(el, x, data) {
+// fromData: boolean, if true the id mapping is extracted from the 'data' slot of the plot object
+// idvar: string, variable of the plot object considered for mapping
+// label: string, plot label (should map pl.data.set), used to restrict event to only specified plot
+//  (to avoid that event triggered if a different plot uses the same key)
+function downloadPatientProfilesPlotly(el, x, data, fromdata, idvar, label) {
 
 		// get plotly data from hover
 		var plObj = null
 		el.on('plotly_hover', function(d) {
+		  console.log("d", d)
 			plObj = d.points[0];
 		});
 		// reset object (e.g. if go out of plotting region)
@@ -67,22 +72,38 @@ function downloadPatientProfilesPlotly(el, x, data) {
 
 			console.log('pressed key', key)
 
-			keyPress = event.ctrlKey && key == 'Enter'
-			if(keyPress){
-				console.log('Ctrl + Enter key pressed.')
+			iskey = key == 'p' //event.ctrlKey && 
+			if(iskey){
+				console.log('p key pressed.')
 			}
-			console.log(plObj);
-      console.log(data);
+
+			isplot = plObj.data.set == label
+			console.log('data.set:', plObj.data.set)
+			console.log('label', label)
+			if(isplot){
+				console.log('correct plot:', label)
+			}
+
+			console.log('Plot object:', plObj);
+      			console.log('Extra data:', data);
 			//alert('Export of the patient profiles in progress!');
 
-			if(plObj != null && keyPress){
+			if(plObj != null && iskey && isplot){
 
-        // extract patient IDs (passed as 'key' of plotly object)
-				ids = plObj.data["key"];
+				// extract patient IDs
+				if (fromdata) {
+				  ids = plObj.data[idvar];
+				} else {
+				  ids = plObj[idvar];
+				}
+				console.log('fromdata:', fromdata);
+				console.log('from id var:', idvar);
 				console.log('Selected IDs:', ids);
 				
 				// filter data to only ids
-				linksArray = data.filter(e => e.key.includes(ids)).map(el => el.path);
+				linksArray = data.filter(e => e.key.includes(ids))
+				// split if multiple links are present
+				linksArray = linksArray.map(el => el.path.split(','));
 				console.log('Patient profile path:', linksArray);
 				
 				// extract label for the zip file name, here 'label' of the sunburst region

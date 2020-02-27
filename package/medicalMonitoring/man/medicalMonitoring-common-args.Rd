@@ -32,7 +32,7 @@ to a subject-specific report (e.g. patient profiles).
 The report should be unique by element of \code{idVar}.
 This report will be:
 \itemize{
-\item{downloaded if the user clicks on the 'Ctrl'+'Enter' key
+\item{downloaded if the user clicks on the 'p' (a.k.a 'profile') key
 when hovering on a point of the plot}
 \item{opened in a brower via hyperlink in the \code{idVar} of the table 
 column (if specified via \code{tableVars})}
