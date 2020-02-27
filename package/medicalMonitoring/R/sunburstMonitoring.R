@@ -1,10 +1,17 @@
 #' Sunburst interactive plot.
 #' 
 #' Note: the table and plot are not (yet) linked.
+#' @param parentVar,parentLab String with variable of \code{data} containing parent nodes,
+#' and associated label.
+#' @param childVar,childLab String with variable of \code{data} containing child nodes,
+#' and associated label.
+#' @param valueVar,valueLab String with variable of \code{data} containing node value,
+#' and associated label.
 #' @param valueType String with type of values in \code{valueVar}
 #' (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
 #' among others: 'relative' (default), or 'total' (only if sum(child) <= to parent).
 #' @inheritParams medicalMonitoring-common-args
+#' @inheritParams tableMonitoring
 #' @inherit scatterplotMonitoring return
 #' @import plotly
 #' @importFrom stats as.formula
@@ -32,7 +39,7 @@ sunburstMonitoring <- function(
 	tableVars,
 	tableLab,
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("sunburstMonitoring", sample.int(n = 1000, size = 1))){
+	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))){
 	
 	# In case values are 'total' and parent < sum(child)
 	# plotly creates an empty plot
@@ -64,7 +71,8 @@ sunburstMonitoring <- function(
 	# format data to: 'SharedData' object
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = dataPlot,
-		keyVar = idVar, id = id
+		keyVar = idVar, id = id,
+		labelVars = labelVars
 	)
 	
 	# create interactive plot:
@@ -76,6 +84,7 @@ sunburstMonitoring <- function(
 		branchvalues = valueType,
 		width = width, height = height
 	)
+	pl <- pl %>% layout(title = title)
 	
 	# current hovered element identified by d.points[0].label
 	
@@ -117,7 +126,8 @@ sunburstMonitoring <- function(
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,
-			id = id
+			id = id, 
+			labelVars = labelVars
 		)
 		res <- list(plot = pl, table = table)
 		

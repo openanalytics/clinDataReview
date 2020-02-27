@@ -21,8 +21,13 @@ formatPlotlyMonitoring(
 \arguments{
 \item{pl}{\code{\link[plotly]{ggplotly}} object.}
 
+\item{data}{Data.frame with data.}
+
 \item{idVar}{String with variable of \code{data}
 containing plot element.}
+
+\item{pathVar}{String with variable of \code{data} containing path
+to a subject-specific report (e.g. patient profiles).}
 
 \item{idFromDataPlot}{Logical, if TRUE (by default) \code{idVarPlot}
 is extracted from the data of the plot object, otherwise
@@ -38,6 +43,13 @@ output containing IDs.}
 \item{highlightOff}{String with event to turn off the selection
 (\code{off} parameter of \code{\link[plotly]{highlight}}),
 'plotly_doubleclick' by default.}
+
+\item{id}{String with general id for the plot:
+\itemize{
+\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+}
+If not specified, a random id, as 'plotMonitoring[X]' is used.}
 }
 \value{
 Updated \code{\link[plotly]{plotly}} object.

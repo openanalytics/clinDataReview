@@ -10,7 +10,8 @@ formatDataForPlotMonitoring(
   hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
   hoverByVar = NULL,
   keyVar = NULL,
-  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))
+  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+  labelVars = NULL
 )
 }
 \arguments{
@@ -28,6 +29,16 @@ in the plot, their information are combined in the hover.}
 
 \item{keyVar}{Character vector with key variables, identifying unique
 group for which the link between the table and the plot should be done.}
+
+\item{id}{String with general id for the plot:
+\itemize{
+\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+}
+If not specified, a random id, as 'plotMonitoring[X]' is used.}
+
+\item{labelVars}{Named character vector containing variable labels,
+used by default for all labels in the plot.}
 }
 \description{
 Format data for interactive plot for medical monitoring.

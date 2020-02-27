@@ -5,9 +5,9 @@
 #' @param yVar String with column of \code{data} containing y-variable.
 #' @param xLim,yLim Numeric vector of length 2 with limits for the x/y axes.
 #' @param idVar String with variable containing subject ID.
+#' @param idLab String with label for \code{idVar}.
 #' @param facetPars List with facetting parameters, passed to the facetting function.
 #' @param lineVars List with parameters for the reference lines.
-#' @param width,height Width/height of the plot in pixels.
 #' @param hoverVar Character vector with variables to be displayed in the hover,
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
 #' @param hoverLab Named character vector with labels for \code{hoverVar}.
@@ -39,5 +39,17 @@
 #' of the diagonal line is displayed.
 #' }
 #' }
+#' @param labelVars Named character vector containing variable labels,
+#' used by default for all labels in the plot.
+#' @param id String with general id for the plot:
+#' \itemize{
+#' \item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+#' \item{'button:[id]' is used as button ID if \code{table} is TRUE}
+#' }
+#' If not specified, a random id, as 'plotMonitoring[X]' is used.
+#' @param title String with title for the plot.
+#' @param titleExtra String with extra title for the plot (appended after \code{title}).
+#' @param width,height Width/height of the plot in pixels.
+
 #' @name medicalMonitoring-common-args
 NULL

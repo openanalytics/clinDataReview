@@ -16,7 +16,8 @@ formatDataForPlotMonitoring <- function(
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
 	hoverByVar = NULL,
 	keyVar = NULL,
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))){
+	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	labelVars = NULL){
 
 	# create hover variable: combine hover if points have the same x/y coordinates
 	# by default in plotly: hover var only displayed for one of the overlapping point

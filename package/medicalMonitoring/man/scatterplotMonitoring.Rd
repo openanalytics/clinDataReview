@@ -31,13 +31,14 @@ scatterplotMonitoring(
   hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
   hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
   idVar = "USUBJID",
+  idLab = getLabelVar(idVar, labelVars = labelVars),
   pathVar = NULL,
   table = FALSE,
   tableVars = unique(c(idVar, xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
   tableLab = getLabelVar(tableVars, labelVars = labelVars),
   tableButton = TRUE,
   tablePars = list(),
-  id = paste0("scatterplotMonitoring", sample.int(n = 1000, size = 1))
+  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))
 )
 }
 \arguments{
@@ -129,6 +130,8 @@ by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 
 \item{idVar}{String with variable containing subject ID.}
 
+\item{idLab}{String with label for \code{idVar}.}
+
 \item{pathVar}{String with variable of \code{data} containing path
 to a subject-specific report (e.g. patient profiles).
 The report should be unique by element of \code{idVar}.
@@ -143,12 +146,24 @@ column (if specified via \code{tableVars})}
 \item{table}{Logical, if TRUE (FALSE by default)
 returns also a \code{datatable} containing the plot data.}
 
+\item{tableVars}{Character vector with variables to be included 
+in the table; and associated labels.}
+
+\item{tableLab}{Character vector with variables to be included 
+in the table; and associated labels.}
+
+\item{tableButton}{Logical, if TRUE (by default)
+the table is included within an HTML button.}
+
+\item{tablePars}{List with parameters passed to the
+\code{\link[glpgUtilityFct]{toDTGLPG}} function.}
+
 \item{id}{String with general id for the plot:
 \itemize{
 \item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
 \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
-If not specified, a random id, as 'scatterplotMonitoringX' is used.}
+If not specified, a random id, as 'plotMonitoring[X]' is used.}
 }
 \value{
 If a \code{table} is requested:

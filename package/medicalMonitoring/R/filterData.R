@@ -23,6 +23,7 @@
 #' \code{list(list(var = "SEX", value = "F"), "&", list(var = "COUNTRY", value = "DEU"))}.
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' in the current console.
+#' @inheritParams filterDataSingle
 #' @return Filtered \code{data}.
 #' @example inst/examples/filterData-example.R
 #' @author Laure Cougnaud

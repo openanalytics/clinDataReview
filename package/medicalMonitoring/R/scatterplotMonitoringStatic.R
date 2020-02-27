@@ -16,8 +16,6 @@
 #' \code{\link[ggplot2]{scale_x_continuous}}/
 #' \code{\link[ggplot2]{scale_y_continuous}} functions,
 #' besides \code{trans} and \code{limits}.
-#' @param title String with title for the plot.
-#' @param titleExtra String with extra title for the plot (appended after \code{title}).
 #' @param facetType String with facetting type, either:
 #' \itemize{
 #' \item{'wrap': }{\code{\link[ggplot2]{facet_wrap}}}
@@ -25,8 +23,6 @@
 #' }
 #' @param themePars List with general theme parameters 
 #' (see \code{\link[ggplot2]{theme}}).
-#' @param labelVars Named character vector containing variable labels,
-#' used by default for all labels in the plot.
 #' @param hoverVar Character vector with variables to be displayed in the hover,
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
 #' @inheritParams medicalMonitoring-common-args

@@ -1,12 +1,7 @@
 #' Scatterplot of variables of interest for medical monitoring.
-#' @param id String with general id for the plot:
-#' \itemize{
-#' \item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-#' \item{'button:[id]' is used as button ID if \code{table} is TRUE}
-#' }
-#' If not specified, a random id, as 'scatterplotMonitoringX' is used.
 #' @inheritParams scatterplotMonitoringStatic
 #' @inheritParams medicalMonitoring-common-args
+#' @inheritParams tableMonitoring
 #' @return If a \code{table} is requested:
 #' \itemize{
 #' \item{a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
@@ -42,13 +37,13 @@ scatterplotMonitoring <- function(
 	width = NULL, height = NULL,
 	hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))), 
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
-	idVar = "USUBJID", 
+	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	pathVar = NULL,
 	table = FALSE, 
 	tableVars = unique(c(idVar, xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("scatterplotMonitoring", sample.int(n = 1000, size = 1))){
+	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))){
 	
 	facetType <- match.arg(facetType)
 	
@@ -64,7 +59,8 @@ scatterplotMonitoring <- function(
 		data = data, 
 		hoverVar = hoverVar, hoverLab = hoverLab,
 		hoverByVar = idVars,
-		keyVar = idVar, id = id
+		keyVar = idVar, id = id,
+		labelVars = labelVars
 	)
 	
 	# create static plot:
@@ -109,12 +105,13 @@ scatterplotMonitoring <- function(
 		
 		table <- tableMonitoring(
 			data = data, 
-			idVar = idVar, 
+			idVar = idVar, idLab = idLab,
 			pathVar = pathVar ,
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,
-			id = id
+			id = id,
+			labelVars = labelVars
 		)
 		res <- list(plot = pl, table = table)
 	

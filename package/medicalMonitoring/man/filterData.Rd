@@ -27,6 +27,18 @@ linking the different conditions
 can be specified between the two conditions, e.g.: 
 \code{list(list(var = "SEX", value = "F"), "&", list(var = "COUNTRY", value = "DEU"))}.}
 
+\item{keepNA}{Logical, if TRUE (by default) missing values in \code{var} are retained.
+If set to FALSE, missing values are ignored for all filters.
+The specification within \code{filters} prevails on this parameter.}
+
+\item{returnAll}{Logical:
+\itemize{
+\item{if FALSE (by default): }{the \code{data} for only the filtered records
+is returned.}
+\item{if TRUE: }{the full \code{data} is returned, with the extra column: 'keep',
+containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
+}}
+
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.}
 }

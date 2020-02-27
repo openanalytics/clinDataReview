@@ -15,6 +15,10 @@
 #' @param highlightOff String with event to turn off the selection
 #' (\code{off} parameter of \code{\link[plotly]{highlight}}),
 #' 'plotly_doubleclick' by default.
+#' @param pathVar String with variable of \code{data} containing path
+#' to a subject-specific report (e.g. patient profiles).
+#' @inheritParams formatDataForPlotMonitoring
+#' @inheritParams medicalMonitoring-common-args
 #' @return Updated \code{\link[plotly]{plotly}} object.
 #' @author Laure Cougnaud
 #' @importFrom plotly highlight

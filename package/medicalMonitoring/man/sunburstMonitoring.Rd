@@ -2,7 +2,7 @@
 % Please edit documentation in R/sunburstMonitoring.R
 \name{sunburstMonitoring}
 \alias{sunburstMonitoring}
-\title{Sunburst interactive plot}
+\title{Sunburst interactive plot.}
 \usage{
 sunburstMonitoring(
   data,
@@ -25,15 +25,31 @@ sunburstMonitoring(
   tableLab,
   tableButton = TRUE,
   tablePars = list(),
-  id = paste0("sunburstMonitoring", sample.int(n = 1000, size = 1))
+  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))
 )
 }
 \arguments{
 \item{data}{Data.frame with data.}
 
+\item{parentVar, parentLab}{String with variable of \code{data} containing parent nodes,
+and associated label.}
+
+\item{childVar, childLab}{String with variable of \code{data} containing child nodes,
+and associated label.}
+
+\item{valueVar, valueLab}{String with variable of \code{data} containing node value,
+and associated label.}
+
 \item{valueType}{String with type of values in \code{valueVar}
 (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
 among others: 'relative' (default), or 'total' (only if sum(child) <= to parent).}
+
+\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
+
+\item{title}{String with title for the plot.}
+
+\item{labelVars}{Named character vector containing variable labels,
+used by default for all labels in the plot.}
 
 \item{width}{Width/height of the plot in pixels.}
 
@@ -52,6 +68,25 @@ column (if specified via \code{tableVars})}
 
 \item{table}{Logical, if TRUE (FALSE by default)
 returns also a \code{datatable} containing the plot data.}
+
+\item{tableVars}{Character vector with variables to be included 
+in the table; and associated labels.}
+
+\item{tableLab}{Character vector with variables to be included 
+in the table; and associated labels.}
+
+\item{tableButton}{Logical, if TRUE (by default)
+the table is included within an HTML button.}
+
+\item{tablePars}{List with parameters passed to the
+\code{\link[glpgUtilityFct]{toDTGLPG}} function.}
+
+\item{id}{String with general id for the plot:
+\itemize{
+\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+}
+If not specified, a random id, as 'plotMonitoring[X]' is used.}
 }
 \value{
 If a \code{table} is requested:
@@ -62,7 +97,7 @@ If a \code{table} is requested:
 }
 }
 \description{
-Sunburst interactive plot
+Note: the table and plot are not (yet) linked.
 }
 \examples{
 library(glpgUtilityFct)

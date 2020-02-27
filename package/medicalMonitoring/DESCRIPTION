@@ -8,7 +8,7 @@ Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring
   during a clinical trial.
 Imports: glpgUtilityFct, ggplot2, plotly, 
-  htmlwidgets, plyr, crosstalk, htmltools,
+  htmlwidgets, plyr, htmltools,
   knitr
 License: file LICENSE
 Suggests: 

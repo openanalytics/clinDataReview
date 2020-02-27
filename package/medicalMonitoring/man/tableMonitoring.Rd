@@ -13,13 +13,16 @@ tableMonitoring(
   tableLab = getLabelVar(tableVars, labelVars = labelVars),
   tableButton = TRUE,
   tablePars = list(),
-  id = paste0("tableMonitoring", sample.int(n = 1000, size = 1))
+  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+  labelVars = NULL
 )
 }
 \arguments{
 \item{data}{Data.frame with data.}
 
 \item{idVar}{String with variable containing subject ID.}
+
+\item{idLab}{String with label for \code{idVar}.}
 
 \item{pathVar}{String with variable of \code{data} containing path
 to a subject-specific report (e.g. patient profiles).
@@ -32,8 +35,8 @@ when hovering on a point of the plot}
 column (if specified via \code{tableVars})}
 }}
 
-\item{tableVars}{Character vector with variables to be included 
-in the table. By default, any variables displayed in the plot are used.}
+\item{tableVars, tableLab}{Character vector with variables to be included 
+in the table; and associated labels.}
 
 \item{tableButton}{Logical, if TRUE (by default)
 the table is included within an HTML button.}
@@ -41,12 +44,15 @@ the table is included within an HTML button.}
 \item{tablePars}{List with parameters passed to the
 \code{\link[glpgUtilityFct]{toDTGLPG}} function.}
 
-\item{id}{String with general id for the table:
+\item{id}{String with general id for the plot:
 \itemize{
-\item{'SharedData:[id]' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-\item{'button:[id]' is used as button ID}
+\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+\item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
-If not specified, a random id, as 'tableMonitoringX' is used.}
+If not specified, a random id, as 'plotMonitoring[X]' is used.}
+
+\item{labelVars}{Named character vector containing variable labels,
+used by default for all labels in the plot.}
 }
 \value{
 \code{\link[DT]{datatable}}

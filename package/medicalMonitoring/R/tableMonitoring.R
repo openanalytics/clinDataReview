@@ -5,16 +5,10 @@
 #' within a button.
 #' @param tableButton Logical, if TRUE (by default)
 #' the table is included within an HTML button.
-#' @param tableVars Character vector with variables to be included 
-#' in the table. By default, any variables displayed in the plot are used.
+#' @param tableVars,tableLab Character vector with variables to be included 
+#' in the table; and associated labels.
 #' @param tablePars List with parameters passed to the
 #' \code{\link[glpgUtilityFct]{toDTGLPG}} function.
-#' @param id String with general id for the table:
-#' \itemize{
-#' \item{'SharedData:[id]' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-#' \item{'button:[id]' is used as button ID}
-#' }
-#' If not specified, a random id, as 'tableMonitoringX' is used.
 #' @inheritParams medicalMonitoring-common-args
 #' @return \code{\link[DT]{datatable}}
 #' @author Laure Cougnaud
@@ -28,7 +22,8 @@ tableMonitoring <- function(data,
 	tableVars,
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("tableMonitoring", sample.int(n = 1000, size = 1))){
+	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	labelVars = NULL){
 	
 	tableVarsInit <- tableVars
 
