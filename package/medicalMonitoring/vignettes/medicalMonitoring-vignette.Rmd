@@ -90,6 +90,7 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 	
 	dataLB <- SDTMDataPelican$LB
 	dataDM <- SDTMDataPelican$DM
+	dataAE <- SDTMDataPelican$AE
 	labelVars <- labelVarsSDTMPelican
 
 ```
@@ -112,9 +113,11 @@ pander(
 
 # Visualizations
 
-## Interactive scatterplot
+## Data visualization
 
-### Time profiles
+### Interactive scatterplot
+
+#### Time profiles
 
 ```{r timeProfiles}
 
@@ -124,7 +127,7 @@ visitLab <- with(dataPlot, tapply(LBDY, VISIT, median))
 names(visitLab) <- sub("-", "\n", names(visitLab))
 
 # link to patient profiles
-dataPlot$subjectPatientProfilePath <- paste0(
+dataPlot$patientProfilePath <- paste0(
 	"patientProfiles/subjectProfile-", 
 	sub("/", "-", dataPlot$USUBJID), ".pdf"
 )
@@ -142,13 +145,13 @@ scatterplotMonitoring(
 		getLabelParamcd(paramcd = labParam, data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
 	),
 	# include link to patient profiles:
-	pathVar = "subjectPatientProfilePath",
+	pathVar = "patientProfilePath",
 	table = TRUE, id = paste("subjectProfile", labParam, sep = "-")
 )
 
 ```
 
-### Scatterplot
+#### Scatterplot
 
 ```{r scatterplot}
 
@@ -177,7 +180,7 @@ scatterplotMonitoring(
 
 ```
 
-### eDish plot
+#### eDish plot
 
 ```{r eDishPlot}
 
@@ -208,6 +211,99 @@ scatterplotMonitoring(
 		themePars = list(legend.position = "bottom"),
 		labelVars = labelVars,
 		table = TRUE, id = "eDish"
+	)
+
+```
+
+## Visualization of summary statistics
+
+Summary statistics can also be visualized with the package.
+These functions take as input a table of summary statistics.
+Such table can e.g. computed with the `inTextSummaryTable` R package (see
+corresponding package vignette for more information).
+
+A table of counts should be provided for the sunburst and barplot visualization.
+In this example, counts of adverse events are extracted for each `r labelVars["AESOC"]`
+and `r labelVars["AEDECOD"]`.
+Besides the counts of the number of subjects, the path to the patient profile report
+for each subgroup is extracted.
+
+```{r createCountTableAE}
+
+	# sunburst takes as input table with counts
+	library(inTextSummaryTable)
+	
+	# total counts: Safety Analysis Set (patients with start date for the first treatment)
+	dataTotal <- subset(dataDM, RFXSTDTC != "")
+	
+	## patient profiles report
+	
+	# add path in data
+	dataAE$patientProfilePath <- paste0(
+		"patientProfiles/subjectProfile-", 
+		sub("/", "-", dataAE$USUBJID), ".pdf"
+	)
+	# combine all paths across patients
+	statsExtraPP <- list(
+		statPatientProfilePath = function(data)	
+			toString(sort(unique(data$patientProfilePath)))
+	)
+	
+	# get default counts + stats with subjects profiles path
+	statsPP <- c(
+		getStats(type = "count-default"),
+		list(patientProfilePath = quote(statPatientProfilePath))
+	)
+	
+	# compute adverse event table
+	tableAE <- getSummaryStatisticsTable(
+					
+		data = dataAE,
+		rowVar = c("AESOC", "AEDECOD"),
+		dataTotal = dataTotal,
+		rowOrder = "total",
+		labelVars = labelVars,
+		
+		# plotly treemap requires records (rows) for each group
+		rowVarTotalInclude = "AEDECOD",
+		
+		## DT-output specific:
+		outputType = "data.frame",
+		# statistics of interest
+		# for DT output, include columns with patients
+		stats = statsPP, 
+		# add extra 'statistic': concatenate subject IDs
+		statsExtra = statsExtraPP
+
+	)
+	pander(head(tableAE),
+		caption = paste("Extract of the Adverse Event summary table",
+			"used for the sunburst and barplot visualization"
+		)
+	)
+
+```
+
+### Sunburst
+
+```{r sunburst}
+
+	dataSunburst <- tableAE
+	
+	# Reformat summary statistics data.frame to include the label
+	# of each group in the AEDECOD column for the total
+	dataSunburst['parent'] = with(dataSunburst, 
+		ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
+	)
+	dataSunburst['child'] = with(dataSunburst, 
+		ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
+	)
+	sunburstMonitoring(
+		data = dataSunburst,
+		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
+		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+		valueVar = "n", valueLab = "Number of patients",
+		table = TRUE, pathVar = "patientProfilePath"
 	)
 
 ```

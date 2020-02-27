@@ -6,8 +6,7 @@
 #' @param tableButton Logical, if TRUE (by default)
 #' the table is included within an HTML button.
 #' @param tableVars Character vector with variables to be included 
-#' in the table. By default, ID, x, y and any aesthetic variables
-#' are included.
+#' in the table. By default, any variables displayed in the plot are used.
 #' @param tablePars List with parameters passed to the
 #' \code{\link[glpgUtilityFct]{toDTGLPG}} function.
 #' @param id String with general id for the table:
@@ -31,6 +30,8 @@ tableMonitoring <- function(data,
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("tableMonitoring", sample.int(n = 1000, size = 1))){
 	
+	tableVarsInit <- tableVars
+
 	# add idVar in variables to display (used for linking plot <-> table)
 	if(!idVar %in% tableVars){
 		tableVars <- c(idVar, tableVars)
@@ -54,11 +55,13 @@ tableMonitoring <- function(data,
 	data <- data[, tableVars, drop = FALSE]
 	
 	# escape column with hyperlink
-	idxUrlVar <- which(colnames(data) == "linkVar")
 	if(!is.null(pathVar)){
-		# escape column with URL
+		idxUrlVar <- which(colnames(data) == "linkVar")
 		tablePars <- c(tablePars, list(escape = c(tablePars$escape, -idxUrlVar)))
-		# ID column non visible (used for the link)
+	}
+	
+	# ID column non visible (used for the link table <-> plot)
+	if(!is.null(pathVar) | !idVar %in% tableVarsInit){
 		tablePars$nonVisible <- which(colnames(data) == idVar)-1
 	}
 	

@@ -1,28 +1,27 @@
 #' Format data for interactive plot for medical monitoring.
+#' @param hoverByVar Character vector with variables identifying
+#' unique elements in the plot, usually x, y, facet variables.
+#' These variables are used to identify records with the same position
+#' in the plot, their information are combined in the hover.
+#' @param keyVar Character vector with key variables, identifying unique
+#' group for which the link between the table and the plot should be done.
 #' @inheritParams medicalMonitoring-common-args
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
 #' @importFrom plotly highlight_key
 #' @export
 formatDataForPlotMonitoring <- function(
-	data, xVar, yVar, 
-	facetPars = NULL, 
-	hoverVar = unique(c(xVar, yVar)),
+	data, 
+	hoverVar = NULL,
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
-	idVar = "USUBJID",
+	hoverByVar = NULL,
+	keyVar = NULL,
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))){
 
-	# extract variables that defines uniquely one point in the plot:
-	idVars <- c(xVar, yVar)
-	if(!is.null(facetPars)){
-		facetVars <- getFacetVars(facetPars)
-		idVars <- unique(c(idVars, facetVars))
-	}
-	
 	# create hover variable: combine hover if points have the same x/y coordinates
 	# by default in plotly: hover var only displayed for one of the overlapping point
 	if(!is.null(hoverVar)){
-		data <- ddply(data, idVars, function(dataPoint){
+		data <- ddply(data, hoverByVar, function(dataPoint){
 			hoverTextList <- lapply(hoverVar, function(var){
 				formatHoverText(
 					x = sort(unique(dataPoint[, var])),
@@ -35,9 +34,18 @@ formatDataForPlotMonitoring <- function(
 	}
 	
 	# SharedData object:
-	keyFm <- as.formula(paste("~", idVar))
 	group <- paste0("SharedData:", id)
-	dataSharedData <- highlight_key(data = data, key = keyFm, group = group)
+	if(!is.null(keyVar) && length(keyVar) > 1){
+		data$key <- do.call(interaction, data[, keyVar])
+		keyVar <- "key"
+	}
+	argsHighlightKey <- list(data = data, group = group)
+	if(!is.null(keyVar)){
+		keyFm <- as.formula(paste("~", keyVar))
+		argsHighlightKey <- c(argsHighlightKey, list(key = keyFm))
+	}
+	
+	dataSharedData <- do.call(highlight_key, argsHighlightKey)
 	
 	return(dataSharedData)
 	

@@ -13,11 +13,8 @@
 #' (\code{\link[DT]{datatable}} object with extra class: \code{medicalMonitoringTable})}
 #' \item{\code{\link[plotly]{plotly}} object}
 #' }
-#' @import plotly
-#' @importFrom plyr ddply
-#' @importFrom htmlwidgets onRender JS
-#' @importFrom glpgUtilityFct toDTGLPG getLabelVar
-#' @importFrom stats as.formula
+#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom plotly ggplotly
 #' @author Laure Cougnaud
 #' @example inst/examples/scatterplotMonitoring-example.R
 #' @export
@@ -54,13 +51,20 @@ scatterplotMonitoring <- function(
 	id = paste0("scatterplotMonitoring", sample.int(n = 1000, size = 1))){
 	
 	facetType <- match.arg(facetType)
+	
+	# extract variables that defines uniquely one point in the plot:
+	idVars <- c(xVar, yVar)
+	if(!is.null(facetPars)){
+		facetVars <- getFacetVars(facetPars)
+		idVars <- unique(c(idVars, facetVars))
+	}
 
 	# format data to: 'SharedData' object
 	dataSharedData <- formatDataForPlotMonitoring(
-		data = data, xVar = xVar, yVar = yVar, 
-		facetPars = facetPars, 
+		data = data, 
 		hoverVar = hoverVar, hoverLab = hoverLab,
-		idVar = idVar, id = id
+		hoverByVar = idVars,
+		keyVar = idVar, id = id
 	)
 	
 	# create static plot:
@@ -85,13 +89,18 @@ scatterplotMonitoring <- function(
 		labelVars = labelVars,
 		hoverVar = hoverVar
 	)
+	
+	# convert to interactive plot
+	pl <- ggplotly(
+		p = gg, 
+		width = width, height = height, 
+		tooltip = if(!is.null(hoverVar))	"text"
+	)
 
 	# convert static to interactive plot
-	pl <- ggplotlyMonitoring(
-		data = data, gg = gg,
-		width = width, height = height,
-		idVar = idVar, pathVar = pathVar,
-		hoverVar = hoverVar
+	pl <- formatPlotlyMonitoring(
+		data = data, pl = pl,
+		idVar = idVar, pathVar = pathVar
 	)
 	
 	# create associated table
