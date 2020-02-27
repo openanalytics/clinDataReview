@@ -1,5 +1,4 @@
 *.Rcheck
-*.Rd
 .project
 *.html
 tests
@@ -7,3 +6,5 @@ tests
 # comments all js folder, excepted in the package
 js
 !package/medicalMonitoring/inst/js
+*.Rproj
+.Rproj.user/
