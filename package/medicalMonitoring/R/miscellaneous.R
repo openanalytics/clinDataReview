@@ -69,14 +69,10 @@ getJsDepMedicalMonitoring <- function(){
 #' @export
 includeInButton <- function(
 	input, 
-	id, 
+	id = paste0("button:", sample.int(n = 1000, size = 1)), 
 	title = "Click to show or hide",  
 	color = glpgStyle::glpgColor()["green"], 
 	borderColor = glpgStyle::glpgColor()["orange"]){
-
-	if(missing(id)){
-		id <- paste0("button:", sample.int(n = 1000, size = 1))
-	}
 	
 	# create button
 	id <- gsub("[[:punct:]]| ", "", id)

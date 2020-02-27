@@ -29,10 +29,7 @@ tableMonitoring <- function(data,
 	tableVars,
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
-	id){
-
-	if(missing(id))
-		id <- paste0("tableMonitoring", sample.int(n = 1000, size = 1))
+	id = paste0("tableMonitoring", sample.int(n = 1000, size = 1))){
 	
 	# add idVar in variables to display (used for linking plot <-> table)
 	if(!idVar %in% tableVars){

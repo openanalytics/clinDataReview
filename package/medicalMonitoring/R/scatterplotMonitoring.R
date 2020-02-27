@@ -1,20 +1,4 @@
 #' Scatterplot of variables of interest for medical monitoring.
-#' @param width,height Width/height of the plot in pixels.
-#' @param hoverVar Character vector with variables to be displayed in the hover,
-#' by default \code{xVar}, \code{yVar} and any aesthetic variables.
-#' @param hoverLab Named character vector with labels for \code{hoverVar}.
-#' @param pathVar String with variable of \code{data} containing path
-#' to a subject-specific report (e.g. patient profiles).
-#' The report should be unique by element of \code{idVar}.
-#' This report will be:
-#' \itemize{
-#' \item{downloaded if the user clicks on the 'Ctrl'+'Enter' key
-#' when hovering on a point of the plot}
-#' \item{opened in a brower via hyperlink in the \code{idVar} of the table 
-#' column (if specified via \code{tableVars})}
-#' }
-#' @param table Logical, if TRUE (FALSE by default)
-#' returns also a \code{datatable} containing the plot data.
 #' @param id String with general id for the plot:
 #' \itemize{
 #' \item{'SharedData:[id]' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
@@ -67,49 +51,19 @@ scatterplotMonitoring <- function(
 	tableVars = unique(c(idVar, xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
-	id){
+	id = paste0("scatterplotMonitoring", sample.int(n = 1000, size = 1))){
 	
 	facetType <- match.arg(facetType)
-	
-	if(missing(id))
-		id <- paste0("scatterplotMonitoring", sample.int(n = 1000, size = 1))
-	## checks:
 
-#	# only one variable per aesthetic:
-#	aesVarCommon <- intersect(names(aesPointVar), names(aesLineVar))
-#	if(length(aesVarCommon) > 0){
-#		if(!identical(aesPointVar[aesVarCommon], aesLineVar[aesVarCommon]))
-#			stop("Different variables are set for the same aesthetic (", toString(aesVarCommon), ").")
-#	}
+	# format data to: 'SharedData' object
+	dataSharedData <- formatDataForPlotMonitoring(
+		data = data, xVar = xVar, yVar = yVar, 
+		facetPars = facetPars, 
+		hoverVar = hoverVar, hoverLab = hoverLab,
+		idVar = idVar, id = id
+	)
 	
-	# extract variables that defines uniquely one point in the plot:
-	idVars <- c(xVar, yVar)
-	if(!is.null(facetPars)){
-		facetVars <- getFacetVars(facetPars)
-		idVars <- unique(c(idVars, facetVars))
-	}
-	
-	# create hover variable: combine hover if points have the same x/y coordinates
-	# by default in plotly: hover var only displayed for one of the overlapping point
-	if(!is.null(hoverVar)){
-		data <- ddply(data, idVars, function(dataPoint){
-			hoverTextList <- lapply(hoverVar, function(var){
-				formatHoverText(
-					x = sort(unique(dataPoint[, var])),
-					label = hoverLab[var]
-				)
-			})
-			hoverText <- Reduce(function(...) paste(..., sep = "<br>"), hoverTextList)
-			cbind.data.frame(dataPoint, hover = unname(hoverText), stringsAsFactors = FALSE)
-		})
-	}
-	
-	# SharedData object:
-	keyFm <- as.formula(paste("~", idVar))
-	group <- paste0("SharedData:", id)
-	dataSharedData <- highlight_key(data = data, key = keyFm, group = group)
-	
-	## create static plot:
+	# create static plot:
 	gg <- scatterplotMonitoringStatic(
 		data = dataSharedData, 
 		# x/y variables:
@@ -131,34 +85,16 @@ scatterplotMonitoring <- function(
 		labelVars = labelVars,
 		hoverVar = hoverVar
 	)
-	
 
-	## interactive plot
-	pl <- ggplotly(
-		p = gg, 
-		width = width, height = height, 
-		tooltip = if(!is.null(hoverVar))	"text"
+	# convert static to interactive plot
+	pl <- ggplotlyMonitoring(
+		data = data, gg = gg,
+		width = width, height = height,
+		idVar = idVar, pathVar = pathVar,
+		hoverVar = hoverVar
 	)
-	# turn-off selection by double-clicking on the graph
-	pl <- pl %>% highlight(on = "plotly_click", off = "plotly_doubleclick")
 	
-	# to check attributes available in the plotly object:
-#	plotly_json(pl)
-	
-	if(!is.null(pathVar)){
-		
-		dataPPDf <- unique(data[, c(idVar, pathVar)])
-		if(any(duplicated(dataPPDf[, idVar])))
-			stop("Duplicated ", idVar, " for specific ", pathVar, ".")
-		dataPP <- dataPPDf[, c(idVar, pathVar)]
-		colnames(dataPP) <- c("key", "path")
-		pl <- pl %>% onRender(
-			jsCode = JS("function(el, x, data){downloadPatientProfilesPlotly(el, x, data);}"),
-			data = dataPP
-		)
-		
-	}
-	
+	# create associated table
 	if(table){
 		
 		table <- tableMonitoring(

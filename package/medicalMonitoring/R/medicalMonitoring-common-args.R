@@ -7,6 +7,22 @@
 #' @param idVar String with variable containing subject ID.
 #' @param facetPars List with facetting parameters, passed to the facetting function.
 #' @param lineVars List with parameters for the reference lines.
+#' @param width,height Width/height of the plot in pixels.
+#' @param hoverVar Character vector with variables to be displayed in the hover,
+#' by default \code{xVar}, \code{yVar} and any aesthetic variables.
+#' @param hoverLab Named character vector with labels for \code{hoverVar}.
+#' @param pathVar String with variable of \code{data} containing path
+#' to a subject-specific report (e.g. patient profiles).
+#' The report should be unique by element of \code{idVar}.
+#' This report will be:
+#' \itemize{
+#' \item{downloaded if the user clicks on the 'Ctrl'+'Enter' key
+#' when hovering on a point of the plot}
+#' \item{opened in a brower via hyperlink in the \code{idVar} of the table 
+#' column (if specified via \code{tableVars})}
+#' }
+#' @param table Logical, if TRUE (FALSE by default)
+#' returns also a \code{datatable} containing the plot data.
 #' @param refLinePars (optional) Nested list, with parameters for each reference line(s).
 #' Each sublist (a.k.a reference line) contains:
 #' \itemize{
@@ -23,6 +39,5 @@
 #' of the diagonal line is displayed.
 #' }
 #' }
-
 #' @name medicalMonitoring-common-args
 NULL
