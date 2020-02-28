@@ -23,15 +23,19 @@ library(devtools)
 pkgTarballPath <- build(pkg = packagePath, args = "--resave-data")
 
 ## check the package
-check_built(path = pkgTarballPath)
+checkDir <- normalizePath(dirname(packagePath))
+check_built(
+	path = pkgTarballPath, 
+	args = paste0("--output=", checkDir)
+)
 
 # compare figures
-library(glpgUtilityFct)
-# images identical!
-compareFigOne(
-	pathFigRef = "../package/medicalMonitoring/tests/figs/sunburst-monitoring/basic.svg",
-	pathFigNew = "../package/medicalMonitoring.Rcheck/tests/figs/sunburst-monitoring/basic.svg"
-)
+#library(glpgUtilityFct)
+## images identical!
+#compareFigOne(
+#	pathFigRef = "../package/medicalMonitoring/tests/figs/sunburst-monitoring/basic.svg",
+#	pathFigNew = "../package/medicalMonitoring.Rcheck/tests/figs/sunburst-monitoring/basic.svg"
+#)
 
 ## check the package coverage:
 
@@ -40,7 +44,7 @@ library(covr)
 # test coverage: 
 pc <- package_coverage(
 	path = packagePath, 
-	type = c("tests", "vignettes"), # tests + vignettes
+	type = c("tests", "vignettes", "examples"), 
 #	function_exclusions = "^(?!subjectProfile.*Plot)", 
 	combine_types = TRUE # report coverage for each type
 )

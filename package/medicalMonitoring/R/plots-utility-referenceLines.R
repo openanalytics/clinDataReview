@@ -186,7 +186,7 @@ getParFctReferenceLines <- function(type){
 		xintercept = "vline", yintercept = "hline", 
 		slope = "abline", intercept = "abline"
 	)
-	pars <- names(ggLineFct[match(type, ggLineFct)])
+	pars <- names(ggLineFct[ggLineFct == type])
 	
 	return(pars)
 	

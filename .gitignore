@@ -8,3 +8,4 @@ js
 !package/medicalMonitoring/inst/js
 *.Rproj
 .Rproj.user/
+testPackage/lib

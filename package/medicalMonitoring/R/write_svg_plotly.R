@@ -31,6 +31,11 @@ write_svg_plotly <- function(plot, file, title = ""){
 		plot <- plot %>% layout(title = title)
 	}
 	
+	# specify trace ID for deterministic svg
+	plot <- plotly_build(plot)
+	uid_data <- paste0("-vdiffr-plotly-", seq_along(plot$x$data))
+	plot$x$data <- Map(function(tr, id) { tr$uid <- id; tr }, plot$x$data, uid_data)
+	
 	# orca cannot save plot in a different directory, 
 	# so change wd to plot export directrory
 	oldwd <- getwd()
@@ -43,5 +48,13 @@ write_svg_plotly <- function(plot, file, title = ""){
 	
 	# set back to initial wd
 	setwd(oldwd)
+	
+	# strip out non-deterministic fullLayout.uid
+	svg_txt <- readLines(file, warn = FALSE)
+	strextract <- function(str, pattern) regmatches(str, regexpr(pattern, str))
+	def <- strextract(svg_txt, 'defs id=\\"defs-[[:alnum:]]+\\"')
+	uid <- sub("defs-", "", strextract(def, "defs-[[:alnum:]]+"))
+	svg_txt <- gsub(uid, "", svg_txt, fixed = TRUE)
+	writeLines(svg_txt, file)
 	
 }

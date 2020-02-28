@@ -238,6 +238,8 @@ dataPlot$VISIT <- with(dataPlot, reorder(VISIT, VISITNUM))
 
 xLab <- paste(labelVars["LBSTRESN"], "for last screening visit")
 yLab <- paste(labelVars["LBSTRESN"], "at visit X")
+paramLab <- getLabelParamcd(paramcd = "ALT", data = dataLB, 
+	paramcdVar = "LBTESTCD", paramVar = "LBTEST")
 scatterplotMonitoring(
 	data = dataPlot, 
 	xVar = "LBSTRESNBL", xLab = xLab,
@@ -249,7 +251,7 @@ scatterplotMonitoring(
 	facetPars = list(facets = "VISIT"),
 	themePars = list(legend.position = "none"),
 	title = paste("Comparison of actual value of", 
-		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
+		paramLab,
 		"at each visit versus baseline"
 	),
 	refLinePars = list(

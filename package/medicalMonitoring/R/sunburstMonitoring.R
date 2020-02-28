@@ -20,7 +20,7 @@
 sunburstMonitoring <- function(
 	data, 
 	# plot variables:
-	parentVar, parentLab = getLabelVar(parentLab, labelVars = labelVars),
+	parentVar, parentLab = getLabelVar(parentVar, labelVars = labelVars),
 	childVar, childLab = getLabelVar(childVar, labelVars = labelVars),
 	valueVar, valueLab = getLabelVar(valueVar, labelVars = labelVars),
 	valueType = "relative",

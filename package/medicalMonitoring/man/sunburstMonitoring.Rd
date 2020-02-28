@@ -7,7 +7,7 @@
 sunburstMonitoring(
   data,
   parentVar,
-  parentLab = getLabelVar(parentLab, labelVars = labelVars),
+  parentLab = getLabelVar(parentVar, labelVars = labelVars),
   childVar,
   childLab = getLabelVar(childVar, labelVars = labelVars),
   valueVar,
