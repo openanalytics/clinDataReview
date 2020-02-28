@@ -113,6 +113,43 @@ pander(
 
 # Visualizations
 
+## Patient profiles
+
+The interactive visualizations included in the medical monitoring package include
+functionalities to link a plot to specific patient profiles report.
+
+Such report can be created with the `patientProfilesVis` package:
+
+```{r createPatientProfilesReport, eval = FALSE}
+
+	library(patientProfilesVis)
+	
+	# export example data
+	dataPath <- "data";dir.create(dataPath)
+	library(haven)
+	test <- sapply(names(SDTMDataPelican), function(dm){
+		# issue for empty col
+		idxCol <- !sapply(SDTMDataPelican[[dm]], function(x) all(x == ""))
+		write_sas(
+			data = SDTMDataPelican[[dm]][, idxCol], 
+			path = file.path(dataPath, paste0(dm, ".sas7bdat"))
+		)
+	})
+	
+	runPatientProfileTemplateReport <- function(
+			dataPath, 
+			outputFile = "subjectProfile.pdf",
+			study = "custom",
+			batch = "X",
+			author = NULL,
+			subsetDataset = NULL,
+			subsetVar = NULL,
+			subsetValue = NULL,
+			subsetSample = NULL
+	){
+
+```
+
 ## Data visualization
 
 ### Interactive scatterplot

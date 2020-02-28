@@ -9,3 +9,4 @@ js
 *.Rproj
 .Rproj.user/
 testPackage/lib
+*.sas7bdat
