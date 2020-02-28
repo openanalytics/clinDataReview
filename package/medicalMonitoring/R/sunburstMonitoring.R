@@ -16,7 +16,6 @@
 #' @import plotly
 #' @importFrom stats as.formula
 #' @author Laure Cougnaud
-#' @example inst/examples/scatterplotMonitoring-example.R
 #' @export
 sunburstMonitoring <- function(
 	data, 
@@ -28,7 +27,7 @@ sunburstMonitoring <- function(
 	# general plot:
 	titleExtra = NULL,
 	title = paste(
-		paste(valueLab, "of", paste(c(parentLab, childLab), collapse = " and "), 
+		paste(valueLab, "by", paste(c(parentLab, childLab), collapse = " and "), 
 		titleExtra), collapse = "<br>"
 	),
 	labelVars = NULL,

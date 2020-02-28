@@ -14,7 +14,7 @@ sunburstMonitoring(
   valueLab = getLabelVar(valueVar, labelVars = labelVars),
   valueType = "relative",
   titleExtra = NULL,
-  title = paste(paste(valueLab, "of", paste(c(parentLab, childLab), collapse = " and "),
+  title = paste(paste(valueLab, "by", paste(c(parentLab, childLab), collapse = " and "),
     titleExtra), collapse = "<br>"),
   labelVars = NULL,
   width = NULL,
@@ -98,86 +98,6 @@ If a \code{table} is requested:
 }
 \description{
 Note: the table and plot are not (yet) linked.
-}
-\examples{
-library(glpgUtilityFct)
-
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
-
-dataLB <- SDTMDataPelican$LB
-dataDM <- SDTMDataPelican$DM
-dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
-labelVars <- labelVarsSDTMPelican
-
-## pairwise comparison plot of two parameters of interest:
-
-# format data long -> wide format (one column per lab param)
-dataPlot <- subset(dataLB, LBTESTCD \%in\% c("ALT", "ALB"))
-library(reshape2)
-dataPlotWide <- dcast(
-	data = dataPlot,
-	formula = USUBJID + VISIT + VISITNUM ~ LBTESTCD, 
-	value.var = "LBSTRESN",
-	fun.aggregate = mean
-)
-
-# scatterplot per visit
-scatterplotMonitoring(
-	data = dataPlotWide, 
-	xVar = "ALT", yVar = "ALB",
-	aesPointVar = list(color = "USUBJID"),
-	themePars = list(legend.position = "none"),
-	facetPars = list(facets = "VISIT"),
-	labelVars = labelVars
-)
-
-# scatterplot with all visits, link subjects
-scatterplotMonitoring(
-	data = dataPlotWide, 
-	xVar = "ALT", yVar = "ALB",
-	xLab = getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
-	yLab = getLabelParamcd(paramcd = "ALB", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
-	aesPointVar = list(color = "VISIT", shape = "VISIT"),
-	aesLineVar = list(group = "USUBJID", linetype = "VISIT"),
-	labelVars = labelVars
-)
-
-# scatterplot of different visits versus baseline
-
-# add baseline as extra column:
-dataPlot <- subset(dataLB, LBTESTCD == "ALT")
-dataPlotBL <- subset(dataPlot, VISIT == "Screening (D-28 to D-1)")
-dataPlotBL <- dataPlotBL[with(dataPlotBL, order(USUBJID, -LBDY)), ]
-dataPlotBL <- dataPlotBL[!duplicated(dataPlotBL$USUBJID), ]
-dataPlot$LBSTRESNBL <- dataPlot[match(dataPlot$USUBJID, dataPlotBL$USUBJID), "LBSTRESN"]
-
-# sort visits:
-dataPlot$VISIT <- with(dataPlot, reorder(VISIT, VISITNUM))
-
-scatterplotMonitoring(
-	data = dataPlot, 
-	xVar = "LBSTRESNBL", xLab = paste(labelVars["LBSTRESN"], "for last screening visit"),
-	yVar = "LBSTRESN", yLab = paste(labelVars["LBSTRESN"], "at visit X"),
-	aesPointVar = list(color = "USUBJID"),
-	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
-	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
-	labelVars = labelVars,
-	facetPars = list(facets = "VISIT"),
-	themePars = list(legend.position = "none"),
-	title = paste("Comparison of actual value of", 
-		getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
-		"at each visit versus baseline"
-	),
-	refLinePars = list(
-		list(slope = 1, intercept = 0, linetype = 1, color = "black", label = FALSE),
-		list(xintercept = "LBSTNRLO", linetype = 2, color = "orange"),
-		list(yintercept = "LBSTNRLO", linetype = 2, color = "orange"),
-		list(xintercept = "LBSTNRHI", linetype = 2, color = "orange"),
-		list(yintercept = "LBSTNRHI", linetype = 2, color = "orange", label = "Reference Range Upper Limit")
-	)
-)
-
 }
 \author{
 Laure Cougnaud

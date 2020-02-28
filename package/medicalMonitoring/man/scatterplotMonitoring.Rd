@@ -210,11 +210,15 @@ scatterplotMonitoring(
 )
 
 # scatterplot with all visits, link subjects
+xLab <- getLabelParamcd(paramcd = "ALT", data = dataLB, 
+	paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+yLab <- getLabelParamcd(paramcd = "ALB", data = dataLB, 
+	paramcdVar = "LBTESTCD", paramVar = "LBTEST")
 scatterplotMonitoring(
 	data = dataPlotWide, 
 	xVar = "ALT", yVar = "ALB",
-	xLab = getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
-	yLab = getLabelParamcd(paramcd = "ALB", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
+	xLab = xLab,
+	yLab = yLab,
 	aesPointVar = list(color = "VISIT", shape = "VISIT"),
 	aesLineVar = list(group = "USUBJID", linetype = "VISIT"),
 	labelVars = labelVars
@@ -232,10 +236,12 @@ dataPlot$LBSTRESNBL <- dataPlot[match(dataPlot$USUBJID, dataPlotBL$USUBJID), "LB
 # sort visits:
 dataPlot$VISIT <- with(dataPlot, reorder(VISIT, VISITNUM))
 
+xLab <- paste(labelVars["LBSTRESN"], "for last screening visit")
+yLab <- paste(labelVars["LBSTRESN"], "at visit X")
 scatterplotMonitoring(
 	data = dataPlot, 
-	xVar = "LBSTRESNBL", xLab = paste(labelVars["LBSTRESN"], "for last screening visit"),
-	yVar = "LBSTRESN", yLab = paste(labelVars["LBSTRESN"], "at visit X"),
+	xVar = "LBSTRESNBL", xLab = xLab,
+	yVar = "LBSTRESN", yLab = yLab,
 	aesPointVar = list(color = "USUBJID"),
 	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
 	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
@@ -247,11 +253,13 @@ scatterplotMonitoring(
 		"at each visit versus baseline"
 	),
 	refLinePars = list(
-		list(slope = 1, intercept = 0, linetype = 1, color = "black", label = FALSE),
+		list(slope = 1, intercept = 0, linetype = 1, color = "black", 
+			label = FALSE),
 		list(xintercept = "LBSTNRLO", linetype = 2, color = "orange"),
 		list(yintercept = "LBSTNRLO", linetype = 2, color = "orange"),
 		list(xintercept = "LBSTNRHI", linetype = 2, color = "orange"),
-		list(yintercept = "LBSTNRHI", linetype = 2, color = "orange", label = "Reference Range Upper Limit")
+		list(yintercept = "LBSTNRHI", linetype = 2, color = "orange", 
+			label = "Reference Range Upper Limit")
 	)
 )
 

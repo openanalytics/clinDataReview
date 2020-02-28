@@ -14,6 +14,7 @@ License: file LICENSE
 Suggests: 
     pander,
     testthat,
-    vdiffr
+    vdiffr,
+    inTextSummaryTable
 VignetteBuilder: knitr
 RoxygenNote: 7.0.2

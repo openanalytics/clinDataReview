@@ -304,7 +304,7 @@ for each subgroup is extracted.
 		data = dataSunburst,
 		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
 		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
-		valueVar = "n", valueLab = "Number of patients",
+		valueVar = "n", valueLab = "Number of patients with adverse events",
 		pathVar = "patientProfilePath"
 	)
 	
