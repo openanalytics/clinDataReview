@@ -13,6 +13,7 @@ formatPlotlyMonitoring(
   pathVar = NULL,
   idFromDataPlot = TRUE,
   idVarPlot = "key",
+  labelVarPlot = NULL,
   highlightOn = "plotly_click",
   highlightOff = "plotly_doubleclick",
   id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
@@ -36,6 +37,10 @@ directly from the plot object.}
 
 \item{idVarPlot}{String with variable in the \code{\link[plotly]{plotly}}
 output containing IDs.}
+
+\item{labelVarPlot}{String with plotly variable used to
+extract label to build the file name of the zip compressed
+file containing patient report.}
 
 \item{highlightOn}{String with event to turn on the selection
 (\code{on} parameter of \code{\link[plotly]{highlight}}),

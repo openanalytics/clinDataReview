@@ -19,6 +19,9 @@
 #' to a subject-specific report (e.g. patient profiles).
 #' @param verbose Logical, if TRUE report progress messages
 #' during execution (included in the browser 'Console').
+#' @param labelVarPlot String with plotly variable used to
+#' extract label to build the file name of the zip compressed
+#' file containing patient report.
 #' @inheritParams formatDataForPlotMonitoring
 #' @inheritParams medicalMonitoring-common-args
 #' @return Updated \code{\link[plotly]{plotly}} object.
@@ -29,7 +32,8 @@
 formatPlotlyMonitoring <- function(
 	pl, data,
 	idVar = "USUBJID", pathVar = NULL,
-	idFromDataPlot = TRUE, idVarPlot = "key",
+	idFromDataPlot = TRUE, 
+	idVarPlot = "key", labelVarPlot = NULL,
 	highlightOn = "plotly_click",
 	highlightOff = "plotly_doubleclick",
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
@@ -48,18 +52,19 @@ formatPlotlyMonitoring <- function(
 			stop("Duplicated ", idVar, " for specific ", pathVar, ".")
 		dataPP <- dataPPDf[, c(idVar, pathVar)]
 		colnames(dataPP) <- c("key", "path")
-		pl <- pl %>% onRender(
-			jsCode = JS("function(el, x, data){",
-				paste0("downloadPatientProfilesPlotly(el, x, data,",
-					"fromdata=", tolower(idFromDataPlot), ",",
-					"idvar=", sQuote(idVarPlot), ",",
-					"label=", sQuote(id), ",",
-					"verbose=", tolower(verbose),
-					");"
-				),
-				"}"),
-			data = dataPP
-		)
+		
+		jsPatientProfiles <- JS("function(el, x, data){",
+			paste0("downloadPatientProfilesPlotly(el, x, data,",
+				"fromdata=", tolower(idFromDataPlot), ",",
+				"idvar=", sQuote(idVarPlot), ",",
+				"labelplot=", sQuote(id), ",",
+				"labelvar=", ifelse(is.null(labelVarPlot), 'null', sQuote(labelVarPlot)), ",",
+				"verbose=", tolower(verbose),
+				");"
+			),
+		"}") 
+		
+		pl <- pl %>% onRender(jsCode = jsPatientProfiles, data = dataPP)
 	
 	}
 	

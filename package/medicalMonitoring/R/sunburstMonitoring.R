@@ -97,7 +97,8 @@ sunburstMonitoring <- function(
 		highlightOn = "plotly_selected",
 		highlightOff = "plotly_relayout",
 		id = id, 
-		verbose = verbose
+		verbose = verbose,
+		labelVarPlot = "label"
 	)
 	
 	# create associated table
