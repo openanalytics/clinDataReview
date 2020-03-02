@@ -1,0 +1,536 @@
+---
+title: "Patient profiles"
+subtitle: "`r paste(c(if(!is.null(params$study)){paste('Study:', params$study)}, if(!is.null(params$batch)){paste('Batch:', params$batch)}), collapse = '<br>')`"
+author: "`r params$author`"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+params:
+  dataPath:
+  outputFile: './patientProfiles/subjectProfile.pdf' 
+  author: ''
+  batch: ''
+  study: ''
+  subsetDataset: NULL
+  subsetVar: NULL
+  subsetValue: NULL
+  subsetSample: NULL
+output:
+  glpgStyle::html_report: default
+---
+
+```{r runDocument-example, eval = FALSE}
+
+	dataPath <- "/home/lcougnaud/git/GLPGSAPCysticFibrosis/data/GLPG1972/GLPG1972-CL-201/DM010 SDTM locked DB/DSMB Snapshots/20191023_transfer12/SAS_Datasets"
+	outputFile <- file.path("../MOMP", "patientProfiles", "subjectProfile.pdf")
+	
+	# run report:
+	rm(params)
+	
+	# run report for 5 random randomized patients
+	rmarkdown::render(
+		input = "patientProfiles.Rmd",
+		params = list(
+			dataPath = dataPath,
+			outputFile = outputFile,
+			study = "Roccella",
+			batch = "20191023 (transfer12)",
+			author = "Laure Cougnaud",
+			subsetDataset = "DS",
+			subsetVar = "DSDECOD",
+			subsetValue = "RANDOMIZED",
+			subsetSample = 5
+		)
+	)
+	
+	# run report for patients with adverse events with toxicity grade >= 4
+	rmarkdown::render(
+		input = "patientProfiles.Rmd",
+		params = list(
+			dataPath = dataPath,
+			outputFile = outputFile,
+			study = "Roccella",
+			batch = "20191023 (transfer12)",
+			author = "Laure Cougnaud",
+			subsetDataset = "AE",
+			subsetVar = "AETOXGR",
+			subsetValue = 4:5
+		)
+	)
+
+```
+
+# Patient profiles
+
+```{r optionsChunks, echo = FALSE, cache = FALSE}
+
+	library(knitr)
+
+	knitr::opts_chunk$set(
+		# don't print code in the report
+		echo = TRUE, 
+		message = TRUE,
+		# stop document execution if error (not the default)
+		error = FALSE, # stop-on-error
+		fig.align = "center",
+		warning = FALSE,
+		# to have list of DT included within a chunk with: glpgUtilityFct::knitPrintListObjects
+		results = 'asis'
+	)
+	
+```
+
+
+
+```{r loadData, cache = TRUE}
+
+	library(glpgUtilityFct)
+
+	pathFiles <- list.files(path = params$dataPath, pattern = "*.sas7bdat$", full.names = TRUE)
+	
+	if(length(pathFiles) == 0)
+		stop(paste0("No data is available in:", params$dataPath, "."))
+	
+	# this step is time-consuming:
+	tmp <- system.time(dataAll <- loadDataADaMSDTM(files = pathFiles))# 25s
+	labelVars <- attr(dataAll, "labelVars")
+
+```
+
+```{r loadLibraries}
+
+	library(patientProfilesVis)
+	library(glpgStyle)
+	colorPalette <- glpgColor(c("main", "extra", "highlight"))
+
+```
+
+```{r initialization}
+
+	patientProfileModules <- c()
+	patientProfilesPlots <- list()
+
+```
+
+
+```{r inputParameters-extra}	
+	
+	# variables common to the interval modules
+	timeTrans <- getTimeTrans(type = "asinh-neg")
+	
+	# subjects subset
+	subjectSubset <- NULL
+	if(!is.null(params$subsetDataset)){
+		if(params$subsetDataset %in% names(dataAll)){
+			dataSubset <- dataAll[[params$subsetDataset]]
+			if(!is.null(params$subsetVar) & !is.null(params$subsetValue) &&
+				params$subsetVar %in% colnames(dataSubset)){
+				dataSubset <- dataSubset[which(
+					dataSubset[, params$subsetVar] %in% params$subsetValue
+				), ]
+			}
+			subjectSubset <- unique(dataSubset$USUBJID)
+			if(!is.null(params$subsetSample) && length(params$subsetSample) < length(subjectSubset)){
+				subjectSubset <- sample(x = subjectSubset, size = params$subsetSample)
+			}
+		}else{
+			warning(paste("The specified data subset is not used because the",
+				params$subsetDataset, "dataset not available."))
+		}
+	}
+	
+```
+
+## Demographics
+
+```{r formatData-DM, eval = ("DM" %in% names(dataAll))}
+
+	## define datasets and variables of interest:
+	
+	## demographic data
+	
+	# data manipulation
+	dataDM <- dataAll$DM
+	
+	# input parameters
+	varsDM <- c("SEX", "RACE", "COUNTRY", "ETHNIC", "SITEID", "AGE")
+	varsDM <- intersect(varsDM, colnames(dataDM))
+	if(!is.null(dataDM) && length(varsDM) > 0)
+		patientProfileModules <- c(patientProfileModules, "dm")
+
+```
+
+```{r createPatientProfiles-dm, eval = "dm" %in% patientProfileModules}
+	dmPlots <- subjectProfileTextPlot(
+		data = dataDM,
+		paramValueVar = varsDM,
+		labelVars = labelVars,
+		subjectSubset = subjectSubset
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(DM = dmPlots))
+```
+
+## Medical history
+
+```{r formatData-MH, eval = ("MH" %in% names(dataAll))}
+
+	## medical history
+	
+	# data manipulation
+	dataMH <- dataAll$MH
+	
+	# variable with medical history term
+	varMH <- if("MHDECOD" %in% colnames(dataMH)){
+		idxEmptyCode <- which(dataMH$MHDECOD == "")
+		if(length(idxEmptyCode)){
+			message(paste(length(idxEmptyCode), "empty MHDECOD are replaced by: 'MHTERM' or 'Unknown' is missing."))
+			dataMH[idxEmptyCode, "MHDECOD"] <- with(
+				dataMH[idxEmptyCode, ],
+				ifelse(MHTERM == "", "Unknown", MHTERM)
+			)
+		}
+		"MHDECOD"
+	}else	if("MHTERM" %in% colnames(dataMH)){
+		"MHTERM"
+	}
+	
+	# if empty start data: 'Unknown'
+	dataMH[which(dataMH$MHSTDTC == ""), "MHSTDTC"] <- "Unknown"
+	
+	# build end versus End Relative to Reference Period (MHENRF)
+	dataMH$MHENDTC <- if("MHENDTC" %in% colnames(dataMH)){
+		with(dataMH, ifelse(MHENDTC != "", MHENDTC, "Unknown"))
+	}else "Unknown"
+	if(length(setdiff(unique(dataMH$MHENRF), c("BEFORE", "DURING/AFTER", ""))) > 0)
+		stop("Term in MHENRF are not among standard terms.")
+	dataMH$MHENDTC <- trimws(with(dataMH,
+		paste0(
+			MHENDTC,
+			if("MHENRF" %in% colnames(dataMH))
+				ifelse(MHENRF != "", paste0(" (", tolower(MHENRF), ")"), "")
+		)
+	))
+	labelVars[c("MHSTDTC", "MHENDTC")] <- c(
+		"Start", 
+		paste0("End", if("MHENRF" %in% colnames(dataMH))
+			paste0("\n(", labelVars["MHENRF"], ")")
+		)
+	)
+	
+	idxMissingMHTERM <- which(dataMH[["MHTERM"]] == "")
+	if(length(idxMissingMHTERM) > 0){
+		message(paste("Missing MHTERM for", length(idxMissingMHTERM), "records, replaced by: 'Unknown'."))
+		dataMH[idxMissingMHTERM, "MHTERM"] <- "Unknown"
+	}
+	
+	# issue for one character: '\xbd' of MHTERM
+	dataMH$MHTERM <- iconv(dataMH$MHTERM, from = "UTF-8", to = "Latin1", sub = '')
+	if(any(is.na(dataMH$TERM)))	stop("Issue during conversion of MHTERM.")
+	
+	# input parameters:
+	paramValueVarMH <- c(varMH, "MHSTDTC", "MHENDTC")
+	
+	# MHBODSYS/MHSOC Only include this variable when MHTERM is coded using MedDRA
+	paramGroupVarMH <- "MHSTDTC"
+	
+	if(!is.null(dataMH) && length(paramValueVarMH) > 0 && length(paramGroupVarMH) > 0){
+		patientProfileModules <- c(patientProfileModules, "mh")
+	}else{
+		warning("Patient profiles not created for exposure data, because of missing variables.")
+	}
+	
+```
+
+```{r createPatientProfiles-mh, eval = "mh" %in% patientProfileModules}
+	
+	mhPlots <- subjectProfileTextPlot(
+		data = dataMH,
+		paramValueVar = paramValueVarMH,
+		paramGroupVar = paramGroupVarMH,
+		title = "Medical history (Start - End)",
+		labelVars = labelVars,
+		table = TRUE,
+		subjectSubset = subjectSubset
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(MH = mhPlots))
+
+```
+
+## Concomitant medications
+
+```{r formatData-CM, eval = ("CM" %in% names(dataAll))}	
+	
+	## concomitant medications
+
+	# data manipulation
+	dataCM <- dataAll$CM
+	
+	# CMDECOD empty if CM term not in dictionary
+	varCM <- if("CMDECOD" %in% colnames(dataCM)){
+		idxEmptyCode <- which(dataCM$CMDECOD == "")
+		if(length(idxEmptyCode)){
+			message(paste(length(idxEmptyCode), "empty CMDECOD are replaced by: 'CMTRT' or 'Unknown' is missing."))
+			dataCM[idxEmptyCode, "CMDECOD"] <- with(
+				dataCM[idxEmptyCode, ],
+				ifelse(CMTRT == "", "Unknown", CMTRT)
+			)
+		}
+		"CMDECOD"
+	}else	if("CMTERM" %in% colnames(dataCM)){
+		"CMTERM"
+	}
+	if("CMDOSE" %in% colnames(dataAll)){
+		dataCM$CMDOSTXT <- prettyNum(dataCM$CMDOSE)
+	}
+	
+	colorVarCM <- if("CMCAT" %in% colnames(dataCM)){
+		dataCM$CMCAT <- with(dataCM, ifelse(CMCAT == "", "Unknown", CMCAT))
+		"CMCAT"
+	}
+	paramGroupVarCM <- if("CMINDC" %in% colnames(dataCM)){
+		dataCM$CMINDC <- with(dataCM, ifelse(CMINDC == "", "Unknown", CMINDC))
+		"CMINDC"
+	}
+	
+	# input parameters
+	paramVarCM <- c(varCM, "CMDOSTXT", "CMDOSU", "CMDOSFRQ", "CMROUTE")
+	paramVarCM <- intersect(paramVarCM, colnames(dataCM))
+	timeStartVarCM <- "CMSTDY"
+	timeEndVarCM <- "CMENDY"
+	
+	if(!is.null(dataCM) && !is.null(varCM) &&
+		all(c(timeStartVarCM, timeEndVarCM) %in% colnames(dataCM))){
+		patientProfileModules <- c(patientProfileModules, "cm")
+	}else{
+		warning("Patient profiles not created for concomitant medication data, because of missing variables.")
+	}
+	
+```
+
+```{r createPatientProfiles-cm, eval = "cm" %in% patientProfileModules}
+
+	# missing start/end date are taken from 
+	# the minimum/maximum start date across all concomitant
+	# medications per subject
+	library(ggplot2)
+	cmPlots <- subjectProfileIntervalPlot(
+		data = dataCM,
+		paramVar = paramVarCM,
+		timeStartVar = timeStartVarCM,
+		timeEndVar = timeEndVarCM,
+		colorVar = colorVarCM,
+		labelVars = labelVars,
+		title = "Concomitant medications",
+		timeTrans = timeTrans, timeExpand = expand_scale(mult = 0.01),
+		shapePalette = shapePalette, shapeLab = "Date status", shapeSize = 4,
+		timeAlign = FALSE,
+		subjectSubset = subjectSubset,
+		alpha = 0.8
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(CM = cmPlots))
+
+```
+
+
+## Treatment exposure
+
+```{r formatData-EX, eval = ("EX" %in% names(dataAll))}	
+	
+	## exposure data
+	
+	# data manipulation
+
+	dataEX <- dataAll$EX
+	
+	# input parameters for the report:
+	timeStartVarEX <- "EXSTDY"
+	timeEndVarEX <- "EXENDY"
+	colorVarEX <- "EXDOSFRM"
+	paramVarEX <- c("EXDECOD", "EXROUTE", "EXDOSFRM", "EXDOSFRQ")
+	paramVarEX <- intersect(paramVarEX, colnames(dataEX))
+#	timeStartShapeVarEX <- "EXSTST"
+#	timeEndShapeVarEX <- "EXENST"
+	
+	if(!is.null(dataEX) && length(paramVarEX) > 0 && 
+		all(c(timeStartVarEX, timeEndVarEX) %in% colnames(dataEX))){
+		patientProfileModules <- c(patientProfileModules, "ex")
+	}else{
+		warning("Patient profiles not created for exposure data, because of missing variables.")
+	}
+	
+```
+
+```{r createPatientProfiles-ex, eval = "ex" %in% patientProfileModules}
+	exPlots <- subjectProfileIntervalPlot(
+		data = dataEX,
+		paramVar = paramVarEX,
+		timeStartVar = timeStartVarEX,
+		timeEndVar = timeEndVarEX,
+		colorVar = colorVarEX,
+		labelVars = labelVars,
+		title = "Treatment exposure",
+		timeAlign = FALSE,
+		timeTrans = timeTrans,
+		subjectSubset = subjectSubset,
+		alpha = 0.8
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(EX = exPlots))
+```
+
+## Adverse events
+
+```{r formatData-AE, eval = ("AE" %in% names(dataAll))}	
+	
+	## adverse event
+	
+	# data manipulation
+	dataAE <- dataAll$AE
+	
+	# variable with adverse event term
+	aeVar <- if("AEDECOD" %in% colnames(dataAE)){
+		idxEmptyCode <- which(dataAE$AEDECOD == "")
+		if(length(idxEmptyCode)){
+			message(paste(length(idxEmptyCode), "empty AEDECOD are replaced by: 'AETERM' or 'Unknown' is missing."))
+			dataAE[idxEmptyCode, "AEDECOD"] <- with(
+				dataAE[idxEmptyCode, ],
+				ifelse(AETERM == "", "Unknown", AETERM)
+			)
+		}
+		"AEDECOD"
+	}else	if("AETERM" %in% colnames(dataCM)){
+		"AETERM"
+	}
+	
+	# input parameters
+	paramVarAE <- aeVar 
+	timeStartVarAE <- "AESTDY"
+	timeEndVarAE <- "AEENDY"	
+	
+	colorVarAE <- colorPaletteAE <- NULL
+	indLevels <- as.character(1:5)
+	if("AETOXGR" %in% colnames(dataAE)){
+		colorVarAE <- "AETOXGR"
+		dataAE[, colorVarAE] <- convertAesVar(dataAE, var = colorVarAE)
+		if(all(unique(dataAE[, colorVarAE]) %in% c(NA, "", indLevels))){
+			# 1: mild, 2: moderate, 3: severe, 4: life-threatening/disable, 5: death-related to AE
+			colorPaletteAE <- setNames(
+				unname(colorPalette[c("green", "sand", "yellow", "orange", "signalRed", "grey")]),
+				c(indLevels, "NA")
+			)
+			colorPaletteAE <- colorPaletteAE[names(colorPaletteAE) %in% c("NA", levels(dataAE[, colorVarAE]))]
+		}else	warning(paste("Laboratory", labelVars[colorVarAE],
+					"contain unexpected values, so standard color palette is not used."))
+	}
+	
+	if(!is.null(dataAE) && 
+		all(c(paramVarAE, timeStartVarAE, timeEndVarAE) %in% colnames(dataAE))){
+		patientProfileModules <- c(patientProfileModules, "ae")
+	}else{
+		warning("Patient profiles not created for adverse events data, because of missing variables.")
+	}
+	
+```
+
+```{r createPatientProfiles-ae, eval = "ae" %in% patientProfileModules}
+	aePlots <- subjectProfileIntervalPlot(
+		data = dataAE,
+		paramVar = paramVarAE,
+		timeStartVar = timeStartVarAE,
+		timeEndVar = timeEndVarAE,
+		colorVar = colorVarAE, colorPalette = colorPaletteAE,
+		labelVars = labelVars,
+		title = "Adverse events",
+		timeAlign = FALSE,
+		timeTrans = timeTrans,
+		subjectSubset = subjectSubset,
+		alpha = 0.8
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(AE = aePlots))
+```
+
+## Laboratory measurements
+
+```{r formatData-LB, eval = ("LB" %in% names(dataAll))}	
+	
+	## laboratory data
+	
+	# data
+	dataLB <- dataAll$LB
+	
+	# input parameters
+	
+	# unique LB is defined by LBTEST*LBSPEC*LBMETHOD
+	# (for lab line plot: also consider LBSTRESU)
+	# check if the extra variables are required:
+	varsLB <- c("LBTEST", "LBSPEC", "LBMETHOD")
+	varsLB <- intersect(varsLB, colnames(dataLB))
+	i <- 1
+	while(i < length(varsLB)){
+		nEl <- nrow(unique(dataLB[, varsLB[seq_len(i)], drop  = FALSE]))
+		nElNext <- nrow(unique(dataLB[, varsLB[seq_len(i+1)]]))
+		if(nEl == nElNext){
+			varsLB <- setdiff(varsLB, varsLB[i+1])
+		}else	i <- i + 1
+	}
+	
+	paramVarLB <- varsLB
+	timeVarLB <- "LBDY"
+	
+	paramGroupVarLB <- intersect(c("LBCAT", "LBSCAT"), colnames(dataLB))
+	if(length(paramGroupVarLB) == 0)	paramGroupVarLB <- NULL
+	
+	colorVarLB <- shapeVarLB <- "LBNRIND";colorPaletteLB <- shapePaletteLB <- NULL
+	if(!is.null(dataLB) && length(paramVarLB) > 0 && timeVarLB %in% colnames(dataLB)){
+		
+		patientProfileModules <- c(patientProfileModules, "lb")
+		
+		indLevels <- c("LOW", "NORMAL", "HIGH")
+		if(colorVarLB %in% colnames(dataLB)){
+			if(all(unique(dataLB[, colorVarLB]) %in% c(NA, "", indLevels))){
+				dataLB[, colorVarLB] <- factor(
+					dataLB[, colorVarLB], 
+					levels = indLevels, 
+					exclude = NULL
+				)
+				shapePaletteLB <- c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3)
+				colorPaletteLB <- setNames(
+					unname(colorPalette[c("orange", "green", "orange", "grey")]),
+					c("LOW", "NORMAL", "HIGH", "NA")
+				)
+			}else	warning(paste("Laboratory", labelVars[colorVarLB],
+				"contain unexpected values, so standard order is not used."))
+		}else	colorVarLB <- shapeVarLB <- NULL
+		
+	}else	warning("Patient profiles not created for laboratory data, because of missing variables.")
+	
+```
+
+```{r createPatientProfiles-lb, eval = "lb" %in% patientProfileModules}
+	lbPlots <- subjectProfileEventPlot(
+		data = dataLB,
+		paramVar = paramVarLB,
+		paramGroupVar = paramGroupVarLB,
+		timeVar = timeVarLB,
+		colorVar = colorVarLB, colorPalette = colorPaletteLB,
+		shapeVar = shapeVarLB, shapePalette = shapePaletteLB,
+		labelVars = labelVars,
+		title = "Laboratory test measurements: reference range indicator",
+		subjectSubset = subjectSubset,
+		alpha = 0.8
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
+```
+
+
+
+## Creation of the subject profiles
+
+```{r createSubjectProfileReport, message = TRUE, warning = TRUE}
+
+pathsPatientProfiles <- createSubjectProfileReport(
+	listPlots = patientProfilesPlots, 
+	reportPerSubject = TRUE, 
+	verbose = TRUE,
+	outputFile = params$outputFile,
+	timeAlign = "all", timeAlignPerSubject = "all"
+)
+
+```

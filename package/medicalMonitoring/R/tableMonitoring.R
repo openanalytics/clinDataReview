@@ -64,7 +64,7 @@ tableMonitoring <- function(data,
 	
 	# build shared data
 	keyFm <- as.formula(paste("~", idVar))
-	group <- paste0("SharedData:", id)
+	group <- id
 	dataTableSharedData <- highlight_key(data = data, key = keyFm, group = group)
 	
 	# create table

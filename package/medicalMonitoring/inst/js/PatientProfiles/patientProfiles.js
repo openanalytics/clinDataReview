@@ -1,9 +1,11 @@
-function downloadPatientProfiles(pathPatientProfiles, fileLabel){
+function downloadPatientProfiles(pathPatientProfiles, p){
 
   var zip = new JSZip();
   
       // create name of the zip file
       zipName='patientProfiles-' +fileLabel.replace(/[^a-z0-9]/gi, '_').toLowerCase()+ '.zip';
+
+	console.log("Download patient profiles in zip:", zipName, "for files", pathPatientProfiles)
       
       var count = 0;   
       // forEach execute function on each element on an arry
@@ -18,6 +20,7 @@ function downloadPatientProfiles(pathPatientProfiles, fileLabel){
           
           // extract file name from patient profile full path
           fileName = url.split(/[\\/]/).pop()
+	console.log("File name:", fileName)
           
           // add content to current pdf file
           zip.file(fileName, data, { binary: true });
@@ -104,6 +107,9 @@ function downloadPatientProfilesPlotly(el, x, data, fromdata, idvar, label) {
 				linksArray = data.filter(e => e.key.includes(ids))
 				// split if multiple links are present
 				linksArray = linksArray.map(el => el.path.split(','));
+
+				// flatten list of arrays
+				linksArray = [].concat.apply([], linksArray);
 				console.log('Patient profile path:', linksArray);
 				
 				// extract label for the zip file name, here 'label' of the sunburst region

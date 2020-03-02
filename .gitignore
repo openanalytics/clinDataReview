@@ -10,3 +10,6 @@ js
 .Rproj.user/
 testPackage/lib
 *.sas7bdat
+vignettes/patientProfiles/
+*.pdf
+*cache*
