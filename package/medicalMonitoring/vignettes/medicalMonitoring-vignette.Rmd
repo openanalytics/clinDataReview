@@ -28,6 +28,18 @@ These dependencies are included once for all visualizations of the report by usi
 		input = "medicalMonitoring-vignette.Rmd",
 		output_format = glpgStyle::html_report(extra_dependencies = getJsDepMedicalMonitoring())
 	)
+
+	# bookdown: for testing
+#	bookdown::render_book(
+#		input = "medicalMonitoring-vignette.Rmd", 
+#		new_session = FALSE, 
+#		clean_envir = FALSE,
+#		output_format = glpgStyle::gitbook_report(
+#			split_by = 'chapter',
+#			# extra dependencies to create/download zip file when clicking on a plotly element
+#			extra_dependencies = getJsDepMedicalMonitoring()
+#		)
+#	)
 	
 ```	
 
@@ -184,7 +196,8 @@ scatterplotMonitoring(
 	),
 	# include link to patient profiles:
 	pathVar = "patientProfilePath",
-	table = TRUE, id = paste("subjectProfile", labParam, sep = "-")
+	table = TRUE, id = paste("subjectProfile", labParam, sep = "-"),
+	verbose = TRUE
 )
 
 ```
@@ -352,13 +365,14 @@ for each subgroup is extracted.
 	)
 	dataSunburst['child'] = with(dataSunburst, 
 		ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
-	)
+	)	
 	sunburstMonitoring(
 		data = dataSunburst,
 		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
 		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
-		pathVar = "patientProfilePath"
+		pathVar = "patientProfilePath",
+		verbose = TRUE
 	)
 	
 ```

@@ -38,19 +38,30 @@ formatHoverText <- function(x, label, width = 50){
 #' @export
 getJsDepMedicalMonitoring <- function(){
 	
-	jsPath <- system.file("js", package = "medicalMonitoring")
-	jsDepNames <- list.files(jsPath)
 	
-	htmlDep <- lapply(jsDepNames, function(jsDep){
-		srcDep <- file.path(jsPath, jsDep)
+	getPackageJSDep <- function(name, version){
+		srcDep <- system.file("js", package = "medicalMonitoring", name)
 		htmltools::htmlDependency(
-			name = jsDep,
-			version = packageVersion("medicalMonitoring"),
-			src = c(file = srcDep),
+			name = name,
+			version = version,
+			src = srcDep,
 			script = list.files(srcDep)
 		)
+	}
 	
-	})
+	# Some of the dependencies e.g. jszip are also imported
+	# by rmd by default (when interactive plots included)
+	# it is important that the JS dep 'name' match the ones used in rmd package
+	# otherwise dependency with different versions will be included
+	# and the rmd version (e.g. older one) prevals on the custom one
+	# see ? htmltools::resolveDependencies
+	
+	htmlDep <- list(
+		getPackageJSDep(name = "FileSaver", version = "1.3.8"),
+		getPackageJSDep(name = "jszip", version = "3.2.2"),
+		getPackageJSDep(name = "jszip-utils", version = "0.1.0"),
+		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring"))
+	)
 
 	return(htmlDep)
 

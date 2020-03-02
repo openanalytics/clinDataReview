@@ -43,7 +43,8 @@ scatterplotMonitoring <- function(
 	tableVars = unique(c(idVar, xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))){
+	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	verbose = FALSE){
 	
 	facetType <- match.arg(facetType)
 	
@@ -97,7 +98,7 @@ scatterplotMonitoring <- function(
 	pl <- formatPlotlyMonitoring(
 		data = data, pl = pl,
 		idVar = idVar, pathVar = pathVar,
-		id = id
+		id = id, verbose = verbose
 	)
 	
 	# create associated table

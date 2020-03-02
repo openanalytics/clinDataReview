@@ -15,7 +15,8 @@ formatPlotlyMonitoring(
   idVarPlot = "key",
   highlightOn = "plotly_click",
   highlightOff = "plotly_doubleclick",
-  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))
+  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+  verbose = FALSE
 )
 }
 \arguments{
@@ -50,6 +51,9 @@ output containing IDs.}
 \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
+
+\item{verbose}{Logical, if TRUE report progress messages
+during execution (included in the browser 'Console').}
 }
 \value{
 Updated \code{\link[plotly]{plotly}} object.

@@ -38,7 +38,8 @@ sunburstMonitoring <- function(
 	tableVars,
 	tableLab,
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))){
+	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	verbose = FALSE){
 	
 	# In case values are 'total' and parent < sum(child)
 	# plotly creates an empty plot
@@ -95,7 +96,8 @@ sunburstMonitoring <- function(
 		# click and double-click events already used to zoom/unzoom in sunburst
 		highlightOn = "plotly_selected",
 		highlightOff = "plotly_relayout",
-		id = id
+		id = id, 
+		verbose = verbose
 	)
 	
 	# create associated table

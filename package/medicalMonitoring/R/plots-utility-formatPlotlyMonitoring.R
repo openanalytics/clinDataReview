@@ -17,6 +17,8 @@
 #' 'plotly_doubleclick' by default.
 #' @param pathVar String with variable of \code{data} containing path
 #' to a subject-specific report (e.g. patient profiles).
+#' @param verbose Logical, if TRUE report progress messages
+#' during execution (included in the browser 'Console').
 #' @inheritParams formatDataForPlotMonitoring
 #' @inheritParams medicalMonitoring-common-args
 #' @return Updated \code{\link[plotly]{plotly}} object.
@@ -30,7 +32,8 @@ formatPlotlyMonitoring <- function(
 	idFromDataPlot = TRUE, idVarPlot = "key",
 	highlightOn = "plotly_click",
 	highlightOff = "plotly_doubleclick",
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1))){
+	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	verbose = FALSE){
 
 	# turn-off selection by double-clicking on the graph
 	pl <- pl %>% highlight(on = highlightOn, off = highlightOff)
@@ -50,7 +53,8 @@ formatPlotlyMonitoring <- function(
 				paste0("downloadPatientProfilesPlotly(el, x, data,",
 					"fromdata=", tolower(idFromDataPlot), ",",
 					"idvar=", sQuote(idVarPlot), ",",
-					"label=", sQuote(id),
+					"label=", sQuote(id), ",",
+					"verbose=", tolower(verbose),
 					");"
 				),
 				"}"),
