@@ -17,7 +17,11 @@ output:
   glpgStyle::html_report: default
 ---
 
-```{r runDocument-example, eval = FALSE}
+<!-- All the chunks are prepended with 'patientProfiles-' to ensure chunk -->
+<!-- labels are unique if this report is created within another Rmd document -->
+<!-- (otherwise: issue might encounter error: 'duplicated label ...') -->
+
+```{r patientProfiles-runDocument-example, eval = FALSE}
 
 	dataPath <- "/home/lcougnaud/git/GLPGSAPCysticFibrosis/data/GLPG1972/GLPG1972-CL-201/DM010 SDTM locked DB/DSMB Snapshots/20191023_transfer12/SAS_Datasets"
 	outputFile <- file.path("../MOMP", "patientProfiles", "subjectProfile.pdf")
@@ -60,7 +64,7 @@ output:
 
 # Patient profiles
 
-```{r optionsChunks, echo = FALSE, cache = FALSE}
+```{r patientProfiles-optionsChunks, echo = FALSE, cache = FALSE}
 
 	library(knitr)
 
@@ -80,7 +84,7 @@ output:
 
 
 
-```{r loadData, cache = TRUE}
+```{r patientProfiles-loadData, cache = TRUE}
 
 	library(glpgUtilityFct)
 
@@ -95,7 +99,7 @@ output:
 
 ```
 
-```{r loadLibraries}
+```{r patientProfiles-loadLibraries}
 
 	library(patientProfilesVis)
 	library(glpgStyle)
@@ -103,7 +107,7 @@ output:
 
 ```
 
-```{r initialization}
+```{r patientProfiles-initialization}
 
 	patientProfileModules <- c()
 	patientProfilesPlots <- list()
@@ -111,7 +115,7 @@ output:
 ```
 
 
-```{r inputParameters-extra}	
+```{r patientProfiles-inputParameters-extra}	
 	
 	# variables common to the interval modules
 	timeTrans <- getTimeTrans(type = "asinh-neg")
@@ -141,7 +145,7 @@ output:
 
 ## Demographics
 
-```{r formatData-DM, eval = ("DM" %in% names(dataAll))}
+```{r patientProfiles-formatData-DM, eval = ("DM" %in% names(dataAll))}
 
 	## define datasets and variables of interest:
 	
@@ -158,7 +162,7 @@ output:
 
 ```
 
-```{r createPatientProfiles-dm, eval = "dm" %in% patientProfileModules}
+```{r patientProfiles-createPatientProfiles-dm, eval = "dm" %in% patientProfileModules}
 	dmPlots <- subjectProfileTextPlot(
 		data = dataDM,
 		paramValueVar = varsDM,
@@ -170,7 +174,7 @@ output:
 
 ## Medical history
 
-```{r formatData-MH, eval = ("MH" %in% names(dataAll))}
+```{r patientProfiles-formatData-MH, eval = ("MH" %in% names(dataAll))}
 
 	## medical history
 	
@@ -239,7 +243,7 @@ output:
 	
 ```
 
-```{r createPatientProfiles-mh, eval = "mh" %in% patientProfileModules}
+```{r patientProfiles-createPatientProfiles-mh, eval = "mh" %in% patientProfileModules}
 	
 	mhPlots <- subjectProfileTextPlot(
 		data = dataMH,
@@ -256,7 +260,7 @@ output:
 
 ## Concomitant medications
 
-```{r formatData-CM, eval = ("CM" %in% names(dataAll))}	
+```{r patientProfiles-formatData-CM, eval = ("CM" %in% names(dataAll))}	
 	
 	## concomitant medications
 
@@ -305,7 +309,7 @@ output:
 	
 ```
 
-```{r createPatientProfiles-cm, eval = "cm" %in% patientProfileModules}
+```{r patientProfiles-createPatientProfiles-cm, eval = "cm" %in% patientProfileModules}
 
 	# missing start/end date are taken from 
 	# the minimum/maximum start date across all concomitant
@@ -332,7 +336,7 @@ output:
 
 ## Treatment exposure
 
-```{r formatData-EX, eval = ("EX" %in% names(dataAll))}	
+```{r patientProfiles-formatData-EX, eval = ("EX" %in% names(dataAll))}	
 	
 	## exposure data
 	
@@ -358,7 +362,7 @@ output:
 	
 ```
 
-```{r createPatientProfiles-ex, eval = "ex" %in% patientProfileModules}
+```{r patientProfiles-createPatientProfiles-ex, eval = "ex" %in% patientProfileModules}
 	exPlots <- subjectProfileIntervalPlot(
 		data = dataEX,
 		paramVar = paramVarEX,
@@ -377,7 +381,7 @@ output:
 
 ## Adverse events
 
-```{r formatData-AE, eval = ("AE" %in% names(dataAll))}	
+```{r patientProfiles-formatData-AE, eval = ("AE" %in% names(dataAll))}	
 	
 	## adverse event
 	
@@ -429,7 +433,7 @@ output:
 	
 ```
 
-```{r createPatientProfiles-ae, eval = "ae" %in% patientProfileModules}
+```{r patientProfiles-createPatientProfiles-ae, eval = "ae" %in% patientProfileModules}
 	aePlots <- subjectProfileIntervalPlot(
 		data = dataAE,
 		paramVar = paramVarAE,
@@ -448,7 +452,7 @@ output:
 
 ## Laboratory measurements
 
-```{r formatData-LB, eval = ("LB" %in% names(dataAll))}	
+```{r patientProfiles-formatData-LB, eval = ("LB" %in% names(dataAll))}	
 	
 	## laboratory data
 	
@@ -503,7 +507,7 @@ output:
 	
 ```
 
-```{r createPatientProfiles-lb, eval = "lb" %in% patientProfileModules}
+```{r patientProfiles-createPatientProfiles-lb, eval = "lb" %in% patientProfileModules}
 	lbPlots <- subjectProfileEventPlot(
 		data = dataLB,
 		paramVar = paramVarLB,
@@ -523,7 +527,7 @@ output:
 
 ## Creation of the subject profiles
 
-```{r createSubjectProfileReport, message = TRUE, warning = TRUE}
+```{r patientProfiles-createSubjectProfileReport, message = TRUE, warning = TRUE}
 
 pathsPatientProfiles <- createSubjectProfileReport(
 	listPlots = patientProfilesPlots, 

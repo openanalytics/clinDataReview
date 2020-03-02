@@ -133,7 +133,7 @@ functionalities to link a plot to specific patient profiles report.
 A standard patient profiles reports for _SDTM_ input format are created with the function:
 `runPatientProfileTemplateReport`.
 
-```{r createPatientProfilesReport, eval = FALSE}
+```{r createPatientProfilesReport}
 
 	library(patientProfilesVis)
 	
@@ -155,7 +155,7 @@ A standard patient profiles reports for _SDTM_ input format are created with the
 	# create patient profile report
 	runPatientProfileTemplateReport(
 		dataPath = dataPath, 
-		outputFile = "subjectProfile.pdf",
+		outputFile = "patientProfiles/subjectProfile.pdf",
 		study = "Pelican",
 		batch = "20180606",
 		author = "Laure Cougnaud"

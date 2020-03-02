@@ -24,16 +24,30 @@ runPatientProfileTemplateReport <- function(
 	subsetSample = NULL
 	){
 	
-	pathTemplate <- system.file("template", "patientProfiles-SDTM.Rmd", 
-		package = "medicalMonitoring")
-
+	# use absolute path for data (Rmd change wd)
 	dataPath <- normalizePath(dataPath)
-
+	
+	# create output directory (if not already created)
+	outputDir <- dirname(normalizePath(outputFile, mustWork = FALSE))
+	if(!dir.exists(outputDir))	dir.create(outputDir, recursive = TRUE)
+	
+	pathTemplate <- system.file(
+		"template", "patientProfiles-SDTM.Rmd", 
+		package = "medicalMonitoring"
+	)
+	
+	# copy template file in output dir (for reproducibility)
+	pathTemplateNew <- file.path(outputDir, basename(pathTemplate))
+	file.copy(from = pathTemplate, to = outputDir)
+	
 	tmp <- rmarkdown::render(
-		input = pathTemplate,
+		input = pathTemplateNew,
+		output_dir = outputDir, # output dir for html file
+		intermediates_dir = outputDir, # output dir for intermediate file (e.g. '.md')
+		envir = new.env(),
 		params = list(
 			dataPath = dataPath,
-			outputFile = outputFile,
+			outputFile = basename(outputFile),
 			study = study,
 			batch = batch,
 			author = author,
