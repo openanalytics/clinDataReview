@@ -421,6 +421,25 @@ of the respective group.
 	
 ```
 
+#### Barplot
+
+```{r barplot}
+
+	dataPlot <- subset(tableAE, AEDECOD != "Total")
+	
+	dataPlot$n <- as.numeric(dataPlot$n)
+	
+	# create plot
+	barplotMonitoring(
+		data = dataPlot,
+		xVar = "AEDECOD", 
+		yVar = "n", yLab = "Number of patients with adverse events",
+		labelVars = labelVars,
+		table = TRUE
+	)
+	
+```
+
 # Appendix
 
 ## Session information

@@ -63,7 +63,7 @@ tableMonitoring <- function(data,
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
 	
 	# build shared data
-	keyFm <- as.formula(paste("~", idVar))
+	keyFm <- as.formula(paste("~",idVar))
 	group <- id
 	dataTableSharedData <- highlight_key(data = data, key = keyFm, group = group)
 	

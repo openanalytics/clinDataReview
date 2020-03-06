@@ -25,14 +25,15 @@
 #' (see \code{\link[ggplot2]{theme}}).
 #' @param hoverVar Character vector with variables to be displayed in the hover,
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
+#' @param geomType String with type of the geom used, either:
+#' 'point' or 'col'
 #' @inheritParams medicalMonitoring-common-args
 #' @return \code{\link[ggplot2]{ggplot}} object
 #' @import ggplot2
 #' @importFrom glpgUtilityFct getLabelVar
 #' @importFrom stats setNames
 #' @author Laure Cougnaud
-#' @export
-scatterplotMonitoringStatic <- function(
+staticPlotMonitoring <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
@@ -52,9 +53,11 @@ scatterplotMonitoringStatic <- function(
 	themePars = list(legend.position = "bottom"),
 	refLinePars = NULL,
 	labelVars = NULL,
-	hoverVar = NULL){
+	hoverVar = NULL,
+	geomType = c("col", "point")){
 
 	facetType <- match.arg(facetType)
+	geomType <- match.arg(geomType)
 	
 	isSharedData <- inherits(x = data, what = "SharedData")
 	dataContent <- if(isSharedData){
@@ -90,11 +93,12 @@ scatterplotMonitoringStatic <- function(
 	}
 	
 	# scatter
-	aesPoint <- c(aesPointVar, if(!is.null(hoverVar))	list(text = "hover"))
-	argsGeomPoint <- if(length(aesPoint)){
-		list(mapping = do.call(aes_string, aesPoint))
+	aesGeom <- c(aesPointVar, if(!is.null(hoverVar))	list(text = "hover"))
+	argsGeom <- if(length(aesGeom)){
+		list(mapping = do.call(aes_string, aesGeom))
 	}
-	gg <- gg + do.call(geom_point, argsGeomPoint)
+	geomFct <- match.fun(paste("geom", geomType, sep = "_"))
+	gg <- gg + do.call(geomFct, argsGeom)
 	
 	# axis specification
 	setAxis <- function(gg, trans, pars, lims, axis){

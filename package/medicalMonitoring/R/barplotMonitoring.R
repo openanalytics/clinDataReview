@@ -1,19 +1,15 @@
-#' Scatterplot of variables of interest for medical monitoring.
-#' @inheritParams staticPlotMonitoring
+#' Barplot interactive plot.
+#' 
+#' Note: the table and plot are not (yet) linked.
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
-#' @return If a \code{table} is requested:
-#' \itemize{
-#' \item{a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
-#' (\code{\link[DT]{datatable}} object with extra class: \code{medicalMonitoringTable})}
-#' \item{\code{\link[plotly]{plotly}} object}
-#' }
-#' @example inst/examples/scatterplotMonitoring-example.R
-#' @importFrom glpgUtilityFct getLabelVar
-#' @importFrom plotly ggplotly
+#' @inherit scatterplotMonitoring return
+#' @example inst/examples/barplotMonitoring-example.R
+#' @import plotly
+#' @importFrom stats as.formula
 #' @author Laure Cougnaud
 #' @export
-scatterplotMonitoring <- function(
+barplotMonitoring <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
@@ -37,15 +33,14 @@ scatterplotMonitoring <- function(
 	width = NULL, height = NULL,
 	hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))), 
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
-	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	pathVar = NULL,
 	table = FALSE, 
-	tableVars = unique(c(idVar, xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
+	tableVars = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
-	
+
 	facetType <- match.arg(facetType)
 	
 	# extract variables that defines uniquely one point in the plot:
@@ -54,13 +49,15 @@ scatterplotMonitoring <- function(
 		facetVars <- getFacetVars(facetPars)
 		idVars <- unique(c(idVars, facetVars))
 	}
-
+	
+	idVar <- xVar
+	
 	# format data to: 'SharedData' object
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = data, 
 		hoverVar = hoverVar, hoverLab = hoverLab,
 		hoverByVar = idVars,
-		keyVar = idVar, id = id,
+		keyVar = idVars, id = id,
 		labelVars = labelVars
 	)
 	
@@ -78,6 +75,7 @@ scatterplotMonitoring <- function(
 		xPars = xPars, yPars = yPars,
 		yLim = yLim, xLim = xLim, 
 		# general plot:
+		geomType = "col",
 		titleExtra = titleExtra,
 		title = title,
 		facetPars = facetPars, facetType = facetType,
@@ -93,12 +91,15 @@ scatterplotMonitoring <- function(
 		width = width, height = height, 
 		tooltip = if(!is.null(hoverVar))	"text"
 	)
-
+		
 	# convert static to interactive plot
 	pl <- formatPlotlyMonitoring(
-		data = data, pl = pl,
+		data = dataPlot, pl = pl,
 		idVar = idVar, pathVar = pathVar,
-		id = id, verbose = verbose
+		idFromDataPlot = FALSE, idVarPlot = "label",
+		id = id, 
+		verbose = verbose,
+		labelVarPlot = "label"
 	)
 	
 	# create associated table
@@ -106,20 +107,20 @@ scatterplotMonitoring <- function(
 		
 		table <- tableMonitoring(
 			data = data, 
-			idVar = idVar, idLab = idLab,
-			pathVar = pathVar ,
+			idVar = idVar, 
+			pathVar = pathVar,
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,
-			id = id,
+			id = id, 
 			labelVars = labelVars
 		)
 		res <- list(plot = pl, table = table)
-	
+		
 		class(res) <- c("medicalMonitoring", class(res))
 		
 	}else res <- pl
-		
+	
 	return(res)
-
+	
 }

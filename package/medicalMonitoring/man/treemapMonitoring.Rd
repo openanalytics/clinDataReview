@@ -83,10 +83,6 @@ the table is included within an HTML button.}
 \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
-
-\item{valueType}{String with type of values in \code{valueVar}
-(\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
-among others: 'relative' (default), or 'total' (only if sum(child) <= to parent).}
 }
 \value{
 If a \code{table} is requested:
