@@ -3,7 +3,7 @@ library(glpgUtilityFct)
 data(SDTMDataPelican)
 data(labelVarsSDTMPelican)
 
-dataLB <- SDTMDataPelican$LB
+dataAE <- SDTMDataPelican$AE
 dataDM <- SDTMDataPelican$DM
 labelVars <- labelVarsSDTMPelican
 

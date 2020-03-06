@@ -59,6 +59,8 @@ output:
 			subsetValue = 4:5
 		)
 	)
+	
+	# TODO: DECOD -> TERM prepended with: 'Not coded:'
 
 ```
 
@@ -120,7 +122,7 @@ output:
 	# variables common to the interval modules
 	timeTrans <- getTimeTrans(type = "asinh-neg")
 	
-	# subjects subset
+	# extract the subjects of interest for the visualization
 	subjectSubset <- NULL
 	if(!is.null(params$subsetDataset)){
 		if(params$subsetDataset %in% names(dataAll)){
@@ -155,7 +157,29 @@ output:
 	dataDM <- dataAll$DM
 	
 	# input parameters
-	varsDM <- c("SEX", "RACE", "COUNTRY", "ETHNIC", "SITEID", "AGE")
+	# -> you might include variables with (study-specific) baseline characteristics
+	varsDM <- c("SEX", "RACE", "COUNTRY", "ETHNIC", "SITEID", "AGE", "RFSTDTC")
+	
+	if("COUNTRY" %in% colnames(dataDM)){
+		library(countrycode)
+		dataDM[, "COUNTRY"] <- countrycode(
+			sourcevar = dataDM[, "COUNTRY"], 
+			origin = "iso3c",
+			destination = "country.name"
+		)
+	}
+	dataDM[, "SEX"] <- with(dataDM,
+		ifelse(SEX %in% c("M", "F", "U"), c(M = "Male", F = "Female", U = "Unknown")[SEX], SEX)
+	)
+	
+	if("ETHNIC" %in% colnames(dataDM))
+		dataDM$ETHNIC <- simpleCap(tolower(dataDM$ETHNIC), onlyFirst = FALSE)
+	
+	if("RACE" %in% colnames(dataDM))
+		dataDM$RACE <- simpleCap(tolower(dataDM$RACE), onlyFirst = FALSE)
+	
+	# Date of randomization
+	# Study-specific baseline characteristics
 	varsDM <- intersect(varsDM, colnames(dataDM))
 	if(!is.null(dataDM) && length(varsDM) > 0)
 		patientProfileModules <- c(patientProfileModules, "dm")
@@ -182,17 +206,19 @@ output:
 	dataMH <- dataAll$MH
 	
 	# variable with medical history term
+	# MHTERM from CRF
 	varMH <- if("MHDECOD" %in% colnames(dataMH)){
 		idxEmptyCode <- which(dataMH$MHDECOD == "")
 		if(length(idxEmptyCode)){
 			message(paste(length(idxEmptyCode), "empty MHDECOD are replaced by: 'MHTERM' or 'Unknown' is missing."))
 			dataMH[idxEmptyCode, "MHDECOD"] <- with(
 				dataMH[idxEmptyCode, ],
-				ifelse(MHTERM == "", "Unknown", MHTERM)
+				ifelse(MHTERM == "", "No MH term provided.", paste("(Not coded)", MHTERM))
 			)
 		}
 		"MHDECOD"
 	}else	if("MHTERM" %in% colnames(dataMH)){
+		dataMH[, "MHTERM"] <- with(dataMH, ifelse(MHTERM == "", "No MH term provided.", MHTERM))
 		"MHTERM"
 	}
 	
@@ -203,27 +229,25 @@ output:
 	dataMH$MHENDTC <- if("MHENDTC" %in% colnames(dataMH)){
 		with(dataMH, ifelse(MHENDTC != "", MHENDTC, "Unknown"))
 	}else "Unknown"
-	if(length(setdiff(unique(dataMH$MHENRF), c("BEFORE", "DURING/AFTER", ""))) > 0)
-		stop("Term in MHENRF are not among standard terms.")
+
+	
+	# MHENRF: might be called differently MHENTPTRF
+	mhEndRefVar <- "MHENRF"
+	if(mhEndRefVar %in% colnames(dataMH))
+		warning("'MHENRF' not available in your MH data, you might want to specify it yourself.")
 	dataMH$MHENDTC <- trimws(with(dataMH,
 		paste0(
 			MHENDTC,
-			if("MHENRF" %in% colnames(dataMH))
-				ifelse(MHENRF != "", paste0(" (", tolower(MHENRF), ")"), "")
+			if(mhEndRefVar %in% colnames(dataMH))
+				ifelse(get(mhEndRefVar) != "", paste0(" (", tolower(get(mhEndRefVar)), ")"), "")
 		)
 	))
 	labelVars[c("MHSTDTC", "MHENDTC")] <- c(
 		"Start", 
-		paste0("End", if("MHENRF" %in% colnames(dataMH))
-			paste0("\n(", labelVars["MHENRF"], ")")
+		paste0("End", if(mhEndRefVar %in% colnames(dataMH))
+			paste0("\n(", labelVars[mhEndRefVar], ")")
 		)
 	)
-	
-	idxMissingMHTERM <- which(dataMH[["MHTERM"]] == "")
-	if(length(idxMissingMHTERM) > 0){
-		message(paste("Missing MHTERM for", length(idxMissingMHTERM), "records, replaced by: 'Unknown'."))
-		dataMH[idxMissingMHTERM, "MHTERM"] <- "Unknown"
-	}
 	
 	# issue for one character: '\xbd' of MHTERM
 	dataMH$MHTERM <- iconv(dataMH$MHTERM, from = "UTF-8", to = "Latin1", sub = '')
@@ -235,7 +259,7 @@ output:
 	# MHBODSYS/MHSOC Only include this variable when MHTERM is coded using MedDRA
 	paramGroupVarMH <- "MHSTDTC"
 	
-	if(!is.null(dataMH) && length(paramValueVarMH) > 0 && length(paramGroupVarMH) > 0){
+	if(!is.null(dataMH) && !is.null(varMH) && length(paramValueVarMH) > 0 && length(paramGroupVarMH) > 0){
 		patientProfileModules <- c(patientProfileModules, "mh")
 	}else{
 		warning("Patient profiles not created for exposure data, because of missing variables.")
@@ -274,11 +298,12 @@ output:
 			message(paste(length(idxEmptyCode), "empty CMDECOD are replaced by: 'CMTRT' or 'Unknown' is missing."))
 			dataCM[idxEmptyCode, "CMDECOD"] <- with(
 				dataCM[idxEmptyCode, ],
-				ifelse(CMTRT == "", "Unknown", CMTRT)
+				ifelse(CMTRT == "", "Unknown", paste("(Not coded)", CMTRT))
 			)
 		}
 		"CMDECOD"
 	}else	if("CMTERM" %in% colnames(dataCM)){
+		dataCM[, "CMTERM"] <- with(dataMH, ifelse(CMTERM == "", "No CM term provided.", CMTERM))
 		"CMTERM"
 	}
 	if("CMDOSE" %in% colnames(dataAll)){
@@ -295,6 +320,7 @@ output:
 	}
 	
 	# input parameters
+	# When CMDOSU == "Other" -> CMDOSUO (free text from CRF)
 	paramVarCM <- c(varCM, "CMDOSTXT", "CMDOSU", "CMDOSFRQ", "CMROUTE")
 	paramVarCM <- intersect(paramVarCM, colnames(dataCM))
 	timeStartVarCM <- "CMSTDY"
@@ -347,17 +373,16 @@ output:
 	# input parameters for the report:
 	timeStartVarEX <- "EXSTDY"
 	timeEndVarEX <- "EXENDY"
+	# The user might adapt for each own study (EXTRT)!! -> include warning
 	colorVarEX <- "EXDOSFRM"
 	paramVarEX <- c("EXDECOD", "EXROUTE", "EXDOSFRM", "EXDOSFRQ")
 	paramVarEX <- intersect(paramVarEX, colnames(dataEX))
-#	timeStartShapeVarEX <- "EXSTST"
-#	timeEndShapeVarEX <- "EXENST"
 	
 	if(!is.null(dataEX) && length(paramVarEX) > 0 && 
 		all(c(timeStartVarEX, timeEndVarEX) %in% colnames(dataEX))){
 		patientProfileModules <- c(patientProfileModules, "ex")
 	}else{
-		warning("Patient profiles not created for exposure data, because of missing variables.")
+		warning("Patient profiles not created for exposure data, you might need to specify study-specific variables.")
 	}
 	
 ```
@@ -395,7 +420,7 @@ output:
 			message(paste(length(idxEmptyCode), "empty AEDECOD are replaced by: 'AETERM' or 'Unknown' is missing."))
 			dataAE[idxEmptyCode, "AEDECOD"] <- with(
 				dataAE[idxEmptyCode, ],
-				ifelse(AETERM == "", "Unknown", AETERM)
+				ifelse(AETERM == "", "No AE term available.", AETERM)
 			)
 		}
 		"AEDECOD"
@@ -408,6 +433,7 @@ output:
 	timeStartVarAE <- "AESTDY"
 	timeEndVarAE <- "AEENDY"	
 	
+	# AESEV or AETOXGR: 1 -> 5 (CTCTAE), Mild/Moderate/Severe
 	colorVarAE <- colorPaletteAE <- NULL
 	indLevels <- as.character(1:5)
 	if("AETOXGR" %in% colnames(dataAE)){
@@ -454,6 +480,8 @@ output:
 
 ```{r patientProfiles-formatData-LB, eval = ("LB" %in% names(dataAll))}	
 	
+	# use spaghetti plot with symbols
+
 	## laboratory data
 	
 	# data
@@ -523,6 +551,10 @@ output:
 	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
 ```
 
+<!-- TODO: add vital signs and ECG -->
+
+<!-- ECG with findings: event plot  -->
+<!-- EGTESTCD == "INTP": Interpretation from investigator: normal/abnormal -->
 
 
 ## Creation of the subject profiles

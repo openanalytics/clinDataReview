@@ -30,6 +30,7 @@
 #' }
 #' @param subjectVar String with subject ID variable, 'USUBJID' by default.
 #' @return Annotated \code{data}
+#' @example inst/examples/annotateData-example.R
 #' @importFrom glpgUtilityFct loadDataADaMSDTM
 #' @export
 annotateData <- function(

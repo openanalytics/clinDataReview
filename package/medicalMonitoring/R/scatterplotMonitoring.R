@@ -8,10 +8,10 @@
 #' (\code{\link[DT]{datatable}} object with extra class: \code{medicalMonitoringTable})}
 #' \item{\code{\link[plotly]{plotly}} object}
 #' }
+#' @example inst/examples/scatterplotMonitoring-example.R
 #' @importFrom glpgUtilityFct getLabelVar
 #' @importFrom plotly ggplotly
 #' @author Laure Cougnaud
-#' @example inst/examples/scatterplotMonitoring-example.R
 #' @export
 scatterplotMonitoring <- function(
 	data, 

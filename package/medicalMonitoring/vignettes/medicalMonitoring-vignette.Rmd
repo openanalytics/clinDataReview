@@ -24,6 +24,7 @@ These dependencies are included once for all visualizations of the report by usi
 	
 	# run the report
 	# currently Js dep for plotly/table should be included manually when rendering the document
+	createPatientProfiles <- FALSE # doesn't create patient profiles at each re-run
 	rmarkdown::render(
 		input = "medicalMonitoring-vignette.Rmd",
 		output_format = glpgStyle::html_report(extra_dependencies = getJsDepMedicalMonitoring())
@@ -133,7 +134,7 @@ functionalities to link a plot to specific patient profiles report.
 A standard patient profiles reports for _SDTM_ input format are created with the function:
 `runPatientProfileTemplateReport`.
 
-```{r createPatientProfilesReport}
+```{r createPatientProfilesReport, eval = createPatientProfiles}
 
 	library(patientProfilesVis)
 	
@@ -288,7 +289,7 @@ These functions take as input a table of summary statistics.
 Such table can e.g. computed with the `inTextSummaryTable` R package (see
 corresponding package vignette for more information).
 
-A table of counts should be provided for the sunburst and barplot visualization.
+A table of counts should be provided for the sunburst, treemap and barplot visualizations.
 In this example, counts of adverse events are extracted for each `r labelVars["AESOC"]`
 and `r labelVars["AEDECOD"]`.
 Besides the counts of the number of subjects, the path to the patient profile report
@@ -350,7 +351,16 @@ for each subgroup is extracted.
 
 ```
 
-### Sunburst
+#### Sunburst
+
+The `sunburstMonitoring` function visualizes the counts 
+of hierarchical data in nested circles.
+
+The different groups are visualized from the biggest class (root node)
+in the center of the visualization to the smallest sub-groups (leaves)
+on the outside of the circles.
+
+The size of the different segments is relative the respective counts.
 
 ```{r sunburst}
 
@@ -372,6 +382,40 @@ for each subgroup is extracted.
 		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
 		pathVar = "patientProfilePath",
+		table = TRUE,
+		verbose = TRUE
+	)
+	
+```
+
+#### Treemap
+
+A treemap visualizes the counts of the hierarchical data in nested
+rectangles.
+The area of each rectangle is proportional to the counts
+of the respective group.
+
+```{r treemap}
+
+	dataTreemap <- tableAE
+	
+	dataTreemap$n <- as.numeric(dataTreemap$n)
+	
+	# Reformat summary statistics data.frame to include the label
+	# of each group in the AEDECOD column for the total
+	dataTreemap['parent'] = with(dataTreemap, 
+		ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
+	)
+	dataTreemap['child'] = with(dataTreemap, 
+		ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
+	)	
+	treemapMonitoring(
+		data = dataTreemap,
+		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
+		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+		valueVar = "n", valueLab = "Number of patients with adverse events",
+		pathVar = "patientProfilePath",
+		table = TRUE,
 		verbose = TRUE
 	)
 	

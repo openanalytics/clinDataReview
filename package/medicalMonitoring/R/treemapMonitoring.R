@@ -1,4 +1,4 @@
-#' Sunburst interactive plot.
+#' Treemap interactive plot.
 #' 
 #' Note: the table and plot are not (yet) linked.
 #' @param parentVar,parentLab String with variable of \code{data} containing parent nodes,
@@ -7,24 +7,19 @@
 #' and associated label.
 #' @param valueVar,valueLab String with variable of \code{data} containing node value,
 #' and associated label.
-#' @param valueType String with type of values in \code{valueVar}
-#' (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
-#' among others: 'relative' (default), or 'total' (only if sum(child) <= to parent).
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
 #' @inherit scatterplotMonitoring return
-#' @example inst/examples/sunburstMonitoring-example.R
 #' @import plotly
 #' @importFrom stats as.formula
 #' @author Laure Cougnaud
 #' @export
-sunburstMonitoring <- function(
+treemapMonitoring <- function(
 	data, 
 	# plot variables:
 	parentVar, parentLab = getLabelVar(parentVar, labelVars = labelVars),
 	childVar, childLab = getLabelVar(childVar, labelVars = labelVars),
 	valueVar, valueLab = getLabelVar(valueVar, labelVars = labelVars),
-	valueType = "relative",
 	# general plot:
 	titleExtra = NULL,
 	title = paste(
@@ -41,27 +36,6 @@ sunburstMonitoring <- function(
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
-	
-	# In case values are 'total' and parent < sum(child)
-	# plotly creates an empty plot
-	# so revert back to: 'relative' in this case and returns a warning
-	if(valueType == "total"){
-		groupTest <- sapply(unique(data[, parentVar]), function(group){
-			nChild <- sum(data[which(data[, parentVar] == group), valueVar])
-			idxParent <- which(data[, childVar] == group)
-			if(length(idxParent)){
-				nParent <- sum(data[idxParent, valueVar])
-				nChild > nParent
-			}else FALSE
-		})
-		if(any(groupTest)){
-			warning("Parent node(s): ", toString(names(which(groupTest))), 
-				" are smaller than the sum of their children, ",
-				"so 'valueType' is set to 'relative' (instead of 'total')."
-			)
-			valueType <- "relative"
-		}
-	}
 
 	idVar <- "key"
 
@@ -81,8 +55,7 @@ sunburstMonitoring <- function(
 	pl <- plot_ly(
 		data = dataSharedData, 
 		parents = toFm(parentVar), labels = toFm(childVar), values = toFm(valueVar), 
-		type = "sunburst",
-		branchvalues = valueType,
+		type = "treemap",
 		width = width, height = height
 	)
 	pl <- pl %>% layout(title = title)
