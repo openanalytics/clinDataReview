@@ -30,6 +30,7 @@ treemapMonitoring <- function(
 	# interactivity:
 	width = NULL, height = NULL,
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
+	hoverVar, hoverLab,
 	table = FALSE, 
 	tableVars,
 	tableLab,
@@ -44,25 +45,34 @@ treemapMonitoring <- function(
 	dataPlot$key <- dataPlot[, childVar]
 
 	# format data to: 'SharedData' object
+	if(missing(hoverVar)){
+		hoverVar <- c(childVar, valueVar)
+		hoverLab <- setNames(c(childLab, valueLab), hoverVar)
+	}else	if(missing(hoverLab)){
+		hoverLab <- getLabelVar(hoverVar, labelVars = labelVars)
+	}
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = dataPlot,
 		keyVar = idVar, id = id,
-		labelVars = labelVars
+		labelVars = labelVars,
+		hoverVar = hoverVar, hoverLab = hoverLab,
+		hoverByVar = idVar
 	)
 	
 	# create interactive plot:
-	toFm <- function(var)	as.formula(paste0("~", var))
 	pl <- plot_ly(
 		data = dataSharedData, 
-		parents = toFm(parentVar), labels = toFm(childVar), values = toFm(valueVar), 
+		parents = varToFm(parentVar), labels = varToFm(childVar), 
+		values = varToFm(valueVar), 
 		type = "treemap",
+		hovertemplate = varToFm("hover"),
 		width = width, height = height
 	)
 	pl <- pl %>% layout(title = title)
 	
 	# current hovered element identified by d.points[0].label
 	
-	# convert static to interactive plot
+	# specific formatting for medical monitoring
 	pl <- formatPlotlyMonitoring(
 		data = dataPlot, pl = pl,
 		idVar = idVar, pathVar = pathVar,

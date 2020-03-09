@@ -15,40 +15,22 @@ barplotMonitoring <- function(
 	xVar, yVar, 
 	xLab = getLabelVar(xVar, labelVars = labelVars),
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
-	# aesthetics specifications
-	aesPointVar = list(), aesLineVar = list(),
-	aesLab,
-	# axis specification:
-	xTrans = "identity", yTrans = "identity",
-	xPars = list(), yPars = list(),
-	yLim = NULL, xLim = NULL, 
+	# aesthetic
+	colorVar = NULL,
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
-	facetPars = list(), facetType = c("wrap", "grid"),
-	themePars = list(legend.position = "bottom"),
-	refLinePars = NULL,
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
-	hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))), 
+	hoverVar = unique(c(xVar, yVar)), 
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	table = FALSE, 
-	tableVars = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
-	tableLab = getLabelVar(tableVars, labelVars = labelVars),
+	tableVars, tableLab,
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
-
-	facetType <- match.arg(facetType)
-	
-	# extract variables that defines uniquely one point in the plot:
-	idVars <- c(xVar, yVar)
-	if(!is.null(facetPars)){
-		facetVars <- getFacetVars(facetPars)
-		idVars <- unique(c(idVars, facetVars))
-	}
 	
 	idVar <- xVar
 	
@@ -56,43 +38,36 @@ barplotMonitoring <- function(
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = data, 
 		hoverVar = hoverVar, hoverLab = hoverLab,
-		hoverByVar = idVars,
-		keyVar = idVars, id = id,
+		hoverByVar = idVar,
+		keyVar = idVar, id = id,
 		labelVars = labelVars
 	)
 	
-	# create static plot:
-	gg <- staticPlotMonitoring(
+	# use plotly rather than ggplot -> ggplotly implementation
+	# because 'label' used to extract path report is numeric
+	# rather than character vector with element when converted to ggplotly
+	# so makes mapping selected bar <-> path report more tricky
+	pl <- plot_ly(
 		data = dataSharedData, 
-		# x/y variables:
-		xVar = xVar, yVar = yVar, 
-		xLab = xLab, yLab = yLab, 
-		# aesthetics specifications
-		aesPointVar = aesPointVar, aesLineVar = aesLineVar,
-		aesLab = aesLab,
-		# axis specification:
-		xTrans = xTrans, yTrans = yTrans,
-		xPars = xPars, yPars = yPars,
-		yLim = yLim, xLim = xLim, 
-		# general plot:
-		geomType = "col",
-		titleExtra = titleExtra,
-		title = title,
-		facetPars = facetPars, facetType = facetType,
-		themePars = themePars,
-		refLinePars = refLinePars,
-		labelVars = labelVars,
-		hoverVar = hoverVar
+		x = varToFm(xVar), y = varToFm(yVar), 
+#		color = varToFm(colorVar),
+		type = "bar",
+		hovertemplate = varToFm("hover"),
+		width = width, height = height
 	)
-	
-	# convert to interactive plot
-	pl <- ggplotly(
-		p = gg, 
-		width = width, height = height, 
-		tooltip = if(!is.null(hoverVar))	"text"
+	pl <- pl %>% layout(
+		title = title,
+		xaxis = list(title = xLab),
+		yaxis = list(title = yLab)
 	)
 		
-	# convert static to interactive plot
+	# specific formatting for medical monitoring
+	if(missing(hoverVar)){
+		hoverVar <- c(xVar, yVar)
+		hoverLab <- setNames(c(xLab, yLab), hoverVar)
+	}else	if(missing(hoverLab)){
+		hoverLab <- getLabelVar(hoverVar, labelVars = labelVars)
+	}
 	pl <- formatPlotlyMonitoring(
 		data = dataPlot, pl = pl,
 		idVar = idVar, pathVar = pathVar,
@@ -105,10 +80,18 @@ barplotMonitoring <- function(
 	# create associated table
 	if(table){
 		
+		if(missing(tableVars)){
+			tableVars <- c(xVar, yVar)
+			tableLab <- setNames(c(xLab, yLab), tableVars)
+		}else	if(missing(tableLab)){
+			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
+		}
+		
 		table <- tableMonitoring(
 			data = data, 
 			idVar = idVar, 
 			pathVar = pathVar, pathLab = pathLab,
+			pathExpand = TRUE,
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,

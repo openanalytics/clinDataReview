@@ -10,31 +10,19 @@ barplotMonitoring(
   yVar,
   xLab = getLabelVar(xVar, labelVars = labelVars),
   yLab = getLabelVar(yVar, labelVars = labelVars),
-  aesPointVar = list(),
-  aesLineVar = list(),
-  aesLab,
-  xTrans = "identity",
-  yTrans = "identity",
-  xPars = list(),
-  yPars = list(),
-  yLim = NULL,
-  xLim = NULL,
+  colorVar = NULL,
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
-  facetPars = list(),
-  facetType = c("wrap", "grid"),
-  themePars = list(legend.position = "bottom"),
-  refLinePars = NULL,
   labelVars = NULL,
   width = NULL,
   height = NULL,
-  hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
+  hoverVar = unique(c(xVar, yVar)),
   hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
   pathVar = NULL,
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
   table = FALSE,
-  tableVars = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
-  tableLab = getLabelVar(tableVars, labelVars = labelVars),
+  tableVars,
+  tableLab,
   tableButton = TRUE,
   tablePars = list(),
   id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
@@ -48,32 +36,9 @@ barplotMonitoring(
 
 \item{yVar}{String with column of \code{data} containing y-variable.}
 
-\item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
-
-\item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
-
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{title}{String with title for the plot.}
-
-\item{facetPars}{List with facetting parameters, passed to the facetting function.}
-
-\item{refLinePars}{(optional) Nested list, with parameters for each reference line(s).
-Each sublist (a.k.a reference line) contains:
-\itemize{
-\item{aesthetic value(s) or variable(s) for the lines
-(in this case column names of \code{data}) for reference lines.
-The line position is controlled by the aesthetics supported in
-\code{\link[ggplot2]{geom_vline}}, \code{\link[ggplot2]{geom_hline}} 
-and \code{\link[ggplot2]{geom_abline}}.
-}
-\item{'label': }{(optional) Logical specifying if the line
-should be annotated (\code{FALSE} to not annotate the line)
-or string with annotation label. By default, the value
-of the position of the horizontal/vertical line or the equation
-of the diagonal line is displayed.
-}
-}}
 
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}

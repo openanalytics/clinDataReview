@@ -5,7 +5,10 @@
 #' in the plot, their information are combined in the hover.
 #' @param keyVar Character vector with key variables, identifying unique
 #' group for which the link between the table and the plot should be done.
-#' @inheritParams medicalMonitoring-common-args
+#' @return Updated \code{\link[crosstalk]{SharedData}} with:
+#' \itemize{
+#' \item{extra column: 'hover' with combined info from \code{hoverVar}}
+#' }
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
 #' @importFrom plotly highlight_key
@@ -41,8 +44,7 @@ formatDataForPlotMonitoring <- function(
 	}
 	argsHighlightKey <- list(data = data, group = id)
 	if(!is.null(keyVar)){
-		keyFm <- as.formula(paste("~", keyVar))
-		argsHighlightKey <- c(argsHighlightKey, list(key = keyFm))
+		argsHighlightKey <- c(argsHighlightKey, list(key = varToFm(keyVar)))
 	}
 	
 	dataSharedData <- do.call(highlight_key, argsHighlightKey)

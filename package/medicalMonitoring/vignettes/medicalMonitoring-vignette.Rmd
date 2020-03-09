@@ -437,7 +437,7 @@ of the respective group.
 
 #### Barplot
 
-```{r barplot, eval = FALSE}
+```{r barplot}
 
 	dataPlot <- subset(tableAE, AEDECOD != "Total")
 	
@@ -450,7 +450,8 @@ of the respective group.
 		yVar = "n", yLab = "Number of patients with adverse events",
 		labelVars = labelVars,
 		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
-		table = TRUE
+		table = TRUE,
+		verbose = TRUE
 	)
 	
 ```

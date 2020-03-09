@@ -21,7 +21,7 @@ scatterplotMonitoring <- function(
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetics specifications
 	aesPointVar = list(), aesLineVar = list(),
-	aesLab,
+	aesLab = getLabelVar(unique(unlist(c(aesPointVar, aesLineVar))), labelVars = labelVars),
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
@@ -35,8 +35,7 @@ scatterplotMonitoring <- function(
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
-	hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))), 
-	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
+	hoverVar, hoverLab,
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	pathVar = NULL,
 	table = FALSE, 
@@ -56,6 +55,16 @@ scatterplotMonitoring <- function(
 	}
 
 	# format data to: 'SharedData' object
+	if(missing(hoverVar)){
+		aesVar <- unlist(c(aesPointVar, aesLineVar))
+		hoverVar <- c(xVar, yVar, aesVar)
+		hoverLab <- setNames(c(xLab, yLab, aesLab[aesVar]), hoverVar)
+	}else	if(missing(hoverLab)){
+		hoverLab <- getLabelVar(hoverVar, labelVars = labelVars)
+	}
+	hoverVar <- unique(hoverVar)
+	hoverLab <- hoverLab[!duplicated(hoverLab)]
+	
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = data, 
 		hoverVar = hoverVar, hoverLab = hoverLab,
@@ -117,6 +126,7 @@ scatterplotMonitoring <- function(
 		}else	if(missing(tableLab)){
 			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
 		}
+		tableVars <- tableVars[!duplicated(tableVars)]
 		tableLab <- tableLab[!duplicated(tableLab)]
 		
 		table <- tableMonitoring(

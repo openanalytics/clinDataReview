@@ -16,7 +16,8 @@
 #' @importFrom plotly highlight_key
 #' @importFrom stats as.formula
 #' @export
-tableMonitoring <- function(data, 
+tableMonitoring <- function(
+	data, 
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	pathExpand = FALSE,
@@ -77,9 +78,11 @@ tableMonitoring <- function(data,
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
 	
 	# build shared data
-	keyFm <- as.formula(paste("~", idVar))
-	group <- id
-	dataTableSharedData <- highlight_key(data = data, key = keyFm, group = group)
+	dataTableSharedData <- highlight_key(
+		data = data, 
+		key = varToFm(idVar), 
+		group = id
+	)
 	
 	# create table
 	argsToDTGLPG <- c(list(data = dataTableSharedData), tablePars)
