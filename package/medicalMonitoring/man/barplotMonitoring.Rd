@@ -16,7 +16,7 @@ barplotMonitoring(
   labelVars = NULL,
   width = NULL,
   height = NULL,
-  hoverVar = unique(c(xVar, yVar)),
+  hoverVar = unique(c(xVar, yVar, colorVar)),
   hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
   pathVar = NULL,
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
@@ -35,6 +35,8 @@ barplotMonitoring(
 \item{xVar}{String with column of \code{data} containing x-variable.}
 
 \item{yVar}{String with column of \code{data} containing y-variable.}
+
+\item{colorVar}{(optional) String with color variable.}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 

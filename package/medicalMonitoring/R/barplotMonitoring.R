@@ -1,6 +1,7 @@
 #' Barplot interactive plot.
 #' 
 #' Note: the table and plot are not (yet) linked.
+#' @param colorVar (optional) String with color variable.
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
 #' @inherit scatterplotMonitoring return
@@ -23,7 +24,7 @@ barplotMonitoring <- function(
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
-	hoverVar = unique(c(xVar, yVar)), 
+	hoverVar = unique(c(xVar, yVar, colorVar)), 
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	table = FALSE, 
@@ -50,7 +51,7 @@ barplotMonitoring <- function(
 	pl <- plot_ly(
 		data = dataSharedData, 
 		x = varToFm(xVar), y = varToFm(yVar), 
-#		color = varToFm(colorVar),
+		color = if(!is.null(colorVar))	varToFm(colorVar),
 		type = "bar",
 		hovertemplate = varToFm("hover"),
 		width = width, height = height

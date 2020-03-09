@@ -11,12 +11,15 @@ vignette: >
 
 # Introduction
 
-The functionality to download the patient profiles require additional _Javascript_ functions:
+The functionality to download the patient profiles require additional _Javascript_ functions/packages:
 
-* custom _Javascript_ functions, included in the `medicalMonitoring` package
+* custom _Javascript_ functions
 * external _Javascript_ dependencies: _JSZip_, _JSZipUtils_
 
-These dependencies are included once for all visualizations of the report by using:
+These dependencies are included in the `medicalMonitoring` package, and are listed
+with the convenient function: `getJsDepMedicalMonitoring()`.
+They should be specified as extra dependencies during the report creation
+(`extra_dependencies`) as in the code below:
 
 ```{r runReport, eval = FALSE}
 
@@ -128,10 +131,10 @@ pander(
 
 ## Patient profiles
 
-The interactive visualizations included in the medical monitoring package include
+The interactive visualizations of the medical monitoring package include
 functionalities to link a plot to specific patient profiles report.
 
-A standard patient profiles reports for _SDTM_ input format are created with the function:
+A standard patient profiles report for _SDTM_ input format is created with the function:
 `runPatientProfileTemplateReport`.
 
 ```{r createPatientProfilesReport, eval = createPatientProfiles}
@@ -437,6 +440,8 @@ of the respective group.
 
 #### Barplot
 
+A barplot visualizes the counts for one single variable in a specific order.
+
 ```{r barplot}
 
 	dataPlot <- subset(tableAE, AEDECOD != "Total")
@@ -446,7 +451,7 @@ of the respective group.
 	# create plot
 	barplotMonitoring(
 		data = dataPlot,
-		xVar = "AEDECOD", 
+		xVar = "AEDECOD", colorVar = "AESOC",
 		yVar = "n", yLab = "Number of patients with adverse events",
 		labelVars = labelVars,
 		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
