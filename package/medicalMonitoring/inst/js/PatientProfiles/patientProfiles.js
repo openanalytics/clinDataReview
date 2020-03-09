@@ -125,6 +125,8 @@ function downloadPatientProfilesPlotly(el, x, data, fromdata, idvar, labelplot, 
 			linksArray = linksArray.map(el => el.path.split(', '));
 			// flatten list of arrays
 			linksArray = [].concat.apply([], linksArray);
+			// remote hyperlink part if available
+			//linksArray = linksArray.map(item => item.match(/href='([^']*)/)[1]);
 			if(verbose)	console.log('Patient profile path:', linksArray);
 			
 			// extract label for the zip file name, here 'label' of the sunburst region

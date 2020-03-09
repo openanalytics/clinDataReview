@@ -48,6 +48,10 @@ formatPlotlyMonitoring <- function(
 	if(!is.null(pathVar)){
 		
 		dataPPDf <- unique(data[, c(idVar, pathVar)])
+		
+		# in case 'pathVar' is formatted as URL, only extract the path
+		dataPPDf[, pathVar] <- getPathHyperlink(dataPPDf[, pathVar])
+		
 		if(any(duplicated(dataPPDf[, idVar])))
 			stop("Duplicated ", idVar, " for specific ", pathVar, ".")
 		dataPP <- dataPPDf[, c(idVar, pathVar)]

@@ -11,16 +11,32 @@
 #' @param hoverVar Character vector with variables to be displayed in the hover,
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
 #' @param hoverLab Named character vector with labels for \code{hoverVar}.
-#' @param pathVar String with variable of \code{data} containing path
-#' to a subject-specific report (e.g. patient profiles).
-#' The report should be unique by element of \code{idVar}.
-#' This report will be:p
+#' @param pathVar String with variable of \code{data} containing:
 #' \itemize{
-#' \item{downloaded if the user clicks on the 'p' (a.k.a 'profile') key
-#' when hovering on a point of the plot}
-#' \item{opened in a browser via hyperlink in the \code{idVar} of the table 
-#' column (if specified via \code{tableVars})}
+#' \item{visualization of individual profiles 
+#' (\code{\link{scatterplotMonitoring}}) :}{
+#' path to the report. The report should be unique 
+#' for each element of \code{idVar}.
 #' }
+#' \item{visualization of summary statistics 
+#' (\code{\link{sunburstMonitoring}}), \code{\link{treemapMonitoring}},
+#' \code{\link{barplotMonitoring}}) :}{path or hyperlinks 
+#' with path to the report. If multiple, they should be separated by: ', '.
+#' }
+#' }
+#' The report(s) will be:
+#' \itemize{
+#' \item{downloaded or opened in the browser if the user clicks on the 'p' (a.k.a 'profile') key
+#' when hovering on a point of the plot}
+#' \item{downloaded or opened in the browser via hyperlink in the table}
+#' }
+#' @param pathExpand Logical, should the variable in \code{pathExpand}
+#' be included in a collapsible row or as hyperlink in the table?
+#' Should be TRUE for if multiple paths are included for each \code{idVar},
+#' FALSE otherwise (by default).
+#' @param pathLab String with label for \code{pathVar},
+#' used for the label of the collapsible row
+#' (only displayed if \code{pathExpand} is TRUE).
 #' @param table Logical, if TRUE (FALSE by default)
 #' returns also a \code{datatable} containing the plot data.
 #' @param refLinePars (optional) Nested list, with parameters for each reference line(s).

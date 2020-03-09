@@ -19,6 +19,7 @@ treemapMonitoring(
   width = NULL,
   height = NULL,
   pathVar = NULL,
+  pathLab = getLabelVar(pathVar, labelVars = labelVars),
   table = FALSE,
   tableVars,
   tableLab,
@@ -51,16 +52,29 @@ used by default for all labels in the plot.}
 
 \item{height}{Width/height of the plot in pixels.}
 
-\item{pathVar}{String with variable of \code{data} containing path
-to a subject-specific report (e.g. patient profiles).
-The report should be unique by element of \code{idVar}.
-This report will be:p
+\item{pathVar}{String with variable of \code{data} containing:
 \itemize{
-\item{downloaded if the user clicks on the 'p' (a.k.a 'profile') key
+\item{visualization of individual profiles 
+(\code{\link{scatterplotMonitoring}}) :}{
+path to the report. The report should be unique 
+for each element of \code{idVar}.
+}
+\item{visualization of summary statistics 
+(\code{\link{sunburstMonitoring}}), \code{\link{treemapMonitoring}},
+\code{\link{barplotMonitoring}}) :}{path or hyperlinks 
+with path to the report. If multiple, they should be separated by: ', '.
+}
+}
+The report(s) will be:
+\itemize{
+\item{downloaded or opened in the browser if the user clicks on the 'p' (a.k.a 'profile') key
 when hovering on a point of the plot}
-\item{opened in a browser via hyperlink in the \code{idVar} of the table 
-column (if specified via \code{tableVars})}
+\item{downloaded or opened in the browser via hyperlink in the table}
 }}
+
+\item{pathLab}{String with label for \code{pathVar},
+used for the label of the collapsible row
+(only displayed if \code{pathExpand} is TRUE).}
 
 \item{table}{Logical, if TRUE (FALSE by default)
 returns also a \code{datatable} containing the plot data.}

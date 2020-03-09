@@ -29,7 +29,7 @@ treemapMonitoring <- function(
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
-	pathVar = NULL,
+	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	table = FALSE, 
 	tableVars,
 	tableLab,
@@ -98,7 +98,8 @@ treemapMonitoring <- function(
 		table <- tableMonitoring(
 			data = dataTable, 
 			idVar = idVar, 
-			pathVar = pathVar,
+			pathVar = pathVar, pathLab = pathLab,
+			pathExpand = TRUE,
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,

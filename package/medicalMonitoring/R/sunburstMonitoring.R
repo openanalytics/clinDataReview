@@ -34,7 +34,7 @@ sunburstMonitoring <- function(
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
-	pathVar = NULL,
+	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	table = FALSE, 
 	tableVars,
 	tableLab,
@@ -92,7 +92,7 @@ sunburstMonitoring <- function(
 	# convert static to interactive plot
 	pl <- formatPlotlyMonitoring(
 		data = dataPlot, pl = pl,
-		idVar = idVar, pathVar = pathVar,
+		idVar = idVar, pathVar = pathVar, 
 		idFromDataPlot = FALSE, idVarPlot = "label",
 		# click and double-click events already used to zoom/unzoom in sunburst
 		highlightOn = "plotly_selected",
@@ -125,7 +125,8 @@ sunburstMonitoring <- function(
 		table <- tableMonitoring(
 			data = dataTable, 
 			idVar = idVar, 
-			pathVar = pathVar,
+			pathVar = pathVar, pathLab = pathLab,
+			pathExpand = TRUE,
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,

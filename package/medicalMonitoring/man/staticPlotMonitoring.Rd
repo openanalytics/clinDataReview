@@ -27,7 +27,7 @@ staticPlotMonitoring(
   refLinePars = NULL,
   labelVars = NULL,
   hoverVar = NULL,
-  geomType = c("col", "point")
+  geomType = c("point", "col")
 )
 }
 \arguments{

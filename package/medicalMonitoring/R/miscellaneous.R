@@ -112,3 +112,39 @@ includeInButton <- function(
 	return(res)
 	
 }
+
+#' Get path ('href') property from hyperlink(s).
+#' @param x Character vector with hyperlink(s).
+#' If multiple, the hyperlinks should be separated by: ', '.
+#' @return Character vector of length \code{x}
+#' containing only the hyperlinks.
+#' @author Laure Cougnaud
+#' @export
+getPathHyperlink <- function(x){
+	
+	linksSplit <- strsplit(x, split = ", ")
+	
+	paths <- sapply(linksSplit, function(linksAll){
+		linksDest <- sapply(linksAll, function(link){
+			sub(".+href=\"(.+)\"( |\\>).+", "\\1", link)	
+		})
+		if(length(linksDest) != length(linksAll))
+			stop("Extraction of path from each hyperlink is not correct.")
+		toString(linksDest)
+	})
+
+	# approach with xml2/rvest packages,
+	# but returns error message if path not available
+#			sapply(linksAll, function(link){
+#				linkHTML <- read_html(link, options = "NOERROR")
+#				linkA <- html_nodes(linkHTML, "a")
+#				html_attr(x = linkHRef, name = "href")
+#			})
+#		)
+
+	if(!is.character(paths) || length(paths) != length(x))
+		stop("Parsing of paths from all hyperlinks failed.")
+	
+	return(paths)
+	
+}

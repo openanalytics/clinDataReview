@@ -54,7 +54,7 @@ staticPlotMonitoring <- function(
 	refLinePars = NULL,
 	labelVars = NULL,
 	hoverVar = NULL,
-	geomType = c("col", "point")){
+	geomType = c("point", "col")){
 
 	facetType <- match.arg(facetType)
 	geomType <- match.arg(geomType)
@@ -71,7 +71,7 @@ staticPlotMonitoring <- function(
 	checkAxis("yLim");checkAxis("xLim")
 	
 	if(missing(aesLab)){
-		aesVar <- unlist(c(aesPointVar, aesLineVar))
+		aesVar <- unique(unlist(c(aesPointVar, aesLineVar)))
 		aesLab <- setNames(getLabelVar(aesVar, labelVars = labelVars), names(aesVar))
 	}
 

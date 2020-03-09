@@ -40,8 +40,8 @@ scatterplotMonitoring <- function(
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	pathVar = NULL,
 	table = FALSE, 
-	tableVars = unique(c(idVar, xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
-	tableLab = getLabelVar(tableVars, labelVars = labelVars),
+	tableVars,
+	tableLab,
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
@@ -84,7 +84,8 @@ scatterplotMonitoring <- function(
 		themePars = themePars,
 		refLinePars = refLinePars,
 		labelVars = labelVars,
-		hoverVar = hoverVar
+		hoverVar = hoverVar,
+		geomType = "point"
 	)
 	
 	# convert to interactive plot
@@ -104,10 +105,24 @@ scatterplotMonitoring <- function(
 	# create associated table
 	if(table){
 		
+		if(missing(tableVars)){
+			aesVar <- unlist(c(aesPointVar, aesLineVar))
+			if(missing(aesLab))
+				aesLab <- setNames(getLabelVar(aesVar, labelVars = labelVars), aesVar)
+			tableVars <- unique(c(idVar, xVar, yVar, aesVar))
+			tableLab <- setNames(
+				c(idLab, xLab, yLab, aesLab[aesVar]), 
+				c(idVar, xVar, yVar, aesVar)
+			)
+		}else	if(missing(tableLab)){
+			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
+		}
+		tableLab <- tableLab[!duplicated(tableLab)]
+		
 		table <- tableMonitoring(
 			data = data, 
 			idVar = idVar, idLab = idLab,
-			pathVar = pathVar ,
+			pathVar = pathVar,
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,

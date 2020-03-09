@@ -33,7 +33,7 @@ barplotMonitoring <- function(
 	width = NULL, height = NULL,
 	hoverVar = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))), 
 	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
-	pathVar = NULL,
+	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	table = FALSE, 
 	tableVars = unique(c(xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
@@ -108,7 +108,7 @@ barplotMonitoring <- function(
 		table <- tableMonitoring(
 			data = data, 
 			idVar = idVar, 
-			pathVar = pathVar,
+			pathVar = pathVar, pathLab = pathLab,
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,

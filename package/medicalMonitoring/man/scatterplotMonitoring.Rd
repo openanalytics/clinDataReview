@@ -34,8 +34,8 @@ scatterplotMonitoring(
   idLab = getLabelVar(idVar, labelVars = labelVars),
   pathVar = NULL,
   table = FALSE,
-  tableVars = unique(c(idVar, xVar, yVar, unlist(c(aesPointVar, aesLineVar)))),
-  tableLab = getLabelVar(tableVars, labelVars = labelVars),
+  tableVars,
+  tableLab,
   tableButton = TRUE,
   tablePars = list(),
   id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
@@ -133,15 +133,24 @@ by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 
 \item{idLab}{String with label for \code{idVar}.}
 
-\item{pathVar}{String with variable of \code{data} containing path
-to a subject-specific report (e.g. patient profiles).
-The report should be unique by element of \code{idVar}.
-This report will be:p
+\item{pathVar}{String with variable of \code{data} containing:
 \itemize{
-\item{downloaded if the user clicks on the 'p' (a.k.a 'profile') key
+\item{visualization of individual profiles 
+(\code{\link{scatterplotMonitoring}}) :}{
+path to the report. The report should be unique 
+for each element of \code{idVar}.
+}
+\item{visualization of summary statistics 
+(\code{\link{sunburstMonitoring}}), \code{\link{treemapMonitoring}},
+\code{\link{barplotMonitoring}}) :}{path or hyperlinks 
+with path to the report. If multiple, they should be separated by: ', '.
+}
+}
+The report(s) will be:
+\itemize{
+\item{downloaded or opened in the browser if the user clicks on the 'p' (a.k.a 'profile') key
 when hovering on a point of the plot}
-\item{opened in a browser via hyperlink in the \code{idVar} of the table 
-column (if specified via \code{tableVars})}
+\item{downloaded or opened in the browser via hyperlink in the table}
 }}
 
 \item{table}{Logical, if TRUE (FALSE by default)

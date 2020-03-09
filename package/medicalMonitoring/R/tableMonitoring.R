@@ -18,7 +18,8 @@
 #' @export
 tableMonitoring <- function(data, 
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
-	pathVar = NULL,
+	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
+	pathExpand = FALSE,
 	tableVars,
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
@@ -36,34 +37,47 @@ tableMonitoring <- function(data,
 	# add hyperlink in the table:
 	if(!is.null(pathVar)){
 		
-		data[, "linkVar"] <- paste0(
-			'<a href="', data[, pathVar], 
-			'" target="_blank">', data[, idVar], '</a>'
-		)
+		tableVars <- c(pathVar, tableVars) # add in variables for DT
 		
-		tableVars <- c("linkVar", tableVars) # add in variables to display
-		tableLab["linkVar"] <- tableLab[idVar] # add label
-		
+		# create the hyperlink (if not already created)
+		if(!pathExpand){
+			
+			data[, pathVar] <- paste0(
+				'<a href="', data[, pathVar], 
+				'" target="_blank">', data[, idVar], '</a>'
+			)
+			
+			# include the label from ID var
+			tableLab[pathVar] <- idLab
+			
+		}else{
+			tableLab[pathVar] <- pathLab
+		}
 	}
 	
 	# retain only specified variables:
 	data <- data[, tableVars, drop = FALSE]
 	
-	# escape column with hyperlink
 	if(!is.null(pathVar)){
-		idxUrlVar <- which(colnames(data) == "linkVar")
-		tablePars <- c(tablePars, list(escape = c(tablePars$escape, -idxUrlVar)))
+		tablePars <- c(tablePars, 
+			# escape column with hyperlink
+			list(escape = -match(pathVar, colnames(data))),
+			# expand the variable
+			if(pathExpand)	list(expandVar = pathVar)
+		)
 	}
-	
-	# ID column non visible (used for the link table <-> plot)
-	if(!is.null(pathVar) | !idVar %in% tableVarsInit){
+
+	# ID column non visible:
+	# if not specified in input columns
+	# or added in the pathVar column
+	if(!idVar %in% tableVarsInit | (!is.null(pathVar) & !pathExpand)){
 		tablePars$nonVisible <- which(colnames(data) == idVar)-1
 	}
 	
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
 	
 	# build shared data
-	keyFm <- as.formula(paste("~",idVar))
+	keyFm <- as.formula(paste("~", idVar))
 	group <- id
 	dataTableSharedData <- highlight_key(data = data, key = keyFm, group = group)
 	

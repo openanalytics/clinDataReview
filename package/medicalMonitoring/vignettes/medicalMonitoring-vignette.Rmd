@@ -166,7 +166,7 @@ A standard patient profiles reports for _SDTM_ input format are created with the
 
 ## Data visualization
 
-### Visualization of raw data
+### Visualization of individual profiles
 
 #### Time profiles
 
@@ -310,16 +310,30 @@ for each subgroup is extracted.
 		"patientProfiles/subjectProfile-", 
 		sub("/", "-", dataAE$USUBJID), ".pdf"
 	)
+	
+	# add link in data (for attached table)
+	dataAE$patientProfileLink <- with(dataAE,
+		paste0(
+			'<a href="', patientProfilePath, 
+			'" target="_blank">', USUBJID, '</a>'
+		)
+	)
+	
 	# combine all paths across patients
 	statsExtraPP <- list(
 		statPatientProfilePath = function(data)	
-			toString(sort(unique(data$patientProfilePath)))
+			toString(sort(unique(data$patientProfilePath))),
+		statPatientProfileLink = function(data)
+			toString(sort(unique(data$patientProfileLink)))
 	)
 	
 	# get default counts + stats with subjects profiles path
 	statsPP <- c(
 		getStats(type = "count-default"),
-		list(patientProfilePath = quote(statPatientProfilePath))
+		list(
+			patientProfilePath = quote(statPatientProfilePath),
+			patientProfileLink = quote(statPatientProfileLink)
+		)
 	)
 	
 	# compute adverse event table
@@ -343,7 +357,7 @@ for each subgroup is extracted.
 		statsExtra = statsExtraPP
 
 	)
-	pander(head(tableAE)[, 1:4],
+	pander(head(tableAE),
 		caption = paste("Extract of the Adverse Event summary table",
 			"used for the sunburst and barplot visualization"
 		)
@@ -381,7 +395,7 @@ The size of the different segments is relative the respective counts.
 		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
 		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
-		pathVar = "patientProfilePath",
+		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE,
 		verbose = TRUE
 	)
@@ -414,7 +428,7 @@ of the respective group.
 		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
 		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
-		pathVar = "patientProfilePath",
+		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE,
 		verbose = TRUE
 	)
@@ -423,7 +437,7 @@ of the respective group.
 
 #### Barplot
 
-```{r barplot}
+```{r barplot, eval = FALSE}
 
 	dataPlot <- subset(tableAE, AEDECOD != "Total")
 	
@@ -435,6 +449,7 @@ of the respective group.
 		xVar = "AEDECOD", 
 		yVar = "n", yLab = "Number of patients with adverse events",
 		labelVars = labelVars,
+		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE
 	)
 	
