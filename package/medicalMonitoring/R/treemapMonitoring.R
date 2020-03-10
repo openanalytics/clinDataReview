@@ -30,7 +30,7 @@ treemapMonitoring <- function(
 	# interactivity:
 	width = NULL, height = NULL,
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
-	hoverVar, hoverLab,
+	hoverVars, hoverLab,
 	table = FALSE, 
 	tableVars,
 	tableLab,
@@ -45,17 +45,17 @@ treemapMonitoring <- function(
 	dataPlot$key <- dataPlot[, childVar]
 
 	# format data to: 'SharedData' object
-	if(missing(hoverVar)){
-		hoverVar <- c(childVar, valueVar)
-		hoverLab <- setNames(c(childLab, valueLab), hoverVar)
+	if(missing(hoverVars)){
+		hoverVars <- c(childVar, valueVar)
+		hoverLab <- setNames(c(childLab, valueLab), hoverVars)
 	}else	if(missing(hoverLab)){
-		hoverLab <- getLabelVar(hoverVar, labelVars = labelVars)
+		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = dataPlot,
 		keyVar = idVar, id = id,
 		labelVars = labelVars,
-		hoverVar = hoverVar, hoverLab = hoverLab,
+		hoverVars = hoverVars, hoverLab = hoverLab,
 		hoverByVar = idVar
 	)
 	

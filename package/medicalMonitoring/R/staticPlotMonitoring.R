@@ -23,7 +23,7 @@
 #' }
 #' @param themePars List with general theme parameters 
 #' (see \code{\link[ggplot2]{theme}}).
-#' @param hoverVar Character vector with variables to be displayed in the hover,
+#' @param hoverVars Character vector with variables to be displayed in the hover,
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
 #' @param geomType String with type of the geom used, either:
 #' 'point' or 'col'
@@ -33,7 +33,7 @@
 #' @importFrom glpgUtilityFct getLabelVar
 #' @importFrom stats setNames
 #' @author Laure Cougnaud
-staticPlotMonitoring <- function(
+staticScatterplotMonitoring <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
@@ -53,7 +53,7 @@ staticPlotMonitoring <- function(
 	themePars = list(legend.position = "bottom"),
 	refLinePars = NULL,
 	labelVars = NULL,
-	hoverVar = NULL,
+	hoverVars = NULL,
 	geomType = c("point", "col")){
 
 	facetType <- match.arg(facetType)
@@ -93,7 +93,7 @@ staticPlotMonitoring <- function(
 	}
 	
 	# scatter
-	aesGeom <- c(aesPointVar, if(!is.null(hoverVar))	list(text = "hover"))
+	aesGeom <- c(aesPointVar, if(!is.null(hoverVars))	list(text = "hover"))
 	argsGeom <- if(length(aesGeom)){
 		list(mapping = do.call(aes_string, aesGeom))
 	}

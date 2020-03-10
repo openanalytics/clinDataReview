@@ -11,13 +11,14 @@ barplotMonitoring(
   xLab = getLabelVar(xVar, labelVars = labelVars),
   yLab = getLabelVar(yVar, labelVars = labelVars),
   colorVar = NULL,
+  colorLab = getLabelVar(colorVar, labelVars = labelVars),
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
   labelVars = NULL,
   width = NULL,
   height = NULL,
-  hoverVar = unique(c(xVar, yVar, colorVar)),
-  hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
+  hoverVars,
+  hoverLab,
   pathVar = NULL,
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
   table = FALSE,
@@ -38,6 +39,8 @@ barplotMonitoring(
 
 \item{colorVar}{(optional) String with color variable.}
 
+\item{colorLab}{String with label for \code{colorVar}.}
+
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{title}{String with title for the plot.}
@@ -49,10 +52,10 @@ used by default for all labels in the plot.}
 
 \item{height}{Width/height of the plot in pixels.}
 
-\item{hoverVar}{Character vector with variables to be displayed in the hover,
-by default \code{xVar}, \code{yVar} and any aesthetic variables.}
+\item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
+by default any position and aesthetic variables displayed in the plot.}
 
-\item{hoverLab}{Named character vector with labels for \code{hoverVar}.}
+\item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
 
 \item{pathVar}{String with variable of \code{data} containing:
 \itemize{

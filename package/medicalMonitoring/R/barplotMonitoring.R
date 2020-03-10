@@ -2,6 +2,7 @@
 #' 
 #' Note: the table and plot are not (yet) linked.
 #' @param colorVar (optional) String with color variable.
+#' @param colorLab String with label for \code{colorVar}.
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
 #' @inherit scatterplotMonitoring return
@@ -17,15 +18,14 @@ barplotMonitoring <- function(
 	xLab = getLabelVar(xVar, labelVars = labelVars),
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetic
-	colorVar = NULL,
+	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
-	hoverVar = unique(c(xVar, yVar, colorVar)), 
-	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
+	hoverVars, hoverLab,
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	table = FALSE, 
 	tableVars, tableLab,
@@ -36,9 +36,16 @@ barplotMonitoring <- function(
 	idVar <- xVar
 	
 	# format data to: 'SharedData' object
+	if(missing(hoverVars)){
+		hoverVars <- c(xVar, yVar, colorVar)
+		hoverLab <- setNames(c(xLab, yLab, colorLab), hoverVars)
+	}else	if(missing(hoverLab)){
+		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
+	}
+	hoverVars <- unique(hoverVars)
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = data, 
-		hoverVar = hoverVar, hoverLab = hoverLab,
+		hoverVars = hoverVars, hoverLab = hoverLab,
 		hoverByVar = idVar,
 		keyVar = idVar, id = id,
 		labelVars = labelVars
@@ -58,17 +65,11 @@ barplotMonitoring <- function(
 	)
 	pl <- pl %>% layout(
 		title = title,
-		xaxis = list(title = xLab),
+		xaxis = list(title = xLab, tickangle = 45),
 		yaxis = list(title = yLab)
 	)
 		
 	# specific formatting for medical monitoring
-	if(missing(hoverVar)){
-		hoverVar <- c(xVar, yVar)
-		hoverLab <- setNames(c(xLab, yLab), hoverVar)
-	}else	if(missing(hoverLab)){
-		hoverLab <- getLabelVar(hoverVar, labelVars = labelVars)
-	}
 	pl <- formatPlotlyMonitoring(
 		data = dataPlot, pl = pl,
 		idVar = idVar, pathVar = pathVar,
@@ -82,11 +83,12 @@ barplotMonitoring <- function(
 	if(table){
 		
 		if(missing(tableVars)){
-			tableVars <- c(xVar, yVar)
-			tableLab <- setNames(c(xLab, yLab), tableVars)
+			tableVars <- c(xVar, yVar, colorVar)
+			tableLab <- setNames(c(xLab, yLab, colorLab), tableVars)
 		}else	if(missing(tableLab)){
 			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
 		}
+		tableVars <- unique(tableVars)
 		
 		table <- tableMonitoring(
 			data = data, 

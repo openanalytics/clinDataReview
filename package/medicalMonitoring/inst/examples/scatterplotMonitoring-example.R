@@ -67,7 +67,7 @@ scatterplotMonitoring(
 	yVar = "LBSTRESN", yLab = yLab,
 	aesPointVar = list(color = "USUBJID"),
 	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
-	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
+	hoverVars = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
 	labelVars = labelVars,
 	facetPars = list(facets = "VISIT"),
 	themePars = list(legend.position = "none"),

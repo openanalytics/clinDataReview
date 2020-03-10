@@ -35,8 +35,8 @@ sunburstMonitoring <- function(
 	# interactivity:
 	width = NULL, height = NULL,
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
-	hoverVar = childVar, 
-	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
+	hoverVars = childVar, 
+	hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
 	table = FALSE, 
 	tableVars,
 	tableLab,
@@ -73,17 +73,17 @@ sunburstMonitoring <- function(
 
 	# format data to: 'SharedData' object
 	# specific formatting for medical monitoring
-	if(missing(hoverVar)){
-		hoverVar <- c(childVar, valueVar)
-		hoverLab <- setNames(c(childLab, valueLab), hoverVar)
+	if(missing(hoverVars)){
+		hoverVars <- c(childVar, valueVar)
+		hoverLab <- setNames(c(childLab, valueLab), hoverVars)
 	}else	if(missing(hoverLab)){
-		hoverLab <- getLabelVar(hoverVar, labelVars = labelVars)
+		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = dataPlot,
 		keyVar = idVar, id = id,
 		labelVars = labelVars,
-		hoverVar = hoverVar, hoverLab = hoverLab,
+		hoverVars = hoverVars, hoverLab = hoverLab,
 		hoverByVar = idVar
 	)
 	

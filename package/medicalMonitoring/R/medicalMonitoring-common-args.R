@@ -8,9 +8,9 @@
 #' @param idLab String with label for \code{idVar}.
 #' @param facetPars List with facetting parameters, passed to the facetting function.
 #' @param lineVars List with parameters for the reference lines.
-#' @param hoverVar Character vector with variables to be displayed in the hover,
-#' by default \code{xVar}, \code{yVar} and any aesthetic variables.
-#' @param hoverLab Named character vector with labels for \code{hoverVar}.
+#' @param hoverVars Character vector with variable(s) to be displayed in the hover,
+#' by default any position and aesthetic variables displayed in the plot.
+#' @param hoverLab Named character vector with labels for \code{hoverVars}.
 #' @param pathVar String with variable of \code{data} containing:
 #' \itemize{
 #' \item{visualization of individual profiles 

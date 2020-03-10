@@ -29,7 +29,7 @@ scatterplotMonitoring(
   labelVars = NULL,
   width = NULL,
   height = NULL,
-  hoverVar,
+  hoverVars,
   hoverLab,
   idVar = "USUBJID",
   idLab = getLabelVar(idVar, labelVars = labelVars),
@@ -125,10 +125,10 @@ used by default for all labels in the plot.}
 
 \item{height}{Width/height of the plot in pixels.}
 
-\item{hoverVar}{Character vector with variables to be displayed in the hover,
+\item{hoverVars}{Character vector with variables to be displayed in the hover,
 by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 
-\item{hoverLab}{Named character vector with labels for \code{hoverVar}.}
+\item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
 
 \item{idVar}{String with variable containing subject ID.}
 
@@ -257,7 +257,7 @@ scatterplotMonitoring(
 	yVar = "LBSTRESN", yLab = yLab,
 	aesPointVar = list(color = "USUBJID"),
 	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
-	hoverVar = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
+	hoverVars = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
 	labelVars = labelVars,
 	facetPars = list(facets = "VISIT"),
 	themePars = list(legend.position = "none"),

@@ -6,8 +6,8 @@
 \usage{
 formatDataForPlotMonitoring(
   data,
-  hoverVar = NULL,
-  hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
+  hoverVars = NULL,
+  hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
   hoverByVar = NULL,
   keyVar = NULL,
   id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
@@ -26,7 +26,7 @@ group for which the link between the table and the plot should be done.}
 \value{
 Updated \code{\link[crosstalk]{SharedData}} with:
 \itemize{
-\item{extra column: 'hover' with combined info from \code{hoverVar}}
+\item{extra column: 'hover' with combined info from \code{hoverVars}}
 }
 }
 \description{

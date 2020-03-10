@@ -1,5 +1,5 @@
 #' Scatterplot of variables of interest for medical monitoring.
-#' @inheritParams staticPlotMonitoring
+#' @inheritParams staticScatterplotMonitoring
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
 #' @return If a \code{table} is requested:
@@ -35,7 +35,7 @@ scatterplotMonitoring <- function(
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
-	hoverVar, hoverLab,
+	hoverVars, hoverLab,
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	pathVar = NULL,
 	table = FALSE, 
@@ -55,26 +55,26 @@ scatterplotMonitoring <- function(
 	}
 
 	# format data to: 'SharedData' object
-	if(missing(hoverVar)){
+	if(missing(hoverVars)){
 		aesVar <- unlist(c(aesPointVar, aesLineVar))
-		hoverVar <- c(xVar, yVar, aesVar)
-		hoverLab <- setNames(c(xLab, yLab, aesLab[aesVar]), hoverVar)
+		hoverVars <- c(xVar, yVar, aesVar)
+		hoverLab <- setNames(c(xLab, yLab, aesLab[aesVar]), hoverVars)
 	}else	if(missing(hoverLab)){
-		hoverLab <- getLabelVar(hoverVar, labelVars = labelVars)
+		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
-	hoverVar <- unique(hoverVar)
+	hoverVars <- unique(hoverVars)
 	hoverLab <- hoverLab[!duplicated(hoverLab)]
 	
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = data, 
-		hoverVar = hoverVar, hoverLab = hoverLab,
+		hoverVars = hoverVars, hoverLab = hoverLab,
 		hoverByVar = idVars,
 		keyVar = idVar, id = id,
 		labelVars = labelVars
 	)
 	
 	# create static plot:
-	gg <- staticPlotMonitoring(
+	gg <- staticScatterplotMonitoring(
 		data = dataSharedData, 
 		# x/y variables:
 		xVar = xVar, yVar = yVar, 
@@ -93,7 +93,7 @@ scatterplotMonitoring <- function(
 		themePars = themePars,
 		refLinePars = refLinePars,
 		labelVars = labelVars,
-		hoverVar = hoverVar,
+		hoverVars = hoverVars,
 		geomType = "point"
 	)
 	
@@ -101,7 +101,7 @@ scatterplotMonitoring <- function(
 	pl <- ggplotly(
 		p = gg, 
 		width = width, height = height, 
-		tooltip = if(!is.null(hoverVar))	"text"
+		tooltip = if(!is.null(hoverVars))	"text"
 	)
 
 	# convert static to interactive plot

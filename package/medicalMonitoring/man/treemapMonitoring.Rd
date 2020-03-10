@@ -20,7 +20,7 @@ treemapMonitoring(
   height = NULL,
   pathVar = NULL,
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
-  hoverVar,
+  hoverVars,
   hoverLab,
   table = FALSE,
   tableVars,
@@ -78,10 +78,10 @@ when hovering on a point of the plot}
 used for the label of the collapsible row
 (only displayed if \code{pathExpand} is TRUE).}
 
-\item{hoverVar}{Character vector with variables to be displayed in the hover,
-by default \code{xVar}, \code{yVar} and any aesthetic variables.}
+\item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
+by default any position and aesthetic variables displayed in the plot.}
 
-\item{hoverLab}{Named character vector with labels for \code{hoverVar}.}
+\item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
 
 \item{table}{Logical, if TRUE (FALSE by default)
 returns also a \code{datatable} containing the plot data.}

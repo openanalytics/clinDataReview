@@ -7,7 +7,7 @@
 #' group for which the link between the table and the plot should be done.
 #' @return Updated \code{\link[crosstalk]{SharedData}} with:
 #' \itemize{
-#' \item{extra column: 'hover' with combined info from \code{hoverVar}}
+#' \item{extra column: 'hover' with combined info from \code{hoverVars}}
 #' }
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
@@ -15,8 +15,8 @@
 #' @export
 formatDataForPlotMonitoring <- function(
 	data, 
-	hoverVar = NULL,
-	hoverLab = getLabelVar(hoverVar, labelVars = labelVars),
+	hoverVars = NULL,
+	hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
 	hoverByVar = NULL,
 	keyVar = NULL,
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
@@ -24,9 +24,9 @@ formatDataForPlotMonitoring <- function(
 
 	# create hover variable: combine hover if points have the same x/y coordinates
 	# by default in plotly: hover var only displayed for one of the overlapping point
-	if(!is.null(hoverVar)){
+	if(!is.null(hoverVars)){
 		data <- ddply(data, hoverByVar, function(dataPoint){
-			hoverTextList <- lapply(hoverVar, function(var){
+			hoverTextList <- lapply(hoverVars, function(var){
 				formatHoverText(
 					x = sort(unique(dataPoint[, var])),
 					label = hoverLab[var]
