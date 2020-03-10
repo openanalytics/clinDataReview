@@ -10,10 +10,12 @@
 #' @param valueType String with type of values in \code{valueVar}
 #' (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
 #' among others: 'relative' (default), or 'total' (only if sum(child) <= to parent).
+#' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
 #' @inherit scatterplotMonitoring return
 #' @example inst/examples/sunburstMonitoring-example.R
+#' @family visualizations of summary statistics for medical monitoring
 #' @import plotly
 #' @importFrom stats as.formula
 #' @author Laure Cougnaud

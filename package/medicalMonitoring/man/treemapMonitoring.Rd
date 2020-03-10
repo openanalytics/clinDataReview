@@ -54,29 +54,21 @@ used by default for all labels in the plot.}
 
 \item{height}{Width/height of the plot in pixels.}
 
-\item{pathVar}{String with variable of \code{data} containing:
-\itemize{
-\item{visualization of individual profiles 
-(\code{\link{scatterplotMonitoring}}) :}{
-path to the report. The report should be unique 
-for each element of \code{idVar}.
-}
-\item{visualization of summary statistics 
-(\code{\link{sunburstMonitoring}}), \code{\link{treemapMonitoring}},
-\code{\link{barplotMonitoring}}) :}{path or hyperlinks 
-with path to the report. If multiple, they should be separated by: ', '.
-}
-}
+\item{pathVar}{String with variable of \code{data} containing hyperlinks 
+with path to the subject-specific report, formatted as: \cr
+\preformatted{<a href="./path-to-report">label</a>}.\cr 
+If multiple, they should be separated by: ', '.\cr
 The report(s) will be:
 \itemize{
-\item{downloaded or opened in the browser if the user clicks on the 'p' (a.k.a 'profile') key
+\item{compressed to a zip file and downloaded 
+if the user clicks on the 'p' (a.k.a 'profile') key
 when hovering on a point of the plot}
-\item{downloaded or opened in the browser via hyperlink in the table}
+\item{included in a collapsible row, and clickable with hyperlinks
+in the table}
 }}
 
 \item{pathLab}{String with label for \code{pathVar},
-used for the label of the collapsible row
-(only displayed if \code{pathExpand} is TRUE).}
+included in the collapsible row in the table.}
 
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
 by default any position and aesthetic variables displayed in the plot.}
@@ -116,6 +108,66 @@ If a \code{table} is requested:
 \description{
 Note: the table and plot are not (yet) linked.
 }
+\examples{
+library(glpgUtilityFct)
+
+data(SDTMDataPelican)
+data(labelVarsSDTMPelican)
+
+dataAE <- SDTMDataPelican$AE
+dataDM <- SDTMDataPelican$DM
+labelVars <- labelVarsSDTMPelican
+
+## example of basic treemap:
+
+# treemap takes as input table with counts
+library(inTextSummaryTable)
+
+# total counts: Safety Analysis Set (patients with start date for the first treatment)
+dataTotal <- subset(dataDM, RFXSTDTC != "")
+
+# compute adverse event table
+tableAE <- getSummaryStatisticsTable(
+		
+	data = dataAE,
+	rowVar = c("AESOC", "AEDECOD"),
+	dataTotal = dataTotal,
+	rowOrder = "total",
+	labelVars = labelVars,
+	stats = getStats("count"),
+	
+	# plotly treemap requires records (rows) for each group
+	rowVarTotalInclude = "AEDECOD",
+	outputType = "data.frame"
+
+)
+
+dataPlot <- tableAE
+
+dataPlot$n <- as.numeric(dataPlot$n)
+
+# reformat summary statistics data.frame to link child <-> parent node
+dataPlot['parent'] = with(dataPlot, 
+	ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
+)
+dataPlot['child'] = with(dataPlot, 
+	ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
+)
+
+# create plot
+treemapMonitoring(
+	data = dataPlot,
+	parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
+	childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+	valueVar = "n", valueLab = "Number of patients with adverse events"
+)
+}
+\seealso{
+Other visualizations of summary statistics for medical monitoring: 
+\code{\link{barplotMonitoring}()},
+\code{\link{sunburstMonitoring}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{visualizations of summary statistics for medical monitoring}

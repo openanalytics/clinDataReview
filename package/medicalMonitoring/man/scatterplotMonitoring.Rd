@@ -134,24 +134,14 @@ by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 
 \item{idLab}{String with label for \code{idVar}.}
 
-\item{pathVar}{String with variable of \code{data} containing:
-\itemize{
-\item{visualization of individual profiles 
-(\code{\link{scatterplotMonitoring}}) :}{
-path to the report. The report should be unique 
+\item{pathVar}{String with variable of \code{data} containing
+path to a subject-specific report. The report should be unique 
 for each element of \code{idVar}.
-}
-\item{visualization of summary statistics 
-(\code{\link{sunburstMonitoring}}), \code{\link{treemapMonitoring}},
-\code{\link{barplotMonitoring}}) :}{path or hyperlinks 
-with path to the report. If multiple, they should be separated by: ', '.
-}
-}
-The report(s) will be:
+The report will be:
 \itemize{
-\item{downloaded or opened in the browser if the user clicks on the 'p' (a.k.a 'profile') key
+\item{opened in a different window in the browser if the user clicks on the 'p' (a.k.a 'profile') key
 when hovering on a point of the plot}
-\item{downloaded or opened in the browser via hyperlink in the table}
+\item{opened in the browser via hyperlink in the table}
 }}
 
 \item{table}{Logical, if TRUE (FALSE by default)
@@ -280,3 +270,4 @@ scatterplotMonitoring(
 \author{
 Laure Cougnaud
 }
+\concept{Medical monitoring visualization of individual profile}

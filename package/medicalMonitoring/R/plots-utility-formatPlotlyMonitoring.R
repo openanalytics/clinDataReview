@@ -17,6 +17,10 @@
 #' 'plotly_doubleclick' by default.
 #' @param pathVar String with variable of \code{data} containing path
 #' to a subject-specific report (e.g. patient profiles).
+#' @param pathDownload Logical, if TRUE (by default) the subject-specific report(s)
+#' are downloaded in a zip compressed file.
+#' If FALSE (only available if unique report per \code{idVarPlot}),
+#' each report is opened in a new window.
 #' @param verbose Logical, if TRUE report progress messages
 #' during execution (included in the browser 'Console').
 #' @param labelVarPlot String with plotly variable used to
@@ -31,7 +35,8 @@
 #' @export
 formatPlotlyMonitoring <- function(
 	pl, data,
-	idVar = "USUBJID", pathVar = NULL,
+	idVar = "USUBJID", 
+	pathVar = NULL, pathDownload = TRUE,
 	idFromDataPlot = TRUE, 
 	idVarPlot = "key", labelVarPlot = NULL,
 	highlightOn = "plotly_click",
@@ -57,13 +62,17 @@ formatPlotlyMonitoring <- function(
 		dataPP <- dataPPDf[, c(idVar, pathVar)]
 		colnames(dataPP) <- c("key", "path")
 		
+		# Important: parameters should be in the same order
+		# than specified in function definition 
+		# (fct call by parameter doesn't exists natively in Javascript)
 		jsPatientProfiles <- JS("function(el, x, data){",
-			paste0("downloadPatientProfilesPlotly(el, x, data,",
+			paste0("getPatientProfilesPlotly(el, x, data,",
 				"fromdata=", tolower(idFromDataPlot), ",",
 				"idvar=", sQuote(idVarPlot), ",",
 				"labelplot=", sQuote(id), ",",
 				"labelvar=", ifelse(is.null(labelVarPlot), 'null', sQuote(labelVarPlot)), ",",
-				"verbose=", tolower(verbose),
+				"download=", tolower(pathDownload), ",",
+				"verbose=", tolower(verbose), 
 				");"
 			),
 		"}") 

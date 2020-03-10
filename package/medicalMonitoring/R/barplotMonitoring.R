@@ -1,12 +1,12 @@
 #' Barplot interactive plot.
-#' 
-#' Note: the table and plot are not (yet) linked.
 #' @param colorVar (optional) String with color variable.
 #' @param colorLab String with label for \code{colorVar}.
+#' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
 #' @inherit scatterplotMonitoring return
 #' @example inst/examples/barplotMonitoring-example.R
+#' @family visualizations of summary statistics for medical monitoring
 #' @import plotly
 #' @importFrom stats as.formula
 #' @author Laure Cougnaud

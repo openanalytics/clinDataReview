@@ -7,9 +7,12 @@
 #' and associated label.
 #' @param valueVar,valueLab String with variable of \code{data} containing node value,
 #' and associated label.
+#' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
 #' @inherit scatterplotMonitoring return
+#' @example inst/examples/treemapMonitoring-example.R
+#' @family visualizations of summary statistics for medical monitoring
 #' @import plotly
 #' @importFrom stats as.formula
 #' @author Laure Cougnaud

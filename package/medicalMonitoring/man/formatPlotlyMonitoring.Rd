@@ -11,6 +11,7 @@ formatPlotlyMonitoring(
   data,
   idVar = "USUBJID",
   pathVar = NULL,
+  pathDownload = TRUE,
   idFromDataPlot = TRUE,
   idVarPlot = "key",
   labelVarPlot = NULL,
@@ -30,6 +31,11 @@ containing plot element.}
 
 \item{pathVar}{String with variable of \code{data} containing path
 to a subject-specific report (e.g. patient profiles).}
+
+\item{pathDownload}{Logical, if TRUE (by default) the subject-specific report(s)
+are downloaded in a zip compressed file.
+If FALSE (only available if unique report per \code{idVarPlot}),
+each report is opened in a new window.}
 
 \item{idFromDataPlot}{Logical, if TRUE (by default) \code{idVarPlot}
 is extracted from the data of the plot object, otherwise

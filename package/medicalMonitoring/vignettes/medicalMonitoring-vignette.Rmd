@@ -171,6 +171,15 @@ A standard patient profiles report for _SDTM_ input format is created with the f
 
 ### Visualization of individual profiles
 
+Visualization of individual profiles is available via the function
+`scatterplotMonitoring`.
+
+Subject-specific report (e.g. patient profiles) can be linked to each profile
+(`pathVar` parameter).
+If the user clicks on the 'P' key while hovering on the plot, or click
+on the specific subject in the attached table, the specific
+patient profile is opened in a new window in the browser.
+
 #### Time profiles
 
 ```{r timeProfiles}
@@ -287,16 +296,24 @@ scatterplotMonitoring(
 
 ### Visualization of summary statistics
 
-Summary statistics can also be visualized with the package.
-These functions take as input a table of summary statistics.
+Summary statistics can also be visualized with the package, 
+via different types of visualizations:
+sunburst, treemap and barplot.
+
+Subject-specific report (e.g. patient profiles) can be linked to each profile 
+(`pathVar` parameter). If the user clicks on the 'P' key while hovering on the plot, 
+a zip file containing the reports for all corresponding patients is downloaded.
+If the attached table is display, each row can be extended to display the links 
+of the respective patient profile reports.
+
+These functions take as input a table of summary statistics, especially counts.
 Such table can e.g. computed with the `inTextSummaryTable` R package (see
 corresponding package vignette for more information).
 
-A table of counts should be provided for the sunburst, treemap and barplot visualizations.
 In this example, counts of adverse events are extracted for each `r labelVars["AESOC"]`
 and `r labelVars["AEDECOD"]`.
-Besides the counts of the number of subjects, the path to the patient profile report
-for each subgroup is extracted.
+Besides the counts of the number of subjects, the paths to the patient profile report
+for each subgroup are extracted and combined.
 
 ```{r createCountTableAE}
 
@@ -323,6 +340,7 @@ for each subgroup is extracted.
 	)
 	
 	# combine all paths across patients
+	# the paths should be collapsed with: ', '
 	statsExtraPP <- list(
 		statPatientProfilePath = function(data)	
 			toString(sort(unique(data$patientProfilePath))),

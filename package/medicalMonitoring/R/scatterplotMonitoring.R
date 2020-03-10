@@ -1,4 +1,13 @@
 #' Scatterplot of variables of interest for medical monitoring.
+#' @param pathVar String with variable of \code{data} containing
+#' path to a subject-specific report. The report should be unique 
+#' for each element of \code{idVar}.
+#' The report will be:
+#' \itemize{
+#' \item{opened in a different window in the browser if the user clicks on the 'p' (a.k.a 'profile') key
+#' when hovering on a point of the plot}
+#' \item{opened in the browser via hyperlink in the table}
+#' }
 #' @inheritParams staticScatterplotMonitoring
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
@@ -12,6 +21,7 @@
 #' @importFrom glpgUtilityFct getLabelVar
 #' @importFrom plotly ggplotly
 #' @author Laure Cougnaud
+#' @family Medical monitoring visualization of individual profile
 #' @export
 scatterplotMonitoring <- function(
 	data, 
@@ -108,7 +118,8 @@ scatterplotMonitoring <- function(
 	pl <- formatPlotlyMonitoring(
 		data = data, pl = pl,
 		idVar = idVar, pathVar = pathVar,
-		id = id, verbose = verbose
+		id = id, verbose = verbose,
+		pathDownload = FALSE
 	)
 	
 	# create associated table

@@ -11,32 +11,10 @@
 #' @param hoverVars Character vector with variable(s) to be displayed in the hover,
 #' by default any position and aesthetic variables displayed in the plot.
 #' @param hoverLab Named character vector with labels for \code{hoverVars}.
-#' @param pathVar String with variable of \code{data} containing:
-#' \itemize{
-#' \item{visualization of individual profiles 
-#' (\code{\link{scatterplotMonitoring}}) :}{
-#' path to the report. The report should be unique 
-#' for each element of \code{idVar}.
-#' }
-#' \item{visualization of summary statistics 
-#' (\code{\link{sunburstMonitoring}}), \code{\link{treemapMonitoring}},
-#' \code{\link{barplotMonitoring}}) :}{path or hyperlinks 
-#' with path to the report. If multiple, they should be separated by: ', '.
-#' }
-#' }
-#' The report(s) will be:
-#' \itemize{
-#' \item{downloaded or opened in the browser if the user clicks on the 'p' (a.k.a 'profile') key
-#' when hovering on a point of the plot}
-#' \item{downloaded or opened in the browser via hyperlink in the table}
-#' }
 #' @param pathExpand Logical, should the variable in \code{pathExpand}
 #' be included in a collapsible row or as hyperlink in the table?
 #' Should be TRUE for if multiple paths are included for each \code{idVar},
 #' FALSE otherwise (by default).
-#' @param pathLab String with label for \code{pathVar},
-#' used for the label of the collapsible row
-#' (only displayed if \code{pathExpand} is TRUE).
 #' @param table Logical, if TRUE (FALSE by default)
 #' returns also a \code{datatable} containing the plot data.
 #' @param refLinePars (optional) Nested list, with parameters for each reference line(s).
@@ -66,6 +44,5 @@
 #' @param title String with title for the plot.
 #' @param titleExtra String with extra title for the plot (appended after \code{title}).
 #' @param width,height Width/height of the plot in pixels.
-
 #' @name medicalMonitoring-common-args
 NULL

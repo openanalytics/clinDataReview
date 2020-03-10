@@ -1,60 +1,80 @@
-// download all patient profiles in a zip file returned to the user
+// get patient profiles from array of paths to report
 // pathpatientprofiles: array of strings with path to the patient profiles
 // filelabel: (optional) string with label, file name is built as: 'patientProfiles-[label].zip'
 // verbose: (optional) boolean, if true informative messages are printed in Console during execution
-function downloadPatientProfiles(pathpatientprofiles, filelabel = null, verbose = false){
-
-	var zip = new JSZip();
-	if(verbose)	console.log("JSZip version", JSZip.version);
-  
-	// create name of the zip file
-	zipName = 'patientProfiles'
-	if(filelabel != null){
-		filelabel = filelabel.replace(/[^a-z0-9]/gi, '_')//.toLowerCase()
-		zipName = zipName + '-' + filelabel
-	} 
-	zipName = zipName + '.zip';
+// download: (optional) boolean, if true (by default) the files are downloaded in a zip compressed file.
+// If false and only one path is specified, the patient profile is opened in a new window.
+function getPatientProfiles(pathpatientprofiles, filelabel = null, verbose = false, download = true){
 
 	if(verbose)
-		console.log("Download patient profiles in zip:", zipName, "for files", pathpatientprofiles)
-      
-	var count = 0;   
-	// forEach execute function on each element on an arry
-	pathpatientprofiles.forEach(function (url) {
+		console.log("Get patient profiles", pathpatientprofiles, "(download =", download, ").")
 
-		//console.log("Export patient profile", count, ":", url);
-      
-		// pdf file should be imported as binary content
-		JSZipUtils.getBinaryContent(url, function (err, data) {
-          
-			// extract file name from patient profile full path
-			fileName = url.split(/[\\/]/).pop();
-          
-			// add content to current pdf file
-			zip.file(fileName, data, { binary: true });
+	if (pathpatientprofiles.length == 1 && !download){
 
-			// informative message in the console browser
- 			count++;
-	 		if(verbose)
-				console.log("Export patient profile", count, ":", fileName);
+		if(verbose)
+			console.log("Open patient profile:", pathpatientprofiles, "in a new window.")
 
-			// create and returns the zip file to the user for the last file
-			if (count == pathpatientprofiles.length) {
-				if(verbose)	console.log("Create and upload zip file");
-				zip.generateAsync({type:'blob'}).then(function(content) {
-					saveAs(content, zipName);
-				});
-			};
-        
+		window.open(linksArray[0]);
+		// to open in a new window:
+		// window.open(linksArray[i], '_blank', 'toolbar=0,location=0,menubar=0');
+
+	}else{
+		if(!download)
+			console.log('Patient profile is download in a zip file because multiple files are provided.')
+
+		var zip = new JSZip();
+		if(verbose)	console.log("JSZip version", JSZip.version);
+	  
+		// create name of the zip file
+		zipName = 'patientProfiles'
+		if(filelabel != null){
+			filelabel = filelabel.replace(/[^a-z0-9]/gi, '_')//.toLowerCase()
+			zipName = zipName + '-' + filelabel
+		} 
+		zipName = zipName + '.zip';
+
+		if(verbose)
+			console.log("Download patient profiles in zip:", zipName, "for files", pathpatientprofiles)
+	      
+		var count = 0;   
+		// forEach execute function on each element on an array
+		pathpatientprofiles.forEach(function (url) {
+
+			//console.log("Export patient profile", count, ":", url);
+	      
+			// pdf file should be imported as binary content
+			JSZipUtils.getBinaryContent(url, function (err, data) {
+		  
+				// extract file name from patient profile full path
+				fileName = url.split(/[\\/]/).pop();
+		  
+				// add content to current pdf file
+				zip.file(fileName, data, { binary: true });
+
+				// informative message in the console browser
+	 			count++;
+		 		if(verbose)
+					console.log("Export patient profile", count, ":", fileName);
+
+				// create and returns the zip file to the user for the last file
+				if (count == pathpatientprofiles.length) {
+					if(verbose)	console.log("Create and upload zip file");
+					zip.generateAsync({type:'blob'}).then(function(content) {
+						saveAs(content, zipName);
+					});
+				};
+		
+			});
+		
 		});
-        
-	});
+
+	}
  
 };
 
 // download patient profiles for a specific DT
 // el: DT object
-function downloadPatientProfilesDT(el){
+function getPatientProfilesDT(el, verbose = false){
     // extract patient profiles paths
     s = el.parentElement.innerHTML;// get row containing the button
     hrefArray = s.match(/href='[^']*/g); // extract the hyperlinks 
@@ -62,7 +82,7 @@ function downloadPatientProfilesDT(el){
     // build label for file name
     //parentRow = el.closest('tr').previousSibling; // get parent row
     //console.log(el.closest('.dataTables_scroll')); // column names
-    downloadPatientProfiles(pathpatientprofiles=linksArray, filelabel='');
+    getPatientProfiles(pathpatientprofiles=linksArray, filelabel='', verbose = verbose, download=true);
 };
 
 // download patient profiles for a specific plot
@@ -74,8 +94,10 @@ function downloadPatientProfilesDT(el){
 //  (to avoid that event triggered if a different plot uses the same key)
 // labelvar: (optional) string with variable used to label the created zip file.
 // If not specified and only one patient: patient ID is used; otherwise no label is used.
+// download: (optional) boolean, if true (by default) the files are downloaded in a compressed zip file.
+// If false and only one path is specified, the patient profile is opened in a new window.
 // verbose: (optional) boolean, if true informative messages are printed in Console during execution
-function downloadPatientProfilesPlotly(el, x, data, fromdata, idvar, labelplot, labelvar = null, verbose = false) {
+function getPatientProfilesPlotly(el, x, data, fromdata, idvar, labelplot, labelvar = null, download = true, verbose = false) {
 
 	// get plotly data from hover
 	var plObj = null
@@ -140,7 +162,7 @@ function downloadPatientProfilesPlotly(el, x, data, fromdata, idvar, labelplot, 
 			}
 
 			if(verbose)	console.log("file label:", filelabel)
-			downloadPatientProfiles(pathpatientprofiles = linksArray, filelabel = filelabel);
+			getPatientProfiles(pathpatientprofiles = linksArray, filelabel = filelabel, verbose = verbose, download = download);
 
 		};
 		
