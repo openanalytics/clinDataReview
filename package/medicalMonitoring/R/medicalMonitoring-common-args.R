@@ -6,7 +6,12 @@
 #' @param xLim,yLim Numeric vector of length 2 with limits for the x/y axes.
 #' @param idVar String with variable containing subject ID.
 #' @param idLab String with label for \code{idVar}.
-#' @param facetPars List with facetting parameters, passed to the facetting function.
+#' @param facetPars List with facetting parameters, 
+#' passed to the facetting function. Variables should be specified
+#' as character or formula.
+#' For 'wrap' facetting (\code{facetType} is 'wrap'), if the layout
+#' is not specified via \code{nrow}/\code{ncol}, 2 columns
+#' are used by default.
 #' @param lineVars List with parameters for the reference lines.
 #' @param hoverVars Character vector with variable(s) to be displayed in the hover,
 #' by default any position and aesthetic variables displayed in the plot.
@@ -43,6 +48,5 @@
 #' If not specified, a random id, as 'plotMonitoring[X]' is used.
 #' @param title String with title for the plot.
 #' @param titleExtra String with extra title for the plot (appended after \code{title}).
-#' @param width,height Width/height of the plot in pixels.
 #' @name medicalMonitoring-common-args
 NULL

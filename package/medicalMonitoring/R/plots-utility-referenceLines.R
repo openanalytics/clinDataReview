@@ -1,19 +1,3 @@
-#' Get facetting variables from facettin parameters.
-#' @inheritParams medicalMonitoring-common-args
-#' @return Character vector with facetting variable
-#' @author Laure Cougnaud
-#' @export
-getFacetVars <- function(facetPars = NULL){
-	
-	facetVars <- lapply(facetPars[c("facets", "rows", "cols")], function(par)
-		if(inherits(par, "formula"))	all.vars(par)	else	par
-	)
-	facetVars <- unique(unlist(facetVars))
-	
-	return(facetVars)
-	
-}
-
 #' Add reference (horizontal/vertical/diagonal) lines
 #' to a medical monitoring plot.
 #' @inheritParams medicalMonitoring-common-args

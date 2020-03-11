@@ -48,10 +48,6 @@ barplotMonitoring(
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
 
-\item{width}{Width/height of the plot in pixels.}
-
-\item{height}{Width/height of the plot in pixels.}
-
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
 by default any position and aesthetic variables displayed in the plot.}
 

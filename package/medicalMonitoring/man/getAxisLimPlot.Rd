@@ -26,7 +26,12 @@ getAxisLimPlot(
 
 \item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
-\item{facetPars}{List with facetting parameters, passed to the facetting function.}
+\item{facetPars}{List with facetting parameters, 
+passed to the facetting function. Variables should be specified
+as character or formula.
+For 'wrap' facetting (\code{facetType} is 'wrap'), if the layout
+is not specified via \code{nrow}/\code{ncol}, 2 columns
+are used by default.}
 
 \item{refLineData}{Data used for the reference lines, as
 output of the \code{\link{getDataReferenceLines}} function.}

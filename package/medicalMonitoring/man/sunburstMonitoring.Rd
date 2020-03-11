@@ -55,10 +55,6 @@ among others: 'relative' (default), or 'total' (only if sum(child) <= to parent)
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
 
-\item{width}{Width/height of the plot in pixels.}
-
-\item{height}{Width/height of the plot in pixels.}
-
 \item{pathVar}{String with variable of \code{data} containing hyperlinks 
 with path to the subject-specific report, formatted as: \cr
 \preformatted{<a href="./path-to-report">label</a>}.\cr 

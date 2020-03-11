@@ -1,5 +1,7 @@
 #' Scatterplot of variables of interest for medical monitoring.
 #' @param data Data.frame with input data.
+#' @param facetPars List with facetting parameters, passed to the facetting function.
+
 #' @param xLab String with label for \code{xVar}.
 #' @param yLab String with label for \code{xVar}.
 #' @param aesPointVar List with specification of aesthetic variable(s),
@@ -131,6 +133,10 @@ staticScatterplotMonitoring <- function(
 	
 	# facetting:
 	if(length(facetPars) > 0){
+		
+		if(facetType == "wrap")
+			facetPars <- setFacetLayoutWrap(data = dataContent, facetPars = facetPars)
+		
 		facetFct <- get(paste("facet", facetType, sep = "_"))
 		gg <- gg + do.call(facetFct, facetPars)
 	}

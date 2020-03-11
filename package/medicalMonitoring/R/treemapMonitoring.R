@@ -62,6 +62,14 @@ treemapMonitoring <- function(
 		hoverByVar = idVar
 	)
 	
+	# get plot dim
+	dimPlot <- getSizePlotMonitoring(
+		width = width, height = height,
+		legend = FALSE
+	)
+	width <- unname(dimPlot["width"])
+	height <- unname(dimPlot["height"])
+	
 	# create interactive plot:
 	pl <- plot_ly(
 		data = dataSharedData, 

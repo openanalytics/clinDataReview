@@ -18,7 +18,12 @@
 
 \item{idLab}{String with label for \code{idVar}.}
 
-\item{facetPars}{List with facetting parameters, passed to the facetting function.}
+\item{facetPars}{List with facetting parameters, 
+passed to the facetting function. Variables should be specified
+as character or formula.
+For 'wrap' facetting (\code{facetType} is 'wrap'), if the layout
+is not specified via \code{nrow}/\code{ncol}, 2 columns
+are used by default.}
 
 \item{lineVars}{List with parameters for the reference lines.}
 
@@ -65,8 +70,6 @@ If not specified, a random id, as 'plotMonitoring[X]' is used.}
 \item{title}{String with title for the plot.}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
-
-\item{width, height}{Width/height of the plot in pixels.}
 }
 \description{
 Common arguments for the functions of the medicalMonitoring package

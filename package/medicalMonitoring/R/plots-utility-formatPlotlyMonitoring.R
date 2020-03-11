@@ -44,6 +44,18 @@ formatPlotlyMonitoring <- function(
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
+	# change plotly default on click event in the legend
+	# single click: selected item is visible
+	# double click: select item is hidden
+	# plotly default is to display all excepted item when clicked on a legend
+	pl <- pl %>% layout(
+		legend = 
+			list(
+				itemclick = "toggleothers",
+				itemdoubleclick = "toggle"
+			)
+	)
+
 	# turn-off selection by double-clicking on the graph
 	pl <- pl %>% highlight(on = highlightOn, off = highlightOff)
 	

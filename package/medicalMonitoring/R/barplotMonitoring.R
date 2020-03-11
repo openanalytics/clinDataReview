@@ -51,6 +51,14 @@ barplotMonitoring <- function(
 		labelVars = labelVars
 	)
 	
+	# get plot dim
+	dimPlot <- getSizePlotMonitoring(
+		width = width, height = height,
+		legend = !is.null(colorVar)
+	)
+	width <- unname(dimPlot["width"])
+	height <- unname(dimPlot["height"])
+	
 	# use plotly rather than ggplot -> ggplotly implementation
 	# because 'label' used to extract path report is numeric
 	# rather than character vector with element when converted to ggplotly

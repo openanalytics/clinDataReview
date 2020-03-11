@@ -203,7 +203,7 @@ scatterplotMonitoring(
 	hoverVars = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
 	labelVars = labelVars,
 	xPars = list(breaks = visitLab, labels = names(visitLab)),
-	themePars = list(legend.position = "none"),
+#	themePars = list(legend.position = "none"),
 	title = paste("Actual value of", 
 		getLabelParamcd(paramcd = labParam, data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
 	),
@@ -242,7 +242,7 @@ scatterplotMonitoring(
 	xLab = getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
 	yLab = getLabelParamcd(paramcd = "ALB", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
 	aesPointVar = list(color = "USUBJID"),
-	themePars = list(legend.position = "none"),
+#	themePars = list(legend.position = "none"),
 	facetPars = list(facets = ~ VISIT),
 	labelVars = labelVars,
 	pathVar = "patientProfilePath",
