@@ -479,6 +479,61 @@ A barplot visualizes the counts for one single variable in a specific order.
 	
 ```
 
+### Multiple visualizations in a loop
+
+To include multiple medical monitoring visualizations (with or without attached table)
+in a loop (a.k.a in the same _Rmarkdown_ chunk), the list of visualizations
+should be passed to the `knitPrintListObjects` function of the `glpgUtilityFct`
+package.
+
+```{r lab-profile-loop, results = "asis"}
+
+	# consider only restricted set of lab parameters
+	dataPlot <- subset(dataLB, LBCAT == "SPECIAL CHEMISTRY")
+
+	# link to patient profiles
+	dataPlot$patientProfilePath <- paste0(
+		"patientProfiles/subjectProfile-", 
+		sub("/", "-", dataPlot$USUBJID), ".pdf"
+	)
+	
+	# 1) create plot+table for each laboratory parameter:
+	library(plyr) # for ddply
+	plotsLab <- dlply(dataPlot, "LBTESTCD", function(dataLBParam){
+				
+		paramcd <- unique(dataLBParam$LBTESTCD)
+			
+		scatterplotMonitoring(
+			data = dataLBParam, 
+			xVar = "LBDY", yVar = "LBSTRESN",
+			aesPointVar = list(color = "ACTARM"),
+			aesLineVar = list(group = "USUBJID", color = "ACTARM"),
+			labelVars = labelVars,
+			title = paste("Actual value of", 
+				getLabelParamcd(paramcd = paramcd, data = dataLBParam, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+			),
+			# include link to patient profiles:
+			pathVar = "patientProfilePath",
+			table = TRUE, 
+			# important: each plot should have an unique ID!
+			# for unique relationship of interactivity between plot <-> table
+			id = paste("labProfileLoop", paramcd, sep = "-"),
+			verbose = TRUE
+		)
+			
+	})
+
+	# include this output in the report:
+	library(glpgUtilityFct)
+	listLabels <- getLabelParamcd(paramcd = names(plotsLab), data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+	knitPrintListObjects(
+		xList = plotsLab, 
+		generalLab = "lab-profile-loop",
+		titles = listLabels, titleLevel = 4
+	)
+
+```
+
 # Appendix
 
 ## Session information
