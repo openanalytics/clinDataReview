@@ -105,9 +105,9 @@ includeInButton <- function(
 	)
 	
 	# create content
-	btnContent <- div(id = id, class= "collapse buttonArrow", input)
+	btnContent <- div(class = "row", div(id = id, class= "collapse buttonArrow", input))
 	
-	res <- tagList(btn, btnContent, br(), br(), br())
+	res <- tagList(btn, btnContent, br(), br(), br(), br())
 	
 	return(res)
 	

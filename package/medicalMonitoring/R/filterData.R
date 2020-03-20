@@ -32,7 +32,8 @@ filterData <- function(
 	data, 
 	filters, 
 	keepNA = TRUE, returnAll = FALSE,
-	verbose = FALSE){
+	verbose = FALSE,
+	labelVars = NULL){
 	
 	# if multiple filters are specified:
 	# data is successively filtered
@@ -49,7 +50,8 @@ filterData <- function(
 				# extract filtered data
 				dataCur <- filterDataSingle(
 					data = data, filters = filterCur, 
-					returnAll = TRUE
+					keepNA = keepNA,
+					returnAll = TRUE, labelVars = labelVars
 				)
 				
 				# extract operator, 'AND' if not specified:
@@ -89,7 +91,8 @@ filterData <- function(
 			data = data,
 			filters = filters, 
 			keepNA = keepNA,
-			returnAll = returnAll
+			returnAll = returnAll,
+			labelVars = labelVars
 		)
 		msg <- attr(res, "msg")
 			
@@ -120,11 +123,12 @@ filterData <- function(
 filterDataSingle <- function(data,
 	filters, 
 	keepNA = TRUE,
-	returnAll = FALSE){
+	returnAll = FALSE,
+	labelVars = NULL){
 		
 	# variable used to filter:
 	var <- filters$var
-	varST <- sQuote(var)
+	varST <- paste0(getLabelVar(var = var, data = dataAnnot, labelVars = labelVars), " (", sQuote(var), ")")
 	if(!var %in% colnames(data)){
 		warning(paste("Data is not filtered based on the variable:", varST,
 			"because", varST, "is not available in the input data."))

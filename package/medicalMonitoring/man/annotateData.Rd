@@ -4,7 +4,14 @@
 \alias{annotateData}
 \title{Annotate a SDTM dataset.}
 \usage{
-annotateData(data, dataPath = ".", annotations, subjectVar = "USUBJID")
+annotateData(
+  data,
+  dataPath = ".",
+  annotations,
+  subjectVar = "USUBJID",
+  verbose = FALSE,
+  labelVars = NULL
+)
 }
 \arguments{
 \item{data}{Data.frame with input data to annotate.}
@@ -15,10 +22,13 @@ annotateData(data, dataPath = ".", annotations, subjectVar = "USUBJID")
 \itemize{
 \item{string with standard annotation type, among:
 \itemize{
-\item{demographics: }{standard variables from the DM data are extracted}
+\item{demographics: }{standard variables from the demographics data (DM or ADSL) are extracted}
 \item{exposed_subjects: }{a logical variable: \code{EXFL} is added to \code{data},
-identifying exposed subjects, i.e. subjects included in the 'EX'
-dataset and with non empty and non missing: 'EXSTDTC' are considered}
+identifying exposed subjects, i.e. subjects included in the exposure dataset (EX/ADEX)
+dataset and with non empty and non missing start date ('EXSTDTC', 'STDY' or 'ASTDY')}
+\item{functional_groups_lab: }{a character variable: 'PARCATFCT' is added to \code{data}
+based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)
+}
 }
 }
 \item{list of custom annotation, with:
@@ -36,9 +46,19 @@ see \code{filters} parameter of \code{\link{filterData}}
 }}
 
 \item{subjectVar}{String with subject ID variable, 'USUBJID' by default.}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+in the current console.}
+
+\item{labelVars}{Named character vector containing variable labels of \code{data}.
+This will be updated with the labels of the extra annotation variables
+(in \code{attr(output, 'labelVars')}).}
 }
 \value{
-Annotated \code{data}
+Annotated \code{data}.
+If \code{labelVars} is specified, the output contains an 
+extra attribute: 'labelVars'
+containing updated \code{labelVars} (accessible via: in \code{attr(output, 'labelVars')}).
 }
 \description{
 Standard annotation variables are available via the 

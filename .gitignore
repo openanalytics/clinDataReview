@@ -13,3 +13,5 @@ testPackage/lib
 patientProfiles
 *.pdf
 *cache*
+MOMP
+*.zip

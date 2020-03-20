@@ -120,14 +120,6 @@ staticScatterplotMonitoring <- function(
 	if(length(labsArgs) > 0)
 		gg <- gg + do.call(labs, labsArgs)
 	
-	# add reference lines (if any)
-	gg <- addReferenceLinesMonitoringPlot(
-		gg = gg, 
-		data = dataContent, 
-		xVar = xVar, yVar = yVar, 
-		refLinePars = refLinePars, facetPars = facetPars
-	)
-	
 	if(!is.null(title))
 		gg <- gg + ggtitle(title)
 	
@@ -145,6 +137,14 @@ staticScatterplotMonitoring <- function(
 	gg <- gg + theme_bw()
 	if(length(themePars) > 0)
 		gg <- gg + do.call(theme, themePars)
+	
+	# add reference lines (if any)
+	gg <- addReferenceLinesMonitoringPlot(
+		gg = gg, 
+		data = dataContent, 
+		xVar = xVar, yVar = yVar, 
+		refLinePars = refLinePars, facetPars = facetPars
+	)
 	
 	return(gg)
 	

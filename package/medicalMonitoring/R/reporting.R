@@ -18,21 +18,21 @@
 #' @return String with Markdown header,
 #' to be included in R within \code{cat}.
 #' @export
-getMdHeader <- function(title, depth = 1, settings = NULL){
+getMdHeader <- function(title, level = 1, settings = NULL){
 	
 	if(!is.null(settings)){
 		
 		idxInput <- which(settings$rmd_files == knitr::current_input())
 		if(length(idxInput) > 0){
-			depthInput <- settings$rmd_file_depth[idxInput]
-			if(!is.null(depthInput) && !is.na(depthInput))
-				depth <- depthInput
+			levelInput <- settings$rmd_file_depth[idxInput]
+			if(!is.null(levelInput) && !is.na(levelInput))
+				level <- levelInput
 		}
 		
 	}
 	
 	headerST <- paste0("\n",
-		paste(rep("#", depth ),collapse =""),
+		paste(rep("#", level ),collapse =""),
 		" ", title, "\n"
 	)
 	
@@ -71,5 +71,69 @@ knit_print.medicalMonitoring <- function(x, ...){
 	
 	requireNamespace("htmltools")
 	htmltools::knit_print.shiny.tag.list(res)
+	
+}
+
+#' Include output from medical monitoring, or list 
+#' of such outputs in a Rmarkdown report.
+#' @param list List of medical monitoring plots,
+#' potentially nested.
+#' If nested, the list should be named by the different elements,
+#' separated by \code{sep}, e.g. 
+#' \code{list('group1.param1' = .., 'group1.param2' = ...)}.
+#' @param sep String with separator used to distinguish 
+#' different levels in the labels of the list.
+#' e.g. '\\.' by default.
+#' @param level Integer with base level for section,
+#' 1 by default.
+#' @param labelGeneral String with general label for the
+#' chunk.
+#' @return No returned value, the plots are included in the
+#' report.
+#' @author Laure Cougnaud
+#' @export
+knitPrintMedicalMonitoring <- function(
+	list, sep = "\\.", level = 1,
+	labelGeneral = "medicalMonitoring"){
+	
+	if(inherits(list, "medicalMonitoring")){
+		
+		knit_print(list)
+		
+	}else{
+	
+		listLabels <- strsplit(names(list), split = sep)
+		nLevels <- unique(sapply(listLabels, length))
+		if(length(nLevels) != 1)
+			stop("Issue in extraction of labels for the visualization.")
+		
+		if(nLevels == 1){
+			
+			knitPrintListObjects(
+				xList = list, 
+				generalLab = labelGeneral,
+				titles = names(list), 
+				titleLevel = level
+			)
+		
+		}else{
+			
+			labelLevelCur <- sapply(listLabels, "[[", 1)
+			for(label in unique(labelLevelCur)){
+				
+				# section header
+				cat(getMdHeader(title = label, level = level))
+				
+				# elements for current section
+				listEl <- list[which(labelLevelCur == label)]
+				names(listEl) <- sub("[^\\.]{1,}\\.(.+)", "\\1", names(listEl))
+				
+				knitPrintMedicalMonitoring(list = listEl, sep = sep, level = level+1)
+				
+			}
+			
+		}
+		
+	}
 	
 }

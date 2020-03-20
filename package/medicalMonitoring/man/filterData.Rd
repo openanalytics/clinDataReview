@@ -4,7 +4,14 @@
 \alias{filterData}
 \title{Filter dataset based on specified filters.}
 \usage{
-filterData(data, filters, keepNA = TRUE, returnAll = FALSE, verbose = FALSE)
+filterData(
+  data,
+  filters,
+  keepNA = TRUE,
+  returnAll = FALSE,
+  verbose = FALSE,
+  labelVars = NULL
+)
 }
 \arguments{
 \item{data}{Data.frame with data.}
@@ -41,6 +48,9 @@ containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.}
+
+\item{labelVars}{Named character vector containing variable labels,
+used by default for all labels in the plot.}
 }
 \value{
 Filtered \code{data}.

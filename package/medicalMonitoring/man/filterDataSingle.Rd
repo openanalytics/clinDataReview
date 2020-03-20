@@ -4,7 +4,13 @@
 \alias{filterDataSingle}
 \title{Filter data for a single filter}
 \usage{
-filterDataSingle(data, filters, keepNA = TRUE, returnAll = FALSE)
+filterDataSingle(
+  data,
+  filters,
+  keepNA = TRUE,
+  returnAll = FALSE,
+  labelVars = NULL
+)
 }
 \arguments{
 \item{data}{Data.frame with data.}
@@ -22,6 +28,9 @@ is returned.}
 \item{if TRUE: }{the full \code{data} is returned, with the extra column: 'keep',
 containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
 }}
+
+\item{labelVars}{Named character vector containing variable labels,
+used by default for all labels in the plot.}
 }
 \value{
 Updated \code{data}.

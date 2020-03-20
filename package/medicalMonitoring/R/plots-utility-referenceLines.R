@@ -209,15 +209,23 @@ getDataReferenceLines <- function(refLinePars, data, facetPars = NULL){
 		lineAesVar <- unlist(lineParAes[isLineAesVar])
 		
 		dataLineAes <- dataLineFix <- NULL
-		if(any(isLineAesVar)){ # variable used in aesthetic
+		
+		# variable used in aesthetic
+		if(any(isLineAesVar)){ 
 			varsLineAes <- c(lineAesVar, if(!is.null(facetPars))	facetVars)
 			dataLineAes <- unique(data[, varsLineAes, drop = FALSE])
+			# only keep records with non missing values in aesthetic var
+			dataLineAes <- dataLineAes[complete.cases(dataLineAes), ]
 		}
-		if(any(!isLineAesVar)){ # value used in aesthetic
+		
+		# value used in aesthetic
+		if(any(!isLineAesVar)){ 
 			dataLineFix <- as.data.frame(lineParAes[!isLineAesVar], stringsAsFactors = FALSE)
 			if(length(facetVars) > 0)
 				dataLineFix <- merge(x = unique(data[, facetVars, drop = FALSE]), y = dataLineFix, all.y = TRUE)
 		}
+		
+		# combine data if variable and value both specified
 		lineData <- if(!is.null(dataLineAes) && !is.null(dataLineFix)){
 			merge(x = dataLineFix, y = dataLineAes, all = TRUE, by = facetVars) # full join
 		}else	if(!is.null(dataLineAes)){

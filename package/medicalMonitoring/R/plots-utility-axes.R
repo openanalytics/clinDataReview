@@ -29,7 +29,8 @@ getAxisLimPlot <- function(data,
 		
 		if(!is.null(refLineData)){
 			refLineDataX <- if(length(facetVars) > 0){
-				merge(refLineDataAll, x, by = facetVars, all.x = TRUE, all.y = FALSE)
+				xToMerge <- unique(x[, facetVars, drop = FALSE])
+				merge(xToMerge, refLineDataAll, by = facetVars, all.x = TRUE, all.y = FALSE)
 			}else	refLineDataAll
 			xRefLine <- na.omit(refLineDataX$xintercept)
 			yRefLine <- na.omit(refLineDataX$yintercept)
@@ -42,10 +43,13 @@ getAxisLimPlot <- function(data,
 		
 	})
 
+	# free_y -> x-axis is fixed
 	if(scalePar %in% c("fixed", "free_y")){
 		axisLimits$xmin <- min(axisLimits$xmin)
 		axisLimits$xmax <- max(axisLimits$xmax)
 	}
+	
+	# free_x -> y-axis is fixed
 	if(scalePar %in% c("fixed", "free_x")){
 		axisLimits$ymin <- min(axisLimits$ymin)
 		axisLimits$ymax <- max(axisLimits$ymax)

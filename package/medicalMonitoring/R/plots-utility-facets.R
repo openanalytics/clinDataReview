@@ -81,7 +81,7 @@ getSizePlotMonitoring <- function(
 	gg = NULL,
 	legend = TRUE, legendPosition = "right"){
 	
-	widthDef <- 700
+	widthDef <- 800
 
 	# extract layout (in case facetting)
 	if(!is.null(gg)){
