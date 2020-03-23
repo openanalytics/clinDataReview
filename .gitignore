@@ -15,3 +15,5 @@ patientProfiles
 *cache*
 MOMP
 *.zip
+data/
+*.Rhistory
