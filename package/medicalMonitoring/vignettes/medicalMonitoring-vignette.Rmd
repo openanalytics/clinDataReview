@@ -21,13 +21,18 @@ with the convenient function: `getJsDepMedicalMonitoring()`.
 They should be specified as extra dependencies during the report creation
 (`extra_dependencies`) as in the code below:
 
+```{r inputParameters}
+
+createPatientProfiles <- FALSE # doesn't create patient profiles at each re-run
+
+```
+
 ```{r runReport, eval = FALSE}
 
 	library(medicalMonitoring)
 	
 	# run the report
 	# currently Js dep for plotly/table should be included manually when rendering the document
-	createPatientProfiles <- FALSE # doesn't create patient profiles at each re-run
 	rmarkdown::render(
 		input = "medicalMonitoring-vignette.Rmd",
 		output_format = glpgStyle::html_report(extra_dependencies = getJsDepMedicalMonitoring())
