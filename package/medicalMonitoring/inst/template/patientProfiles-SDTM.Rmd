@@ -147,20 +147,33 @@ output:
 
 ## Demographics
 
-```{r patientProfiles-formatData-DM, eval = ("DM" %in% names(dataAll))}
+```{r patientProfiles-formatData-DM, eval = (any(c("DM", "ADSL") %in% names(dataAll)))}
 
 	## define datasets and variables of interest:
 	
 	## demographic data
 	
+	dataDMName <- c(SDTM = "DM", ADaM = "ADSL")
+	dataDMName <- dataDMName[dataDMName %in% names(dataAll)]
+	
 	# data manipulation
-	dataDM <- dataAll$DM
+	dataDM <- dataAll[[dataDMName]]
 	
 	# input parameters
 	# -> you might include variables with (study-specific) baseline characteristics
-	varsDM <- c("SEX", "RACE", "COUNTRY", "ETHNIC", "SITEID", "AGE", "RFSTDTC")
+	varsDM <- c(
+		"ASEX", "SEX", 
+		"ARACE", "RACE", "CNTRY", 
+		"COUNTRY", 
+		"ETHNIC", "AETHNIC",
+		"SITEID", 
+		"AGE", "AAGE", "RFSTDTC"
+	)
+	varsDM <- intersect(varsDM, colnames(dataDM))
+	# remove 'var' if 'A[var]' is already present (e.g. AAGE is considered if AAGE and AGE both present)
+	varsDM <- varsDM[!paste0("A", varsDM) %in% varsDM]
 	
-	if("COUNTRY" %in% colnames(dataDM)){
+	if("COUNTRY" %in% varsDM){
 		library(countrycode)
 		dataDM[, "COUNTRY"] <- countrycode(
 			sourcevar = dataDM[, "COUNTRY"], 
@@ -168,19 +181,20 @@ output:
 			destination = "country.name"
 		)
 	}
-	dataDM[, "SEX"] <- with(dataDM,
-		ifelse(SEX %in% c("M", "F", "U"), c(M = "Male", F = "Female", U = "Unknown")[SEX], SEX)
-	)
+	if("SEX" %in% varsDM){
+		dataDM[, "SEX"] <- with(dataDM,
+			ifelse(SEX %in% c("M", "F", "U"), c(M = "Male", F = "Female", U = "Unknown")[SEX], SEX)
+		)
+	}
 	
-	if("ETHNIC" %in% colnames(dataDM))
+	if("ETHNIC" %in% varsDM)
 		dataDM$ETHNIC <- simpleCap(tolower(dataDM$ETHNIC), onlyFirst = FALSE)
 	
-	if("RACE" %in% colnames(dataDM))
+	if("RACE" %in% varsDM)
 		dataDM$RACE <- simpleCap(tolower(dataDM$RACE), onlyFirst = FALSE)
 	
 	# Date of randomization
 	# Study-specific baseline characteristics
-	varsDM <- intersect(varsDM, colnames(dataDM))
 	if(!is.null(dataDM) && length(varsDM) > 0)
 		patientProfileModules <- c(patientProfileModules, "dm")
 
@@ -198,51 +212,57 @@ output:
 
 ## Medical history
 
-```{r patientProfiles-formatData-MH, eval = ("MH" %in% names(dataAll))}
+```{r patientProfiles-formatData-MH, eval = (c("ADMH", "MH") %in% names(dataAll))}
 
 	## medical history
 	
+	dataMHName <- c(SDTM = "MH", ADaM = "ADMH")
+	dataMHName <- dataMHName[dataMHName %in% names(dataAll)]
+	
 	# data manipulation
-	dataMH <- dataAll$MH
+	dataMH <- dataAll[[dataMHName]]
 	
 	# variable with medical history term
 	# MHTERM from CRF
-	varMH <- if("MHDECOD" %in% colnames(dataMH)){
-		idxEmptyCode <- which(dataMH$MHDECOD == "")
-		if(length(idxEmptyCode)){
-			message(paste(length(idxEmptyCode), "empty MHDECOD are replaced by: 'MHTERM' or 'Unknown' is missing."))
+	varMHCode <- intersect(c("ADECOD", "MHDECOD"), colnames(dataMH))[1]
+	varMH <- if(varMHCode %in% colnames(dataMH)){
+		idxEmptyCode <- which(dataMH[[varMHCode]] == "")
+		if(length(idxEmptyCode) & "MHTERM" %in% colnames(dataMH)){
+			message(paste(length(idxEmptyCode), "empty", varMHCode, " are replaced by: 'MHTERM' or 'Unknown' is missing."))
 			dataMH[idxEmptyCode, "MHDECOD"] <- with(
 				dataMH[idxEmptyCode, ],
 				ifelse(MHTERM == "", "No MH term provided.", paste("(Not coded)", MHTERM))
 			)
 		}
-		"MHDECOD"
+		varMHCode
 	}else	if("MHTERM" %in% colnames(dataMH)){
 		dataMH[, "MHTERM"] <- with(dataMH, ifelse(MHTERM == "", "No MH term provided.", MHTERM))
 		"MHTERM"
 	}
 	
 	# if empty start data: 'Unknown'
-	dataMH[which(dataMH$MHSTDTC == ""), "MHSTDTC"] <- "Unknown"
+	varMHSTDT <- intersect(c("ASTDT", "MHSTDTC"), colnames(dataMH))[1]
+	dataMH[which(dataMH[, varMHSTDT] == ""), varMHSTDT] <- "Unknown"
 	
 	# build end versus End Relative to Reference Period (MHENRF)
-	dataMH$MHENDTC <- if("MHENDTC" %in% colnames(dataMH)){
-		with(dataMH, ifelse(MHENDTC != "", MHENDTC, "Unknown"))
+	varMHAENDT <- intersect(c("AENDT", "MHSTDTC"), colnames(dataMH))[1]
+	dataMH[[varMHAENDT]] <- if(length(varMHAENDT) > 0){
+		dataMH[which(dataMH[, varMHAENDT] == ""), varMHAENDT] <- "Unknown"
 	}else "Unknown"
-
+	dataMH[[varMHAENDT]] <- trimws(dataMH[[varMHAENDT]])
 	
 	# MHENRF: might be called differently MHENTPTRF
 	mhEndRefVar <- "MHENRF"
-	if(mhEndRefVar %in% colnames(dataMH))
-		warning("'MHENRF' not available in your MH data, you might want to specify it yourself.")
-	dataMH$MHENDTC <- trimws(with(dataMH,
-		paste0(
-			MHENDTC,
+	if(mhEndRefVar %in% colnames(dataMH)){
+		warning(sQuote(mhEndRefVar), " not available in your MH data, you might want to specify it yourself.")
+	}else{	
+		dataMH[[varMHAENDT]] <- paste0(
+			dataMH[[varMHAENDT]],
 			if(mhEndRefVar %in% colnames(dataMH))
-				ifelse(get(mhEndRefVar) != "", paste0(" (", tolower(get(mhEndRefVar)), ")"), "")
+				ifelse(dataMH[[mhEndRefVar]] != "", paste0(" (", tolower(dataMH[[mhEndRefVar]]), ")"), "")
 		)
-	))
-	labelVars[c("MHSTDTC", "MHENDTC")] <- c(
+	}
+	labelVars[c(varMHSTDT, varMHAENDT)] <- c(
 		"Start", 
 		paste0("End", if(mhEndRefVar %in% colnames(dataMH))
 			paste0("\n(", labelVars[mhEndRefVar], ")")
@@ -250,14 +270,14 @@ output:
 	)
 	
 	# issue for one character: '\xbd' of MHTERM
-	dataMH$MHTERM <- iconv(dataMH$MHTERM, from = "UTF-8", to = "Latin1", sub = '')
+	dataMH[[varMH]] <- iconv(dataMH[[varMH]], from = "UTF-8", to = "Latin1", sub = '')
 	if(any(is.na(dataMH$TERM)))	stop("Issue during conversion of MHTERM.")
 	
 	# input parameters:
-	paramValueVarMH <- c(varMH, "MHSTDTC", "MHENDTC")
+	paramValueVarMH <- c(varMH, varMHSTDT, varMHAENDT)
 	
 	# MHBODSYS/MHSOC Only include this variable when MHTERM is coded using MedDRA
-	paramGroupVarMH <- "MHSTDTC"
+	paramGroupVarMH <- varMHSTDT
 	
 	if(!is.null(dataMH) && !is.null(varMH) && length(paramValueVarMH) > 0 && length(paramGroupVarMH) > 0){
 		patientProfileModules <- c(patientProfileModules, "mh")
