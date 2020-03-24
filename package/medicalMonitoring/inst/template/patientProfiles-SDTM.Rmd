@@ -117,7 +117,7 @@ output:
 		`Missing start` = "\u25C0", `Missing end` = "\u25B6"
 	)
 	# convert date-flag variable to factor and returm warning if extra elements are present
-	formatDateFlagVariables <- function(x, type = c("start", "end")){
+	formatDateFlagVar <- function(x, type = c("start", "end")){
 		type <- match.arg(type)
 		# empty records should already be replaced by: 'Complete' in ADaM-like format
 		idxEmpty <- which(x == "")
@@ -134,6 +134,30 @@ output:
 		xFact <- factor(x, levels = levels)
 		return(list(x = xFact, palette = palette))
 	}
+	
+	# color/shape palette for laboratory abnormality
+	shapePaletteLabInd <- c(
+		`Low Panic` = '\u25BC', # big filled up-pointing arrow
+		LOW = '\u25BC', Low = '\u25BC', # filled down-pointing arrow
+		`Low Normal` = '\u25BC', # small filled down-pointing arrow
+		NORMAL = '\u25CF', Normal = '\u25CF', # filled circle
+		`High Normal` = '\u25B2', # small filled up-pointing arrow
+		HIGH = '\u25B2', High = '\u25B2', # filled up-pointing arrow
+		`High Panic` = '\u25B2', # big filled up-pointing arrow
+		Abnormal = '\u2605', # star
+		'NA' = '\u271A' # cross (3)
+	)
+	colorPaletteLabInd <- c(
+		`Low Panic` = unname(colorPalette["signalRed"]),
+		LOW = unname(colorPalette["orange"]), Low = unname(colorPalette["orange"]),
+		`Low Normal` = unname(colorPalette["yellow"]),
+		NORMAL = unname(colorPalette["green"]), Normal = unname(colorPalette["green"]),
+		`High Normal` = unname(colorPalette["yellow"]),
+		HIGH = unname(colorPalette["orange"]), High = unname(colorPalette["orange"]),
+		`High Panic` = unname(colorPalette["signalRed"]),
+		Abnormal = unname(colorPalette["signalRed"]),
+		'NA' = unname(colorPalette["grey"])
+	)
 
 ```
 
@@ -223,7 +247,9 @@ output:
 	
 	# Date of randomization
 	# Study-specific baseline characteristics
-	if(!is.null(dataDM) && length(varsDM) > 0)
+
+	hasDMData <- !is.null(dataDM) && length(varsDM) > 0
+	if(hasDMData)
 		patientProfileModules <- c(patientProfileModules, "dm")
 
 ```
@@ -253,14 +279,13 @@ output:
 	# variable with medical history term
 	# MHTERM from CRF
 	varMHCode <- intersect(c("ADECOD", "MHDECOD"), colnames(dataMH))[1]
-	varMH <- if(varMHCode %in% colnames(dataMH)){
+	varMH <- if(length(varMHCode) > 0){
 		idxEmptyCode <- which(dataMH[[varMHCode]] == "")
-		if(length(idxEmptyCode) & "MHTERM" %in% colnames(dataMH)){
+		if(length(idxEmptyCode) > 0){
 			message(paste(length(idxEmptyCode), "empty", varMHCode, " are replaced by: 'MHTERM' or 'Unknown' is missing."))
-			dataMH[idxEmptyCode, "MHDECOD"] <- with(
-				dataMH[idxEmptyCode, ],
-				ifelse(MHTERM == "", "No MH term provided.", paste("(Not coded)", MHTERM))
-			)
+			dataMH[idxEmptyCode, "MHDECOD"] <- if("MHTERM" %in% colnames(dataMH)){
+				with(dataMH[idxEmptyCode, ], ifelse(MHTERM == "", "No MH term provided.", paste("(Not coded)", MHTERM)))
+			}else	"Unknown"
 		}
 		varMHCode
 	}else	if("MHTERM" %in% colnames(dataMH)){
@@ -307,7 +332,10 @@ output:
 	# MHBODSYS/MHSOC Only include this variable when MHTERM is coded using MedDRA
 	paramGroupVarMH <- varMHSTDT
 	
-	if(!is.null(dataMH) && !is.null(varMH) && length(paramValueVarMH) > 0 && length(paramGroupVarMH) > 0){
+	hasMHData <- 
+		!is.null(dataMH) && !is.null(varMH) && 
+		length(paramValueVarMH) > 0 && length(paramGroupVarMH) > 0
+	if(hasMHData){
 		patientProfileModules <- c(patientProfileModules, "mh")
 	}else{
 		warning("Patient profiles not created for exposure data, because of missing variables.")
@@ -344,14 +372,13 @@ output:
 	
 	# CMDECOD empty if CM term not in dictionary
 	varCMCode <- intersect(c("ADECOD", "CMDECOD"), colnames(dataMH))[1]
-	varCM <- if(varCMCode %in% colnames(dataCM)){
+	varCM <- if(length(varCMCode) > 0){
 		idxEmptyCode <- which(dataCM[[varCMCode]] == "")
-		if(length(idxEmptyCode) > 0 & "CMTRT" %in% names(dataCM)){
+		if(length(idxEmptyCode) > 0){
 			message(paste(length(idxEmptyCode), "empty CMDECOD are replaced by: 'CMTRT' or 'Unknown' is missing."))
-			dataCM[idxEmptyCode, varCMCode] <- with(
-				dataCM[idxEmptyCode, ],
-				ifelse(CMTRT == "", "Unknown", paste("(Not coded)", CMTRT))
-			)
+			dataCM[idxEmptyCode, varCMCode] <- if("CMTRT" %in% names(dataCM)){
+				with(dataCM[idxEmptyCode, ], ifelse(CMTRT == "", "Unknown", paste("(Not coded)", CMTRT)))
+			}else	"Unknown"
 		}
 		varCMCode
 	}else	if("CMTERM" %in% colnames(dataCM)){
@@ -388,21 +415,21 @@ output:
 	# start/end flags variable
 	if("ASTFLG" %in% colnames(dataCM)){
 		timeStartShapeVarCM <- "ASTFLG"
-		flRes <- formatDateFlagVariables(x = dataCM[[timeStartShapeVarCM]], type = "start")
+		flRes <- formatDateFlagVar(x = dataCM[[timeStartShapeVarCM]], type = "start")
 		dataCM[[timeStartShapeVarCM]] <- flRes$x
 		shapePaletteCM <- flRes$palette
 	}else	timeStartShapeVarCM <- shapePaletteCM <- NULL
 	if("AENFLG" %in% colnames(dataCM)){
 		timeEndShapeVarCM <- "AENFLG"
-		flRes <- formatDateFlagVariables(x = dataCM[[timeEndShapeVarCM]], type = "end")
+		flRes <- formatDateFlagVar(x = dataCM[[timeEndShapeVarCM]], type = "end")
 		dataCM[[timeEndShapeVarCM]] <- flRes$x
 		shapePaletteCM <- c(shapePaletteCM, flRes$palette[!names(flRes$palette) %in% names(shapePaletteCM)])
 	}else	timeEndShapeVarCM <- NULL
 	
-	if(
+	hasCMData <- 
 		!is.null(dataCM) && !is.null(varCM) &&
 		length(timeStartVarCM) > 0 && length(timeEndVarCM) > 0
-	){
+	if(hasCMData){
 		patientProfileModules <- c(patientProfileModules, "cm")
 	}else{
 		warning("Patient profiles not created for concomitant medication data, because of missing variables.")
@@ -451,27 +478,6 @@ output:
 
 	dataEX <- dataAll[[dataEXName]]
 	
-	# input parameters for the report:
-	timeStartVarEX <- intersect(c("ASTDY", "EXSTDY"), colnames(dataEX))[1]
-	timeEndVarEX <- intersect(c("AENDY", "EXENDY"), colnames(dataEX))[1]
-	
-	# start/end flags variable
-	if("ASTFLG" %in% colnames(dataCM)){
-		timeStartShapeVarCM <- "ASTFLG"
-		flRes <- formatDateFlagVariables(x = dataCM[[timeStartShapeVarCM]], type = "start")
-		dataCM[[timeStartShapeVarCM]] <- flRes$x
-		shapePaletteCM <- flRes$palette
-	}else	timeStartShapeVarCM <- shapePaletteCM <- NULL
-	if("AENFLG" %in% colnames(dataCM)){
-		timeEndShapeVarCM <- "AENFLG"
-		flRes <- formatDateFlagVariables(x = dataCM[[timeEndShapeVarCM]], type = "end")
-		dataCM[[timeEndShapeVarCM]] <- flRes$x
-		shapePaletteCM <- c(shapePaletteCM, flRes$palette[!names(flRes$palette) %in% names(shapePaletteCM)])
-	}else	timeEndShapeVarCM <- NULL
-	
-	# The user might adapt for each own study (EXTRT)!! -> include warning
-	colorVarEX <- if("EXDOSFRM" %in% colnames(dataEX))	"EXDOSFRM"
-	
 	# ADaM-like:
 	paramVarEX <- if("AVALC" %in% colnames(dataEX)){
 		"AVALC"
@@ -481,8 +487,31 @@ output:
 	}
 	paramVarEX <- intersect(paramVarEX, colnames(dataEX))
 	
-	if(!is.null(dataEX) && length(paramVarEX) > 0 && 
-		all(c(timeStartVarEX, timeEndVarEX) %in% colnames(dataEX))){
+	# The user might adapt for each own study (EXTRT)!! -> include warning
+	colorVarEX <- if("EXDOSFRM" %in% colnames(dataEX))	"EXDOSFRM"
+	
+	# input parameters for the report:
+	timeStartVarEX <- intersect(c("ASTDY", "EXSTDY"), colnames(dataEX))[1]
+	timeEndVarEX <- intersect(c("AENDY", "EXENDY"), colnames(dataEX))[1]
+	
+	# start/end flags variable
+	if("ASTFLG" %in% colnames(dataEX)){
+		timeStartShapeVarEX <- "ASTFLG"
+		flRes <- formatDateFlagVar(x = dataEX[[timeStartShapeVarEX]], type = "start")
+		dataEX[[timeStartShapeVarEX]] <- flRes$x
+		shapePaletteEX <- flRes$palette
+	}else	timeStartShapeVarEX <- shapePaletteEX <- NULL
+	if("AENFLG" %in% colnames(dataEX)){
+		timeEndShapeVarEX <- "AENFLG"
+		flRes <- formatDateFlagVar(x = dataEX[[timeEndShapeVarEX]], type = "end")
+		dataEX[[timeEndShapeVarEX]] <- flRes$x
+		shapePaletteEX <- c(shapePaletteEX, flRes$palette[!names(flRes$palette) %in% names(shapePaletteEX)])
+	}else	timeEndShapeVarEX <- NULL
+	
+	hasEXData <- 
+		!is.null(dataEX) && length(paramVarEX) > 0 && 
+		length(timeStartVarEX) > 0 && length(timeEndVarEX) > 0
+	if(hasEXData){
 		patientProfileModules <- c(patientProfileModules, "ex")
 	}else{
 		warning("Patient profiles not created for exposure data, you might need to specify study-specific variables.")
@@ -495,8 +524,11 @@ output:
 		data = dataEX,
 		paramVar = paramVarEX,
 		timeStartVar = timeStartVarEX,
+		timeStartShapeVar = timeStartShapeVarEX,
 		timeEndVar = timeEndVarEX,
+		timeEndShapeVar = timeEndShapeVarEX,
 		colorVar = colorVarEX,
+		shapePalette = shapePaletteEX, shapeLab = "Date status", shapeSize = 4,
 		labelVars = labelVars,
 		title = "Treatment exposure",
 		timeAlign = FALSE,
@@ -509,52 +541,74 @@ output:
 
 ## Adverse events
 
-```{r patientProfiles-formatData-AE, eval = ("AE" %in% names(dataAll))}	
+```{r patientProfiles-formatData-AE, eval = any(c("ADAE", "AE") %in% names(dataAll))}	
 	
 	## adverse event
 	
+	dataAEName <- c(SDTM = "AE", ADaM = "ADAE")
+	dataAEName <- dataAEName[dataAEName %in% names(dataAll)]
+	
 	# data manipulation
-	dataAE <- dataAll$AE
+	dataAE <- dataAll[[dataAEName]]
 	
 	# variable with adverse event term
-	aeVar <- if("AEDECOD" %in% colnames(dataAE)){
-		idxEmptyCode <- which(dataAE$AEDECOD == "")
+	varAECode <- intersect(c("ADECOD", "AEDECOD"), colnames(dataAE))[1]
+	paramVarAE <- if(length(varAECode) > 0){
+		idxEmptyCode <- which(dataAE[[varAECode]] == "")
 		if(length(idxEmptyCode)){
-			message(paste(length(idxEmptyCode), "empty AEDECOD are replaced by: 'AETERM' or 'Unknown' is missing."))
-			dataAE[idxEmptyCode, "AEDECOD"] <- with(
-				dataAE[idxEmptyCode, ],
-				ifelse(AETERM == "", "No AE term available.", AETERM)
-			)
+			message(paste(length(idxEmptyCode), "empty", varAECode, "are replaced by: 'AETERM' or 'Unknown' is missing."))
+			dataAE[idxEmptyCode, varAECode] <- if("AETERM" %in% colnames(dataAE)){
+				with(dataAE[idxEmptyCode, ], ifelse(AETERM == "", "No AE term available.", AETERM))
+			}else	"Unknown"
 		}
-		"AEDECOD"
+		varAECode
 	}else	if("AETERM" %in% colnames(dataCM)){
 		"AETERM"
 	}
-	
-	# input parameters
-	paramVarAE <- aeVar 
-	timeStartVarAE <- "AESTDY"
-	timeEndVarAE <- "AEENDY"	
+
+	# start/end variables
+	timeStartVarAE <- intersect(c("ASTDY", "AESTDY"), colnames(dataAE))[1]
+	timeEndVarAE <- intersect(c("AENDY", "AEENDY"), colnames(dataAE))[1]
+
+	# start/end flags variable
+	if("ASTFLG" %in% colnames(dataAE)){
+		timeStartShapeVarAE <- "ASTFLG"
+		flRes <- formatDateFlagVar(x = dataAE[[timeStartShapeVarAE]], type = "start")
+		dataAE[[timeStartShapeVarAE]] <- flRes$x
+		shapePaletteAE <- flRes$palette
+	}else	timeStartShapeVarAE <- shapePaletteAE <- NULL
+	if("AENFLG" %in% colnames(dataAE)){
+		timeEndShapeVarAE <- "AENFLG"
+		flRes <- formatDateFlagVar(x = dataAE[[timeEndShapeVarAE]], type = "end")
+		dataAE[[timeEndShapeVarAE]] <- flRes$x
+		shapePaletteAE <- c(shapePaletteAE, flRes$palette[!names(flRes$palette) %in% names(shapePaletteAE)])
+	}else	timeEndShapeVarAE <- NULL
 	
 	# AESEV or AETOXGR: 1 -> 5 (CTCTAE), Mild/Moderate/Severe
-	colorVarAE <- colorPaletteAE <- NULL
-	indLevels <- as.character(1:5)
-	if("AETOXGR" %in% colnames(dataAE)){
-		colorVarAE <- "AETOXGR"
+	colorVarAE <- intersect(c("ASEV", "AETOXGR"), colnames(dataAE))[1]
+	colorPaletteAE <- colorPalette[c("green", "sand", "yellow", "orange", "signalRed", "grey")]
+	if(colorVarAE == "ASEV"){
+		indLevels <- c("Mild", "Moderate", "Severe", "Life-threatening", "Fatal")
+		dataAE[, colorVarAE] <- reorder(dataAE[, "ASEV"], dataAE[, "ASEVN"])
 		dataAE[, colorVarAE] <- convertAesVar(dataAE, var = colorVarAE)
+	}else	if(colorVarAE == "AETOXGR"){
+		indLevels <- as.character(1:5)
+		dataAE[, colorVarAE] <- convertAesVar(dataAE, var = colorVarAE)
+	}
+	if(length(colorVarAE) > 0){
 		if(all(unique(dataAE[, colorVarAE]) %in% c(NA, "", indLevels))){
 			# 1: mild, 2: moderate, 3: severe, 4: life-threatening/disable, 5: death-related to AE
-			colorPaletteAE <- setNames(
-				unname(colorPalette[c("green", "sand", "yellow", "orange", "signalRed", "grey")]),
-				c(indLevels, "NA")
-			)
+			colorPaletteAE <- setNames(unname(colorPaletteAE), c(indLevels, "NA"))
 			colorPaletteAE <- colorPaletteAE[names(colorPaletteAE) %in% c("NA", levels(dataAE[, colorVarAE]))]
 		}else	warning(paste("Laboratory", labelVars[colorVarAE],
 					"contain unexpected values, so standard color palette is not used."))
 	}
 	
-	if(!is.null(dataAE) && 
-		all(c(paramVarAE, timeStartVarAE, timeEndVarAE) %in% colnames(dataAE))){
+	hasAEData <- 
+		!is.null(dataAE) && 
+		!is.null(paramVarAE) &&
+		length(timeStartVarAE) > 0 && length(timeEndVarAE) > 0
+	if(hasAEData){
 		patientProfileModules <- c(patientProfileModules, "ae")
 	}else{
 		warning("Patient profiles not created for adverse events data, because of missing variables.")
@@ -567,8 +621,11 @@ output:
 		data = dataAE,
 		paramVar = paramVarAE,
 		timeStartVar = timeStartVarAE,
+		timeStartShapeVar = timeStartShapeVarAE,
 		timeEndVar = timeEndVarAE,
+		timeEndShapeVar = timeEndShapeVarAE,
 		colorVar = colorVarAE, colorPalette = colorPaletteAE,
+		shapePalette = shapePaletteAE, shapeLab = "Date status", shapeSize = 4,
 		labelVars = labelVars,
 		title = "Adverse events",
 		timeAlign = FALSE,
@@ -576,65 +633,73 @@ output:
 		subjectSubset = subjectSubset,
 		alpha = 0.8
 	)
+	
 	patientProfilesPlots <- c(patientProfilesPlots, list(AE = aePlots))
 ```
 
 ## Laboratory measurements
 
-```{r patientProfiles-formatData-LB, eval = ("LB" %in% names(dataAll))}	
+```{r patientProfiles-formatData-LB, eval = any(c("ADLB", "LB") %in% names(dataAll))}	
 	
 	# use spaghetti plot with symbols
 
 	## laboratory data
 	
+	dataLBName <- c(SDTM = "LB", ADaM = "ADLB")
+	dataLBName <- dataLBName[dataLBName %in% names(dataAll)]
+	
 	# data
-	dataLB <- dataAll$LB
+	dataLB <- dataAll[[dataLBName]]
 	
 	# input parameters
 	
 	# unique LB is defined by LBTEST*LBSPEC*LBMETHOD
-	# (for lab line plot: also consider LBSTRESU)
 	# check if the extra variables are required:
-	varsLB <- c("LBTEST", "LBSPEC", "LBMETHOD")
-	varsLB <- intersect(varsLB, colnames(dataLB))
-	i <- 1
-	while(i < length(varsLB)){
-		nEl <- nrow(unique(dataLB[, varsLB[seq_len(i)], drop  = FALSE]))
-		nElNext <- nrow(unique(dataLB[, varsLB[seq_len(i+1)]]))
-		if(nEl == nElNext){
-			varsLB <- setdiff(varsLB, varsLB[i+1])
-		}else	i <- i + 1
+	if("PARAM" %in% colnames(dataLB)){
+		varsLB <- "PARAM"
+	}else{
+		varsLB <- c("LBTEST", "LBSPEC", "LBMETHOD", "LBSTRESU")
+		varsLB <- intersect(varsLB, colnames(dataLB))
+		i <- 1
+		while(i < length(varsLB)){
+			nEl <- nrow(unique(dataLB[, varsLB[seq_len(i)], drop  = FALSE]))
+			nElNext <- nrow(unique(dataLB[, varsLB[seq_len(i+1)]]))
+			if(nEl == nElNext){
+				varsLB <- setdiff(varsLB, varsLB[i+1])
+			}else	i <- i + 1
+		}
 	}
 	
 	paramVarLB <- varsLB
-	timeVarLB <- "LBDY"
+	timeVarLB <- intersect(c("ADY", "LBDY"), colnames(dataLB))
 	
 	paramGroupVarLB <- intersect(c("LBCAT", "LBSCAT"), colnames(dataLB))
 	if(length(paramGroupVarLB) == 0)	paramGroupVarLB <- NULL
 	
-	colorVarLB <- shapeVarLB <- "LBNRIND";colorPaletteLB <- shapePaletteLB <- NULL
-	if(!is.null(dataLB) && length(paramVarLB) > 0 && timeVarLB %in% colnames(dataLB)){
+	colorVarLB <- shapeVarLB <- intersect(c("ANRIND", "LBNRIND"), colnames(dataLB))[1]
+	if(length(colorVarLB) > 0){
 		
+		dataLB[[colorVarLB]] <- convertAesVar(data = dataLB, var = colorVarLB)
+		levels <- levels(dataLB[[colorVarLB]])
+		levels[is.na(levels)] <- 'NA'
+		# add extra elements if present
+		xStandard <- intersect(names(colorPaletteLabInd), levels)
+		xExtra <- setdiff(na.omit(levels), names(colorPaletteLabInd))
+		if(length(xExtra) > 0)
+			warning("Flag variable contain non-standard elements:", toString(xExtra), ".")
+		levels <- c(xStandard, xExtra)
+		shapePaletteLB <- c(shapePaletteLabInd[xStandard], setNames(seq_along(xExtra), xExtra))
+		colorPaletteLB <- c(colorPaletteLabInd[xStandard], setNames(seq_along(xExtra), xExtra))
+		dataLB[[colorVarLB]] <- factor(dataLB[[colorVarLB]], levels = na.omit(levels), exclude = TRUE)
+		
+	}else	colorVarLB <- shapeVarLB <- colorPaletteLB <- shapePaletteLB <- NULL
+		
+	hasLBData <- !is.null(dataLB) && length(paramVarLB) > 0 && length(timeVarLB) > 0
+	if(hasLBData){
 		patientProfileModules <- c(patientProfileModules, "lb")
-		
-		indLevels <- c("LOW", "NORMAL", "HIGH")
-		if(colorVarLB %in% colnames(dataLB)){
-			if(all(unique(dataLB[, colorVarLB]) %in% c(NA, "", indLevels))){
-				dataLB[, colorVarLB] <- factor(
-					dataLB[, colorVarLB], 
-					levels = indLevels, 
-					exclude = NULL
-				)
-				shapePaletteLB <- c('LOW' = 25, 'NORMAL' = 19, 'HIGH' = 24, 'NA' = 3)
-				colorPaletteLB <- setNames(
-					unname(colorPalette[c("orange", "green", "orange", "grey")]),
-					c("LOW", "NORMAL", "HIGH", "NA")
-				)
-			}else	warning(paste("Laboratory", labelVars[colorVarLB],
-				"contain unexpected values, so standard order is not used."))
-		}else	colorVarLB <- shapeVarLB <- NULL
-		
-	}else	warning("Patient profiles not created for laboratory data, because of missing variables.")
+	}else{
+		warning("Patient profiles not created for laboratory data, because of missing variables.")
+	}
 	
 ```
 
