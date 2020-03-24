@@ -38,7 +38,7 @@ runPatientProfileTemplateReport <- function(
 	
 	# copy template file in output dir (for reproducibility)
 	pathTemplateNew <- file.path(outputDir, basename(pathTemplate))
-	file.copy(from = pathTemplate, to = outputDir)
+	file.copy(from = pathTemplate, to = outputDir, overwrite = TRUE)
 	
 	tmp <- rmarkdown::render(
 		input = pathTemplateNew,

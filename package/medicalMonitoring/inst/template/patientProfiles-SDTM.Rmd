@@ -109,6 +109,34 @@ output:
 
 ```
 
+```{r utilityFcts}
+
+	# In ADaM-like format, date flag variables are formatted as following:
+	shapePaletteDateFlag <- c(
+		Complete = '\u25A0', Partial = '\u25CF', 
+		`Missing start` = "\u25C0", `Missing end` = "\u25B6"
+	)
+	# convert date-flag variable to factor and returm warning if extra elements are present
+	formatDateFlagVariables <- function(x, type = c("start", "end")){
+		type <- match.arg(type)
+		# empty records should already be replaced by: 'Complete' in ADaM-like format
+		idxEmpty <- which(x == "")
+		x[idxEmpty] <- "Complete"
+		levels <- names(shapePaletteDateFlag)
+		palette <- shapePaletteDateFlag
+		# add extra elements if present
+		xExtra <- setdiff(unique(x), names(shapePaletteDateFlag))
+		if(length(xExtra) > 0){
+			warning("Flag variable contain non-standard elements:", toString(xExtra), ".")
+			levels <- c(levels, xExtra)
+			palette <- c(palette, setNames(seq_along(xExtra), xExtra))
+		}
+		xFact <- factor(x, levels = levels)
+		return(list(x = xFact, palette = palette))
+	}
+
+```
+
 ```{r patientProfiles-initialization}
 
 	patientProfileModules <- c()
@@ -304,50 +332,77 @@ output:
 
 ## Concomitant medications
 
-```{r patientProfiles-formatData-CM, eval = ("CM" %in% names(dataAll))}	
+```{r patientProfiles-formatData-CM, eval = any(c("ADCM", "CM") %in% names(dataAll))}	
 	
 	## concomitant medications
 
+	dataCMName <- c(SDTM = "CM", ADaM = "ADCM")
+	dataCMName <- dataCMName[dataCMName %in% names(dataAll)]
+	
 	# data manipulation
-	dataCM <- dataAll$CM
+	dataCM <- dataAll[[dataCMName]]
 	
 	# CMDECOD empty if CM term not in dictionary
-	varCM <- if("CMDECOD" %in% colnames(dataCM)){
-		idxEmptyCode <- which(dataCM$CMDECOD == "")
-		if(length(idxEmptyCode)){
+	varCMCode <- intersect(c("ADECOD", "CMDECOD"), colnames(dataMH))[1]
+	varCM <- if(varCMCode %in% colnames(dataCM)){
+		idxEmptyCode <- which(dataCM[[varCMCode]] == "")
+		if(length(idxEmptyCode) > 0 & "CMTRT" %in% names(dataCM)){
 			message(paste(length(idxEmptyCode), "empty CMDECOD are replaced by: 'CMTRT' or 'Unknown' is missing."))
-			dataCM[idxEmptyCode, "CMDECOD"] <- with(
+			dataCM[idxEmptyCode, varCMCode] <- with(
 				dataCM[idxEmptyCode, ],
 				ifelse(CMTRT == "", "Unknown", paste("(Not coded)", CMTRT))
 			)
 		}
-		"CMDECOD"
+		varCMCode
 	}else	if("CMTERM" %in% colnames(dataCM)){
 		dataCM[, "CMTERM"] <- with(dataMH, ifelse(CMTERM == "", "No CM term provided.", CMTERM))
 		"CMTERM"
 	}
-	if("CMDOSE" %in% colnames(dataAll)){
+
+	if("CMDOSE" %in% colnames(dataCM))
 		dataCM$CMDOSTXT <- prettyNum(dataCM$CMDOSE)
-	}
 	
 	colorVarCM <- if("CMCAT" %in% colnames(dataCM)){
 		dataCM$CMCAT <- with(dataCM, ifelse(CMCAT == "", "Unknown", CMCAT))
 		"CMCAT"
 	}
-	paramGroupVarCM <- if("CMINDC" %in% colnames(dataCM)){
-		dataCM$CMINDC <- with(dataCM, ifelse(CMINDC == "", "Unknown", CMINDC))
-		"CMINDC"
+	
+	varCMInd <- intersect(c("AINDC", "CMINDC"), colnames(dataCM))[1]
+	paramGroupVarCM <- if(length(varCMInd) > 0){
+		idxCMIndEmpty <- which(dataCM[[varCMInd]] == "")
+		dataCM[idxCMIndEmpty, varCMInd] <- "Unknown"
+		varCMInd
 	}
 	
 	# input parameters
 	# When CMDOSU == "Other" -> CMDOSUO (free text from CRF)
-	paramVarCM <- c(varCM, "CMDOSTXT", "CMDOSU", "CMDOSFRQ", "CMROUTE")
+	paramVarCM <- if("ADECODSP" %in% colnames(dataCM)){ 
+		"ADECODSP"
+	}else	c(varCM, "CMDOSTXT", "CMDOSU", "CMDOSFRQ", "CMROUTE")
 	paramVarCM <- intersect(paramVarCM, colnames(dataCM))
-	timeStartVarCM <- "CMSTDY"
-	timeEndVarCM <- "CMENDY"
 	
-	if(!is.null(dataCM) && !is.null(varCM) &&
-		all(c(timeStartVarCM, timeEndVarCM) %in% colnames(dataCM))){
+	# start/end variable
+	timeStartVarCM <- intersect(c("ASTDY", "CMSTDY"), colnames(dataCM))[1]
+	timeEndVarCM <- intersect(c("AENDY", "CMENDY"), colnames(dataCM))[1]
+	
+	# start/end flags variable
+	if("ASTFLG" %in% colnames(dataCM)){
+		timeStartShapeVarCM <- "ASTFLG"
+		flRes <- formatDateFlagVariables(x = dataCM[[timeStartShapeVarCM]], type = "start")
+		dataCM[[timeStartShapeVarCM]] <- flRes$x
+		shapePaletteCM <- flRes$palette
+	}else	timeStartShapeVarCM <- shapePaletteCM <- NULL
+	if("AENFLG" %in% colnames(dataCM)){
+		timeEndShapeVarCM <- "AENFLG"
+		flRes <- formatDateFlagVariables(x = dataCM[[timeEndShapeVarCM]], type = "end")
+		dataCM[[timeEndShapeVarCM]] <- flRes$x
+		shapePaletteCM <- c(shapePaletteCM, flRes$palette[!names(flRes$palette) %in% names(shapePaletteCM)])
+	}else	timeEndShapeVarCM <- NULL
+	
+	if(
+		!is.null(dataCM) && !is.null(varCM) &&
+		length(timeStartVarCM) > 0 && length(timeEndVarCM) > 0
+	){
 		patientProfileModules <- c(patientProfileModules, "cm")
 	}else{
 		warning("Patient profiles not created for concomitant medication data, because of missing variables.")
@@ -364,13 +419,16 @@ output:
 	cmPlots <- subjectProfileIntervalPlot(
 		data = dataCM,
 		paramVar = paramVarCM,
+		paramGroupVar = paramGroupVarCM,
 		timeStartVar = timeStartVarCM,
+		timeStartShapeVar = timeStartShapeVarCM,
 		timeEndVar = timeEndVarCM,
+		timeEndShapeVar = timeEndShapeVarCM,
 		colorVar = colorVarCM,
 		labelVars = labelVars,
 		title = "Concomitant medications",
 		timeTrans = timeTrans, timeExpand = expand_scale(mult = 0.01),
-		shapePalette = shapePalette, shapeLab = "Date status", shapeSize = 4,
+		shapePalette = shapePaletteCM, shapeLab = "Date status", shapeSize = 4,
 		timeAlign = FALSE,
 		subjectSubset = subjectSubset,
 		alpha = 0.8
@@ -382,20 +440,45 @@ output:
 
 ## Treatment exposure
 
-```{r patientProfiles-formatData-EX, eval = ("EX" %in% names(dataAll))}	
+```{r patientProfiles-formatData-EX, eval = (c("ADEX", "EX") %in% names(dataAll))}	
 	
 	## exposure data
 	
+	dataEXName <- c(SDTM = "EX", ADaM = "ADEX")
+	dataEXName <- dataEXName[dataEXName %in% names(dataAll)]
+	
 	# data manipulation
 
-	dataEX <- dataAll$EX
+	dataEX <- dataAll[[dataEXName]]
 	
 	# input parameters for the report:
-	timeStartVarEX <- "EXSTDY"
-	timeEndVarEX <- "EXENDY"
+	timeStartVarEX <- intersect(c("ASTDY", "EXSTDY"), colnames(dataEX))[1]
+	timeEndVarEX <- intersect(c("AENDY", "EXENDY"), colnames(dataEX))[1]
+	
+	# start/end flags variable
+	if("ASTFLG" %in% colnames(dataCM)){
+		timeStartShapeVarCM <- "ASTFLG"
+		flRes <- formatDateFlagVariables(x = dataCM[[timeStartShapeVarCM]], type = "start")
+		dataCM[[timeStartShapeVarCM]] <- flRes$x
+		shapePaletteCM <- flRes$palette
+	}else	timeStartShapeVarCM <- shapePaletteCM <- NULL
+	if("AENFLG" %in% colnames(dataCM)){
+		timeEndShapeVarCM <- "AENFLG"
+		flRes <- formatDateFlagVariables(x = dataCM[[timeEndShapeVarCM]], type = "end")
+		dataCM[[timeEndShapeVarCM]] <- flRes$x
+		shapePaletteCM <- c(shapePaletteCM, flRes$palette[!names(flRes$palette) %in% names(shapePaletteCM)])
+	}else	timeEndShapeVarCM <- NULL
+	
 	# The user might adapt for each own study (EXTRT)!! -> include warning
-	colorVarEX <- "EXDOSFRM"
-	paramVarEX <- c("EXDECOD", "EXROUTE", "EXDOSFRM", "EXDOSFRQ")
+	colorVarEX <- if("EXDOSFRM" %in% colnames(dataEX))	"EXDOSFRM"
+	
+	# ADaM-like:
+	paramVarEX <- if("AVALC" %in% colnames(dataEX)){
+		"AVALC"
+	# SDTM:
+	}else{
+		c("EXDECOD", "EXROUTE", "EXDOSFRM", "EXDOSFRQ")
+	}
 	paramVarEX <- intersect(paramVarEX, colnames(dataEX))
 	
 	if(!is.null(dataEX) && length(paramVarEX) > 0 && 
