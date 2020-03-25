@@ -60,8 +60,6 @@ output:
 		)
 	)
 	
-	# TODO: DECOD -> TERM prepended with: 'Not coded:'
-
 ```
 
 # Patient profiles
@@ -72,7 +70,7 @@ output:
 
 	knitr::opts_chunk$set(
 		# don't print code in the report
-		echo = TRUE, 
+		echo = FALSE, 
 		message = TRUE,
 		# stop document execution if error (not the default)
 		error = FALSE, # stop-on-error
@@ -86,7 +84,7 @@ output:
 
 
 
-```{r patientProfiles-loadData, cache = TRUE}
+```{r patientProfiles-loadData}
 
 	library(glpgUtilityFct)
 
@@ -109,7 +107,7 @@ output:
 
 ```
 
-```{r utilityFcts}
+```{r patientProfiles-palettes}
 
 	# In ADaM-like format, date flag variables are formatted as following:
 	shapePaletteDateFlag <- c(
@@ -148,7 +146,7 @@ output:
 		'NA' = '\u271A', # cross (3)
 		Unknown = '\u271A'
 	)
-	colorPaletteLabRind <- c(
+	colorPaletteRind <- c(
 		`Low Panic` = unname(colorPalette["signalRed"]),
 		LOW = unname(colorPalette["orange"]), Low = unname(colorPalette["orange"]),
 		`Low Normal` = unname(colorPalette["yellow"]),
@@ -163,18 +161,7 @@ output:
 
 ```
 
-```{r patientProfiles-initialization}
-
-	patientProfileModules <- c()
-	patientProfilesPlots <- list()
-
-```
-
-
 ```{r patientProfiles-inputParameters-extra}	
-	
-	# variables common to the interval modules
-	timeTrans <- getTimeTrans(type = "asinh-neg")
 	
 	# extract the subjects of interest for the visualization
 	subjectSubset <- NULL
@@ -199,9 +186,16 @@ output:
 	
 ```
 
+```{r patientProfiles-initialization}
+
+	patientProfileModules <- c()
+	patientProfilesPlots <- list()
+
+```
+
 ## Demographics
 
-```{r patientProfiles-formatData-DM, eval = (any(c("DM", "ADSL") %in% names(dataAll)))}
+```{r patientProfiles-formatData-DM, eval = any(c("DM", "ADSL") %in% names(dataAll))}
 
 	## define datasets and variables of interest:
 	
@@ -268,7 +262,7 @@ output:
 
 ## Medical history
 
-```{r patientProfiles-formatData-MH, eval = (c("ADMH", "MH") %in% names(dataAll))}
+```{r patientProfiles-formatData-MH, eval = any(c("ADMH", "MH") %in% names(dataAll))}
 
 	## medical history
 	
@@ -307,8 +301,8 @@ output:
 	dataMH[[varMHAENDT]] <- trimws(dataMH[[varMHAENDT]])
 	
 	# MHENRF: might be called differently MHENTPTRF
-	mhEndRefVar <- "MHENRF"
-	if(mhEndRefVar %in% colnames(dataMH)){
+	mhEndRefVar <- "MHENRTPT"
+	if(!mhEndRefVar %in% colnames(dataMH)){
 		warning(sQuote(mhEndRefVar), " not available in your MH data, you might want to specify it yourself.")
 	}else{	
 		dataMH[[varMHAENDT]] <- paste0(
@@ -406,7 +400,7 @@ output:
 	# input parameters
 	# When CMDOSU == "Other" -> CMDOSUO (free text from CRF)
 	paramVarCM <- if("ADECODSP" %in% colnames(dataCM)){ 
-		"ADECODSP"
+		c("ADECODSP", "CMROUTE")
 	}else	c(varCM, "CMDOSTXT", "CMDOSU", "CMDOSFRQ", "CMROUTE")
 	paramVarCM <- intersect(paramVarCM, colnames(dataCM))
 	
@@ -456,7 +450,10 @@ output:
 		colorVar = colorVarCM,
 		labelVars = labelVars,
 		title = "Concomitant medications",
-		timeTrans = timeTrans, timeExpand = expand_scale(mult = 0.01),
+		# To zoom in axis scale in study time frame
+		# (to avoid scale is focused on negative pre-study time frame for CM)
+		timeTrans = getTimeTrans(type = "asinh-neg"), 
+		timeExpand = expand_scale(mult = 0.01),
 		shapePalette = shapePaletteCM, shapeLab = "Date status", shapeSize = 4,
 		timeAlign = FALSE,
 		subjectSubset = subjectSubset,
@@ -469,7 +466,7 @@ output:
 
 ## Treatment exposure
 
-```{r patientProfiles-formatData-EX, eval = (c("ADEX", "EX") %in% names(dataAll))}	
+```{r patientProfiles-formatData-EX, eval = any(c("ADEX", "EX") %in% names(dataAll))}	
 	
 	## exposure data
 	
@@ -534,7 +531,6 @@ output:
 		labelVars = labelVars,
 		title = "Treatment exposure",
 		timeAlign = FALSE,
-		timeTrans = timeTrans,
 		subjectSubset = subjectSubset,
 		alpha = 0.8
 	)
@@ -631,7 +627,6 @@ output:
 		labelVars = labelVars,
 		title = "Adverse events",
 		timeAlign = FALSE,
-		timeTrans = timeTrans,
 		subjectSubset = subjectSubset,
 		alpha = 0.8
 	)
@@ -658,18 +653,19 @@ output:
 	# unique LB is defined by LBTEST*LBSPEC*LBMETHOD
 	# check if the extra variables are required:
 	if("PARAM" %in% colnames(dataLB)){
-		varsLB <- "PARAM"
+		varsLB <- c("PARAM")
 	}else{
-		varsLB <- c("LBTEST", "LBSPEC", "LBMETHOD", "LBSTRESU")
-		varsLB <- intersect(varsLB, colnames(dataLB))
-		i <- 1
-		while(i < length(varsLB)){
-			nEl <- nrow(unique(dataLB[, varsLB[seq_len(i)], drop  = FALSE]))
-			nElNext <- nrow(unique(dataLB[, varsLB[seq_len(i+1)]]))
-			if(nEl == nElNext){
-				varsLB <- setdiff(varsLB, varsLB[i+1])
-			}else	i <- i + 1
-		}
+		varsLB <- c("LBTEST", "LBSTRESU")
+	}
+	varsLB <- c(varsLB, "LBSPEC") # , "LBMETHOD"
+	varsLB <- intersect(varsLB, colnames(dataLB))
+	i <- 1
+	while(i < length(varsLB)){
+		nEl <- nrow(unique(dataLB[, varsLB[seq_len(i)], drop  = FALSE]))
+		nElNext <- nrow(unique(dataLB[, varsLB[seq_len(i+1)]]))
+		if(nEl == nElNext){
+			varsLB <- setdiff(varsLB, varsLB[i+1])
+		}else	i <- i + 1
 	}
 	
 	paramValueVarLB <- intersect(c("AVAL", "LBSTRESN"), colnames(dataLB))[1]
@@ -692,13 +688,13 @@ output:
 		
 		levels <- unique(dataLB[[colorVarLB]])
 		# add extra elements if present
-		xStandard <- intersect(names(colorPaletteLabRind), levels)
-		xExtra <- setdiff(na.omit(levels), names(colorPaletteLabRind))
+		xStandard <- intersect(names(colorPaletteRind), levels)
+		xExtra <- setdiff(na.omit(levels), names(colorPaletteRind))
 		if(length(xExtra) > 0)
 			warning("Flag variable contain non-standard elements:", toString(xExtra), ".")
 		levels <- c(xStandard, xExtra)
 		shapePaletteLB <- c(shapePaletteRind[xStandard], setNames(seq_along(xExtra), xExtra))
-		colorPaletteLB <- c(colorPaletteLabRind[xStandard], setNames(seq_along(xExtra), xExtra))
+		colorPaletteLB <- c(colorPaletteRind[xStandard], setNames(seq_along(xExtra), xExtra))
 		dataLB[[colorVarLB]] <- factor(dataLB[[colorVarLB]], levels = levels)
 		
 	}else	colorVarLB <- shapeVarLB <- colorPaletteLB <- shapePaletteLB <- NULL
@@ -724,6 +720,7 @@ output:
 		timeVar = timeVarLB,
 		colorVar = colorVarLB, colorPalette = colorPaletteLB,
 		shapeVar = shapeVarLB, shapePalette = shapePaletteLB,
+		shapeSize = 4,
 		labelVars = labelVars,
 		title = "Laboratory test measurements",
 		subjectSubset = subjectSubset,
@@ -738,7 +735,7 @@ output:
 
 	# use spaghetti plot with symbols
 
-	## laboratory data
+	## vital signs data
 	
 	dataVSName <- c(SDTM = "VS", ADaM = "ADVS")
 	dataVSName <- dataVSName[dataVSName %in% names(dataAll)]
@@ -753,7 +750,7 @@ output:
 	if("PARAM" %in% colnames(dataVS)){
 		varsVS <- "PARAM"
 	}else{
-		varsVS <- c("VSTEST", "VSPOS", "VSSTRESU")
+		varsVS <- c("VSTEST", "VSSTRESU") # VSLOC, "VSPOS"
 		varsVS <- intersect(varsVS, colnames(dataVS))
 		i <- 1
 		while(i < length(varsVS)){
@@ -774,7 +771,7 @@ output:
 	paramVarVS <- varsVS
 	timeVarVS <- intersect(c("ADY", "VSDY"), colnames(dataVS))[1]
 	
-	paramGroupVarVS <- intersect("VSCAT", colnames(dataVS))
+	paramGroupVarVS <- intersect(c("VSCAT", "VSSCAT"), colnames(dataVS))
 	if(length(paramGroupVarVS) == 0)	paramGroupVarVS <- NULL
 	
 	colorVarVS <- shapeVarVS <- intersect("ANRIND", colnames(dataVS))[1]
@@ -785,13 +782,13 @@ output:
 			dataVS[idxEmpty, colorVarVS] <- "Unknown"
 		levels <- unique(dataVS[[colorVarVS]])
 		# add extra elements if present
-		xStandard <- intersect(names(colorPaletteLabRind), levels)
-		xExtra <- setdiff(na.omit(levels), names(colorPaletteLabRind))
+		xStandard <- intersect(names(colorPaletteRind), levels)
+		xExtra <- setdiff(na.omit(levels), names(colorPaletteRind))
 		if(length(xExtra) > 0)
 			warning("Flag variable contain non-standard elements:", toString(xExtra), ".")
 		levels <- c(xStandard, xExtra)
 		shapePaletteVS <- c(shapePaletteRind[xStandard], setNames(seq_along(xExtra), xExtra))
-		colorPaletteVS <- c(colorPaletteLabRind[xStandard], setNames(seq_along(xExtra), xExtra))
+		colorPaletteVS <- c(colorPaletteRind[xStandard], setNames(seq_along(xExtra), xExtra))
 		dataVS[[colorVarVS]] <- factor(dataVS[[colorVarVS]], levels = levels)
 		
 	}else	colorVarVS <- shapeVarVS <- colorPaletteVS <- shapePaletteVS <- NULL
@@ -817,6 +814,7 @@ output:
 		timeVar = timeVarVS,
 		colorVar = colorVarVS, colorPalette = colorPaletteVS,
 		shapeVar = shapeVarVS, shapePalette = shapePaletteVS,
+		shapeSize = 4,
 		labelVars = labelVars,
 		title = "Vital signs",
 		subjectSubset = subjectSubset,
@@ -825,11 +823,102 @@ output:
 	patientProfilesPlots <- c(patientProfilesPlots, list(VS = vsPlots))
 ```
 
-<!-- TODO: add vital signs and ECG -->
+## ECG
 
-<!-- ECG with findings: event plot  -->
-<!-- EGTESTCD == "INTP": Interpretation from investigator: normal/abnormal -->
+```{r patientProfiles-formatData-EG, eval = any(c("ADEG", "EG") %in% names(dataAll))}	
 
+	# use spaghetti plot with symbols
+
+	## ECG data
+	
+	dataEGName <- c(SDTM = "EG", ADaM = "ADEG")
+	dataEGName <- dataEGName[dataEGName %in% names(dataAll)]
+	
+	# data
+	dataEG <- dataAll[[dataEGName]]
+	
+	# input parameters
+	
+	if("PARAM" %in% colnames(dataEG)){
+		varsEG <- "PARAM"
+	}else{
+		varsEG <- c("EGTEST", "EGPOS", "EGSTRESU")
+		varsEG <- intersect(varsEG, colnames(dataEG))
+		i <- 1
+		while(i < length(varsEG)){
+			nEl <- nrow(unique(dataEG[, varsEG[seq_len(i)], drop  = FALSE]))
+			nElNext <- nrow(unique(dataEG[, varsEG[seq_len(i+1)]]))
+			if(nEl == nElNext){
+				varsEG <- setdiff(varsEG, varsEG[i+1])
+			}else	i <- i + 1
+		}
+	}
+	
+	paramValueVarEG <- intersect(c("AVAL", "EGSTRESN"), colnames(dataEG))[1]
+	
+	# ADaM-like: reference range as defined in SAP
+	varsECGRange <- c("ANRLO", "ANRHI")
+	if(any(varsECGRange %in% colnames(dataEG))){
+		varExtra <- setdiff(varsECGRange, colnames(dataEG))
+		# ECG often doesn't have a lower limit
+		if(length(varExtra) > 0)	dataEG[[varExtra]] <- c(-Inf, +Inf)[match(varExtra, varsECGRange)]
+		paramValueRangeVarEG  <- varsECGRange
+	}else	paramValueRangeVarEG <- NULL
+	
+	paramVarEG <- varsEG
+	timeVarEG <- intersect(c("ADY", "EGDY"), colnames(dataEG))[1]
+	
+	paramGroupVarEG <- intersect(c("EGCAT", "EGSCAT"), colnames(dataEG))
+	if(length(paramGroupVarEG) == 0)	paramGroupVarEG <- NULL
+	
+	colorVarEG <- shapeVarEG <- intersect("ANRIND", colnames(dataEG))[1]
+	if(length(colorVarEG) > 0){
+		
+		idxEmpty <- which(dataEG[[colorVarEG]] == "")
+		if(length(idxEmpty) > 0)
+			dataEG[idxEmpty, colorVarEG] <- "Unknown"
+		levels <- unique(dataEG[[colorVarEG]])
+		# add extra elements if present
+		xStandard <- intersect(names(colorPaletteRind), levels)
+		xExtra <- setdiff(na.omit(levels), names(colorPaletteRind))
+		if(length(xExtra) > 0)
+			warning("Flag variable contain non-standard elements:", toString(xExtra), ".")
+		levels <- c(xStandard, xExtra)
+		shapePaletteEG <- c(shapePaletteRind[xStandard], setNames(seq_along(xExtra), xExtra))
+		colorPaletteEG <- c(colorPaletteRind[xStandard], setNames(seq_along(xExtra), xExtra))
+		dataEG[[colorVarEG]] <- factor(dataEG[[colorVarEG]], levels = levels)
+		
+	}else	colorVarEG <- shapeVarEG <- colorPaletteEG <- shapePaletteEG <- NULL
+		
+	hasEGData <- !is.null(dataEG) && 
+		length(paramVarEG) > 0 && length(paramValueVarEG) > 0 &&
+		length(timeVarEG) > 0
+	if(hasEGData){
+		patientProfileModules <- c(patientProfileModules, "eg")
+	}else{
+		warning("Patient profiles not created for electrocardiogram, because of missing variables.")
+	}
+	
+```
+
+```{r patientProfiles-createPatientProfiles-eg, eval = "eg" %in% patientProfileModules}
+	egPlots <- subjectProfileLinePlot(
+		data = dataEG,
+		paramValueVar = paramValueVarEG,
+		paramNameVar = paramVarEG,
+		paramValueRangeVar = paramValueRangeVarEG,
+		paramGroupVar = paramGroupVarEG,
+		timeVar = timeVarEG,
+		colorVar = colorVarEG, colorPalette = colorPaletteEG,
+		shapeVar = shapeVarEG, shapePalette = shapePaletteEG,
+		shapeSize = 4,
+		labelVars = labelVars,
+		title = "Electrocardiogram",
+		subjectSubset = subjectSubset,
+		alpha = 0.8
+	)
+	patientProfilesPlots <- c(patientProfilesPlots, list(EG = egPlots))
+```
 
 ## Creation of the subject profiles
 
@@ -842,5 +931,14 @@ pathsPatientProfiles <- createSubjectProfileReport(
 	outputFile = params$outputFile,
 	timeAlign = "all", timeAlignPerSubject = "all"
 )
+
+```
+
+# Session information
+
+```{r sessionInformation}
+
+	library(pander)
+	pander(sessionInfo())
 
 ```

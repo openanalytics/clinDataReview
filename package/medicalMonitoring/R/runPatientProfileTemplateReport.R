@@ -8,9 +8,12 @@
 #' @param batch (optional) String with batch name.
 #' @param author (optional) String with author name.
 #' @param overwrite Logical, if TRUE (FALSE by default)
-#' the results of a previous analysis are overwritten.
+#' the patient profile template is overwritten in the 
+#' output directory.
 #' @inheritParams filterData
 #' @return Character vector with output path.
+#' The patient profile(s) and the Rmd template
+#' are created at \code{outputFile}.
 #' @author Laure Cougnaud
 #' @importFrom rmarkdown render
 #' @export
@@ -35,13 +38,13 @@ runPatientProfileTemplateReport <- function(
 	if(!dir.exists(outputDir))	dir.create(outputDir, recursive = TRUE)
 	
 	pathTemplate <- system.file(
-		"template", "patientProfiles-SDTM.Rmd", 
+		"template", "patientProfiles-medicalMonitoring.Rmd", 
 		package = "medicalMonitoring"
 	)
 	
 	# copy template file in output dir (for reproducibility)
 	pathTemplateNew <- file.path(outputDir, basename(pathTemplate))
-	if(file.exists(pathTemplate)){
+	if(file.exists(pathTemplateNew) & !overwrite){
 		stop(
 			"Patient profiles template:", sQuote(basename(pathTemplate)), 
 			" already exists in output directory:",

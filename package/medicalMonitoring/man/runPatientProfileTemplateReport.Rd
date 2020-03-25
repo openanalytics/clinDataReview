@@ -6,6 +6,7 @@
 \usage{
 runPatientProfileTemplateReport(
   dataPath,
+  overwrite = FALSE,
   outputFile = "subjectProfile.pdf",
   study = "custom",
   batch = "X",
@@ -19,6 +20,10 @@ runPatientProfileTemplateReport(
 \arguments{
 \item{dataPath}{String with path to data.}
 
+\item{overwrite}{Logical, if TRUE (FALSE by default)
+the patient profile template is overwritten in the 
+output directory.}
+
 \item{outputFile}{(optional) String with name of output file,
 'subjectProfile.pdf' by default.}
 
@@ -30,6 +35,8 @@ runPatientProfileTemplateReport(
 }
 \value{
 Character vector with output path.
+The patient profile(s) and the Rmd template
+are created at \code{outputFile}.
 }
 \description{
 Currently template is only available for SDTM data format.
