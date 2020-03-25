@@ -18,3 +18,5 @@ MOMP
 data/
 *.Rhistory
 documentation
+*.md
+*.rds

@@ -13,6 +13,10 @@ params:
   subsetVar: NULL
   subsetValue: NULL
   subsetSample: NULL
+  subjectSortDataset: NULL
+  subjectSortVar: NULL
+  subjectSortDecreasing: FALSE
+  exportBatchSize: 5
 output:
   glpgStyle::html_report: default
 ---
@@ -82,7 +86,11 @@ output:
 	
 ```
 
+```{r patientProfiles-loadPackages}
 
+	library(patientProfilesVis)
+
+```
 
 ```{r patientProfiles-loadData}
 
@@ -99,15 +107,10 @@ output:
 
 ```
 
-```{r patientProfiles-loadLibraries}
+```{r patientProfiles-palettes}
 
-	library(patientProfilesVis)
 	library(glpgStyle)
 	colorPalette <- glpgColor(c("main", "extra", "highlight"))
-
-```
-
-```{r patientProfiles-palettes}
 
 	# In ADaM-like format, date flag variables are formatted as following:
 	shapePaletteDateFlag <- c(
@@ -161,7 +164,7 @@ output:
 
 ```
 
-```{r patientProfiles-inputParameters-extra}	
+```{r patientProfiles-subsetData}	
 	
 	# extract the subjects of interest for the visualization
 	subjectSubset <- NULL
@@ -823,7 +826,7 @@ output:
 	patientProfilesPlots <- c(patientProfilesPlots, list(VS = vsPlots))
 ```
 
-## ECG
+## Electrocardiogram
 
 ```{r patientProfiles-formatData-EG, eval = any(c("ADEG", "EG") %in% names(dataAll))}	
 
@@ -924,12 +927,20 @@ output:
 
 ```{r patientProfiles-createSubjectProfileReport, message = TRUE, warning = TRUE}
 
+# dataset used to sort the subjects for the export
+subjectSortData <- if(!is.null(params$subjectSortDataset))
+	dataAll[[params$subjectSortDataset]]
+
 pathsPatientProfiles <- createSubjectProfileReport(
 	listPlots = patientProfilesPlots, 
 	reportPerSubject = TRUE, 
 	verbose = TRUE,
 	outputFile = params$outputFile,
-	timeAlign = "all", timeAlignPerSubject = "all"
+	timeAlign = "all", timeAlignPerSubject = "all",
+	exportBatchSize = params$exportBatchSize,
+	subjectSortData = subjectSortData,
+	subjectSortVar = params$subjectSortVar,
+	subjectSortDecreasing = params$subjectSortDecreasing
 )
 
 ```
