@@ -135,8 +135,8 @@ output:
 		return(list(x = xFact, palette = palette))
 	}
 	
-	# color/shape palette for laboratory abnormality
-	shapePaletteLabInd <- c(
+	# color/shape palette for reference range indicator (abnormality lab/vs)
+	shapePaletteRind <- c(
 		`Low Panic` = '\u25BC', # big filled up-pointing arrow
 		LOW = '\u25BC', Low = '\u25BC', # filled down-pointing arrow
 		`Low Normal` = '\u25BC', # small filled down-pointing arrow
@@ -145,9 +145,10 @@ output:
 		HIGH = '\u25B2', High = '\u25B2', # filled up-pointing arrow
 		`High Panic` = '\u25B2', # big filled up-pointing arrow
 		Abnormal = '\u2605', # star
-		'NA' = '\u271A' # cross (3)
+		'NA' = '\u271A', # cross (3)
+		Unknown = '\u271A'
 	)
-	colorPaletteLabInd <- c(
+	colorPaletteLabRind <- c(
 		`Low Panic` = unname(colorPalette["signalRed"]),
 		LOW = unname(colorPalette["orange"]), Low = unname(colorPalette["orange"]),
 		`Low Normal` = unname(colorPalette["yellow"]),
@@ -156,7 +157,8 @@ output:
 		HIGH = unname(colorPalette["orange"]), High = unname(colorPalette["orange"]),
 		`High Panic` = unname(colorPalette["signalRed"]),
 		Abnormal = unname(colorPalette["signalRed"]),
-		'NA' = unname(colorPalette["grey"])
+		'NA' = unname(colorPalette["grey"]),
+		Unknown = unname(colorPalette["grey"])
 	)
 
 ```
@@ -670,8 +672,13 @@ output:
 		}
 	}
 	
+	paramValueVarLB <- intersect(c("AVAL", "LBSTRESN"), colnames(dataLB))[1]
+	
+	paramValueRangeVarLB <- intersect(c("LBSTNRLO", "LBSTNRHI"), colnames(dataLB))
+	if(length(paramValueRangeVarLB) != 2)	paramValueRangeVarLB <- NULL
+	
 	paramVarLB <- varsLB
-	timeVarLB <- intersect(c("ADY", "LBDY"), colnames(dataLB))
+	timeVarLB <- intersect(c("ADY", "LBDY"), colnames(dataLB))[1]
 	
 	paramGroupVarLB <- intersect(c("LBCAT", "LBSCAT"), colnames(dataLB))
 	if(length(paramGroupVarLB) == 0)	paramGroupVarLB <- NULL
@@ -679,22 +686,26 @@ output:
 	colorVarLB <- shapeVarLB <- intersect(c("ANRIND", "LBNRIND"), colnames(dataLB))[1]
 	if(length(colorVarLB) > 0){
 		
-		dataLB[[colorVarLB]] <- convertAesVar(data = dataLB, var = colorVarLB)
-		levels <- levels(dataLB[[colorVarLB]])
-		levels[is.na(levels)] <- 'NA'
+		idxEmpty <- which(dataLB[[colorVarLB]] == "")
+		if(length(idxEmpty) > 0)
+			dataLB[idxEmpty, colorVarLB] <- "Unknown"
+		
+		levels <- unique(dataLB[[colorVarLB]])
 		# add extra elements if present
-		xStandard <- intersect(names(colorPaletteLabInd), levels)
-		xExtra <- setdiff(na.omit(levels), names(colorPaletteLabInd))
+		xStandard <- intersect(names(colorPaletteLabRind), levels)
+		xExtra <- setdiff(na.omit(levels), names(colorPaletteLabRind))
 		if(length(xExtra) > 0)
 			warning("Flag variable contain non-standard elements:", toString(xExtra), ".")
 		levels <- c(xStandard, xExtra)
-		shapePaletteLB <- c(shapePaletteLabInd[xStandard], setNames(seq_along(xExtra), xExtra))
-		colorPaletteLB <- c(colorPaletteLabInd[xStandard], setNames(seq_along(xExtra), xExtra))
-		dataLB[[colorVarLB]] <- factor(dataLB[[colorVarLB]], levels = na.omit(levels), exclude = TRUE)
+		shapePaletteLB <- c(shapePaletteRind[xStandard], setNames(seq_along(xExtra), xExtra))
+		colorPaletteLB <- c(colorPaletteLabRind[xStandard], setNames(seq_along(xExtra), xExtra))
+		dataLB[[colorVarLB]] <- factor(dataLB[[colorVarLB]], levels = levels)
 		
 	}else	colorVarLB <- shapeVarLB <- colorPaletteLB <- shapePaletteLB <- NULL
 		
-	hasLBData <- !is.null(dataLB) && length(paramVarLB) > 0 && length(timeVarLB) > 0
+	hasLBData <- !is.null(dataLB) && 
+		length(paramVarLB) > 0 && length(paramValueVarLB) > 0 &&
+		length(timeVarLB) > 0
 	if(hasLBData){
 		patientProfileModules <- c(patientProfileModules, "lb")
 	}else{
@@ -704,19 +715,114 @@ output:
 ```
 
 ```{r patientProfiles-createPatientProfiles-lb, eval = "lb" %in% patientProfileModules}
-	lbPlots <- subjectProfileEventPlot(
+	lbPlots <- subjectProfileLinePlot(
 		data = dataLB,
-		paramVar = paramVarLB,
+		paramValueVar = paramValueVarLB,
+		paramNameVar = paramVarLB,
+		paramValueRangeVar = paramValueRangeVarLB,
 		paramGroupVar = paramGroupVarLB,
 		timeVar = timeVarLB,
 		colorVar = colorVarLB, colorPalette = colorPaletteLB,
 		shapeVar = shapeVarLB, shapePalette = shapePaletteLB,
 		labelVars = labelVars,
-		title = "Laboratory test measurements: reference range indicator",
+		title = "Laboratory test measurements",
+		subjectSubset = subjectSubset,
+		alpha = 0.8
+	)	
+	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
+```
+
+## Vital signs
+
+```{r patientProfiles-formatData-VS, eval = any(c("ADVS", "VS") %in% names(dataAll))}	
+
+	# use spaghetti plot with symbols
+
+	## laboratory data
+	
+	dataVSName <- c(SDTM = "VS", ADaM = "ADVS")
+	dataVSName <- dataVSName[dataVSName %in% names(dataAll)]
+	
+	# data
+	dataVS <- dataAll[[dataVSName]]
+	
+	# input parameters
+	
+	# unique LB is defined by LBTEST*LBSPEC*LBMETHOD
+	# check if the extra variables are required:
+	if("PARAM" %in% colnames(dataVS)){
+		varsVS <- "PARAM"
+	}else{
+		varsVS <- c("VSTEST", "VSPOS", "VSSTRESU")
+		varsVS <- intersect(varsVS, colnames(dataVS))
+		i <- 1
+		while(i < length(varsVS)){
+			nEl <- nrow(unique(dataVS[, varsVS[seq_len(i)], drop  = FALSE]))
+			nElNext <- nrow(unique(dataVS[, varsVS[seq_len(i+1)]]))
+			if(nEl == nElNext){
+				varsVS <- setdiff(varsVS, varsVS[i+1])
+			}else	i <- i + 1
+		}
+	}
+	
+	paramValueVarVS <- intersect(c("AVAL", "VSSTRESN"), colnames(dataVS))[1]
+	
+	# ADaM-like: reference range as defined in SAP
+	paramValueRangeVarVS <- intersect(c("ANRLO", "ANRHI"), colnames(dataVS))
+	if(length(paramValueRangeVarVS) != 2)	paramValueRangeVarVS <- NULL
+	
+	paramVarVS <- varsVS
+	timeVarVS <- intersect(c("ADY", "VSDY"), colnames(dataVS))[1]
+	
+	paramGroupVarVS <- intersect("VSCAT", colnames(dataVS))
+	if(length(paramGroupVarVS) == 0)	paramGroupVarVS <- NULL
+	
+	colorVarVS <- shapeVarVS <- intersect("ANRIND", colnames(dataVS))[1]
+	if(length(colorVarVS) > 0){
+		
+		idxEmpty <- which(dataVS[[colorVarVS]] == "")
+		if(length(idxEmpty) > 0)
+			dataVS[idxEmpty, colorVarVS] <- "Unknown"
+		levels <- unique(dataVS[[colorVarVS]])
+		# add extra elements if present
+		xStandard <- intersect(names(colorPaletteLabRind), levels)
+		xExtra <- setdiff(na.omit(levels), names(colorPaletteLabRind))
+		if(length(xExtra) > 0)
+			warning("Flag variable contain non-standard elements:", toString(xExtra), ".")
+		levels <- c(xStandard, xExtra)
+		shapePaletteVS <- c(shapePaletteRind[xStandard], setNames(seq_along(xExtra), xExtra))
+		colorPaletteVS <- c(colorPaletteLabRind[xStandard], setNames(seq_along(xExtra), xExtra))
+		dataVS[[colorVarVS]] <- factor(dataVS[[colorVarVS]], levels = levels)
+		
+	}else	colorVarVS <- shapeVarVS <- colorPaletteVS <- shapePaletteVS <- NULL
+		
+	hasVSData <- !is.null(dataVS) && 
+		length(paramVarVS) > 0 && length(paramValueVarVS) > 0 &&
+		length(timeVarVS) > 0
+	if(hasVSData){
+		patientProfileModules <- c(patientProfileModules, "vs")
+	}else{
+		warning("Patient profiles not created for vital signs, because of missing variables.")
+	}
+	
+```
+
+```{r patientProfiles-createPatientProfiles-vs, eval = "vs" %in% patientProfileModules}
+	vsPlots <- subjectProfileLinePlot(
+		data = dataVS,
+		paramValueVar = paramValueVarVS,
+		paramNameVar = paramVarVS,
+		paramValueRangeVar = paramValueRangeVarVS,
+		paramGroupVar = paramGroupVarVS,
+		timeVar = timeVarVS,
+		colorVar = colorVarVS, colorPalette = colorPaletteVS,
+		shapeVar = shapeVarVS, shapePalette = shapePaletteVS,
+		labelVars = labelVars,
+		title = "Vital signs",
 		subjectSubset = subjectSubset,
 		alpha = 0.8
 	)
-	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
+	patientProfilesPlots <- c(patientProfilesPlots, list(VS = vsPlots))
 ```
 
 <!-- TODO: add vital signs and ECG -->
