@@ -104,12 +104,23 @@ staticScatterplotMonitoring <- function(
 	
 	# axis specification
 	setAxis <- function(gg, trans, pars, lims, axis){
-		res <- if(trans != "identity" | length(pars) > 0){
-			argsScale <- c(list(trans = trans, limits = lims), pars)
+		if(trans != "identity"){
+			if("trans" %in% names(pars))
+				warning(paste0("'trans' in parameters for ", axis, " axis ",
+					"are ignored, because specified in dedicated '", axis, "Trans' parameter."))
+			pars$trans <- trans
+		}
+		if(!is.null(lims)){
+			if("limits" %in% names(pars))
+				warning(paste0("'limits' in parameters for ", axis, " axis",
+					 " are ignored, because specified in dedicated '", axis, "Lim' parameter."))
+			pars$limits <- lims
+		}
+		if(length(pars) > 0){
 			scaleFct <- get(paste("scale", axis, "continuous", sep = "_"))
-			gg <- gg + do.call(scaleFct, argsScale)
-		}else	gg
-		return(res)
+			gg <- gg + do.call(scaleFct, pars)
+		}
+		return(gg)
 	}
 	gg <- setAxis(gg = gg, trans = xTrans, pars = xPars, lims = xLim, axis = "x")
 	gg <- setAxis(gg = gg, trans = yTrans, pars = yPars, lims = yLim, axis = "y")
