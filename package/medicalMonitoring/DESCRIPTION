@@ -7,12 +7,13 @@ Author: Arne De Roeck, Laure Cougnaud
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring
   during a clinical trial.
-Imports: glpgUtilityFct, ggplot2, plotly, 
+Imports: 
+  glpgUtilityFct, ggplot2, plotly, 
   htmlwidgets, plyr, htmltools,
-  knitr, reshape2
+  knitr, reshape2, 
+  pander, patientProfilesVis, glpgStyle
 License: file LICENSE
 Suggests: 
-    pander,
     testthat,
     vdiffr,
     inTextSummaryTable
