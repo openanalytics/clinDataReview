@@ -17,8 +17,8 @@ runPatientProfileTemplateReport(
   subsetSample = NULL,
   subjectSortDataset = NULL,
   subjectSortVar = NULL,
-  subjectSortInvert = FALSE,
-  exportBatchSize = 5
+  subjectSortDecreasing = FALSE,
+  exportBatchSize = 10
 )
 }
 \arguments{
@@ -37,18 +37,18 @@ output directory.}
 
 \item{author}{(optional) String with author name.}
 
-\item{subjectSortDataset}{(optional) string with dataset used to sort
-the subjects for the export.}
+\item{subsetDataset, subsetVar, subsetValue, subsetSample}{Dataset, variable, corresponding value and random number of subjects
+to consider to subset subjects
+for which patient profiles should be created.}
 
-\item{subjectSortVar}{variable(s) of \code{data} indicating the order for the subjects in the report,
-by default same as \code{bookmarkVar}}
-
-\item{subjectSortInvert}{Logical, if TRUE (FALSE by default)
-subjects are sorted based on inverse order of \code{subjectSortVar}.}
+\item{subjectSortDataset, subjectSortVar, subjectSortDecreasing}{(optional) 
+String with dataset name, variable name by which the subjects should
+be sorted for the export, based on increasing value if \code{subjectSortDecreasing}
+is FALSE (TRUE by default).}
 
 \item{exportBatchSize}{Integer, number of subjects
 for which patient profiles should be created at the same time,
-5 by default (to optimize creation of patient profiles).}
+10 by default (to optimize creation of patient profiles).}
 }
 \value{
 Character vector with output path.

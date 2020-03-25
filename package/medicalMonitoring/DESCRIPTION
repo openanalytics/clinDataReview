@@ -11,7 +11,7 @@ Imports:
   glpgUtilityFct, ggplot2, plotly, 
   htmlwidgets, plyr, htmltools,
   knitr, reshape2, 
-  pander, patientProfilesVis, glpgStyle
+  pander, patientProfilesVis (>= 0.12.0), glpgStyle
 License: file LICENSE
 Suggests: 
     testthat,

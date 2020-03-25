@@ -10,7 +10,17 @@
 #' @param overwrite Logical, if TRUE (FALSE by default)
 #' the patient profile template is overwritten in the 
 #' output directory.
-#' @inheritParams filterData
+#' @param exportBatchSize Integer, number of subjects
+#' for which patient profiles should be created at the same time,
+#' 10 by default (to optimize creation of patient profiles).
+#' @param subjectSortDataset,subjectSortVar,subjectSortDecreasing (optional) 
+#' String with dataset name, variable name by which the subjects should
+#' be sorted for the export, based on increasing value if \code{subjectSortDecreasing}
+#' is FALSE (TRUE by default).
+#' @param subsetDataset,subsetVar,subsetValue,subsetSample 
+#' Dataset, variable, corresponding value and random number of subjects
+#' to consider to subset subjects
+#' for which patient profiles should be created.
 #' @return Character vector with output path.
 #' The patient profile(s) and the Rmd template
 #' are created at \code{outputFile}.
@@ -27,7 +37,11 @@ runPatientProfileTemplateReport <- function(
 	subsetDataset = NULL,
 	subsetVar = NULL,
 	subsetValue = NULL,
-	subsetSample = NULL
+	subsetSample = NULL,
+	subjectSortDataset = NULL,
+	subjectSortVar = NULL,
+	subjectSortDecreasing = FALSE,
+	exportBatchSize = 10
 	){
 	
 	# use absolute path for data (Rmd change wd)
@@ -67,7 +81,11 @@ runPatientProfileTemplateReport <- function(
 			subsetDataset = subsetDataset,
 			subsetVar = subsetVar,
 			subsetValue = subsetValue,
-			subsetSample = subsetSample
+			subsetSample = subsetSample,
+			subjectSortDataset = subjectSortDataset,
+			subjectSortVar = subjectSortVar,
+			subjectSortDecreasing = subjectSortDecreasing,
+			exportBatchSize = exportBatchSize
 		)
 	)
 	
