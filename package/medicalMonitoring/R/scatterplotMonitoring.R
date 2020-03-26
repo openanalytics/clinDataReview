@@ -78,9 +78,10 @@ scatterplotMonitoring <- function(
 	# remove records with missing x or y variable
 	idxNonMissing <- which(!(is.na(data[, xVar]) | is.na(data[, yVar])))
 	if(length(idxNonMissing) == 0){
-		stop(paste0("Empty dataset after filtering of missing values in", 
-			sQuote(xVar), "and", sQuote(yVar), ".")
+		warning(paste0("Empty dataset after filtering of missing values in ", 
+			sQuote(xVar), " and ", sQuote(yVar), ".")
 		)
+		return(invisible())
 	}
 	data <- data[idxNonMissing, ]
 	
