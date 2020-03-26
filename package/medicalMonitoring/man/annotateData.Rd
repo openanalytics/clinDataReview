@@ -26,7 +26,7 @@ annotateData(
 \item{exposed_subjects: }{a logical variable: \code{EXFL} is added to \code{data},
 identifying exposed subjects, i.e. subjects included in the exposure dataset (EX/ADEX)
 dataset and with non empty and non missing start date ('EXSTDTC', 'STDY' or 'ASTDY')}
-\item{functional_groups_lab: }{a character variable: 'PARCATFCT' is added to \code{data}
+\item{functional_groups_lab: }{a character variable: 'LBFCTGRP' is added to \code{data}
 based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)
 }
 }

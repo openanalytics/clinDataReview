@@ -13,7 +13,7 @@
 #' \item{exposed_subjects: }{a logical variable: \code{EXFL} is added to \code{data},
 #' identifying exposed subjects, i.e. subjects included in the exposure dataset (EX/ADEX)
 #' dataset and with non empty and non missing start date ('EXSTDTC', 'STDY' or 'ASTDY')}
-#' \item{functional_groups_lab: }{a character variable: 'PARCATFCT' is added to \code{data}
+#' \item{functional_groups_lab: }{a character variable: 'LBFCTGRP' is added to \code{data}
 #' based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)
 #' }
 #' }
@@ -90,8 +90,6 @@ annotateData <- function(
 	}
 	
 	if(is.character(annotations)){
-	
-		annotations <- match.arg(annotations, choices = c("demographics", "exposed_subjects"))
 		
 		switch(annotations,
 				
@@ -168,39 +166,43 @@ annotateData <- function(
 			'functional_groups_lab' = {
 				
 				varParam <- c("PARAMCD", "LBTESTCD")
-				varParam <- setdiff(varParam, colnames(data))
+				varParam <- intersect(varParam, colnames(data))[1]
 				
-				if(length(varParam) == 0)
-					stop("Functional lab annotation not added because no variable with laboratory parameter code is available in the data.")
-				varParam <- varParam[1]
+				if(length(varParam) == 0){
+					
+					warning("Functional lab annotation not added because no variable with laboratory parameter code is available in the data.")
 				
-				labGroups <- list(
-					"Renal function" = c("UREA","CREAT","CA","URATE","GFR"),
-					"Electrolytes" = c("SODIUM","K","BICARB","CL"),
-					"Liver function" = c("ALT","AST","ALP","CPK","BILDIR","BILI","PROT","ALB","HGB"),
-					"Lipids" = c("CHOL","HDL","LDL","TRIG"),
-					"Haematology" = c("BASO", "EOS", "HCT", "HGB", "LYM", "MCH", "MCHC", "MCV", "MONO", "NEUT", "PLAT", "RBC", "WBC")
-				)
-				labCodeToGroup <- setNames(rep(names(labGroups), times = sapply(labGroups, length)), unlist(labGroups))
-				labGroupData <- varParam[data[, varParam]]
-				labGroupData[is.na(labGroupData)] <- "Other"
+				}else{
 				
-				data$PARCATFCT <- factor(labGroupData)
-				
-				msgAnnot <- paste0("Data annotated with variable(s): ", 
-						getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar), ")",
-						" in the ", sQuote(annotDataset), " dataset."
-				)
-				if(verbose)	
-					message(
-						paste("Functional group is extracted based on standard naming of the ",
-							getLabelVar(var = varParam, data = annotData, labelVars = labelVarsAnnot), " (", sQuote(varParam), ").")
+					labGroups <- list(
+						"Renal function" = c("UREA","CREAT","CA","URATE","GFR"),
+						"Electrolytes" = c("SODIUM","K","BICARB","CL"),
+						"Liver function" = c("ALT","AST","ALP","CPK","BILDIR","BILI","PROT","ALB","HGB"),
+						"Lipids" = c("CHOL","HDL","LDL","TRIG"),
+						"Haematology" = c("BASO", "EOS", "HCT", "HGB", "LYM", "MCH", "MCHC", "MCV", "MONO", "NEUT", "PLAT", "RBC", "WBC")
 					)
+					labCodeToGroup <- setNames(rep(names(labGroups), times = sapply(labGroups, length)), unlist(labGroups))
+					labGroupData <- labCodeToGroup[data[, varParam]]
+					labGroupData[is.na(labGroupData)] <- "Other"
+					
+					labGroupsInData <- intersect(c(names(labGroups), "Other"), unique(labGroupData))
+					data$LBFCTGRP <- factor(labGroupData, levels = labGroupsInData)
+					
+					msgAnnot <- paste0("Functional group is extracted based on standard naming of the ",
+						getLabelVar(var = varParam, data = data, labelVars = labelVars), " (", 
+						sQuote(varParam), ").")
+					if(verbose)	message(msgAnnot)
+					
+					if(!is.null(labelVars))	labelVars <- c(labelVars, LBFCTGRP = "Functional group")
 				
-				if(!is.null(labelVars))	labelVars <- c(labelVars, PARCATFCT = "Functional group")
+				}
 				
-				
-			}
+			},
+			
+			stop("'annotations' should be one of: ", 
+				toString(sQuote(c("demographics", "exposed_subjects", "functional_groups_lab"))),
+				" or custom: contains a 'data'/'dataset' element."
+			)
 	
 		)
 		
