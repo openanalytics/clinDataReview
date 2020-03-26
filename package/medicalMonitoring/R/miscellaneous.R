@@ -45,7 +45,8 @@ getJsDepMedicalMonitoring <- function(){
 			name = name,
 			version = version,
 			src = srcDep,
-			script = list.files(srcDep)
+			script = list.files(srcDep,pattern = "\\.js$"),
+			stylesheet = list.files(srcDep,pattern = "\\.css$")
 		)
 	}
 	
@@ -60,7 +61,10 @@ getJsDepMedicalMonitoring <- function(){
 		getPackageJSDep(name = "FileSaver", version = "1.3.8"),
 		getPackageJSDep(name = "jszip", version = "3.2.2"),
 		getPackageJSDep(name = "jszip-utils", version = "0.1.0"),
-		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring"))
+		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring")),
+		getPackageJSDep(name = "jquery", version = "1.12.4"),
+		getPackageJSDep(name = "bootstrap", version = "3.3.7")
+		
 	)
 
 	return(htmlDep)
