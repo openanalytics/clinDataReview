@@ -83,7 +83,7 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' \code{list('group1.param1' = .., 'group1.param2' = ...)}.
 #' @param sep String with separator used to distinguish 
 #' different levels in the labels of the list.
-#' e.g. '\\.' by default.
+#' e.g. '.' by default.
 #' @param level Integer with base level for section,
 #' 1 by default.
 #' @param labelGeneral String with general label for the
@@ -93,7 +93,7 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' @author Laure Cougnaud
 #' @export
 knitPrintMedicalMonitoring <- function(
-	list, sep = "\\.", level = 1,
+	list, sep = ".", level = 1,
 	labelGeneral = "medicalMonitoring"){
 	
 	if(inherits(list, "medicalMonitoring")){
@@ -102,7 +102,8 @@ knitPrintMedicalMonitoring <- function(
 		
 	}else{
 	
-		listLabels <- strsplit(names(list), split = sep)
+		listLabels <- strsplit(names(list), split = sep, fixed = TRUE)
+		listLabels[which(names(list) == "")] <- list("")
 		nLevels <- unique(sapply(listLabels, length))
 		if(length(nLevels) != 1)
 			stop("Issue in extraction of labels for the visualization.")
