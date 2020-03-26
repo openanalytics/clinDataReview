@@ -1,5 +1,12 @@
 #' Filter dataset based on specified filters.
 #' 
+#' A dataset can be filtered:
+#' \itemize{
+#' with records containing only specified values 
+#' for a variable (\code{value} parameter)}, or values based on
+#' a function of the variable (\code{valueFct} parameter), e.g. maximum of the variable).
+#' \item{by groups (\code{varsBy} parameter)
+#' }
 #' **Note that by default, missing values in the filtering variable are retained
 #' (which differs from the default behaviour in R)**.
 #' To filter missing records, please use the \code{keepNA} parameter.
@@ -9,13 +16,17 @@
 #' \itemize{
 #' \item{'var': }{String with variable from \code{data} to filter on.}
 #' \item{'value': }{Character vector with values from \code{var} to consider.}
+#' \item{'valueFct': }{Function to be applied on \code{var} to extract value to consider}
 #' \item{'op': }{(optional) String with operator used to retain records from \code{value}.
 #' If not specified, the inclusion operator: '\%in\%' is considered, a.k.a
 #' records with \code{var} in \code{value} are retained.}
-#' \item{'rev': }{(optional) Logical, if TRUE (FALSE by default), records NOT fulfilling
-#' the specified condition are retained.}
+#' \item{'rev': }{(optional) Logical, if TRUE (FALSE by default), records with \code{var} NOT  are retained.}
 #' \item{'keepNA': }{(optional) Logical, if TRUE (by default), missing values in \code{var}
 #' are retained. If not specified, \code{keepNA} general parameter is used.}
+#' \item{'varsBy': }{(optional) Character vector with variables in \code{data} containing groups to filter by}
+#' \item{'varNew': }{(optional) String with new variable created, containing TRUE if
+#' condition is fullfilled and FALSE otherwise}
+#' \item{'labelNew': }{(optional) String with label for \code{varNew}}
 #' }
 #' If a list of filters is specified, the logical operator (see \code{\link[base]{Logic}})
 #' linking the different conditions
@@ -24,14 +35,20 @@
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' in the current console.
 #' @inheritParams filterDataSingle
-#' @return Filtered \code{data}.
+#' @return Filtered \code{data} if \code{returnAll} is FALSE (by default).
+#' Otherwise \code{data} with additional column: \code{keep},
+#' containing TRUE for records which fullfill the specified
+#' condition(s) or FALSE otherwise.
+#' The data contains also any new variable(s) 
+#' (\code{varNew}) specified in the \code{filters}.
 #' @example inst/examples/filterData-example.R
 #' @author Laure Cougnaud
 #' @export
 filterData <- function(
 	data, 
 	filters, 
-	keepNA = TRUE, returnAll = FALSE,
+	keepNA = TRUE, 
+	returnAll = FALSE,
 	verbose = FALSE,
 	labelVars = NULL){
 	
@@ -51,8 +68,11 @@ filterData <- function(
 				dataCur <- filterDataSingle(
 					data = data, filters = filterCur, 
 					keepNA = keepNA,
-					returnAll = TRUE, labelVars = labelVars
+					returnAll = TRUE, 
+					labelVars = labelVars
 				)
+				labelVars <- c(labelVars, attr(dataCur, "labelVars"))
+				labelVars <- labelVars[!duplicated(names(labelVars))]
 				
 				# extract operator, 'AND' if not specified:
 				if(iPar > 1){
@@ -77,7 +97,7 @@ filterData <- function(
 			}
 			iPar <- iPar + 1
 		}
-		msg <- paste(msg, "are retained.")
+		msg <- paste(msg, "are filtered.")
 		
 		# only keep filtered rows if 'returnAll' is FALSE
 		if(!returnAll)
@@ -95,10 +115,13 @@ filterData <- function(
 			labelVars = labelVars
 		)
 		msg <- attr(res, "msg")
+		labelVars <- attr(res, "labelVars")
 			
 	}
 	
 	attr(res, "msg") <- msg
+	attr(res, "labelVars") <- labelVars
+	
 	if(verbose)	message(msg)
 	
 	return(res)
@@ -118,6 +141,7 @@ filterData <- function(
 #' containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
 #' } 
 #' @inheritParams medicalMonitoring-common-args
+#' @importFrom plyr dlply
 #' @return Updated \code{data}.
 #' @author Laure Cougnaud
 filterDataSingle <- function(data,
@@ -125,10 +149,47 @@ filterDataSingle <- function(data,
 	keepNA = TRUE,
 	returnAll = FALSE,
 	labelVars = NULL){
+
+	# filter by group
+	if("varsBy" %in% names(filters)){
+		
+		inputArgs <- as.list(environment())
+		
+		varsBy <- filters$varsBy
+		
+		dataList <- dlply(data, varsBy, function(dataBy){
+			inputArgsBy <- inputArgs
+			inputArgsBy$filters$varsBy <- NULL # remove varsBy
+			inputArgsBy$data <- dataBy # consider data for specific group
+			do.call(filterDataSingle, inputArgsBy)
+		})
+
+		data <- do.call(rbind, dataList)
+		
+		# combine message across groups
+		msg <- gsub("[[:digit:]]{1,} records with ", "", sapply(dataList, attr, "msg"))
+		msg <- toString(Reduce(union, msg))
+		varsByST <- toString(paste0(getLabelVar(var = varsBy, data = data, labelVars = labelVars), " (", sQuote(varsBy), ")"))
+		msg <- paste(msg, "by", varsByST) 
+		attr(data, "msg") <- msg
+		
+		# combine labelVars
+		labelVarsNew <- Reduce(c, lapply(dataList, attr, "labelVars"))
+		labelVarsNew <- labelVarsNew[!duplicated(names(labelVarsNew))]
+		if(!"labelNew" %in% names(filters)){
+			newVars <- setdiff(names(labelVarsNew), names(labelVars))
+			labelVarsNew[newVars] <- paste(labelVarsNew[newVars], "by", varsByST) 
+		}
+		attr(data, "labelVars") <- labelVarsNew
+		
+		return(data)
+		
+	}
 		
 	# variable used to filter:
 	var <- filters$var
-	varST <- paste0(getLabelVar(var = var, data = dataAnnot, labelVars = labelVars), " (", sQuote(var), ")")
+	if(is.null(var))	stop("'var' used for filtering should be specified.")
+	varST <- paste0(getLabelVar(var = var, data = data, labelVars = labelVars), " (", sQuote(var), ")")
 	if(!var %in% colnames(data)){
 		warning(paste("Data is not filtered based on the variable:", varST,
 			"because", varST, "is not available in the input data."))
@@ -136,8 +197,14 @@ filterDataSingle <- function(data,
 	}
 		
 	# value used to filter
-	value <- filters$value
-	valueST <- toString(sQuote(value))
+	if("value" %in% names(filters)){
+		value <- filters$value
+		valueST <- toString(sQuote(value))
+	}else	if("valueFct" %in% names(filters)){
+		fct <- filters$valueFct
+		value <- match.fun(fct)(data[, var])
+		valueST <- toString(deparse(substitute(fct)))
+	}else	stop("'value' of interest or 'fct' to obtain it should be specified for filtering.")
 	
 	# operand: '%in%' by default
 	op <- filters$op
@@ -162,26 +229,34 @@ filterDataSingle <- function(data,
 	
 	# store all steps in a message string
 	msgNA <- paste(sum(isNA), "records with missing", varST)
+	varMsg <- paste0(varST, if(!rev)	" not", " ", op, " ", valueST)
 	msg <- paste0(
-		sum(!isKept), " records with ", varST, 
-		if(rev)	" not", " ",
-		op, " ", valueST,
+		sum(!isKept), " records with ", varMsg,
 		if(sum(isNA) > 0 & all(!is.na(value)))
-			ifelse(keepNAFilter, 
-				paste("(", msgNA, " are retained)"), 
-				paste0(" (including ", msgNA, ")")
-			)
+			paste0(" (", if(keepNAFilter)	"not ", "including", msgNA, ")")
 	)
 	
-	res <- if(returnAll){
+	# add a new variable with filtering
+	if("varNew" %in% names(filters)){
+		
+		varNew <- filters[["varNew"]]
+		if(varNew %in% names(data))
+			warning(sQuote(varNew), "is overwritten in the data.")
+		data[[varNew]] <- isKept
+		labelNew <- filters[["labelNew"]]
+		if(is.null(labelNew))	labelNew <- paste0(varMsg, if(keepNAFilter)	" (including missing)")
+		labelVars[varNew] <- labelNew
+		
+	# add variable: 'keep' with filtering
+	}else	if(returnAll){
 		data$keep <- isKept
-		data
-	}else{
-		# filter data
+	# filter data
+	}else{		
 		data <- data[which(isKept), ]
 	}
 
 	attr(data, "msg") <- msg
+	attr(data, "labelVars") <- labelVars
 	
 	return(data)
 	

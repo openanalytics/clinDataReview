@@ -5,6 +5,10 @@ data(SDTMDataPelican)
 dataLB <- SDTMDataPelican$LB
 dataDM <- SDTMDataPelican$DM
 dataEX <- SDTMDataPelican$EX
+dataAE <- SDTMDataPelican$AE
+
+data(labelVarsSDTMPelican)
+labelVars <- labelVarsSDTMPelican
 
 # standard annotations:
 # path to dataset should be specified via: 'pathData'
@@ -27,6 +31,29 @@ dataAnnotated <- annotateData(dataLB,
 	)
 head(subset(dataAnnotated, SEX == "F"), 1)
 head(subset(dataAnnotated, is.na(SEX)), 1)
+
+# worst-case scenario: add a new variable based on filtering condition
+dataAE$AESEV <- factor(dataAE$AESEV, levels = c('MILD', "MODERATE"))
+dataAEWC <- annotateData(
+	data = dataAE,
+	annotations = list(
+		vars = "WORSTINT", 
+		# create new variable: 'WORSTINT' 
+		# with TRUE if maximum toxicity grade per subject/test 
+		# (if multiple, they are all retained)
+		filters = list(
+			var = "AESEV", 
+			valueFct = function(x) x[which.max(as.numeric(x))],
+			varsBy = c("USUBJID", "AEDECOD"),
+			keepNA = FALSE,
+			varNew = "WORSTINT", 
+			labelNew = "worst-case"
+		)
+	),
+	labelVars = labelVars,
+	verbose = TRUE
+)
+attr(dataAEWC, "labelVars")["WORSTINT"]
 
 # multiple annotations:
 dataAnnotated <- annotateData(dataLB, 

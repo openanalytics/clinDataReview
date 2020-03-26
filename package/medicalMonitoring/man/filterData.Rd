@@ -21,13 +21,17 @@ Each filter should be a list containing:
 \itemize{
 \item{'var': }{String with variable from \code{data} to filter on.}
 \item{'value': }{Character vector with values from \code{var} to consider.}
+\item{'valueFct': }{Function to be applied on \code{var} to extract value to consider}
 \item{'op': }{(optional) String with operator used to retain records from \code{value}.
 If not specified, the inclusion operator: '\%in\%' is considered, a.k.a
 records with \code{var} in \code{value} are retained.}
-\item{'rev': }{(optional) Logical, if TRUE (FALSE by default), records NOT fulfilling
-the specified condition are retained.}
+\item{'rev': }{(optional) Logical, if TRUE (FALSE by default), records with \code{var} NOT  are retained.}
 \item{'keepNA': }{(optional) Logical, if TRUE (by default), missing values in \code{var}
 are retained. If not specified, \code{keepNA} general parameter is used.}
+\item{'varsBy': }{(optional) Character vector with variables in \code{data} containing groups to filter by}
+\item{'varNew': }{(optional) String with new variable created, containing TRUE if
+condition is fullfilled and FALSE otherwise}
+\item{'labelNew': }{(optional) String with label for \code{varNew}}
 }
 If a list of filters is specified, the logical operator (see \code{\link[base]{Logic}})
 linking the different conditions
@@ -53,9 +57,21 @@ in the current console.}
 used by default for all labels in the plot.}
 }
 \value{
-Filtered \code{data}.
+Filtered \code{data} if \code{returnAll} is FALSE (by default).
+Otherwise \code{data} with additional column: \code{keep},
+containing TRUE for records which fullfill the specified
+condition(s) or FALSE otherwise.
+The data contains also any new variable(s) 
+(\code{varNew}) specified in the \code{filters}.
 }
 \description{
+A dataset can be filtered:
+\itemize{
+with records containing only specified values 
+for a variable (\code{value} parameter)}, or values based on
+a function of the variable (\code{valueFct} parameter), e.g. maximum of the variable).
+\item{by groups (\code{varsBy} parameter)
+}
 **Note that by default, missing values in the filtering variable are retained
 (which differs from the default behaviour in R)**.
 To filter missing records, please use the \code{keepNA} parameter.

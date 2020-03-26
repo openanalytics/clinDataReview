@@ -20,13 +20,20 @@
 #' }
 #' \item{list of custom annotation, with:
 #' \itemize{
-#' \item{'dataset' (option 1): }{String with name of the annotation dataset,
+#' \item{annotation dataset, either:
+#' \item{'dataset': }{String with name of the annotation dataset,
 #'  e.g. 'ex' to import data from the file: '[dataset].sas7bdat'in \code{dataPath}}
-#' \item{'data' (option 2): }{Data.frame with annotation dataset}
+#' \item{'data': }{Data.frame with annotation dataset}
+#' \item{input \code{data} if 'data' and 'dataset' are not specified}
+#' }
 #' \item{'vars': }{Character vector with variables of interest from annotation dataset.
 #' If not specified, all variables of the dataset are considered.}
 #' \item{'filters': }{Filters for the annotation dataset, 
 #' see \code{filters} parameter of \code{\link{filterData}}
+#' \item{'varsBy': }{Character vector with variables used to merge input data and
+#' the annotation dataset. If not specified, \code{subjectVar} is used if
+#' an external annotation dataset, or the datasets are merged by rows otherwise.
+#' }
 #' }
 #' }
 #' }
@@ -57,7 +64,7 @@ annotateData <- function(
 	# if multiple annotations are specified: nested call
 	isNest <- ifelse(
 		is.list(annotations), 
-		!any(c("data", "dataset") %in% names(annotations)),
+		is.null(names(annotations)),
 		length(annotations) > 1
 	)
 	if(isNest){
@@ -208,32 +215,51 @@ annotateData <- function(
 		
 	}else{
 		
+		# annotation by:?
+		varsBy <- annotations[["varsBy"]]
+		
 		# extract annotation data
-		annotData <- annotations[["data"]]
-		annotDataset <- annotations[["dataset"]]
-		if(is.null(annotData)){
-			if(!is.null(annotDataset)){
-				annotDataPath <- file.path(dataPath, paste0(annotDataset, ".sas7bdat"))
-				annotDataAll <- loadDataADaMSDTM(annotDataPath, verbose = FALSE)
-				labelVarsAnnot <- attr(annotDataAll, "labelVars")
-				annotData <- annotDataAll[[1]]
-			}else	stop(
-						"Custom annotation data should be specified via the 'data' or 'dataset' element",
-						" within the 'annotation' list."
-					)
+		if("dataset" %in% names(annotations)){
+			
+			annotDataset <- annotations[["dataset"]]
+			annotDataPath <- file.path(dataPath, paste0(annotDataset, ".sas7bdat"))
+			annotDataAll <- loadDataADaMSDTM(annotDataPath, verbose = FALSE)
+			annotData <- annotDataAll[[1]]
+			labelVarsAnnot <- attr(annotDataAll, "labelVars")
+			
+			if(is.null(varsBy))	varsBy <- subjectVar
+			
+		}else if("data" %in% names(annotations)){
+			
+			annotDataset <- "custom"
+			annotData <- annotation$data
+			labelVarsAnnot <- getLabelVars(data = annotData)
+			
+			if(is.null(varsBy))	varsBy <- subjectVar
 			
 		}else{
-			annotDataset <- "custom"
-			labelVarsAnnot <- getLabelVars(data = annotData)
-		}
+			
+			annotDataset <- "current"
+			data$idAnnot <- seq_len(nrow(data))
+			annotData <- data
+			labelVarsAnnot <- labelVars
 
-		if(!subjectVar %in% colnames(annotData))
-			stop(sQuote(annotDataset), "data not imported because doesn't contain variable:", subjectVar, ".")
+			if(is.null(varsBy))	varsBy <- "idAnnot"
+			
+		}
 		
 		# filter if required:
 		annotFilter <- annotations$filters
-		if(!is.null(annotFilter))
-			annotData <- filterData(annotData, filters = annotFilter)
+		if(!is.null(annotFilter)){
+			annotData <- filterData(
+				data = annotData, 
+				filters = annotFilter, 
+				returnAll = (annotDataset == "current"),
+				labelVars = labelVarsAnnot
+			)
+			labelVarsAnnot <- attr(annotData, "labelVars")
+			msgFilter <- attr(annotData, "msg")
+		}
 		
 		# if 'vars' not specified, all columns of the annotation dataset are retained:
 		annotVar <- annotations$vars
@@ -247,14 +273,29 @@ annotateData <- function(
 		}
 		if(length(annotVar) > 0){
 			
-			annotVar <- unique(c(subjectVar, annotVar))	
-			annotData <- annotData[, annotVar]
-
-			data <- leftJoinBase(data, annotData, by = subjectVar)
+			varsByNotInData <- setdiff(varsBy, colnames(annotData))
+			if(length(varsByNotInData) > 0)
+				stop(sQuote(annotDataset), "data not imported because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
 			
-			msgAnnot <- paste0("Data annotated with variable(s): ", 
+			annotData <- annotData[, unique(c(varsBy, annotVar))]
+
+			data <- leftJoinBase(data, annotData, by = varsBy)
+			
+			if(annotDataset == "current")	data$idAnnot <- NULL
+			
+			msgAnnot <- paste0(
+				"Data annotated with variable(s): ", 
 				getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar), ")",
-				" in the ", sQuote(annotDataset), " dataset."
+				" from the ", sQuote(annotDataset), " dataset",
+				if(!is.null(annotFilter))	paste(" whose", msgFilter),
+				if(annotDataset != "current"){
+					paste0(
+						" based on the variable(s):	", 
+						getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), 
+						" (", sQuote(annotVar), ")"
+					)
+				},
+				"."
 			)
 			if(verbose)	message(msgAnnot)
 			
