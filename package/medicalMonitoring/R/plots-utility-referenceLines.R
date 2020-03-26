@@ -40,81 +40,86 @@ addReferenceLinesMonitoringPlot <- function(
 			lineData <- refLineData[[iPar]]
 			lineFct <- refLineFct[[iPar]]
 			
-			lineParNameAes <- getParFctReferenceLines(lineFct)
-			lineParNameAes <- intersect(names(linePar), lineParNameAes)
+			if(nrow(lineData) > 0){
 			
-			# create lines
-			lineParAes <- setNames(as.list(lineParNameAes), lineParNameAes)
-			lineAes <- do.call(aes_string, lineParAes)
-			lineParOther <- linePar[setdiff(names(linePar), c(lineParNameAes, "label"))]
-			lineArgs <- c(
-				list(mapping = lineAes, data = lineData, show.legend = FALSE), 
-				lineParOther
-			)
-			geomLineFct <- paste("geom", lineFct, sep = "_")
-			gg <- gg + do.call(geomLineFct, lineArgs)
-			
-			## annotate lines
-			
-			lineLabel <- linePar$label
-			
-			if(!(is.logical(lineLabel) && !lineLabel)){
-	
-				# create data.frame contain x/y position and label of annotation text:
-				dataLineText <- ddply(lineData, facetVars, function(x){
-					
-					# extract x/y min to position the lines:
-					# Note: vjust/hjust not (yet) supported by ggplotly,
-					# so moved labels by a percentage of the axis
-					dataText <- merge(data, x, by = facetVars, all.x = FALSE, all.y = TRUE)
-					axesLimX <- merge(axesLim, x, by = facetVars, all.x = FALSE, all.y = TRUE)
-					xMin <- axesLimX$xmin
-					xPerc <- diff(range(axesLimX[, c("xmin", "xmax")]))*0.01
-					yMin <- axesLimX$ymin
-					yPerc <- diff(range(axesLimX[, c("ymin", "ymax")]))*0.02
-					
-					# extract x/y/label of the lines
-					dataText[["label"]] <- if(!is.null(lineLabel) && is.character(lineLabel)){
-						lineLabel
-					}else{
-						switch(lineFct,
-							'abline' = paste0(
-								prettyNum(dataText[, "slope"]), "*x+", 
-								prettyNum(dataText[, "intercept"])
-							),
-							'hline' = prettyNum(dataText[, "yintercept"]),
-							'vline' = prettyNum(dataText[, "xintercept"])
-						)
-					}
-					dataText[["x"]] <- switch(lineFct,
-						'abline' = xMin,
-						'hline' = xMin,
-						'vline' = dataText[, "xintercept"]
-					) + xPerc * nchar(dataText[["label"]])
-					dataText[["y"]] <- switch(lineFct,
-						'abline' = dataText[, "slope"] * xMin + dataText[, "intercept"],
-						'hline' = dataText[, "yintercept"],
-						'vline' = yMin
-					) + yPerc
-	
-					unique(dataText[, c("x", "y", "label")])
-				})
+				lineParNameAes <- getParFctReferenceLines(lineFct)
+				lineParNameAes <- intersect(names(linePar), lineParNameAes)
 				
-				aesLineTextOther <- lineParOther[c("color", "alpha")]
-				aesLineTextOther <- aesLineTextOther[!sapply(aesLineTextOther, is.null)]
-				
-				argsLineText <- list(
-					mapping = aes_string(x = "x", y = "y", label = "label"),
-					data = dataLineText #, 
-					# hjust = 0, vjust = 0
+				# create lines
+				lineParAes <- setNames(as.list(lineParNameAes), lineParNameAes)
+				lineAes <- do.call(aes_string, lineParAes)
+				lineParOther <- linePar[setdiff(names(linePar), c(lineParNameAes, "label"))]
+				lineArgs <- c(
+					list(mapping = lineAes, data = lineData, show.legend = FALSE), 
+					lineParOther
 				)
-				if(length(aesLineTextOther) > 0)
-					argsLineText <- c(argsLineText, aesLineTextOther)
-				gg <- gg + do.call(geom_text, argsLineText)
+				geomLineFct <- paste("geom", lineFct, sep = "_")
+				gg <- gg + do.call(geomLineFct, lineArgs)
+				
+				## annotate lines
+				
+				lineLabel <- linePar$label
+				
+				if(!(is.logical(lineLabel) && !lineLabel)){
+		
+					# create data.frame contain x/y position and label of annotation text:
+					dataLineText <- ddply(lineData, facetVars, function(x){
+						
+						# extract x/y min to position the lines:
+						# Note: vjust/hjust not (yet) supported by ggplotly,
+						# so moved labels by a percentage of the axis
+						dataText <- merge(data, x, by = facetVars, all.x = FALSE, all.y = TRUE)
+						axesLimX <- merge(axesLim, x, by = facetVars, all.x = FALSE, all.y = TRUE)
+						xMin <- axesLimX$xmin
+						xPerc <- diff(range(axesLimX[, c("xmin", "xmax")]))*0.01
+						yMin <- axesLimX$ymin
+						yPerc <- diff(range(axesLimX[, c("ymin", "ymax")]))*0.02
+						
+						# extract x/y/label of the lines
+						dataText[["label"]] <- if(!is.null(lineLabel) && is.character(lineLabel)){
+							lineLabel
+						}else{
+							switch(lineFct,
+								'abline' = paste0(
+									prettyNum(dataText[, "slope"]), "*x+", 
+									prettyNum(dataText[, "intercept"])
+								),
+								'hline' = prettyNum(dataText[, "yintercept"]),
+								'vline' = prettyNum(dataText[, "xintercept"])
+							)
+						}
+						dataText[["x"]] <- switch(lineFct,
+							'abline' = xMin,
+							'hline' = xMin,
+							'vline' = dataText[, "xintercept"]
+						) + xPerc * nchar(dataText[["label"]])
+						dataText[["y"]] <- switch(lineFct,
+							'abline' = dataText[, "slope"] * xMin + dataText[, "intercept"],
+							'hline' = dataText[, "yintercept"],
+							'vline' = yMin
+						) + yPerc
+		
+						unique(dataText[, c("x", "y", "label")])
+					})
+					
+					aesLineTextOther <- lineParOther[c("color", "alpha")]
+					aesLineTextOther <- aesLineTextOther[!sapply(aesLineTextOther, is.null)]
+					
+					argsLineText <- list(
+						mapping = aes_string(x = "x", y = "y", label = "label"),
+						data = dataLineText #, 
+						# hjust = 0, vjust = 0
+					)
+					if(length(aesLineTextOther) > 0)
+						argsLineText <- c(argsLineText, aesLineTextOther)
+					gg <- gg + do.call(geom_text, argsLineText)
+					
+				}
 				
 			}
 			
 		}
+		
 	}
 	
 	return(gg)
@@ -215,7 +220,7 @@ getDataReferenceLines <- function(refLinePars, data, facetPars = NULL){
 			varsLineAes <- c(lineAesVar, if(!is.null(facetPars))	facetVars)
 			dataLineAes <- unique(data[, varsLineAes, drop = FALSE])
 			# only keep records with non missing values in aesthetic var
-			dataLineAes <- dataLineAes[complete.cases(dataLineAes), ]
+			dataLineAes <- dataLineAes[complete.cases(dataLineAes), , drop = FALSE]
 		}
 		
 		# value used in aesthetic
