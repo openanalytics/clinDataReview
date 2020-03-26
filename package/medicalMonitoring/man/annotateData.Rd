@@ -33,13 +33,20 @@ based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable
 }
 \item{list of custom annotation, with:
 \itemize{
-\item{'dataset' (option 1): }{String with name of the annotation dataset,
+\item{annotation dataset, either:
+\item{'dataset': }{String with name of the annotation dataset,
  e.g. 'ex' to import data from the file: '[dataset].sas7bdat'in \code{dataPath}}
-\item{'data' (option 2): }{Data.frame with annotation dataset}
+\item{'data': }{Data.frame with annotation dataset}
+\item{input \code{data} if 'data' and 'dataset' are not specified}
+}
 \item{'vars': }{Character vector with variables of interest from annotation dataset.
 If not specified, all variables of the dataset are considered.}
 \item{'filters': }{Filters for the annotation dataset, 
 see \code{filters} parameter of \code{\link{filterData}}
+\item{'varsBy': }{Character vector with variables used to merge input data and
+the annotation dataset. If not specified, \code{subjectVar} is used if
+an external annotation dataset, or the datasets are merged by rows otherwise.
+}
 }
 }
 }
@@ -73,6 +80,10 @@ data(SDTMDataPelican)
 dataLB <- SDTMDataPelican$LB
 dataDM <- SDTMDataPelican$DM
 dataEX <- SDTMDataPelican$EX
+dataAE <- SDTMDataPelican$AE
+
+data(labelVarsSDTMPelican)
+labelVars <- labelVarsSDTMPelican
 
 # standard annotations:
 # path to dataset should be specified via: 'pathData'
@@ -95,6 +106,28 @@ dataAnnotated <- annotateData(dataLB,
 	)
 head(subset(dataAnnotated, SEX == "F"), 1)
 head(subset(dataAnnotated, is.na(SEX)), 1)
+
+# worst-case scenario: add a new variable based on filtering condition
+dataAE$AESEV <- factor(dataAE$AESEV, levels = c('MILD', "MODERATE"))
+dataAEWC <- annotateData(
+	data = dataAE,
+	annotations = list(
+		vars = "WORSTINT", 
+		# create new variable: 'WORSTINT' 
+		# with TRUE if maximum toxicity grade per subject/test 
+		# (if multiple, they are all retained)
+		filters = list(
+			var = "AESEV", 
+			valueFct = function(x) x[which.max(as.numeric(x))],
+			varsBy = c("USUBJID", "AEDECOD"),
+			keepNA = FALSE,
+			varNew = "WORSTINT", 
+			labelNew = "worst-case"
+		)
+	),
+	labelVars = labelVars
+)
+attr(dataAEWC, "labelVars")["WORSTINT"]
 
 # multiple annotations:
 dataAnnotated <- annotateData(dataLB, 
