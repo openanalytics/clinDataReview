@@ -7,7 +7,7 @@ of such outputs in a Rmarkdown report.}
 \usage{
 knitPrintMedicalMonitoring(
   list,
-  sep = "\\\\.",
+  sep = ".",
   level = 1,
   labelGeneral = "medicalMonitoring"
 )
@@ -21,7 +21,7 @@ separated by \code{sep}, e.g.
 
 \item{sep}{String with separator used to distinguish 
 different levels in the labels of the list.
-e.g. '\\.' by default.}
+e.g. '.' by default.}
 
 \item{level}{Integer with base level for section,
 1 by default.}

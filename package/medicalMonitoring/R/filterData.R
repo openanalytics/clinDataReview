@@ -77,7 +77,7 @@ filterData <- function(
 			}
 			iPar <- iPar + 1
 		}
-		msg <- paste(msg, "are filtered.")
+		msg <- paste(msg, "are retained.")
 		
 		# only keep filtered rows if 'returnAll' is FALSE
 		if(!returnAll)
