@@ -44,6 +44,8 @@
 #' (in \code{attr(output, 'labelVars')}).
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' in the current console.
+#' @param labelData (optional) String with label for input \code{data},
+#' that will be included in progress messages.
 #' @inheritParams medicalMonitoring-common-args
 #' @return Annotated \code{data}.
 #' If \code{labelVars} is specified, the output contains an 
@@ -59,7 +61,11 @@ annotateData <- function(
 	annotations,
 	subjectVar = "USUBJID",
 	verbose = FALSE,
-	labelVars = NULL) {
+	labelVars = NULL,
+	labelData = "data") {
+
+	if(is.null(annotations))
+		return(data)
 
 	# if multiple annotations are specified: nested call
 	isNest <- ifelse(
@@ -106,7 +112,7 @@ annotateData <- function(
 				dm <- c("dm", "adsl")
 				dataDemoPath <- list.files(path = dataPath, pattern = "^(dm|adsl)\\..+$", ignore.case = TRUE, full.names = TRUE)
 				if(length(dataDemoPath) == 0){
-					warning("Demographics annotation not included, because no data (ADSL or DM) is available.")
+					warning(paste(simpleCap(labelData), "is not annotated with demographics data because no such data (ADSL or DM) is available."))
 				}else{
 					
 					dataDemoPath <- dataDemoPath[1]
@@ -119,13 +125,14 @@ annotateData <- function(
 					varsDM <- c(varsDM, paste0("A", varsDM))
 					varsDM <- intersect(varsDM, colnames(dataAnnot))
 					if(!subjectVar %in% colnames(dataAnnot))
-						stop("Demographics data not imported because doesn't contain variable:", subjectVar, ".")
+						stop(simpleCap(labelData), " is not annotated with demographics data because doesn't contain variable: ", subjectVar, ".")
 					dataAnnot <- dataAnnot[, c(subjectVar, varsDM)]
 					data <- leftJoinBase(data, dataAnnot, by = subjectVar)
 					
-					msgDemo <- paste0("Demographics data: ", 
+					msgDemo <- paste0(
+						simpleCap(labelData), " is annotated with demographics data: ", 
 						toString(paste0(getLabelVar(var = varsDM, data = dataAnnot, labelVars = labelVarsDM), " (", sQuote(varsDM), ")")),
-							" is extracted from the ", sQuote(file_path_sans_ext(basename(dataDemoPath))), " dataset."
+							", extracted from the ", sQuote(file_path_sans_ext(basename(dataDemoPath))), " dataset."
 					)
 					if(verbose)	message(msgDemo)
 					
@@ -141,7 +148,7 @@ annotateData <- function(
 				## Requirements2: expects that non-exposed individuals have an empty ("") value for EXSTDTC ==> check that only dates and empty values are present
 				dataExPath <- list.files(path = dataPath, pattern = "^(ex|adex)\\..+$", ignore.case = TRUE, full.names = TRUE)
 				if(length(dataExPath) == 0){
-					warning("Exposure annotation not included, because no data (ADEX or EX) is available.")
+					warning(paste(simpleCap(labelData), "is not annotated with exposure data, because no such data (ADEX or EX) is available."))
 				}else{
 					
 					dataExPath <- dataExPath[1]
@@ -149,7 +156,7 @@ annotateData <- function(
 					labelVarsEX <- attr(dataAnnotAll, "labelVars")
 					dataAnnot <- dataAnnotAll[[1]]
 					if(!subjectVar %in% colnames(dataAnnot))
-						stop("Exposure data not imported because doesn't contain variable:", subjectVar, ".")
+						stop(simpleCap(labelData), " is not annotated with exposure data because doesn't contain variable:", subjectVar, ".")
 					
 					startVar <- c("EXSTDTC", "STDY", "ASTDY")
 					startVar <- intersect(startVar, colnames(dataAnnot))
@@ -158,7 +165,9 @@ annotateData <- function(
 					
 					data$EXFL <- data[, subjectVar] %in% dataAnnot[, subjectVar]
 					
-					msgEx <- paste0("Exposed subjects extracted based on subjects with non-missing ", 
+					msgEx <- paste0(
+						simpleCap(labelData), " is annotated with exposed subjects, ",
+						"extracted based on subjects with non-missing ", 
 						getLabelVar(var = startVar, data = dataAnnot, labelVars = labelVarsEX), " (", sQuote(startVar), ")",
 						" in the ", sQuote(file_path_sans_ext(basename(dataExPath))), " dataset."
 					)
@@ -177,7 +186,9 @@ annotateData <- function(
 				
 				if(length(varParam) == 0){
 					
-					warning("Functional lab annotation not added because no variable with laboratory parameter code is available in the data.")
+					warning(paste(simpleCap(labelData), "is not annotated with functional groups,",
+						"because no variable with laboratory parameter code is available in the data.")
+				)
 				
 				}else{
 				
@@ -195,7 +206,9 @@ annotateData <- function(
 					labGroupsInData <- intersect(c(names(labGroups), "Other"), unique(labGroupData))
 					data$LBFCTGRP <- factor(labGroupData, levels = labGroupsInData)
 					
-					msgAnnot <- paste0("Functional group is extracted based on standard naming of the ",
+					msgAnnot <- paste0(
+						simpleCap(labelData), " is annotated with functional groups, ",
+						"based on standard naming of the ",
 						getLabelVar(var = varParam, data = data, labelVars = labelVars), " (", 
 						sQuote(varParam), ").")
 					if(verbose)	message(msgAnnot)
@@ -206,7 +219,9 @@ annotateData <- function(
 				
 			},
 			
-			stop("'annotations' should be one of: ", 
+			stop(
+				simpleCap(labelData), " is not annotated, because ",
+				"'annotations' should be one of: ", 
 				toString(sQuote(c("demographics", "exposed_subjects", "functional_groups_lab"))),
 				" or custom: contains a 'data'/'dataset' element."
 			)
@@ -266,16 +281,19 @@ annotateData <- function(
 		if(is.null(annotVar))	annotVar <- colnames(annotData)
 		isAnnotInData <- annotVar %in% colnames(data)
 		if(any(isAnnotInData)){
-			warning(paste(toString(annotVar[isAnnotInData]), "are already available in data,",
-				"so these are not considered."
-			))
+			warning(
+				simpleCap(labelData), " is not annotated with variable(s): ", 
+				getLabelVar(var = annotVar[isAnnotInData], data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar[isAnnotInData]), ")",
+				" from the ", sQuote(annotDataset), " dataset",
+				" because they are already available in data."
+			)
 			annotVar <- annotVar[!isAnnotInData]
 		}
 		if(length(annotVar) > 0){
 			
 			varsByNotInData <- setdiff(varsBy, colnames(annotData))
 			if(length(varsByNotInData) > 0)
-				stop(sQuote(annotDataset), "data not imported because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
+				stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
 			
 			annotData <- annotData[, unique(c(varsBy, annotVar))]
 
@@ -284,15 +302,15 @@ annotateData <- function(
 			if(annotDataset == "current")	data$idAnnot <- NULL
 			
 			msgAnnot <- paste0(
-				"Data annotated with variable(s): ", 
+				simpleCap(labelData), " annotated with variable(s): ", 
 				getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar), ")",
 				" from the ", sQuote(annotDataset), " dataset",
 				if(!is.null(annotFilter))	paste(" whose", msgFilter),
 				if(annotDataset != "current"){
 					paste0(
 						" based on the variable(s):	", 
-						getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), 
-						" (", sQuote(annotVar), ")"
+						getLabelVar(var = varsBy, data = annotData, labelVars = labelVarsAnnot), 
+						" (", sQuote(varsBy), ")"
 					)
 				},
 				"."

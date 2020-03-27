@@ -50,7 +50,11 @@ filterData <- function(
 	keepNA = TRUE, 
 	returnAll = FALSE,
 	verbose = FALSE,
-	labelVars = NULL){
+	labelVars = NULL,
+	labelData = "data"){
+
+	if(is.null(filters))
+		return(data)
 	
 	# if multiple filters are specified:
 	# data is successively filtered
@@ -69,7 +73,8 @@ filterData <- function(
 					data = data, filters = filterCur, 
 					keepNA = keepNA,
 					returnAll = TRUE, 
-					labelVars = labelVars
+					labelVars = labelVars,
+					labelData = labelData
 				)
 				labelVars <- c(labelVars, attr(dataCur, "labelVars"))
 				labelVars <- labelVars[!duplicated(names(labelVars))]
@@ -97,7 +102,6 @@ filterData <- function(
 			}
 			iPar <- iPar + 1
 		}
-		msg <- paste(msg, "are filtered.")
 		
 		# only keep filtered rows if 'returnAll' is FALSE
 		if(!returnAll)
@@ -112,12 +116,15 @@ filterData <- function(
 			filters = filters, 
 			keepNA = keepNA,
 			returnAll = returnAll,
+			labelData = labelData,
 			labelVars = labelVars
 		)
 		msg <- attr(res, "msg")
 		labelVars <- attr(res, "labelVars")
 			
 	}
+
+	msg <- paste0(msg, " are filtered in ", labelData, ".")
 	
 	attr(res, "msg") <- msg
 	attr(res, "labelVars") <- labelVars
@@ -140,6 +147,8 @@ filterData <- function(
 #' \item{if TRUE: }{the full \code{data} is returned, with the extra column: 'keep',
 #' containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
 #' } 
+#' @param labelData (optional) String with label for input \code{data},
+#' that will be included in progress messages.
 #' @inheritParams medicalMonitoring-common-args
 #' @importFrom plyr dlply
 #' @return Updated \code{data}.
@@ -148,7 +157,8 @@ filterDataSingle <- function(data,
 	filters, 
 	keepNA = TRUE,
 	returnAll = FALSE,
-	labelVars = NULL){
+	labelVars = NULL,
+	labelData = "data"){
 
 	# filter by group
 	if("varsBy" %in% names(filters)){
@@ -188,10 +198,10 @@ filterDataSingle <- function(data,
 		
 	# variable used to filter:
 	var <- filters$var
-	if(is.null(var))	stop("'var' used for filtering should be specified.")
+	if(is.null(var))	stop(paste("'var' used for filtering of", labelData, "should be specified."))
 	varST <- paste0(getLabelVar(var = var, data = data, labelVars = labelVars), " (", sQuote(var), ")")
 	if(!var %in% colnames(data)){
-		warning(paste("Data is not filtered based on the variable:", varST,
+		warning(paste(simpleCap(labelData), "is not filtered based on the variable:", varST,
 			"because", varST, "is not available in the input data."))
 		return(data)
 	}
@@ -204,7 +214,8 @@ filterDataSingle <- function(data,
 		fct <- filters$valueFct
 		value <- match.fun(fct)(data[, var])
 		valueST <- toString(deparse(substitute(fct)))
-	}else	stop("'value' of interest or 'fct' to obtain it should be specified for filtering.")
+	}else	stop(paste0("'value' of interest or 'fct' to obtain it",
+		"should be specified for the filtering of ", labelData, "."))
 	
 	# operand: '%in%' by default
 	op <- filters$op
@@ -225,7 +236,7 @@ filterDataSingle <- function(data,
 	isKept[isNA] <- (keepNAFilter)
 	
 	if(!any(isKept))
-		warning("No data is retained based on the filtering on the variable")
+		warning(paste("No", labelData, "is retained based on the filtering on the variable."))
 	
 	# store all steps in a message string
 	msgNA <- paste(sum(isNA), "records with missing", varST)

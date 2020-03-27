@@ -16,7 +16,8 @@ tableMonitoring(
   tableButton = TRUE,
   tablePars = list(),
   id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
-  labelVars = NULL
+  labelVars = NULL,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -49,6 +50,9 @@ If not specified, a random id, as 'plotMonitoring[X]' is used.}
 
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+in the current console.}
 }
 \value{
 \code{\link[DT]{datatable}}

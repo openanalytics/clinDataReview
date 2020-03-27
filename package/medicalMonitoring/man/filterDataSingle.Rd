@@ -9,7 +9,8 @@ filterDataSingle(
   filters,
   keepNA = TRUE,
   returnAll = FALSE,
-  labelVars = NULL
+  labelVars = NULL,
+  labelData = "data"
 )
 }
 \arguments{
@@ -31,6 +32,9 @@ containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
 
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
+
+\item{labelData}{(optional) String with label for input \code{data},
+that will be included in progress messages.}
 }
 \value{
 Updated \code{data}.
