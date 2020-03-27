@@ -9,6 +9,8 @@
 #' in the table; and associated labels.
 #' @param tablePars List with parameters passed to the
 #' \code{\link[glpgUtilityFct]{toDTGLPG}} function.
+#' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
+#' in the current console.
 #' @inheritParams medicalMonitoring-common-args
 #' @return \code{\link[DT]{datatable}}
 #' @author Laure Cougnaud
@@ -25,7 +27,8 @@ tableMonitoring <- function(
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
-	labelVars = NULL){
+	labelVars = NULL,
+	verbose = FALSE){
 	
 	tableVarsInit <- tableVars
 
@@ -60,6 +63,15 @@ tableMonitoring <- function(
 	data <- data[, tableVars, drop = FALSE]
 	
 	if(!is.null(pathVar)){
+		
+		downloadButton <- paste0(
+			'<a title="Download all patient profiles"',
+			'onclick="getPatientProfilesDT(this,',
+			tolower(verbose),
+			');">All</a>'
+		)
+		data[, pathVar] <- paste(downloadButton, data[, pathVar], sep = ", ")
+		
 		tablePars <- c(tablePars, 
 			# escape column with hyperlink
 			list(escape = -match(pathVar, colnames(data))),

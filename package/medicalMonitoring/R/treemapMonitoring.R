@@ -116,6 +116,8 @@ treemapMonitoring <- function(
 			dataTable[, childVar]
 		)
 		
+		tablePars <- c(tablePars, list(barVar = valueVar))
+		
 		table <- tableMonitoring(
 			data = dataTable, 
 			idVar = idVar, 
@@ -125,7 +127,8 @@ treemapMonitoring <- function(
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,
 			id = id, 
-			labelVars = labelVars
+			labelVars = labelVars,
+			verbose = verbose
 		)
 		res <- list(plot = pl, table = table)
 		

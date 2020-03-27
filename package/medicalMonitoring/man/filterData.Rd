@@ -10,7 +10,8 @@ filterData(
   keepNA = TRUE,
   returnAll = FALSE,
   verbose = FALSE,
-  labelVars = NULL
+  labelVars = NULL,
+  labelData = "data"
 )
 }
 \arguments{
@@ -55,6 +56,9 @@ in the current console.}
 
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
+
+\item{labelData}{(optional) String with label for input \code{data},
+that will be included in progress messages.}
 }
 \value{
 Filtered \code{data} if \code{returnAll} is FALSE (by default).

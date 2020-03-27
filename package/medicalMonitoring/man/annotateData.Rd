@@ -10,7 +10,8 @@ annotateData(
   annotations,
   subjectVar = "USUBJID",
   verbose = FALSE,
-  labelVars = NULL
+  labelVars = NULL,
+  labelData = "data"
 )
 }
 \arguments{
@@ -60,6 +61,9 @@ in the current console.}
 \item{labelVars}{Named character vector containing variable labels of \code{data}.
 This will be updated with the labels of the extra annotation variables
 (in \code{attr(output, 'labelVars')}).}
+
+\item{labelData}{(optional) String with label for input \code{data},
+that will be included in progress messages.}
 }
 \value{
 Annotated \code{data}.
@@ -125,7 +129,8 @@ dataAEWC <- annotateData(
 			labelNew = "worst-case"
 		)
 	),
-	labelVars = labelVars
+	labelVars = labelVars,
+	verbose = TRUE
 )
 attr(dataAEWC, "labelVars")["WORSTINT"]
 

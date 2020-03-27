@@ -161,6 +161,9 @@ the table is included within an HTML button.}
 \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+in the current console.}
 }
 \value{
 If a \code{table} is requested:
