@@ -64,13 +64,13 @@ tableMonitoring <- function(
 	
 	if(!is.null(pathVar)){
 		
-		downloadButton <- paste0(
-			'<a title="Download all patient profiles"',
-			'onclick="getPatientProfilesDT(this,',
-			tolower(verbose),
-			');">All</a>'
-		)
-		data[, pathVar] <- paste(downloadButton, data[, pathVar], sep = ", ")
+#		downloadButton <- paste0(
+#			'<a title="Download all patient profiles"',
+#			'onclick="getPatientProfilesDT(this,',
+#			tolower(verbose),
+#			');">All</a>'
+#		)
+#		data[, pathVar] <- paste(downloadButton, data[, pathVar], sep = ", ")
 		
 		tablePars <- c(tablePars, 
 			# escape column with hyperlink
