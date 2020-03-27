@@ -21,3 +21,4 @@ documentation
 *.md
 *.rds
 _main.Rmd
+*.docx
