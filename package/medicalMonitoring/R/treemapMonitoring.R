@@ -33,18 +33,12 @@ treemapMonitoring <- function(
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
-
-	idVar <- "key"
 	
 	data <- formatToHierarchicalData(data = data, vars = vars)
 	
 	# child variable: last variable specified in: 'vars'
 	childVar <- tail(vars, 1)
 	parentVar <- head(vars, -1)
-
-	# for plot, consider the child element as the key:
-	dataPlot <- data
-	dataPlot$key <- dataPlot[, childVar]
 
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
@@ -54,11 +48,11 @@ treemapMonitoring <- function(
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
 	dataSharedData <- formatDataForPlotMonitoring(
-		data = dataPlot,
-		keyVar = idVar, id = id,
+		data = data,
+		keyVar = vars, id = id,
 		labelVars = labelVars,
 		hoverVars = hoverVars, hoverLab = hoverLab,
-		hoverByVar = idVar
+		hoverByVar = vars
 	)
 	
 	# get plot dim
@@ -84,8 +78,8 @@ treemapMonitoring <- function(
 	
 	# specific formatting for medical monitoring
 	pl <- formatPlotlyMonitoring(
-		data = dataPlot, pl = pl,
-		idVar = idVar, pathVar = pathVar,
+		data = data, pl = pl,
+		idVar = vars, pathVar = pathVar,
 		idFromDataPlot = FALSE, idVarPlot = "label",
 		# click and double-click events already used to zoom/unzoom in sunburst
 		highlightOn = "plotly_selected",
@@ -105,18 +99,17 @@ treemapMonitoring <- function(
 			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
 		}
 		
-		dataTable <- data
-		dataTable$key <- ifelse(
-			dataTable[, parentVar] %in% dataTable[, childVar],
-			dataTable[, parentVar],
-			dataTable[, childVar]
-		)
+#		dataTable$key <- ifelse(
+#			dataTable[, parentVar] %in% dataTable[, childVar],
+#			dataTable[, parentVar],
+#			dataTable[, childVar]
+#		)
 		
 		tablePars <- c(tablePars, list(barVar = valueVar))
 		
 		table <- tableMonitoring(
-			data = dataTable, 
-			idVar = idVar, 
+			data = data, 
+			idVar = vars, 
 			pathVar = pathVar, pathLab = pathLab,
 			pathExpand = TRUE,
 			tableVars = tableVars,

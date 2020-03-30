@@ -66,12 +66,6 @@ sunburstMonitoring <- function(
 		}
 	}
 
-	idVar <- "key"
-
-	# for plot, consider the child element as the key:
-	dataPlot <- data
-	dataPlot$key <- dataPlot[, childVar]
-
 	# format data to: 'SharedData' object
 	# specific formatting for medical monitoring
 	if(missing(hoverVars)){
@@ -81,11 +75,11 @@ sunburstMonitoring <- function(
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
 	dataSharedData <- formatDataForPlotMonitoring(
-		data = dataPlot,
-		keyVar = idVar, id = id,
+		data = data,
+		keyVar = vars, id = id,
 		labelVars = labelVars,
 		hoverVars = hoverVars, hoverLab = hoverLab,
-		hoverByVar = idVar
+		hoverByVar = vars
 	)
 	
 	# get plot dim
@@ -113,8 +107,8 @@ sunburstMonitoring <- function(
 	
 	# specific formatting for medical monitoring
 	pl <- formatPlotlyMonitoring(
-		data = dataPlot, pl = pl,
-		idVar = idVar, pathVar = pathVar, 
+		data = data, pl = pl,
+		idVar = vars, pathVar = pathVar, 
 		idFromDataPlot = FALSE, idVarPlot = "label",
 		# click and double-click events already used to zoom/unzoom in sunburst
 		highlightOn = "plotly_selected",
@@ -134,16 +128,16 @@ sunburstMonitoring <- function(
 			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
 		}
 		
-		dataTable <- data
-		dataTable$key <- ifelse(
-			dataTable[, parentVar] %in% dataTable[, childVar],
-			dataTable[, parentVar],
-			dataTable[, childVar]
-		)
+#		dataTable <- data
+#		dataTable$key <- ifelse(
+#			dataTable[, parentVar] %in% dataTable[, childVar],
+#			dataTable[, parentVar],
+#			dataTable[, childVar]
+#		)
 		
 		table <- tableMonitoring(
-			data = dataTable, 
-			idVar = idVar, 
+			data = data, 
+			idVar = vars, 
 			pathVar = pathVar, pathLab = pathLab,
 			pathExpand = TRUE,
 			tableVars = tableVars,
