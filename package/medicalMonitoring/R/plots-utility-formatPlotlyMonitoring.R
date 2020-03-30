@@ -64,6 +64,11 @@ formatPlotlyMonitoring <- function(
 	
 	if(!is.null(pathVar)){
 		
+		if(!is.null(idVar) && length(idVar) > 1){
+			data$key <- do.call(interaction, data[, idVar])
+			idVar <- "key"
+		}
+		
 		dataPPDf <- unique(data[, c(idVar, pathVar)])
 		
 		# in case 'pathVar' is formatted as URL, only extract the path

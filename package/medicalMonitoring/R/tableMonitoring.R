@@ -33,7 +33,7 @@ tableMonitoring <- function(
 	tableVarsInit <- tableVars
 
 	# add idVar in variables to display (used for linking plot <-> table)
-	if(!idVar %in% tableVars){
+	if(!all(idVar %in% tableVars)){
 		tableVars <- c(idVar, tableVars)
 		tableLab <- c(setNames(idLab, idVar), tableLab)
 	}
@@ -83,8 +83,8 @@ tableMonitoring <- function(
 	# ID column non visible:
 	# if not specified in input columns
 	# or added in the pathVar column
-	if(!idVar %in% tableVarsInit | (!is.null(pathVar) & !pathExpand)){
-		tablePars$nonVisible <- which(colnames(data) == idVar)-1
+	if(!all(idVar %in% tableVarsInit) | (!is.null(pathVar) & !pathExpand)){
+		tablePars$nonVisible <- which(colnames(data) %in% idVar)-1
 	}
 	
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
