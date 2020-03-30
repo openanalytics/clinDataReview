@@ -407,19 +407,10 @@ The size of the different segments is relative the respective counts.
 	dataSunburst <- tableAE
 	
 	dataSunburst$n <- as.numeric(dataSunburst$n)
-	
-	# Reformat summary statistics data.frame to include the label
-	# of each group in the AEDECOD column for the total
-	dataSunburst['parent'] = with(dataSunburst, 
-		ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
-	)
-	dataSunburst['child'] = with(dataSunburst, 
-		ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
-	)	
+
 	sunburstMonitoring(
 		data = dataSunburst,
-		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
-		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
 		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE,
@@ -441,18 +432,9 @@ of the respective group.
 	
 	dataTreemap$n <- as.numeric(dataTreemap$n)
 	
-	# Reformat summary statistics data.frame to include the label
-	# of each group in the AEDECOD column for the total
-	dataTreemap['parent'] = with(dataTreemap, 
-		ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
-	)
-	dataTreemap['child'] = with(dataTreemap, 
-		ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
-	)	
 	treemapMonitoring(
 		data = dataTreemap,
-		parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
-		childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
 		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE,

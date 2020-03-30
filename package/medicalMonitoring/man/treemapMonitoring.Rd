@@ -6,15 +6,13 @@
 \usage{
 treemapMonitoring(
   data,
-  parentVar,
-  parentLab = getLabelVar(parentVar, labelVars = labelVars),
-  childVar,
-  childLab = getLabelVar(childVar, labelVars = labelVars),
+  vars,
+  varsLab = getLabelVar(vars, labelVars = labelVars),
   valueVar,
   valueLab = getLabelVar(valueVar, labelVars = labelVars),
   titleExtra = NULL,
-  title = paste(paste(valueLab, "by", paste(c(parentLab, childLab), collapse = " and "),
-    titleExtra), collapse = "<br>"),
+  title = paste(paste(valueLab, "by", paste(varsLab, collapse = " and "), titleExtra),
+    collapse = "<br>"),
   labelVars = NULL,
   width = NULL,
   height = NULL,
@@ -34,13 +32,16 @@ treemapMonitoring(
 \arguments{
 \item{data}{Data.frame with data.}
 
-\item{parentVar, parentLab}{String with variable of \code{data} containing parent nodes,
+\item{vars}{Character vector with variables of \code{data}
+containing plot nodes.
+If multiple, they should be specified in hierarchical order (from parent to child node).}
+
+\item{varsLab}{Named character vector with labels for \code{vars}.}
+
+\item{valueVar}{String with variable of \code{data} containing node value,
 and associated label.}
 
-\item{childVar, childLab}{String with variable of \code{data} containing child nodes,
-and associated label.}
-
-\item{valueVar, valueLab}{String with variable of \code{data} containing node value,
+\item{valueLab}{String with variable of \code{data} containing node value,
 and associated label.}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
@@ -146,19 +147,10 @@ dataPlot <- tableAE
 
 dataPlot$n <- as.numeric(dataPlot$n)
 
-# reformat summary statistics data.frame to link child <-> parent node
-dataPlot['parent'] = with(dataPlot, 
-	ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
-)
-dataPlot['child'] = with(dataPlot, 
-	ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
-)
-
 # create plot
 treemapMonitoring(
 	data = dataPlot,
-	parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
-	childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+	vars = c("AESOC", "AEDECOD"),
 	valueVar = "n", valueLab = "Number of patients with adverse events"
 )
 }

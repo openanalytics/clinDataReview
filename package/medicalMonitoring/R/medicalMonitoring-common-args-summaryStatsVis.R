@@ -1,4 +1,10 @@
-#' Common arguments for the functions of the medicalMonitoring package
+#' Common arguments for the plotting functions summary statistics of the medicalMonitoring package
+#' @param vars Character vector with variables of \code{data}
+#' containing plot nodes.
+#' If multiple, they should be specified in hierarchical order (from parent to child node).
+#' @param varsLab Named character vector with labels for \code{vars}.
+#' @param valueVar,valueLab String with variable of \code{data} containing node value,
+#' and associated label.
 #' @param pathVar String with variable of \code{data} containing hyperlinks 
 #' with path to the subject-specific report, formatted as: \cr
 #' \preformatted{<a href="./path-to-report">label</a>}.\cr 

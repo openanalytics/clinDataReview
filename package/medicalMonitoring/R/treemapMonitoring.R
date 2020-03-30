@@ -1,12 +1,6 @@
 #' Treemap interactive plot.
 #' 
 #' Note: the table and plot are not (yet) linked.
-#' @param parentVar,parentLab String with variable of \code{data} containing parent nodes,
-#' and associated label.
-#' @param childVar,childLab String with variable of \code{data} containing child nodes,
-#' and associated label.
-#' @param valueVar,valueLab String with variable of \code{data} containing node value,
-#' and associated label.
 #' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
@@ -20,13 +14,12 @@
 treemapMonitoring <- function(
 	data, 
 	# plot variables:
-	parentVar, parentLab = getLabelVar(parentVar, labelVars = labelVars),
-	childVar, childLab = getLabelVar(childVar, labelVars = labelVars),
+	vars, varsLab = getLabelVar(vars, labelVars = labelVars),
 	valueVar, valueLab = getLabelVar(valueVar, labelVars = labelVars),
 	# general plot:
 	titleExtra = NULL,
 	title = paste(
-		paste(valueLab, "by", paste(c(parentLab, childLab), collapse = " and "), 
+		paste(valueLab, "by", paste(varsLab, collapse = " and "), 
 		titleExtra), collapse = "<br>"
 	),
 	labelVars = NULL,
@@ -42,6 +35,12 @@ treemapMonitoring <- function(
 	verbose = FALSE){
 
 	idVar <- "key"
+	
+	data <- formatToHierarchicalData(data = data, vars = vars)
+	
+	# child variable: last variable specified in: 'vars'
+	childVar <- tail(vars, 1)
+	parentVar <- head(vars, -1)
 
 	# for plot, consider the child element as the key:
 	dataPlot <- data
@@ -49,8 +48,8 @@ treemapMonitoring <- function(
 
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
-		hoverVars <- c(childVar, valueVar)
-		hoverLab <- setNames(c(childLab, valueLab), hoverVars)
+		hoverVars <- c(vars, valueVar)
+		hoverLab <- setNames(c(varsLab, valueLab), hoverVars)
 	}else	if(missing(hoverLab)){
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
@@ -100,11 +99,8 @@ treemapMonitoring <- function(
 	if(table){
 		
 		if(missing(tableVars)){
-			tableVars <- c(parentVar, childVar, valueVar)
-			tableLab <- setNames(
-				c(parentLab, childLab, valueLab), 
-				c(parentVar, childVar, valueVar)
-			)
+			tableVars <- c(vars, valueVar)
+			tableLab <- setNames(c(varsLab, valueLab), tableVars)
 		}else	if(missing(tableLab)){
 			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
 		}

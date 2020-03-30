@@ -53,85 +53,86 @@ filterData <- function(
 	labelVars = NULL,
 	labelData = "data"){
 
-	if(is.null(filters))
-		return(data)
+	if(!is.null(filters)){
 	
-	# if multiple filters are specified:
-	# data is successively filtered
-	if(any(sapply(filters, is.list))){
-		
-		iPar <- 1
-		while(iPar <= length(filters)){	
+		# if multiple filters are specified:
+		# data is successively filtered
+		if(any(sapply(filters, is.list))){
 			
-			filterCur <- filters[[iPar]]
-			
-			# if a condition is specified (not a logical operator):
-			if(is.list(filterCur)){
+			iPar <- 1
+			while(iPar <= length(filters)){	
 				
-				# extract filtered data
-				dataCur <- filterDataSingle(
-					data = data, filters = filterCur, 
-					keepNA = keepNA,
-					returnAll = TRUE, 
-					labelVars = labelVars,
-					labelData = labelData
-				)
-				labelVars <- c(labelVars, attr(dataCur, "labelVars"))
-				labelVars <- labelVars[!duplicated(names(labelVars))]
+				filterCur <- filters[[iPar]]
 				
-				# extract operator, 'AND' if not specified:
-				if(iPar > 1){
+				# if a condition is specified (not a logical operator):
+				if(is.list(filterCur)){
 					
-					if(!is.list(filters[[iPar - 1]])){
-						op <- filters[[iPar - 1]]
-					}else	op <- "&"
+					# extract filtered data
+					dataCur <- filterDataSingle(
+						data = data, filters = filterCur, 
+						keepNA = keepNA,
+						returnAll = TRUE, 
+						labelVars = labelVars,
+						labelData = labelData
+					)
+					labelVars <- c(labelVars, attr(dataCur, "labelVars"))
+					labelVars <- labelVars[!duplicated(names(labelVars))]
 					
-					# combine previous and current condition
-					dataCur$keep <- match.fun(op)(data$keep, dataCur$keep)
-					msg <- paste(msg, op, attr(dataCur, "msg"))
+					# extract operator, 'AND' if not specified:
+					if(iPar > 1){
+						
+						if(!is.list(filters[[iPar - 1]])){
+							op <- filters[[iPar - 1]]
+						}else	op <- "&"
+						
+						# combine previous and current condition
+						dataCur$keep <- match.fun(op)(data$keep, dataCur$keep)
+						msg <- paste(msg, op, attr(dataCur, "msg"))
+						
+					}else{
+						
+						msg <- attr(dataCur, "msg")
+						
+					}
 					
-				}else{
-					
-					msg <- attr(dataCur, "msg")
+					# save it to the dataset
+					data <- dataCur
 					
 				}
-				
-				# save it to the dataset
-				data <- dataCur
-				
+				iPar <- iPar + 1
 			}
-			iPar <- iPar + 1
-		}
-		
-		# only keep filtered rows if 'returnAll' is FALSE
-		if(!returnAll)
-			data <- data[which(data$keep), setdiff(colnames(data), "keep")]
-		
-		res <- data
-	
-	}else{
-		
-		res <- filterDataSingle(
-			data = data,
-			filters = filters, 
-			keepNA = keepNA,
-			returnAll = returnAll,
-			labelData = labelData,
-			labelVars = labelVars
-		)
-		msg <- attr(res, "msg")
-		labelVars <- attr(res, "labelVars")
 			
+			# only keep filtered rows if 'returnAll' is FALSE
+			if(!returnAll)
+				data <- data[which(data$keep), setdiff(colnames(data), "keep")]
+		
+		}else{
+			
+			data <- filterDataSingle(
+				data = data,
+				filters = filters, 
+				keepNA = keepNA,
+				returnAll = returnAll,
+				labelData = labelData,
+				labelVars = labelVars
+			)
+			msg <- attr(data, "msg")
+			labelVars <- attr(data, "labelVars")
+				
+		}
+	
+		msg <- paste0(msg, " are ", ifelse(returnAll, "flagged", "filtered"), " in ", labelData, ".")
+		
+		attr(data, "msg") <- msg
+		
+		if(verbose)	message(msg)
+		
 	}
-
-	msg <- paste0(msg, " are filtered in ", labelData, ".")
 	
-	attr(res, "msg") <- msg
-	attr(res, "labelVars") <- labelVars
+	if(!is.null(labelVars))
+		attr(data, "labelVars") <- labelVars
 	
-	if(verbose)	message(msg)
-	
-	return(res)
+	return(data)
 	
 }
 	

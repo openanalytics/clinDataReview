@@ -64,260 +64,261 @@ annotateData <- function(
 	labelVars = NULL,
 	labelData = "data") {
 
-	if(is.null(annotations))
-		return(data)
+	if(!is.null(annotations)){
 
-	# if multiple annotations are specified: nested call
-	isNest <- ifelse(
-		is.list(annotations), 
-		is.null(names(annotations)),
-		length(annotations) > 1
-	)
-	if(isNest){
-		for(par in annotations){	
-			data <- annotateData(
-				data = data, 
-				dataPath = dataPath, 
-				annotations = par,
-				subjectVar = subjectVar,
-				verbose = verbose,
-				labelVars = labelVars
-			)
-			if(!is.null(labelVars))
-				labelVars <- attr(data, "labelVars")
-		}
-		return(data)
-	}
-	
-	# custom 'left-join' function without ordering of rows and columns in x
-	leftJoinBase <- function(x, y, ...){
-		res <- merge(
-			x = x, y = y, 
-			all.x = TRUE, all.y = FALSE, # left join
-			sort = FALSE, # doesn't sort rows
-			...)
-		colsX <- colnames(x)
-		cols <- c(colsX, setdiff(colnames(res), colsX))
-		res <- res[, cols, drop = FALSE]
-		return(res)
-	}
-	
-	if(is.character(annotations)){
-		
-		switch(annotations,
-				
-			'demographics' = {
-		
-				## Requirements: data needs to have a column with "USUBJID", dataPath needs to be specified and must contain dm.sas7bdat
-				dm <- c("dm", "adsl")
-				dataDemoPath <- list.files(path = dataPath, pattern = "^(dm|adsl)\\..+$", ignore.case = TRUE, full.names = TRUE)
-				if(length(dataDemoPath) == 0){
-					warning(paste(simpleCap(labelData), "is not annotated with demographics data because no such data (ADSL or DM) is available."))
-				}else{
-					
-					dataDemoPath <- dataDemoPath[1]
-					dataAnnotAll <- loadDataADaMSDTM(dataDemoPath, verbose = FALSE)
-					labelVarsDM <- attr(dataAnnotAll, "labelVars")
-					dataAnnot <- dataAnnotAll[[1]]
-					
-					varsDM <- c("AGE","SEX","RACE","ETHNIC","COUNTRY","CNTRY", "SITEID","RFSTDTC","RFENDTC","RFXSTDTC","RFXENDTC")
-					# ADaM-like: 'A[variable]', e.g. ASEX, AAGE, ...
-					varsDM <- c(varsDM, paste0("A", varsDM))
-					varsDM <- intersect(varsDM, colnames(dataAnnot))
-					if(!subjectVar %in% colnames(dataAnnot))
-						stop(simpleCap(labelData), " is not annotated with demographics data because doesn't contain variable: ", subjectVar, ".")
-					dataAnnot <- dataAnnot[, c(subjectVar, varsDM)]
-					data <- leftJoinBase(data, dataAnnot, by = subjectVar)
-					
-					msgDemo <- paste0(
-						simpleCap(labelData), " is annotated with demographics data: ", 
-						toString(paste0(getLabelVar(var = varsDM, data = dataAnnot, labelVars = labelVarsDM), " (", sQuote(varsDM), ")")),
-							", extracted from the ", sQuote(file_path_sans_ext(basename(dataDemoPath))), " dataset."
-					)
-					if(verbose)	message(msgDemo)
-					
-					if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsDM[varsDM])
-					
-				}
-			
-			},
-			
-			'exposed_subjects' = {
-		
-				## Requirements: data needs to have a column with "USUBJID", dataPath needs to be specified and must contain ex.sas7bdat
-				## Requirements2: expects that non-exposed individuals have an empty ("") value for EXSTDTC ==> check that only dates and empty values are present
-				dataExPath <- list.files(path = dataPath, pattern = "^(ex|adex)\\..+$", ignore.case = TRUE, full.names = TRUE)
-				if(length(dataExPath) == 0){
-					warning(paste(simpleCap(labelData), "is not annotated with exposure data, because no such data (ADEX or EX) is available."))
-				}else{
-					
-					dataExPath <- dataExPath[1]
-					dataAnnotAll <- loadDataADaMSDTM(dataExPath, verbose = FALSE)
-					labelVarsEX <- attr(dataAnnotAll, "labelVars")
-					dataAnnot <- dataAnnotAll[[1]]
-					if(!subjectVar %in% colnames(dataAnnot))
-						stop(simpleCap(labelData), " is not annotated with exposure data because doesn't contain variable:", subjectVar, ".")
-					
-					startVar <- c("EXSTDTC", "STDY", "ASTDY")
-					startVar <- intersect(startVar, colnames(dataAnnot))
-					idxWithST <- which(dataAnnot[, startVar] != "" & !is.na(dataAnnot[, startVar]))
-					dataAnnot <- dataAnnot[idxWithST, ]
-					
-					data$EXFL <- data[, subjectVar] %in% dataAnnot[, subjectVar]
-					
-					msgEx <- paste0(
-						simpleCap(labelData), " is annotated with exposed subjects, ",
-						"extracted based on subjects with non-missing ", 
-						getLabelVar(var = startVar, data = dataAnnot, labelVars = labelVarsEX), " (", sQuote(startVar), ")",
-						" in the ", sQuote(file_path_sans_ext(basename(dataExPath))), " dataset."
-					)
-					if(verbose)	message(msgEx)
-					
-					if(!is.null(labelVars))	labelVars <- c(labelVars, EXFL = "Exposed subjects")
-					
-				}
-				
-			},
-			
-			'functional_groups_lab' = {
-				
-				varParam <- c("PARAMCD", "LBTESTCD")
-				varParam <- intersect(varParam, colnames(data))[1]
-				
-				if(length(varParam) == 0){
-					
-					warning(paste(simpleCap(labelData), "is not annotated with functional groups,",
-						"because no variable with laboratory parameter code is available in the data.")
-				)
-				
-				}else{
-				
-					labGroups <- list(
-						"Renal function" = c("UREA","CREAT","CA","URATE","GFR"),
-						"Electrolytes" = c("SODIUM","K","BICARB","CL"),
-						"Liver function" = c("ALT","AST","ALP","CPK","BILDIR","BILI","PROT","ALB","HGB"),
-						"Lipids" = c("CHOL","HDL","LDL","TRIG"),
-						"Haematology" = c("BASO", "EOS", "HCT", "HGB", "LYM", "MCH", "MCHC", "MCV", "MONO", "NEUT", "PLAT", "RBC", "WBC")
-					)
-					labCodeToGroup <- setNames(rep(names(labGroups), times = sapply(labGroups, length)), unlist(labGroups))
-					labGroupData <- labCodeToGroup[data[, varParam]]
-					labGroupData[is.na(labGroupData)] <- "Other"
-					
-					labGroupsInData <- intersect(c(names(labGroups), "Other"), unique(labGroupData))
-					data$LBFCTGRP <- factor(labGroupData, levels = labGroupsInData)
-					
-					msgAnnot <- paste0(
-						simpleCap(labelData), " is annotated with functional groups, ",
-						"based on standard naming of the ",
-						getLabelVar(var = varParam, data = data, labelVars = labelVars), " (", 
-						sQuote(varParam), ").")
-					if(verbose)	message(msgAnnot)
-					
-					if(!is.null(labelVars))	labelVars <- c(labelVars, LBFCTGRP = "Functional group")
-				
-				}
-				
-			},
-			
-			stop(
-				simpleCap(labelData), " is not annotated, because ",
-				"'annotations' should be one of: ", 
-				toString(sQuote(c("demographics", "exposed_subjects", "functional_groups_lab"))),
-				" or custom: contains a 'data'/'dataset' element."
-			)
-	
+		# if multiple annotations are specified: nested call
+		isNest <- ifelse(
+			is.list(annotations), 
+			is.null(names(annotations)),
+			length(annotations) > 1
 		)
+		if(isNest){
+			for(par in annotations){	
+				data <- annotateData(
+					data = data, 
+					dataPath = dataPath, 
+					annotations = par,
+					subjectVar = subjectVar,
+					verbose = verbose,
+					labelVars = labelVars
+				)
+				if(!is.null(labelVars))
+					labelVars <- attr(data, "labelVars")
+			}
+			return(data)
+		}
 		
-	}else{
+		# custom 'left-join' function without ordering of rows and columns in x
+		leftJoinBase <- function(x, y, ...){
+			res <- merge(
+				x = x, y = y, 
+				all.x = TRUE, all.y = FALSE, # left join
+				sort = FALSE, # doesn't sort rows
+				...)
+			colsX <- colnames(x)
+			cols <- c(colsX, setdiff(colnames(res), colsX))
+			res <- res[, cols, drop = FALSE]
+			return(res)
+		}
 		
-		# annotation by:?
-		varsBy <- annotations[["varsBy"]]
+		if(is.character(annotations)){
+			
+			switch(annotations,
+					
+				'demographics' = {
+			
+					## Requirements: data needs to have a column with "USUBJID", dataPath needs to be specified and must contain dm.sas7bdat
+					dm <- c("dm", "adsl")
+					dataDemoPath <- list.files(path = dataPath, pattern = "^(dm|adsl)\\..+$", ignore.case = TRUE, full.names = TRUE)
+					if(length(dataDemoPath) == 0){
+						warning(paste(simpleCap(labelData), "is not annotated with demographics data because no such data (ADSL or DM) is available."))
+					}else{
+						
+						dataDemoPath <- dataDemoPath[1]
+						dataAnnotAll <- loadDataADaMSDTM(dataDemoPath, verbose = FALSE)
+						labelVarsDM <- attr(dataAnnotAll, "labelVars")
+						dataAnnot <- dataAnnotAll[[1]]
+						
+						varsDM <- c("AGE","SEX","RACE","ETHNIC","COUNTRY","CNTRY", "SITEID","RFSTDTC","RFENDTC","RFXSTDTC","RFXENDTC")
+						# ADaM-like: 'A[variable]', e.g. ASEX, AAGE, ...
+						varsDM <- c(varsDM, paste0("A", varsDM))
+						varsDM <- intersect(varsDM, colnames(dataAnnot))
+						if(!subjectVar %in% colnames(dataAnnot))
+							stop(simpleCap(labelData), " is not annotated with demographics data because doesn't contain variable: ", subjectVar, ".")
+						dataAnnot <- dataAnnot[, c(subjectVar, varsDM)]
+						data <- leftJoinBase(data, dataAnnot, by = subjectVar)
+						
+						msgDemo <- paste0(
+							simpleCap(labelData), " is annotated with demographics data: ", 
+							toString(paste0(getLabelVar(var = varsDM, data = dataAnnot, labelVars = labelVarsDM), " (", sQuote(varsDM), ")")),
+								", extracted from the ", sQuote(file_path_sans_ext(basename(dataDemoPath))), " dataset."
+						)
+						if(verbose)	message(msgDemo)
+						
+						if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsDM[varsDM])
+						
+					}
+				
+				},
+				
+				'exposed_subjects' = {
+			
+					## Requirements: data needs to have a column with "USUBJID", dataPath needs to be specified and must contain ex.sas7bdat
+					## Requirements2: expects that non-exposed individuals have an empty ("") value for EXSTDTC ==> check that only dates and empty values are present
+					dataExPath <- list.files(path = dataPath, pattern = "^(ex|adex)\\..+$", ignore.case = TRUE, full.names = TRUE)
+					if(length(dataExPath) == 0){
+						warning(paste(simpleCap(labelData), "is not annotated with exposure data, because no such data (ADEX or EX) is available."))
+					}else{
+						
+						dataExPath <- dataExPath[1]
+						dataAnnotAll <- loadDataADaMSDTM(dataExPath, verbose = FALSE)
+						labelVarsEX <- attr(dataAnnotAll, "labelVars")
+						dataAnnot <- dataAnnotAll[[1]]
+						if(!subjectVar %in% colnames(dataAnnot))
+							stop(simpleCap(labelData), " is not annotated with exposure data because doesn't contain variable:", subjectVar, ".")
+						
+						startVar <- c("EXSTDTC", "STDY", "ASTDY")
+						startVar <- intersect(startVar, colnames(dataAnnot))
+						idxWithST <- which(dataAnnot[, startVar] != "" & !is.na(dataAnnot[, startVar]))
+						dataAnnot <- dataAnnot[idxWithST, ]
+						
+						data$EXFL <- data[, subjectVar] %in% dataAnnot[, subjectVar]
+						
+						msgEx <- paste0(
+							simpleCap(labelData), " is annotated with exposed subjects, ",
+							"extracted based on subjects with non-missing ", 
+							getLabelVar(var = startVar, data = dataAnnot, labelVars = labelVarsEX), " (", sQuote(startVar), ")",
+							" in the ", sQuote(file_path_sans_ext(basename(dataExPath))), " dataset."
+						)
+						if(verbose)	message(msgEx)
+						
+						if(!is.null(labelVars))	labelVars <- c(labelVars, EXFL = "Exposed subjects")
+						
+					}
+					
+				},
+				
+				'functional_groups_lab' = {
+					
+					varParam <- c("PARAMCD", "LBTESTCD")
+					varParam <- intersect(varParam, colnames(data))[1]
+					
+					if(length(varParam) == 0){
+						
+						warning(paste(simpleCap(labelData), "is not annotated with functional groups,",
+							"because no variable with laboratory parameter code is available in the data.")
+					)
+					
+					}else{
+					
+						labGroups <- list(
+							"Renal function" = c("UREA","CREAT","CA","URATE","GFR"),
+							"Electrolytes" = c("SODIUM","K","BICARB","CL"),
+							"Liver function" = c("ALT","AST","ALP","CPK","BILDIR","BILI","PROT","ALB","HGB"),
+							"Lipids" = c("CHOL","HDL","LDL","TRIG"),
+							"Haematology" = c("BASO", "EOS", "HCT", "HGB", "LYM", "MCH", "MCHC", "MCV", "MONO", "NEUT", "PLAT", "RBC", "WBC")
+						)
+						labCodeToGroup <- setNames(rep(names(labGroups), times = sapply(labGroups, length)), unlist(labGroups))
+						labGroupData <- labCodeToGroup[data[, varParam]]
+						labGroupData[is.na(labGroupData)] <- "Other"
+						
+						labGroupsInData <- intersect(c(names(labGroups), "Other"), unique(labGroupData))
+						data$LBFCTGRP <- factor(labGroupData, levels = labGroupsInData)
+						
+						msgAnnot <- paste0(
+							simpleCap(labelData), " is annotated with functional groups, ",
+							"based on standard naming of the ",
+							getLabelVar(var = varParam, data = data, labelVars = labelVars), " (", 
+							sQuote(varParam), ").")
+						if(verbose)	message(msgAnnot)
+						
+						if(!is.null(labelVars))	labelVars <- c(labelVars, LBFCTGRP = "Functional group")
+					
+					}
+					
+				},
+				
+				stop(
+					simpleCap(labelData), " is not annotated, because ",
+					"'annotations' should be one of: ", 
+					toString(sQuote(c("demographics", "exposed_subjects", "functional_groups_lab"))),
+					" or custom: contains a 'data'/'dataset' element."
+				)
 		
-		# extract annotation data
-		if("dataset" %in% names(annotations)){
-			
-			annotDataset <- annotations[["dataset"]]
-			annotDataPath <- file.path(dataPath, paste0(annotDataset, ".sas7bdat"))
-			annotDataAll <- loadDataADaMSDTM(annotDataPath, verbose = FALSE)
-			annotData <- annotDataAll[[1]]
-			labelVarsAnnot <- attr(annotDataAll, "labelVars")
-			
-			if(is.null(varsBy))	varsBy <- subjectVar
-			
-		}else if("data" %in% names(annotations)){
-			
-			annotDataset <- "custom"
-			annotData <- annotation$data
-			labelVarsAnnot <- getLabelVars(data = annotData)
-			
-			if(is.null(varsBy))	varsBy <- subjectVar
+			)
 			
 		}else{
 			
-			annotDataset <- "current"
-			data$idAnnot <- seq_len(nrow(data))
-			annotData <- data
-			labelVarsAnnot <- labelVars
-
-			if(is.null(varsBy))	varsBy <- "idAnnot"
+			# annotation by:?
+			varsBy <- annotations[["varsBy"]]
 			
-		}
-		
-		# filter if required:
-		annotFilter <- annotations$filters
-		if(!is.null(annotFilter)){
-			annotData <- filterData(
-				data = annotData, 
-				filters = annotFilter, 
-				returnAll = (annotDataset == "current"),
-				labelVars = labelVarsAnnot
-			)
-			labelVarsAnnot <- attr(annotData, "labelVars")
-			msgFilter <- attr(annotData, "msg")
-		}
-		
-		# if 'vars' not specified, all columns of the annotation dataset are retained:
-		annotVar <- annotations$vars
-		if(is.null(annotVar))	annotVar <- colnames(annotData)
-		isAnnotInData <- annotVar %in% colnames(data)
-		if(any(isAnnotInData)){
-			warning(
-				simpleCap(labelData), " is not annotated with variable(s): ", 
-				getLabelVar(var = annotVar[isAnnotInData], data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar[isAnnotInData]), ")",
-				" from the ", sQuote(annotDataset), " dataset",
-				" because they are already available in data."
-			)
-			annotVar <- annotVar[!isAnnotInData]
-		}
-		if(length(annotVar) > 0){
+			# extract annotation data
+			if("dataset" %in% names(annotations)){
+				
+				annotDataset <- annotations[["dataset"]]
+				annotDataPath <- file.path(dataPath, paste0(annotDataset, ".sas7bdat"))
+				annotDataAll <- loadDataADaMSDTM(annotDataPath, verbose = FALSE)
+				annotData <- annotDataAll[[1]]
+				labelVarsAnnot <- attr(annotDataAll, "labelVars")
+				
+				if(is.null(varsBy))	varsBy <- subjectVar
+				
+			}else if("data" %in% names(annotations)){
+				
+				annotDataset <- "custom"
+				annotData <- annotation$data
+				labelVarsAnnot <- getLabelVars(data = annotData)
+				
+				if(is.null(varsBy))	varsBy <- subjectVar
+				
+			}else{
+				
+				annotDataset <- "current"
+				data$idAnnot <- seq_len(nrow(data))
+				annotData <- data
+				labelVarsAnnot <- labelVars
+	
+				if(is.null(varsBy))	varsBy <- "idAnnot"
+				
+			}
 			
-			varsByNotInData <- setdiff(varsBy, colnames(annotData))
-			if(length(varsByNotInData) > 0)
-				stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
+			# filter if required:
+			annotFilter <- annotations$filters
+			if(!is.null(annotFilter)){
+				annotData <- filterData(
+					data = annotData, 
+					filters = annotFilter, 
+					returnAll = (annotDataset == "current"),
+					labelVars = labelVarsAnnot
+				)
+				labelVarsAnnot <- attr(annotData, "labelVars")
+				msgFilter <- attr(annotData, "msg")
+			}
 			
-			annotData <- annotData[, unique(c(varsBy, annotVar))]
-
-			data <- leftJoinBase(data, annotData, by = varsBy)
-			
-			if(annotDataset == "current")	data$idAnnot <- NULL
-			
-			msgAnnot <- paste0(
-				simpleCap(labelData), " annotated with variable(s): ", 
-				getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar), ")",
-				" from the ", sQuote(annotDataset), " dataset",
-				if(!is.null(annotFilter))	paste(" whose", msgFilter),
-				if(annotDataset != "current"){
-					paste0(
-						" based on the variable(s):	", 
-						getLabelVar(var = varsBy, data = annotData, labelVars = labelVarsAnnot), 
-						" (", sQuote(varsBy), ")"
-					)
-				},
-				"."
-			)
-			if(verbose)	message(msgAnnot)
-			
-			if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAnnot[annotVar])
+			# if 'vars' not specified, all columns of the annotation dataset are retained:
+			annotVar <- annotations$vars
+			if(is.null(annotVar))	annotVar <- colnames(annotData)
+			isAnnotInData <- annotVar %in% colnames(data)
+			if(any(isAnnotInData)){
+				warning(
+					simpleCap(labelData), " is not annotated with variable(s): ", 
+					getLabelVar(var = annotVar[isAnnotInData], data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar[isAnnotInData]), ")",
+					" from the ", sQuote(annotDataset), " dataset",
+					" because they are already available in data."
+				)
+				annotVar <- annotVar[!isAnnotInData]
+			}
+			if(length(annotVar) > 0){
+				
+				varsByNotInData <- setdiff(varsBy, colnames(annotData))
+				if(length(varsByNotInData) > 0)
+					stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
+				
+				annotData <- annotData[, unique(c(varsBy, annotVar))]
+	
+				data <- leftJoinBase(data, annotData, by = varsBy)
+				
+				if(annotDataset == "current")	data$idAnnot <- NULL
+				
+				msgAnnot <- paste0(
+					simpleCap(labelData), " annotated with variable(s): ", 
+					getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar), ")",
+					" from the ", sQuote(annotDataset), " dataset",
+					if(!is.null(annotFilter))	paste(" whose", msgFilter),
+					if(annotDataset != "current"){
+						paste0(
+							" based on the variable(s):	", 
+							getLabelVar(var = varsBy, data = annotData, labelVars = labelVarsAnnot), 
+							" (", sQuote(varsBy), ")"
+						)
+					},
+					"."
+				)
+				if(verbose)	message(msgAnnot)
+				
+				if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAnnot[annotVar])
+				
+			}
 			
 		}
 		
