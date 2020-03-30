@@ -126,7 +126,11 @@ function getPatientProfilesPlotly(el, x, data, fromdata, idvar, labelplot, label
 
 		if(plObj != null && iskey && (plObj.data.set == labelplot)){
 
-			console.log('data.set:', plObj.data.set);
+			if(verbose){
+				console.log('data.set:', plObj.data.set);
+				console.log('fromdata:', fromdata);
+				console.log('from id var:', idvar);
+			}
 
 			// extract patient IDs
 			if (fromdata){
@@ -135,21 +139,23 @@ function getPatientProfilesPlotly(el, x, data, fromdata, idvar, labelplot, label
 				ids = plObj[idvar];
 			}
 
-			if(verbose){
-				console.log('fromdata:', fromdata);
-				console.log('from id var:', idvar);
-				console.log('Selected IDs:', ids);
-			}
+			// take distinct values (only if array, if idvar is of length 1: string object)
+			if(Object.prototype.toString.call(ids) === '[object Array]')
+				ids = [... new Set(ids)];
+
+			if(verbose)	console.log('Selected IDs:', ids);
 			
 			// filter data to only ids
-			linksArray = data.filter(e => e.key.includes(ids))
+			linksArray = data.filter(e => e.key.includes(ids));
+			if(verbose)	console.log('Patient profile paths filtered:', linksArray);
 			// split if multiple links are present
 			linksArray = linksArray.map(el => el.path.split(', '));
+			if(verbose)	console.log('Patient profile paths split by ID:', linksArray);
 			// flatten list of arrays
 			linksArray = [].concat.apply([], linksArray);
+			if(verbose)	console.log('Patient profile paths flattened to 1-level list:', linksArray);
 			// remote hyperlink part if available
 			//linksArray = linksArray.map(item => item.match(/href='([^']*)/)[1]);
-			if(verbose)	console.log('Patient profile path:', linksArray);
 			
 			// extract label for the zip file name, here 'label' of the sunburst region
 			if(verbose)	console.log("label var:", labelvar)
