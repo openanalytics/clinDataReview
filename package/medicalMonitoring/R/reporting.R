@@ -86,15 +86,19 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' e.g. '.' by default.
 #' @param level Integer with base level for section,
 #' 1 by default.
-#' @param labelGeneral String with general label for the
-#' chunk.
+#' @param generalLab String with general label for the
+#' chunk(s) including the plots in the Rmarkdown document. 
+#' Note: as chunks should have unique labels in a Rmd document,
+#' this label should be unique within the same Rmarkdown document 
+#' (in case \code{listPlots} with same names are included multiple times
+#' in the document).
 #' @return No returned value, the plots are included in the
 #' report.
 #' @author Laure Cougnaud
 #' @export
 knitPrintMedicalMonitoring <- function(
 	list, sep = ".", level = 1,
-	labelGeneral = "medicalMonitoring"){
+	generalLab = "medicalMonitoring"){
 	
 	if(inherits(list, "medicalMonitoring")){
 		
@@ -112,7 +116,7 @@ knitPrintMedicalMonitoring <- function(
 			
 			knitPrintListObjects(
 				xList = list, 
-				generalLab = labelGeneral,
+				generalLab = generalLab,
 				titles = names(list), 
 				titleLevel = level
 			)
@@ -129,7 +133,12 @@ knitPrintMedicalMonitoring <- function(
 				listEl <- list[which(labelLevelCur == label)]
 				names(listEl) <- sub("[^\\.]{1,}\\.(.+)", "\\1", names(listEl))
 				
-				knitPrintMedicalMonitoring(list = listEl, sep = sep, level = level+1)
+				knitPrintMedicalMonitoring(
+					list = listEl, 
+					sep = sep, 
+					level = level+1,
+					generalLab = label
+				)
 				
 			}
 			
