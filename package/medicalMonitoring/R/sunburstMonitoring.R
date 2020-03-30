@@ -1,12 +1,6 @@
 #' Sunburst interactive plot.
 #' 
 #' Note: the table and plot are not (yet) linked.
-#' @param parentVar,parentLab String with variable of \code{data} containing parent nodes,
-#' and associated label.
-#' @param childVar,childLab String with variable of \code{data} containing child nodes,
-#' and associated label.
-#' @param valueVar,valueLab String with variable of \code{data} containing node value,
-#' and associated label.
 #' @param valueType String with type of values in \code{valueVar}
 #' (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
 #' among others: 'relative' (default), or 'total' (only if sum(child) <= to parent).
@@ -23,14 +17,13 @@
 sunburstMonitoring <- function(
 	data, 
 	# plot variables:
-	parentVar, parentLab = getLabelVar(parentVar, labelVars = labelVars),
-	childVar, childLab = getLabelVar(childVar, labelVars = labelVars),
+	vars, varsLab = getLabelVar(vars, labelVars = labelVars),
 	valueVar, valueLab = getLabelVar(valueVar, labelVars = labelVars),
 	valueType = "relative",
 	# general plot:
 	titleExtra = NULL,
 	title = paste(
-		paste(valueLab, "by", paste(c(parentLab, childLab), collapse = " and "), 
+		paste(valueLab, "by", paste(varsLab, collapse = " and "), 
 		titleExtra), collapse = "<br>"
 	),
 	labelVars = NULL,
@@ -45,6 +38,12 @@ sunburstMonitoring <- function(
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
+
+	data <- formatToHierarchicalData(data = data, vars = vars)
+	
+	# child variable: last variable specified in: 'vars'
+	childVar <- tail(vars, 1)
+	parentVar <- head(vars, -1)
 	
 	# In case values are 'total' and parent < sum(child)
 	# plotly creates an empty plot
@@ -76,8 +75,8 @@ sunburstMonitoring <- function(
 	# format data to: 'SharedData' object
 	# specific formatting for medical monitoring
 	if(missing(hoverVars)){
-		hoverVars <- c(childVar, valueVar)
-		hoverLab <- setNames(c(childLab, valueLab), hoverVars)
+		hoverVars <- c(vars, valueVar)
+		hoverLab <- setNames(c(varsLab, valueLab), hoverVars)
 	}else	if(missing(hoverLab)){
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
@@ -129,11 +128,8 @@ sunburstMonitoring <- function(
 	if(table){
 		
 		if(missing(tableVars)){
-			tableVars <- c(parentVar, childVar, valueVar)
-			tableLab <- setNames(
-				c(parentLab, childLab, valueLab), 
-				c(parentVar, childVar, valueVar)
-			)
+			tableVars <- c(vars, valueVar)
+			tableLab <- setNames(c(varsLab, valueLab), tableVars)
 		}else	if(missing(tableLab)){
 			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
 		}

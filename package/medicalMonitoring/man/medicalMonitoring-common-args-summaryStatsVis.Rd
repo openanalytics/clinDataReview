@@ -2,8 +2,17 @@
 % Please edit documentation in R/medicalMonitoring-common-args-summaryStatsVis.R
 \name{medicalMonitoring-common-args-summaryStatsVis}
 \alias{medicalMonitoring-common-args-summaryStatsVis}
-\title{Common arguments for the functions of the medicalMonitoring package}
+\title{Common arguments for the plotting functions summary statistics of the medicalMonitoring package}
 \arguments{
+\item{vars}{Character vector with variables of \code{data}
+containing plot nodes.
+If multiple, they should be specified in hierarchical order (from parent to child node).}
+
+\item{varsLab}{Named character vector with labels for \code{vars}.}
+
+\item{valueVar, valueLab}{String with variable of \code{data} containing node value,
+and associated label.}
+
 \item{pathVar}{String with variable of \code{data} containing hyperlinks 
 with path to the subject-specific report, formatted as: \cr
 \preformatted{<a href="./path-to-report">label</a>}.\cr 
@@ -25,5 +34,5 @@ returns also a \code{datatable} containing the plot data.
 (The plot and the table are not linked.)}
 }
 \description{
-Common arguments for the functions of the medicalMonitoring package
+Common arguments for the plotting functions summary statistics of the medicalMonitoring package
 }

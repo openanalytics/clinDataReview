@@ -6,16 +6,14 @@
 \usage{
 sunburstMonitoring(
   data,
-  parentVar,
-  parentLab = getLabelVar(parentVar, labelVars = labelVars),
-  childVar,
-  childLab = getLabelVar(childVar, labelVars = labelVars),
+  vars,
+  varsLab = getLabelVar(vars, labelVars = labelVars),
   valueVar,
   valueLab = getLabelVar(valueVar, labelVars = labelVars),
   valueType = "relative",
   titleExtra = NULL,
-  title = paste(paste(valueLab, "by", paste(c(parentLab, childLab), collapse = " and "),
-    titleExtra), collapse = "<br>"),
+  title = paste(paste(valueLab, "by", paste(varsLab, collapse = " and "), titleExtra),
+    collapse = "<br>"),
   labelVars = NULL,
   width = NULL,
   height = NULL,
@@ -35,13 +33,16 @@ sunburstMonitoring(
 \arguments{
 \item{data}{Data.frame with data.}
 
-\item{parentVar, parentLab}{String with variable of \code{data} containing parent nodes,
+\item{vars}{Character vector with variables of \code{data}
+containing plot nodes.
+If multiple, they should be specified in hierarchical order (from parent to child node).}
+
+\item{varsLab}{Named character vector with labels for \code{vars}.}
+
+\item{valueVar}{String with variable of \code{data} containing node value,
 and associated label.}
 
-\item{childVar, childLab}{String with variable of \code{data} containing child nodes,
-and associated label.}
-
-\item{valueVar, valueLab}{String with variable of \code{data} containing node value,
+\item{valueLab}{String with variable of \code{data} containing node value,
 and associated label.}
 
 \item{valueType}{String with type of values in \code{valueVar}
@@ -151,19 +152,10 @@ dataSunburst <- tableAE
 
 dataSunburst$n <- as.numeric(dataSunburst$n)
 
-# reformat summary statistics data.frame to link child <-> parent node
-dataSunburst['parent'] = with(dataSunburst, 
-	ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
-)
-dataSunburst['child'] = with(dataSunburst, 
-	ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
-)
-
 # create plot
 sunburstMonitoring(
 	data = dataSunburst,
-	parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
-	childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+	vars = c("AESOC", "AEDECOD"),
 	valueVar = "n", valueLab = "Number of patients with adverse events"
 )
 
@@ -179,23 +171,14 @@ tableDM <- getSummaryStatisticsTable(
 	rowTotalInclude = TRUE,
 	outputType = "data.frame"
 )
-
-# reformat summary statistics data.frame to link child <-> parent node
-tableDM['parent'] = with(tableDM, 
-	ifelse(SITEID == "Total", 'All', as.character(COUNTRY))
-)
-tableDM['child'] = with(tableDM, 
-	ifelse(SITEID == "Total", as.character(COUNTRY), as.character(SITEID))
-)
 tableDM$statN <- as.numeric(tableDM$statN)
 
 # create the plot
 sunburstMonitoring(
 	data = tableDM,
-	parentVar = "parent", parentLab = "country",
-	childVar = "child", childLab = "side identifier",
+	vars = c("COUNTRY", "SITEID"),
 	valueVar = "statN", valueLab = "Counts of patients",
-	valueType = "total",
+	valueType = "total"
 )
 }
 \seealso{

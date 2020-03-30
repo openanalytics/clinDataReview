@@ -35,19 +35,10 @@ dataSunburst <- tableAE
 
 dataSunburst$n <- as.numeric(dataSunburst$n)
 
-# reformat summary statistics data.frame to link child <-> parent node
-dataSunburst['parent'] = with(dataSunburst, 
-	ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
-)
-dataSunburst['child'] = with(dataSunburst, 
-	ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
-)
-
 # create plot
 sunburstMonitoring(
 	data = dataSunburst,
-	parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
-	childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+	vars = c("AESOC", "AEDECOD"),
 	valueVar = "n", valueLab = "Number of patients with adverse events"
 )
 
@@ -63,21 +54,12 @@ tableDM <- getSummaryStatisticsTable(
 	rowTotalInclude = TRUE,
 	outputType = "data.frame"
 )
-
-# reformat summary statistics data.frame to link child <-> parent node
-tableDM['parent'] = with(tableDM, 
-	ifelse(SITEID == "Total", 'All', as.character(COUNTRY))
-)
-tableDM['child'] = with(tableDM, 
-	ifelse(SITEID == "Total", as.character(COUNTRY), as.character(SITEID))
-)
 tableDM$statN <- as.numeric(tableDM$statN)
 
 # create the plot
 sunburstMonitoring(
 	data = tableDM,
-	parentVar = "parent", parentLab = "country",
-	childVar = "child", childLab = "side identifier",
+	vars = c("COUNTRY", "SITEID"),
 	valueVar = "statN", valueLab = "Counts of patients",
-	valueType = "total",
+	valueType = "total"
 )

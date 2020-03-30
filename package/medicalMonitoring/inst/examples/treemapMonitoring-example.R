@@ -35,18 +35,9 @@ dataPlot <- tableAE
 
 dataPlot$n <- as.numeric(dataPlot$n)
 
-# reformat summary statistics data.frame to link child <-> parent node
-dataPlot['parent'] = with(dataPlot, 
-	ifelse(AEDECOD == "Total", 'Adverse events', as.character(AESOC))
-)
-dataPlot['child'] = with(dataPlot, 
-	ifelse(AEDECOD == "Total", as.character(AESOC), as.character(AEDECOD))
-)
-
 # create plot
 treemapMonitoring(
 	data = dataPlot,
-	parentVar = "parent", parentLab = getLabelVar(var = "AESOC", labelVars = labelVars),
-	childVar = "child", childLab = getLabelVar(var = "AEDECOD", labelVars = labelVars),
+	vars = c("AESOC", "AEDECOD"),
 	valueVar = "n", valueLab = "Number of patients with adverse events"
 )
