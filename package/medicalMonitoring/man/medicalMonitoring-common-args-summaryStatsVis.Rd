@@ -19,6 +19,10 @@ in the table}
 
 \item{pathLab}{String with label for \code{pathVar},
 included in the collapsible row in the table.}
+
+\item{table}{Logical, if TRUE (FALSE by default)
+returns also a \code{datatable} containing the plot data.
+(The plot and the table are not linked.)}
 }
 \description{
 Common arguments for the functions of the medicalMonitoring package

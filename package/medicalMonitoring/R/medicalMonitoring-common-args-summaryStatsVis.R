@@ -13,5 +13,8 @@
 #' }
 #' @param pathLab String with label for \code{pathVar},
 #' included in the collapsible row in the table.
+#' @param table Logical, if TRUE (FALSE by default)
+#' returns also a \code{datatable} containing the plot data.
+#' (The plot and the table are not linked.)
 #' @name medicalMonitoring-common-args-summaryStatsVis
 NULL

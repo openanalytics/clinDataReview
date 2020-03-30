@@ -22,6 +22,11 @@
 #' FALSE otherwise (by default).
 #' @param table Logical, if TRUE (FALSE by default)
 #' returns also a \code{datatable} containing the plot data.
+#' The plot and table are linked when included in a Rmarkdown document: 
+#' when clicking on an plot element,
+#' only the corresponding records are retained in the associated table;
+#' when some records are selected in the table, they are highlighted in the 
+#' associated table.
 #' @param refLinePars (optional) Nested list, with parameters for each reference line(s).
 #' Each sublist (a.k.a reference line) contains:
 #' \itemize{

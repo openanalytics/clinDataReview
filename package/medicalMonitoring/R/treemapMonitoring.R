@@ -126,7 +126,9 @@ treemapMonitoring <- function(
 			tableVars = tableVars,
 			tableLab = tableLab,
 			tableButton = tableButton, tablePars = tablePars,
-			id = id, 
+			# link table <-> plot not functional for sunburst
+			# so 'break' temporarily this link (until this functionality is fixed)
+			id = paste0(id, "-table"), 
 			labelVars = labelVars,
 			verbose = verbose
 		)

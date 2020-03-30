@@ -70,7 +70,8 @@ in the table}
 included in the collapsible row in the table.}
 
 \item{table}{Logical, if TRUE (FALSE by default)
-returns also a \code{datatable} containing the plot data.}
+returns also a \code{datatable} containing the plot data.
+(The plot and the table are not linked.)}
 
 \item{tableVars}{Character vector with variables to be included 
 in the table; and associated labels.}
