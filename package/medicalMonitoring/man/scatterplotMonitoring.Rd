@@ -141,7 +141,12 @@ when hovering on a point of the plot}
 }}
 
 \item{table}{Logical, if TRUE (FALSE by default)
-returns also a \code{datatable} containing the plot data.}
+returns also a \code{datatable} containing the plot data.
+The plot and table are linked when included in a Rmarkdown document: 
+when clicking on an plot element,
+only the corresponding records are retained in the associated table;
+when some records are selected in the table, they are highlighted in the 
+associated table.}
 
 \item{tableVars}{Character vector with variables to be included 
 in the table; and associated labels.}
