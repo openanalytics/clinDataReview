@@ -3,7 +3,7 @@ title: "Vignette of the `medicalMonitoring` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 params:
-  createPatientProfiles: false
+  createPatientProfiles: true
 output: medicalMonitoring::html_medicalMonitoring_report
 vignette: >
   %\VignetteIndexEntry{Introduction to the medicalMonitoring package}
@@ -134,7 +134,7 @@ functionalities to link a plot to specific patient profiles report.
 A standard patient profiles report for _SDTM_ input format is created with the function:
 `runPatientProfileTemplateReport`.
 
-```{r createPatientProfilesReport, eval = params$createPatientProfiles}
+```{r createPatientProfilesReport, eval = params$createPatientProfiles, results = "hide"}
 
 	library(patientProfilesVis)
 	
@@ -147,19 +147,20 @@ A standard patient profiles report for _SDTM_ input format is created with the f
 		dataPathDM <- file.path(dataPath, paste0(dm, ".sas7bdat"))
 		write_sas(
 			data = SDTMDataPelican[[dm]][, idxCol], 
-			path =  dataPathDM
+			path = dataPathDM
 		)
 		dataPathDM
 	})
 #	sapply(dataPathFiles, read_sas)
-	
+
 	# create patient profile report
 	runPatientProfileTemplateReport(
 		dataPath = dataPath, 
 		outputFile = "patientProfiles/subjectProfile.pdf",
 		study = "Pelican",
 		batch = "20180606",
-		author = "Laure Cougnaud"
+		author = "Laure Cougnaud",
+		overwrite = TRUE
 	)
 
 ```
@@ -195,7 +196,7 @@ dataPlot$patientProfilePath <- paste0(
 scatterplotMonitoring(
 	data = dataPlot, 
 	xVar = "LBDY", yVar = "LBSTRESN",
-	aesPointVar = list(color = "ACTARM", shape = "USUBJID"),
+	aesPointVar = list(color = "ACTARM"),
 	aesLineVar = list(group = "USUBJID", color = "ACTARM"),
 	hoverVars = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
 	labelVars = labelVars,

@@ -297,7 +297,7 @@ output:
 	dataMH[which(dataMH[, varMHSTDT] == ""), varMHSTDT] <- "Unknown"
 	
 	# build end versus End Relative to Reference Period (MHENRF)
-	varMHAENDT <- intersect(c("AENDT", "MHSTDTC"), colnames(dataMH))[1]
+	varMHAENDT <- intersect(c("AENDT", "MHENDTC"), colnames(dataMH))[1]
 	dataMH[[varMHAENDT]] <- if(length(varMHAENDT) > 0){
 		dataMH[which(dataMH[, varMHAENDT] == ""), varMHAENDT] <- "Unknown"
 	}else "Unknown"
@@ -586,16 +586,22 @@ output:
 	}else	timeEndShapeVarAE <- NULL
 	
 	# AESEV or AETOXGR: 1 -> 5 (CTCTAE), Mild/Moderate/Severe
-	colorVarAE <- intersect(c("ASEV", "AETOXGR"), colnames(dataAE))[1]
+	colorVarAE <- intersect(c("ASEV", "AESEV", "AETOXGR"), colnames(dataAE))[1]
 	colorPaletteAE <- colorPalette[c("green", "sand", "yellow", "orange", "signalRed", "grey")]
-	if(colorVarAE == "ASEV"){
+	if(colorVarAE %in% c("ASEV", "AESEV")){
 		indLevels <- c("Mild", "Moderate", "Severe", "Life-threatening", "Fatal")
-		dataAE[, colorVarAE] <- reorder(dataAE[, "ASEV"], dataAE[, "ASEVN"])
+		dataAE[, colorVarAE] <- if("ASEVN" %in% colnames(dataAE)){
+			reorder(dataAE[, colorVarAE], dataAE[, "ASEVN"])
+		}else{
+			xVarAE <- unname(simpleCap(tolower(dataAE[, colorVarAE])))
+			levelsAE <- c(intersect(indLevels, unique(xVarAE)), setdiff(xVarAE, indLevels))
+			factor(xVarAE, levels = levelsAE)
+		}
 		dataAE[, colorVarAE] <- convertAesVar(dataAE, var = colorVarAE)
-	}else	if(colorVarAE == "AETOXGR"){
+	}else	if(colorVarAE %in% "AETOXGR"){
 		indLevels <- as.character(1:5)
 		dataAE[, colorVarAE] <- convertAesVar(dataAE, var = colorVarAE)
-	}
+	}else	colorVarAE <- NULL
 	if(length(colorVarAE) > 0){
 		if(all(unique(dataAE[, colorVarAE]) %in% c(NA, "", indLevels))){
 			# 1: mild, 2: moderate, 3: severe, 4: life-threatening/disable, 5: death-related to AE
@@ -778,7 +784,7 @@ output:
 	if(length(paramGroupVarVS) == 0)	paramGroupVarVS <- NULL
 	
 	colorVarVS <- shapeVarVS <- intersect("ANRIND", colnames(dataVS))[1]
-	if(length(colorVarVS) > 0){
+	if(!is.na(colorVarVS)){
 		
 		idxEmpty <- which(dataVS[[colorVarVS]] == "")
 		if(length(idxEmpty) > 0)
@@ -875,7 +881,7 @@ output:
 	if(length(paramGroupVarEG) == 0)	paramGroupVarEG <- NULL
 	
 	colorVarEG <- shapeVarEG <- intersect("ANRIND", colnames(dataEG))[1]
-	if(length(colorVarEG) > 0){
+	if(!is.na(colorVarEG)){
 		
 		idxEmpty <- which(dataEG[[colorVarEG]] == "")
 		if(length(idxEmpty) > 0)
