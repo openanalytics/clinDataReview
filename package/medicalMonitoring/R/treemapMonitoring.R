@@ -35,7 +35,7 @@ treemapMonitoring <- function(
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 	
-	dataPlot <- formatToHierarchicalData(data = dataPlot, vars = vars)
+	dataPlot <- formatToHierarchicalData(data = data, vars = vars)
 	
 	valueType <- checkValueType(
 		data = dataPlot,

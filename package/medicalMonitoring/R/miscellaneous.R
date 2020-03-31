@@ -38,7 +38,6 @@ formatHoverText <- function(x, label, width = 50){
 #' @export
 getJsDepMedicalMonitoring <- function(){
 	
-	
 	getPackageJSDep <- function(name, version){
 		srcDep <- system.file("js", package = "medicalMonitoring", name)
 		htmltools::htmlDependency(
