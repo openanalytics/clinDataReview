@@ -3,9 +3,15 @@
 #' @param gg \code{\link[ggplot2]{ggplot}} object.
 #' @param xVar String with column of \code{data} containing x-variable.
 #' @param yVar String with column of \code{data} containing y-variable.
+#' @param xLab String with label for \code{xVar}.
+#' @param yLab String with label for \code{xVar}.
 #' @param xLim,yLim Numeric vector of length 2 with limits for the x/y axes.
 #' @param idVar String with variable containing subject ID.
 #' @param idLab String with label for \code{idVar}.
+#' @param width Numeric, width of the plot in pixels,
+#' 700 by default.
+#' @param height Numeric, height of the plot in pixels,
+#' 700 by default.
 #' @param facetPars List with facetting parameters, 
 #' passed to the facetting function. Variables should be specified
 #' as character or formula.

@@ -12,6 +12,7 @@
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' in the current console.
 #' @inheritParams medicalMonitoring-common-args
+#' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @return \code{\link[DT]{datatable}}
 #' @author Laure Cougnaud
 #' @importFrom glpgUtilityFct toDTGLPG getLabelVar

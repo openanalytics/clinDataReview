@@ -37,6 +37,10 @@ barplotMonitoring(
 
 \item{yVar}{String with column of \code{data} containing y-variable.}
 
+\item{xLab}{String with label for \code{xVar}.}
+
+\item{yLab}{String with label for \code{xVar}.}
+
 \item{colorVar}{(optional) String with color variable.}
 
 \item{colorLab}{String with label for \code{colorVar}.}
@@ -47,6 +51,12 @@ barplotMonitoring(
 
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
+
+\item{width}{Numeric, width of the plot in pixels,
+700 by default.}
+
+\item{height}{Numeric, height of the plot in pixels,
+700 by default.}
 
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
 by default any position and aesthetic variables displayed in the plot.}
@@ -134,7 +144,7 @@ tableAE <- getSummaryStatisticsTable(
 	outputType = "data.frame"
 )
 
-dataPlot <- subset(dataPlot, AEDECOD != "Total")
+dataPlot <- subset(tableAE, AEDECOD != "Total")
 
 dataPlot$n <- as.numeric(dataPlot$n)
 

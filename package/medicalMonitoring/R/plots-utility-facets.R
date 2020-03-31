@@ -16,6 +16,7 @@ getFacetVars <- function(facetPars = list()){
 #' Set facetting layout for 'wrap' facetting.
 #' 
 #' By default, the number of columns is 2.
+#' @inheritParams medicalMonitoring-common-args
 #' @return Updated \code{facetPars}.
 #' @author Laure Cougnaud
 setFacetLayoutWrap <- function(data, facetPars = list()){
@@ -63,15 +64,12 @@ getDimGgplot <- function(gg){
 }
 
 #' Get dimensions for a medical monitoring plot.
-#' @param width Numeric, width of the plot in pixels,
-#' 700 by default.
-#' @param height Numeric, height of the plot in pixels,
-#' 700 by default.
 #' @param gg \code{\link[ggplot2]{ggplot}}
 #' @param legend Logical, if TRUE (by default)
 #' a legend is available in the plot.
 #' @param legendPosition String with position of the legend,
 #' 'right' by default.
+#' @inheritParams medicalMonitoring-common-args
 #' @return Numeric vector with width ('width')
 #' and height ('height') of the plot
 #' in pixels.

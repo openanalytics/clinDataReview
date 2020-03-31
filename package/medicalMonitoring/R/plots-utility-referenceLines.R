@@ -187,6 +187,7 @@ getParFctReferenceLines <- function(type){
 #' aesthetic variable is specified in the reference line parameters.
 #' @inheritParams medicalMonitoring-common-args
 #' @return List of data for the lines
+#' @importFrom stats complete.cases
 #' @author Laure Cougnaud
 getDataReferenceLines <- function(refLinePars, data, facetPars = NULL){
 	

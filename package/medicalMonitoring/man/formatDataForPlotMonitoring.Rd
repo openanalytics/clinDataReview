@@ -15,6 +15,13 @@ formatDataForPlotMonitoring(
 )
 }
 \arguments{
+\item{data}{Data.frame with data.}
+
+\item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
+by default any position and aesthetic variables displayed in the plot.}
+
+\item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
+
 \item{hoverByVar}{Character vector with variables identifying
 unique elements in the plot, usually x, y, facet variables.
 These variables are used to identify records with the same position
@@ -22,6 +29,16 @@ in the plot, their information are combined in the hover.}
 
 \item{keyVar}{Character vector with key variables, identifying unique
 group for which the link between the table and the plot should be done.}
+
+\item{id}{String with general id for the plot:
+\itemize{
+\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+}
+If not specified, a random id, as 'plotMonitoring[X]' is used.}
+
+\item{labelVars}{Named character vector containing variable labels,
+used by default for all labels in the plot.}
 }
 \value{
 Updated \code{\link[crosstalk]{SharedData}} with:

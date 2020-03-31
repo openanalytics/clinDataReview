@@ -8,7 +8,7 @@
 #' \item{\code{depth} parameter otherwise}
 #' }
 #' @param title String with header title.
-#' @param depth Integer of length 1 with header depth/level,
+#' @param level Integer of length 1 with header depth/level,
 #' 1 by default
 #' @param settings List with settings from YAML file, containing:
 #' \itemize{
@@ -86,7 +86,7 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' e.g. '.' by default.
 #' @param level Integer with base level for section,
 #' 1 by default.
-#' @param generalLab String with general label for the
+#' @param generalLabel String with general label for the
 #' chunk(s) including the plots in the Rmarkdown document. 
 #' Note: as chunks should have unique labels in a Rmd document,
 #' this label should be unique within the same Rmarkdown document 
@@ -95,10 +95,11 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' @return No returned value, the plots are included in the
 #' report.
 #' @author Laure Cougnaud
+#' @importFrom glpgUtilityFct knitPrintListObjects
 #' @export
 knitPrintMedicalMonitoring <- function(
 	list, sep = ".", level = 1,
-	generalLab = "medicalMonitoring"){
+	generalLabel = "medicalMonitoring"){
 	
 	if(inherits(list, "medicalMonitoring")){
 		
@@ -116,7 +117,7 @@ knitPrintMedicalMonitoring <- function(
 			
 			knitPrintListObjects(
 				xList = list, 
-				generalLab = generalLab,
+				generalLabel = generalLabel,
 				titles = names(list), 
 				titleLevel = level
 			)
@@ -137,7 +138,7 @@ knitPrintMedicalMonitoring <- function(
 					list = listEl, 
 					sep = sep, 
 					level = level+1,
-					generalLab = label
+					generalLabel = label
 				)
 				
 			}

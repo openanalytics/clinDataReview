@@ -5,6 +5,7 @@
 #' in the plot, their information are combined in the hover.
 #' @param keyVar Character vector with key variables, identifying unique
 #' group for which the link between the table and the plot should be done.
+#' @inheritParams medicalMonitoring-common-args
 #' @return Updated \code{\link[crosstalk]{SharedData}} with:
 #' \itemize{
 #' \item{extra column: 'hover' with combined info from \code{hoverVars}}

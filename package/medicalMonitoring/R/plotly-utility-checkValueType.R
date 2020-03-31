@@ -5,10 +5,12 @@
 #' the children nodes is not bigger than the parent node,
 #' an empty plot is created. In this case, this function
 #' set this parameter to: 'relative'.
+#' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @inheritParams medicalMonitoring-common-args
 #' @return If the condition is fullfilled:
 #' updated \code{valueType} and warning;
 #' otherwise input \code{valueType}.
+#' @importFrom utils head
 #' @author Laure Cougnaud
 checkValueType <- function(data, 
 	vars, varsLab = getLabelVar(vars, labelVars = labelVars),
