@@ -5,7 +5,11 @@
 \title{Get Javascript custom scripts required for specific
 the medical monitoring functionalities.}
 \usage{
-getJsDepMedicalMonitoring()
+getJsDepMedicalMonitoring(dep = NULL)
+}
+\arguments{
+\item{dep}{(optional) Character vector with names of Javascript dependencies 
+By default, all dependencies are included.}
 }
 \value{
 list of \code{\link[htmltools]{htmlDependency}}.
