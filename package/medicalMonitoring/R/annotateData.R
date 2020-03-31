@@ -246,7 +246,7 @@ annotateData <- function(
 			}else if("data" %in% names(annotations)){
 				
 				annotDataset <- "custom"
-				annotData <- annotation$data
+				annotData <- annotations$data
 				labelVarsAnnot <- getLabelVars(data = annotData)
 				
 				if(is.null(varsBy))	varsBy <- subjectVar

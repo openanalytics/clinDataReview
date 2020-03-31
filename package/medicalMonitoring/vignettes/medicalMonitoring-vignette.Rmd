@@ -2,7 +2,9 @@
 title: "Vignette of the `medicalMonitoring` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-output: glpgStyle::html_report
+params:
+  createPatientProfiles: false
+output: medicalMonitoring::html_medicalMonitoring_report
 vignette: >
   %\VignetteIndexEntry{Introduction to the medicalMonitoring package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -10,47 +12,6 @@ vignette: >
 ---
 
 # Introduction
-
-The functionality to download the patient profiles require additional _Javascript_ functions/packages:
-
-* custom _Javascript_ functions
-* external _Javascript_ dependencies: _JSZip_, _JSZipUtils_
-
-These dependencies are included in the `medicalMonitoring` package, and are listed
-with the convenient function: `getJsDepMedicalMonitoring()`.
-They should be specified as extra dependencies during the report creation
-(`extra_dependencies`) as in the code below:
-
-```{r inputParameters}
-
-createPatientProfiles <- FALSE # doesn't create patient profiles at each re-run
-
-```
-
-```{r runReport, eval = FALSE}
-
-	library(medicalMonitoring)
-	
-	# run the report
-	# currently Js dep for plotly/table should be included manually when rendering the document
-	rmarkdown::render(
-		input = "medicalMonitoring-vignette.Rmd",
-		output_format = glpgStyle::html_report(extra_dependencies = getJsDepMedicalMonitoring())
-	)
-
-	# bookdown: for testing
-#	bookdown::render_book(
-#		input = "medicalMonitoring-vignette.Rmd", 
-#		new_session = FALSE, 
-#		clean_envir = FALSE,
-#		output_format = glpgStyle::gitbook_report(
-#			split_by = 'chapter',
-#			# extra dependencies to create/download zip file when clicking on a plotly element
-#			extra_dependencies = getJsDepMedicalMonitoring()
-#		)
-#	)
-	
-```	
 
 ```{r options, echo = FALSE}
 	
@@ -81,6 +42,37 @@ for medical monitoring.
 	library(pander)
 
 ```
+
+## Report
+
+The functionality to download the patient profiles require additional _Javascript_ functions/packages:
+
+* custom _Javascript_ functions
+* external _Javascript_ dependencies: _JSZip_, _JSZipUtils_, _FileSaver_
+
+These dependencies are included in the `medicalMonitoring` package.
+
+To create a report containing such visualization,
+dedicated output formats should be specified in the YAML header of the document:
+
+* for a [_Rmarkdown_](https://cran.r-project.org/package=rmarkdown) report: : `html_medicalMonitoring_report`
+```
+---
+title: "Study name"
+subtitle: "Analysis description"
+output: html_medicalMonitoring_report
+---
+```
+
+* for a [_bookdown_](https://cran.r-project.org/package=bookdown) report: `gitbook_medicalMonitoring_report`
+```
+---
+title: "Study name"
+subtitle: "Analysis description"
+output: gitbook_medicalMonitoring_report
+---
+```
+
 
 ## Data format
 
@@ -142,7 +134,7 @@ functionalities to link a plot to specific patient profiles report.
 A standard patient profiles report for _SDTM_ input format is created with the function:
 `runPatientProfileTemplateReport`.
 
-```{r createPatientProfilesReport, eval = createPatientProfiles}
+```{r createPatientProfilesReport, eval = params$createPatientProfiles}
 
 	library(patientProfilesVis)
 	

@@ -2,10 +2,14 @@
 #' 
 #' A dataset can be filtered:
 #' \itemize{
-#' with records containing only specified values 
-#' for a variable (\code{value} parameter)}, or values based on
-#' a function of the variable (\code{valueFct} parameter), e.g. maximum of the variable).
-#' \item{by groups (\code{varsBy} parameter)
+#' \item{based on:
+#' \itemize{
+#' \item{specified for a variable: \code{value} parameter)}
+#' \item{on a function of the variable (\code{valueFct} parameter), 
+#' e.g. maximum of the variable)}
+#' }
+#' }
+#' \item{by groups (\code{varsBy} parameter)}
 #' }
 #' **Note that by default, missing values in the filtering variable are retained
 #' (which differs from the default behaviour in R)**.
