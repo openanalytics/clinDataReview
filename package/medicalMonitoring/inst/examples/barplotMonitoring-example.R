@@ -25,7 +25,7 @@ tableAE <- getSummaryStatisticsTable(
 	outputType = "data.frame"
 )
 
-dataPlot <- subset(dataPlot, AEDECOD != "Total")
+dataPlot <- subset(tableAE, AEDECOD != "Total")
 
 dataPlot$n <- as.numeric(dataPlot$n)
 

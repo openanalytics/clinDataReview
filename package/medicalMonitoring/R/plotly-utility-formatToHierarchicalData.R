@@ -4,6 +4,7 @@
 #' @inheritParams medicalMonitoring-common-args
 #' @return Updated data.frame with \code{vars} in 
 #' hierarchical format.
+#' @importFrom utils head tail
 #' @author Laure Cougnaud
 formatToHierarchicalData <- function(data, vars){
 		

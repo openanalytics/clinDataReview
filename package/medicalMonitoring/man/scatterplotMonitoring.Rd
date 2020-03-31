@@ -121,6 +121,12 @@ of the diagonal line is displayed.
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
 
+\item{width}{Numeric, width of the plot in pixels,
+700 by default.}
+
+\item{height}{Numeric, height of the plot in pixels,
+700 by default.}
+
 \item{hoverVars}{Character vector with variables to be displayed in the hover,
 by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 

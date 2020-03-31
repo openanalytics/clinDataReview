@@ -11,12 +11,13 @@ Imports:
   patientProfilesVis (>= 0.12.0), glpgStyle, glpgUtilityFct, 
   ggplot2, plotly, 
   htmlwidgets, plyr, htmltools,
-  knitr, reshape2, 
+  knitr, 
   pander, rmarkdown
 License: file LICENSE
 Suggests: 
     testthat,
     vdiffr,
-    inTextSummaryTable
+    inTextSummaryTable,
+    reshape2
 VignetteBuilder: knitr
 RoxygenNote: 7.0.2

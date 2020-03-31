@@ -10,6 +10,7 @@
 #' @import plotly
 #' @importFrom stats as.formula
 #' @author Laure Cougnaud
+#' @importFrom utils head tail
 #' @export
 treemapMonitoring <- function(
 	data, 

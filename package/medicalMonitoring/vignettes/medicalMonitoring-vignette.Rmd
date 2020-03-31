@@ -508,7 +508,7 @@ package.
 	listLabels <- getLabelParamcd(paramcd = names(plotsLab), data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
 	knitPrintListObjects(
 		xList = plotsLab, 
-		generalLab = "lab-profile-loop",
+		generalLabel = "lab-profile-loop",
 		titles = listLabels, titleLevel = 4
 	)
 

@@ -79,7 +79,7 @@ barplotMonitoring <- function(
 		
 	# specific formatting for medical monitoring
 	pl <- formatPlotlyMonitoring(
-		data = dataPlot, pl = pl,
+		data = data, pl = pl,
 		idVar = idVar, pathVar = pathVar,
 		idFromDataPlot = FALSE, idVarPlot = "label",
 		id = id, 

@@ -1,9 +1,6 @@
 #' Scatterplot of variables of interest for medical monitoring.
 #' @param data Data.frame with input data.
 #' @param facetPars List with facetting parameters, passed to the facetting function.
-
-#' @param xLab String with label for \code{xVar}.
-#' @param yLab String with label for \code{xVar}.
 #' @param aesPointVar List with specification of aesthetic variable(s),
 #' for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 #' e.g. \code{list(color = "TRTP")}.

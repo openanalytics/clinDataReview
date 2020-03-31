@@ -9,14 +9,14 @@ getMdHeader(title, level = 1, settings = NULL)
 \arguments{
 \item{title}{String with header title.}
 
+\item{level}{Integer of length 1 with header depth/level,
+1 by default}
+
 \item{settings}{List with settings from YAML file, containing:
 \itemize{
 \item{'rmd\_files': }{character vector with names of Rmd files}
 \item{'rmd\_file\_depth': }{integer vector with corresponding file depth}
 }}
-
-\item{depth}{Integer of length 1 with header depth/level,
-1 by default}
 }
 \value{
 String with Markdown header,

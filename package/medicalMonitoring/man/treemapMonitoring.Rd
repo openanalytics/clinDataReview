@@ -57,6 +57,12 @@ or 'relative'.}
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
 
+\item{width}{Numeric, width of the plot in pixels,
+700 by default.}
+
+\item{height}{Numeric, height of the plot in pixels,
+700 by default.}
+
 \item{pathVar}{String with variable of \code{data} containing hyperlinks 
 with path to the subject-specific report, formatted as: \cr
 \preformatted{<a href="./path-to-report">label</a>}.\cr 

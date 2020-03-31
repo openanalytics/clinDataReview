@@ -17,6 +17,20 @@ checkValueType(
 \arguments{
 \item{data}{Data.frame with data.}
 
+\item{vars}{Character vector with variables of \code{data}
+containing plot nodes.
+If multiple, they should be specified in hierarchical order (from parent to child node).}
+
+\item{varsLab}{Named character vector with labels for \code{vars}.}
+
+\item{valueVar}{String with variable of \code{data} containing node value,
+and associated label.}
+
+\item{valueType}{String with type of values in \code{valueVar}
+(\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
+among others: 'total' (default, only if sum(child) <= to parent)
+or 'relative'.}
+
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
 }

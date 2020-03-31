@@ -9,7 +9,7 @@ knitPrintMedicalMonitoring(
   list,
   sep = ".",
   level = 1,
-  generalLab = "medicalMonitoring"
+  generalLabel = "medicalMonitoring"
 )
 }
 \arguments{
@@ -26,7 +26,7 @@ e.g. '.' by default.}
 \item{level}{Integer with base level for section,
 1 by default.}
 
-\item{generalLab}{String with general label for the
+\item{generalLabel}{String with general label for the
 chunk(s) including the plots in the Rmarkdown document. 
 Note: as chunks should have unique labels in a Rmd document,
 this label should be unique within the same Rmarkdown document 

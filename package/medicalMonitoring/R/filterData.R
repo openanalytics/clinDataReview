@@ -156,6 +156,7 @@ filterData <- function(
 #' that will be included in progress messages.
 #' @inheritParams medicalMonitoring-common-args
 #' @importFrom plyr dlply
+#' @importFrom glpgUtilityFct simpleCap
 #' @return Updated \code{data}.
 #' @author Laure Cougnaud
 filterDataSingle <- function(data,

@@ -6,6 +6,16 @@
 \usage{
 setFacetLayoutWrap(data, facetPars = list())
 }
+\arguments{
+\item{data}{Data.frame with data.}
+
+\item{facetPars}{List with facetting parameters, 
+passed to the facetting function. Variables should be specified
+as character or formula.
+For 'wrap' facetting (\code{facetType} is 'wrap'), if the layout
+is not specified via \code{nrow}/\code{ncol}, 2 columns
+are used by default.}
+}
 \value{
 Updated \code{facetPars}.
 }
