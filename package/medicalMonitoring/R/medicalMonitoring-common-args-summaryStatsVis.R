@@ -5,6 +5,10 @@
 #' @param varsLab Named character vector with labels for \code{vars}.
 #' @param valueVar,valueLab String with variable of \code{data} containing node value,
 #' and associated label.
+#' @param valueType String with type of values in \code{valueVar}
+#' (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
+#' among others: 'total' (default, only if sum(child) <= to parent)
+#' or 'relative'.
 #' @param pathVar String with variable of \code{data} containing hyperlinks 
 #' with path to the subject-specific report, formatted as: \cr
 #' \preformatted{<a href="./path-to-report">label</a>}.\cr 
