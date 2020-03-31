@@ -10,7 +10,7 @@ sunburstMonitoring(
   varsLab = getLabelVar(vars, labelVars = labelVars),
   valueVar,
   valueLab = getLabelVar(valueVar, labelVars = labelVars),
-  valueType = "relative",
+  valueType = "total",
   titleExtra = NULL,
   title = paste(paste(valueLab, "by", paste(varsLab, collapse = " and "), titleExtra),
     collapse = "<br>"),
@@ -47,7 +47,8 @@ and associated label.}
 
 \item{valueType}{String with type of values in \code{valueVar}
 (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
-among others: 'relative' (default), or 'total' (only if sum(child) <= to parent).}
+among others: 'total' (default, only if sum(child) <= to parent)
+or 'relative'.}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 

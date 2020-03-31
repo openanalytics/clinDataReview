@@ -62,6 +62,12 @@ tableMonitoring <- function(
 	# retain only specified variables:
 	data <- data[, tableVars, drop = FALSE]
 	
+	# convert character columns to factor
+	colCharacter <- sapply(data, function(x)
+		is.character(x) & !is.factor(x)
+	)
+	data[, colCharacter] <- lapply(data[, colCharacter, drop = FALSE], as.factor)
+	
 	if(!is.null(pathVar)){
 		
 #		downloadButton <- paste0(

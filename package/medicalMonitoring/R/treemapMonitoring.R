@@ -17,6 +17,7 @@ treemapMonitoring <- function(
 	vars, varsLab = getLabelVar(vars, labelVars = labelVars),
 	valueVar, valueLab = getLabelVar(valueVar, labelVars = labelVars),
 	# general plot:
+	valueType = "total",
 	titleExtra = NULL,
 	title = paste(
 		paste(valueLab, "by", paste(varsLab, collapse = " and "), 
@@ -34,7 +35,15 @@ treemapMonitoring <- function(
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 	
-	data <- formatToHierarchicalData(data = data, vars = vars)
+	dataPlot <- formatToHierarchicalData(data = dataPlot, vars = vars)
+	
+	valueType <- checkValueType(
+		data = dataPlot,
+		vars = vars, varsLab = varsLab,
+		valueVar = valueVar,
+		valueType = valueType,
+		labelVars = labelVars
+	)
 	
 	# child variable: last variable specified in: 'vars'
 	childVar <- tail(vars, 1)
@@ -48,7 +57,7 @@ treemapMonitoring <- function(
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
 	dataSharedData <- formatDataForPlotMonitoring(
-		data = data,
+		data = dataPlot,
 		keyVar = vars, id = id,
 		labelVars = labelVars,
 		hoverVars = hoverVars, hoverLab = hoverLab,
@@ -69,6 +78,7 @@ treemapMonitoring <- function(
 		parents = varToFm(parentVar), labels = varToFm(childVar), 
 		values = varToFm(valueVar), 
 		type = "treemap",
+		branchvalues = valueType,
 		hovertemplate = varToFm("hover"),
 		width = width, height = height
 	)
@@ -78,7 +88,7 @@ treemapMonitoring <- function(
 	
 	# specific formatting for medical monitoring
 	pl <- formatPlotlyMonitoring(
-		data = data, pl = pl,
+		data = dataPlot, pl = pl,
 		idVar = vars, pathVar = pathVar,
 		idFromDataPlot = FALSE, idVarPlot = "label",
 		# click and double-click events already used to zoom/unzoom in sunburst
