@@ -14,7 +14,7 @@
 #' @return If a \code{table} is requested:
 #' \itemize{
 #' \item{a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
-#' (\code{\link[DT]{datatable}} object with extra class: \code{medicalMonitoringTable})}
+#' (\code{\link[DT]{datatable}} object) with extra class: \code{medicalMonitoringTable})}
 #' \item{\code{\link[plotly]{plotly}} object}
 #' }
 #' @example inst/examples/scatterplotMonitoring-example.R

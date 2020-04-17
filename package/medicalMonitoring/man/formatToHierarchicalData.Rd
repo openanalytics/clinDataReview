@@ -14,11 +14,22 @@ formatToHierarchicalData(data, vars)
 }
 \value{
 Updated data.frame with \code{vars} in 
-hierarchical format.
+hierarchical format, with extra attributes (in 'metadat'):
+\itemize{
+\item{'varsPlotly': }{Named character vector with
+new variable names (\code{[var].hier}) names
+with original variable names
+}
+\item{'varLabel': }{String with name
+of new column containing text used for
+label in plotly.}
+}
 }
 \description{
-Format data to a hierarchical data, in the format
-as required by the plotly sunburst and treemap.
+Note that new variables are created for each variable of interest
+(the variables are not overwritten) to avoid
+issues with cases where the value in the child 
+and parent variables are the same.
 }
 \author{
 Laure Cougnaud

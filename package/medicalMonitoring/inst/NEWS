@@ -1,2 +1,4 @@
+0.2.0
+    o formatToHierarchicalData: fix in case same values in different vars
 0.1.0
     o initial commit

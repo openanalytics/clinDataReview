@@ -5,14 +5,7 @@
 \title{Check if the specified \code{valueType} parameter can be passed to the
 \code{branchvalues} of the \code{\link[plotly]{plot_ly}} treemap/sunburst visualizations.}
 \usage{
-checkValueType(
-  data,
-  vars,
-  varsLab = getLabelVar(vars, labelVars = labelVars),
-  valueVar,
-  valueType = "total",
-  labelVars = NULL
-)
+checkValueType(data, vars, valueVar, valueType = "total", labelVars = NULL)
 }
 \arguments{
 \item{data}{Data.frame with data.}
@@ -20,8 +13,6 @@ checkValueType(
 \item{vars}{Character vector with variables of \code{data}
 containing plot nodes.
 If multiple, they should be specified in hierarchical order (from parent to child node).}
-
-\item{varsLab}{Named character vector with labels for \code{vars}.}
 
 \item{valueVar}{String with variable of \code{data} containing node value,
 and associated label.}

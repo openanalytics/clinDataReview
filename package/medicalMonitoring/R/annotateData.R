@@ -29,11 +29,10 @@
 #' \item{'vars': }{Character vector with variables of interest from annotation dataset.
 #' If not specified, all variables of the dataset are considered.}
 #' \item{'filters': }{Filters for the annotation dataset, 
-#' see \code{filters} parameter of \code{\link{filterData}}
+#' see \code{filters} parameter of \code{\link{filterData}}}
 #' \item{'varsBy': }{Character vector with variables used to merge input data and
 #' the annotation dataset. If not specified, \code{subjectVar} is used if
 #' an external annotation dataset, or the datasets are merged by rows otherwise.
-#' }
 #' }
 #' }
 #' }
