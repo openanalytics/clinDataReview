@@ -44,6 +44,8 @@ formatPlotlyMonitoring <- function(
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
+	idVarInit <- idVar
+
 	# change plotly default on click event in the legend
 	# single click: selected item is visible
 	# double click: select item is hidden
@@ -74,8 +76,15 @@ formatPlotlyMonitoring <- function(
 		# in case 'pathVar' is formatted as URL, only extract the path
 		dataPPDf[, pathVar] <- getPathHyperlink(dataPPDf[, pathVar])
 		
-		if(any(duplicated(dataPPDf[, idVar])))
-			stop("Duplicated ", idVar, " for specific ", pathVar, ".")
+		idxDupl <- which(duplicated(dataPPDf[, idVar]))
+		if(length(idxDupl) > 0){
+			dataDupl <- merge(dataPPDf, dataPPDf[idxDupl, idVar, drop = FALSE])
+			rownames(dataDupl) <- NULL
+			stop(paste0("Different ", sQuote(pathVar), " available for specific ", 
+				idVarInit, ":\n", 
+				paste(capture.output(print(dataDupl)), collapse = "\n")
+			))
+		}
 		dataPP <- dataPPDf[, c(idVar, pathVar)]
 		colnames(dataPP) <- c("key", "path")
 		

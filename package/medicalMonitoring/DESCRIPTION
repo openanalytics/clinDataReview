@@ -1,8 +1,8 @@
 Package: medicalMonitoring
 Type: Package
 Title: Medical Monitoring Reporting Tool
-Version: 0.1.0
-Date: 2020-03-31
+Version: 0.2.0
+Date: 2020-04-17
 Author: Arne De Roeck, Laure Cougnaud, Michela Pasetto
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring

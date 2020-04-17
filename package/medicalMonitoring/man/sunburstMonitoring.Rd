@@ -4,66 +4,25 @@
 \alias{sunburstMonitoring}
 \title{Sunburst interactive plot.}
 \usage{
-sunburstMonitoring(
-  data,
-  vars,
-  varsLab = getLabelVar(vars, labelVars = labelVars),
-  valueVar,
-  valueLab = getLabelVar(valueVar, labelVars = labelVars),
-  valueType = "total",
-  titleExtra = NULL,
-  title = paste(paste(valueLab, "by", paste(varsLab, collapse = " and "), titleExtra),
-    collapse = "<br>"),
-  labelVars = NULL,
-  width = NULL,
-  height = NULL,
-  pathVar = NULL,
-  pathLab = getLabelVar(pathVar, labelVars = labelVars),
-  hoverVars = childVar,
-  hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
-  table = FALSE,
-  tableVars,
-  tableLab,
-  tableButton = TRUE,
-  tablePars = list(),
-  id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
-  verbose = FALSE
-)
+sunburstMonitoring(...)
 }
 \arguments{
-\item{data}{Data.frame with data.}
-
-\item{vars}{Character vector with variables of \code{data}
+\item{...}{
+  Arguments passed on to \code{\link[=plotCountMonitoring]{plotCountMonitoring}}
+  \describe{
+    \item{\code{vars}}{Character vector with variables of \code{data}
 containing plot nodes.
 If multiple, they should be specified in hierarchical order (from parent to child node).}
-
-\item{varsLab}{Named character vector with labels for \code{vars}.}
-
-\item{valueVar}{String with variable of \code{data} containing node value,
+    \item{\code{varsLab}}{Named character vector with labels for \code{vars}.}
+    \item{\code{valueVar}}{String with variable of \code{data} containing node value,
 and associated label.}
-
-\item{valueLab}{String with variable of \code{data} containing node value,
+    \item{\code{valueLab}}{String with variable of \code{data} containing node value,
 and associated label.}
-
-\item{valueType}{String with type of values in \code{valueVar}
+    \item{\code{valueType}}{String with type of values in \code{valueVar}
 (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
 among others: 'total' (default, only if sum(child) <= to parent)
 or 'relative'.}
-
-\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
-
-\item{title}{String with title for the plot.}
-
-\item{labelVars}{Named character vector containing variable labels,
-used by default for all labels in the plot.}
-
-\item{width}{Numeric, width of the plot in pixels,
-700 by default.}
-
-\item{height}{Numeric, height of the plot in pixels,
-700 by default.}
-
-\item{pathVar}{String with variable of \code{data} containing hyperlinks 
+    \item{\code{pathVar}}{String with variable of \code{data} containing hyperlinks 
 with path to the subject-specific report, formatted as: \cr
 \preformatted{<a href="./path-to-report">label</a>}.\cr 
 If multiple, they should be separated by: ', '.\cr
@@ -75,46 +34,46 @@ when hovering on a point of the plot}
 \item{included in a collapsible row, and clickable with hyperlinks
 in the table}
 }}
-
-\item{pathLab}{String with label for \code{pathVar},
+    \item{\code{pathLab}}{String with label for \code{pathVar},
 included in the collapsible row in the table.}
-
-\item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
-by default any position and aesthetic variables displayed in the plot.}
-
-\item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
-
-\item{table}{Logical, if TRUE (FALSE by default)
+    \item{\code{table}}{Logical, if TRUE (FALSE by default)
 returns also a \code{datatable} containing the plot data.
 (The plot and the table are not linked.)}
-
-\item{tableVars}{Character vector with variables to be included 
-in the table; and associated labels.}
-
-\item{tableLab}{Character vector with variables to be included 
-in the table; and associated labels.}
-
-\item{tableButton}{Logical, if TRUE (by default)
-the table is included within an HTML button.}
-
-\item{tablePars}{List with parameters passed to the
-\code{\link[glpgUtilityFct]{toDTGLPG}} function.}
-
-\item{id}{String with general id for the plot:
+    \item{\code{data}}{Data.frame with data.}
+    \item{\code{titleExtra}}{String with extra title for the plot (appended after \code{title}).}
+    \item{\code{title}}{String with title for the plot.}
+    \item{\code{labelVars}}{Named character vector containing variable labels,
+used by default for all labels in the plot.}
+    \item{\code{width}}{Numeric, width of the plot in pixels,
+700 by default.}
+    \item{\code{height}}{Numeric, height of the plot in pixels,
+700 by default.}
+    \item{\code{hoverVars}}{Character vector with variable(s) to be displayed in the hover,
+by default any position and aesthetic variables displayed in the plot.}
+    \item{\code{hoverLab}}{Named character vector with labels for \code{hoverVars}.}
+    \item{\code{id}}{String with general id for the plot:
 \itemize{
 \item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
 \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
-
-\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+    \item{\code{tableVars}}{Character vector with variables to be included 
+in the table; and associated labels.}
+    \item{\code{tableLab}}{Character vector with variables to be included 
+in the table; and associated labels.}
+    \item{\code{tableButton}}{Logical, if TRUE (by default)
+the table is included within an HTML button.}
+    \item{\code{tablePars}}{List with parameters passed to the
+\code{\link[glpgUtilityFct]{toDTGLPG}} function.}
+    \item{\code{verbose}}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.}
+  }}
 }
 \value{
 If a \code{table} is requested:
 \itemize{
 \item{a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
-(\code{\link[DT]{datatable}} object with extra class: \code{medicalMonitoringTable})}
+(\code{\link[DT]{datatable}} object) with extra class: \code{medicalMonitoringTable})}
 \item{\code{\link[plotly]{plotly}} object}
 }
 }
@@ -191,6 +150,7 @@ sunburstMonitoring(
 \seealso{
 Other visualizations of summary statistics for medical monitoring: 
 \code{\link{barplotMonitoring}()},
+\code{\link{plotCountMonitoring}()},
 \code{\link{treemapMonitoring}()}
 }
 \author{

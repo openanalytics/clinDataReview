@@ -13,7 +13,7 @@
 #' @importFrom utils head
 #' @author Laure Cougnaud
 checkValueType <- function(data, 
-	vars, varsLab = getLabelVar(vars, labelVars = labelVars),
+	vars, 
 	valueVar,
 	valueType = "total",
 	labelVars = NULL){
@@ -38,8 +38,7 @@ checkValueType <- function(data,
 			})
 	
 			if(any(groupChildBiggerParent)){
-				warning("Parent node(s) for variable: ", 
-					varsLab[parentVar], ":\n",
+				warning("Parent node(s):\n",
 					toString(names(which(groupChildBiggerParent))), 
 					"\nare smaller than the sum of their children, ",
 					"so 'valueType' is set to 'relative' (instead of 'total')."
