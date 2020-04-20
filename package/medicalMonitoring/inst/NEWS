@@ -1,5 +1,6 @@
 0.2.0
     o formatToHierarchicalData: fix in case same values in different vars
     o annotateData: varFct
+    * new 'transformData' function
 0.1.0
     o initial commit

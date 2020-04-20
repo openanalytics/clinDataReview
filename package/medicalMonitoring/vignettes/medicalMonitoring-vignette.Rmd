@@ -13,7 +13,7 @@ vignette: >
 
 # Introduction
 
-```{r options, echo = FALSE}
+```{r options, echo = FALSE, message = FALSE}
 	
 	library(knitr)
 	library(plotly)
@@ -36,7 +36,7 @@ vignette: >
 This package `medicalMonitoring` contains visualizations/reporting functionalities
 for medical monitoring.
 
-```{r loadPackages}
+```{r loadPackages, message = FALSE}
 
 	library(medicalMonitoring)
 	library(pander)
@@ -114,14 +114,39 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 
 The `annotateData` enables to add metadata for a specific domain/dataset.
 
-```{r annotateData}
-dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
+```{r annotateData, message = TRUE}
+dataLB <- annotateData(dataLB, annotations = list(data = dataDM), verbose = TRUE)
 pander(
 	head(dataLB), 
 	caption = paste("Laboratory parameters annotated with",
 		"demographics information with the `annotatedData` function"
 	)
 )
+```
+
+## Transform data
+
+The `transformData` enables to convert data to a different format.
+
+For example, the laboratory data is converted from a long format, containing
+one record per endpoint*visit*subject to a wide format containing
+one record per visit*subject, the endpoints being included in different columns.
+
+```{r transformData, message = TRUE}
+
+	eDishData <- transformData(
+		data = subset(dataLB, LBTESTCD %in% c("ALT", "BILI")),
+		transformations = list(
+			type = "pivot_wider",
+			varsID = c("USUBJID", "VISIT"), 
+			varsValue = c("LBSTRESN", "LBNRIND"),
+			varPivot = "LBTESTCD"
+		),
+		verbose = TRUE,
+		labelVars = labelVars
+	)
+	pander(head(eDishData))
+
 ```
 
 # Visualizations

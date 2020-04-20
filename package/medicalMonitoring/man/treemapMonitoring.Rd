@@ -57,6 +57,8 @@ by default any position and aesthetic variables displayed in the plot.}
 \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
+    \item{\code{verbose}}{Logical, if TRUE (FALSE by default) progress messages are printed
+in the current console.}
     \item{\code{tableVars}}{Character vector with variables to be included 
 in the table; and associated labels.}
     \item{\code{tableLab}}{Character vector with variables to be included 
@@ -65,8 +67,6 @@ in the table; and associated labels.}
 the table is included within an HTML button.}
     \item{\code{tablePars}}{List with parameters passed to the
 \code{\link[glpgUtilityFct]{toDTGLPG}} function.}
-    \item{\code{verbose}}{Logical, if TRUE (FALSE by default) progress messages are printed
-in the current console.}
   }}
 }
 \value{

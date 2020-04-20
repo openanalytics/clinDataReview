@@ -6,6 +6,9 @@
 \arguments{
 \item{data}{Data.frame with data.}
 
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+in the current console.}
+
 \item{gg}{\code{\link[ggplot2]{ggplot}} object.}
 
 \item{xVar}{String with column of \code{data} containing x-variable.}
