@@ -28,23 +28,23 @@ annotateData(
 identifying exposed subjects, i.e. subjects included in the exposure dataset (EX/ADEX)
 dataset and with non empty and non missing start date ('EXSTDTC', 'STDY' or 'ASTDY')}
 \item{functional_groups_lab: }{a character variable: 'LBFCTGRP' is added to \code{data}
-based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)
-}
+based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)}
 }
 }
 \item{list of custom annotation, with:
 \itemize{
-\item{annotation dataset, either:
+\item{(optional) annotation dataset, either:
 \item{'dataset': }{String with name of the annotation dataset,
  e.g. 'ex' to import data from the file: '[dataset].sas7bdat'in \code{dataPath}}
 \item{'data': }{Data.frame with annotation dataset}
-\item{input \code{data} if 'data' and 'dataset' are not specified}
-}
+The input \code{data} is used if 'data' and 'dataset' are not specified.}
 \item{'vars': }{Character vector with variables of interest from annotation dataset.
 If not specified, all variables of the dataset are considered.}
-\item{'filters': }{Filters for the annotation dataset, 
+\item{'varFct': }{(optional) String with name of function or directly function used to 
+create a new variable specified in \code{vars}.}
+\item{'filters': }{(optional) Filters for the annotation dataset, 
 see \code{filters} parameter of \code{\link{filterData}}}
-\item{'varsBy': }{Character vector with variables used to merge input data and
+\item{'varsBy': }{(optional) Character vector with variables used to merge input data and
 the annotation dataset. If not specified, \code{subjectVar} is used if
 an external annotation dataset, or the datasets are merged by rows otherwise.
 }
@@ -132,6 +132,17 @@ dataAEWC <- annotateData(
 	verbose = TRUE
 )
 attr(dataAEWC, "labelVars")["WORSTINT"]
+
+# add a new variable based on a combination of variables:
+dataLB <- annotateData(dataLB, 
+	annotations = list(vars = "ULN_ratio", varFct = "LBSTRESN / LBSTNRHI")
+)
+
+# add a new variable based on extraction of a existing variable
+# Note: slash should be doubled when the function is specified as text
+dataLB <- annotateData(dataLB, 
+	annotations = list(vars = "PERIOD", varFct = "sub('Day .* - (.+)', '\\\\1', VISIT)")
+)
 
 # multiple annotations:
 dataAnnotated <- annotateData(dataLB, 

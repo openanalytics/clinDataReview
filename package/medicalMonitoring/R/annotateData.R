@@ -14,23 +14,24 @@
 #' identifying exposed subjects, i.e. subjects included in the exposure dataset (EX/ADEX)
 #' dataset and with non empty and non missing start date ('EXSTDTC', 'STDY' or 'ASTDY')}
 #' \item{functional_groups_lab: }{a character variable: 'LBFCTGRP' is added to \code{data}
-#' based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)
-#' }
+#' based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)}
 #' }
 #' }
 #' \item{list of custom annotation, with:
 #' \itemize{
-#' \item{annotation dataset, either:
+#' \item{(optional) annotation dataset, either:
 #' \item{'dataset': }{String with name of the annotation dataset,
 #'  e.g. 'ex' to import data from the file: '[dataset].sas7bdat'in \code{dataPath}}
 #' \item{'data': }{Data.frame with annotation dataset}
-#' \item{input \code{data} if 'data' and 'dataset' are not specified}
-#' }
+#' The input \code{data} is used if 'data' and 'dataset' are not specified.}
 #' \item{'vars': }{Character vector with variables of interest from annotation dataset.
 #' If not specified, all variables of the dataset are considered.}
-#' \item{'filters': }{Filters for the annotation dataset, 
+#' \item{'varFct': }{(optional) Function of \code{data} or string containing
+#' manipulations from column names of \code{data} used to 
+#' create a new variable specified in \code{vars}.}
+#' \item{'filters': }{(optional) Filters for the annotation dataset, 
 #' see \code{filters} parameter of \code{\link{filterData}}}
-#' \item{'varsBy': }{Character vector with variables used to merge input data and
+#' \item{'varsBy': }{(optional) Character vector with variables used to merge input data and
 #' the annotation dataset. If not specified, \code{subjectVar} is used if
 #' an external annotation dataset, or the datasets are merged by rows otherwise.
 #' }
@@ -88,10 +89,16 @@ annotateData <- function(
 		}
 		
 		# custom 'left-join' function without ordering of rows and columns in x
-		leftJoinBase <- function(x, y, ...){
+		leftJoinBase <- function(x, y, by, ...){
+			if(any(duplicated(y[, by])))
+				warning("Duplicated records in annotation dataset for: ", 
+					toString(sQuote(by)), ", this might create replicated rows in the ",
+						"input data."
+				)
 			res <- merge(
 				x = x, y = y, 
 				all.x = TRUE, all.y = FALSE, # left join
+				by = by,
 				sort = FALSE, # doesn't sort rows
 				...)
 			colsX <- colnames(x)
@@ -124,8 +131,8 @@ annotateData <- function(
 						varsDM <- intersect(varsDM, colnames(dataAnnot))
 						if(!subjectVar %in% colnames(dataAnnot))
 							stop(simpleCap(labelData), " is not annotated with demographics data because doesn't contain variable: ", subjectVar, ".")
-						dataAnnot <- dataAnnot[, c(subjectVar, varsDM)]
-						data <- leftJoinBase(data, dataAnnot, by = subjectVar)
+						dataAnnot <- unique(dataAnnot[, c(subjectVar, varsDM), drop = FALSE])
+						data <- leftJoinBase(x = data, y = dataAnnot, by = subjectVar)
 						
 						msgDemo <- paste0(
 							simpleCap(labelData), " is annotated with demographics data: ", 
@@ -274,11 +281,34 @@ annotateData <- function(
 				msgFilter <- attr(annotData, "msg")
 			}
 			
+			# function to apply to extract new variables
+			varFct <- annotations$varFct
+			if(!is.null(varFct)){
+				
+				if(is.null(annotations$vars) || length(annotations$vars) != 1)
+					stop("'vars' should be specified and of length 1 for 'varFct':\n", 
+						capture.output(varFct))
+				
+				varNew <- annotations$vars
+				if(is.character(varFct)){
+					annotData[[varNew]] <- eval(expr = parse(text = varFct), envir = data)
+					msgVarFct <- varFct
+				}else	if(is.function(varFct)){
+					annotData[[varNew]] <- varFct(data)
+					msgVarFct <- body(varFct)
+				}else	stop("'varFct' should be a character or a function.")
+				msgVarFct <- paste("based on:", msgVarFct)
+				
+				# remove variable in data if already present
+				data[[varNew]] <- NULL
+				
+			}
+			
 			# if 'vars' not specified, all columns of the annotation dataset are retained:
 			annotVar <- annotations$vars
 			if(is.null(annotVar))	annotVar <- colnames(annotData)
 			isAnnotInData <- annotVar %in% colnames(data)
-			if(any(isAnnotInData)){
+			if(any(isAnnotInData) & is.null(varFct)){
 				warning(
 					simpleCap(labelData), " is not annotated with variable(s): ", 
 					getLabelVar(var = annotVar[isAnnotInData], data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar[isAnnotInData]), ")",
@@ -293,9 +323,9 @@ annotateData <- function(
 				if(length(varsByNotInData) > 0)
 					stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
 				
-				annotData <- annotData[, unique(c(varsBy, annotVar))]
+				annotData <- unique(annotData[, unique(c(varsBy, annotVar)), drop = FALSE])
 	
-				data <- leftJoinBase(data, annotData, by = varsBy)
+				data <- leftJoinBase(x = data, y = annotData, by = varsBy)
 				
 				if(annotDataset == "current")	data$idAnnot <- NULL
 				
@@ -303,6 +333,7 @@ annotateData <- function(
 					simpleCap(labelData), " annotated with variable(s): ", 
 					getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar), ")",
 					" from the ", sQuote(annotDataset), " dataset",
+					if(!is.null(annotations$varFct))	paste0(" ", msgVarFct),
 					if(!is.null(annotFilter))	paste(" whose", msgFilter),
 					if(annotDataset != "current"){
 						paste0(

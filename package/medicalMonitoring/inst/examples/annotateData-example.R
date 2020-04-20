@@ -55,6 +55,18 @@ dataAEWC <- annotateData(
 )
 attr(dataAEWC, "labelVars")["WORSTINT"]
 
+# add a new variable based on a combination of variables:
+dataLB <- annotateData(dataLB, 
+	annotations = list(vars = "ULN_ratio", varFct = "LBSTRESN / LBSTNRHI")
+)
+
+# add a new variable based on extraction of a existing variable
+# Note: slash should be doubled when the function is specified as text
+dataLB <- annotateData(dataLB, 
+	annotations = list(vars = "PERIOD", varFct = "sub('Day .* - (.+)', '\\\\1', VISIT)")
+)
+print(unique(dataLB[, c("VISIT", "PERIOD")]))
+
 # multiple annotations:
 dataAnnotated <- annotateData(dataLB, 
 	annotations = list(
