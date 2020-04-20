@@ -40,7 +40,8 @@ based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable
 The input \code{data} is used if 'data' and 'dataset' are not specified.}
 \item{'vars': }{Character vector with variables of interest from annotation dataset.
 If not specified, all variables of the dataset are considered.}
-\item{'varFct': }{(optional) String with name of function or directly function used to 
+\item{'varFct': }{(optional) Function of \code{data} or string containing
+manipulations from column names of \code{data} used to 
 create a new variable specified in \code{vars}.}
 \item{'filters': }{(optional) Filters for the annotation dataset, 
 see \code{filters} parameter of \code{\link{filterData}}}
@@ -141,8 +142,9 @@ dataLB <- annotateData(dataLB,
 # add a new variable based on extraction of a existing variable
 # Note: slash should be doubled when the function is specified as text
 dataLB <- annotateData(dataLB, 
-	annotations = list(vars = "PERIOD", varFct = "sub('Day .* - (.+)', '\\\\1', VISIT)")
+	annotations = list(vars = "PERIOD", varFct = "sub('Day .* - (.+)', '\\\\\\\\1', VISIT)")
 )
+print(unique(dataLB[, c("VISIT", "PERIOD")]))
 
 # multiple annotations:
 dataAnnotated <- annotateData(dataLB, 

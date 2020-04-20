@@ -42,8 +42,6 @@
 #' @param labelVars Named character vector containing variable labels of \code{data}.
 #' This will be updated with the labels of the extra annotation variables
 #' (in \code{attr(output, 'labelVars')}).
-#' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
-#' in the current console.
 #' @param labelData (optional) String with label for input \code{data},
 #' that will be included in progress messages.
 #' @inheritParams medicalMonitoring-common-args
@@ -297,6 +295,9 @@ annotateData <- function(
 					annotData[[varNew]] <- varFct(data)
 					msgVarFct <- body(varFct)
 				}else	stop("'varFct' should be a character or a function.")
+				
+				labelVarsAnnot[varNew] <- msgVarFct
+				
 				msgVarFct <- paste("based on:", msgVarFct)
 				
 				# remove variable in data if already present
@@ -331,7 +332,10 @@ annotateData <- function(
 				
 				msgAnnot <- paste0(
 					simpleCap(labelData), " annotated with variable(s): ", 
-					getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar), ")",
+					toString(paste0(
+						getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), 
+						" (", sQuote(annotVar), ")"
+					)),
 					" from the ", sQuote(annotDataset), " dataset",
 					if(!is.null(annotations$varFct))	paste0(" ", msgVarFct),
 					if(!is.null(annotFilter))	paste(" whose", msgFilter),

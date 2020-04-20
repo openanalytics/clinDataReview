@@ -36,8 +36,6 @@
 #' linking the different conditions
 #' can be specified between the two conditions, e.g.: 
 #' \code{list(list(var = "SEX", value = "F"), "&", list(var = "COUNTRY", value = "DEU"))}.
-#' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
-#' in the current console.
 #' @inheritParams filterDataSingle
 #' @return Filtered \code{data} if \code{returnAll} is FALSE (by default).
 #' Otherwise \code{data} with additional column: \code{keep},

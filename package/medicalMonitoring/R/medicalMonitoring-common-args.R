@@ -1,5 +1,7 @@
 #' Common arguments for the functions of the medicalMonitoring package
 #' @param data Data.frame with data.
+#' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
+#' in the current console.
 #' @param gg \code{\link[ggplot2]{ggplot}} object.
 #' @param xVar String with column of \code{data} containing x-variable.
 #' @param yVar String with column of \code{data} containing y-variable.
