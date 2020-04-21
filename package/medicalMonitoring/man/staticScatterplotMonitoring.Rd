@@ -19,6 +19,8 @@ staticScatterplotMonitoring(
   yPars = list(),
   yLim = NULL,
   xLim = NULL,
+  yLimExpandData = TRUE,
+  xLimExpandData = TRUE,
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
   facetPars = list(),
@@ -63,6 +65,12 @@ besides \code{trans} and \code{limits}.}
 \item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
 \item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
+
+\item{xLimExpandData, yLimExpandData}{Logical (TRUE by default), should the
+limits specified via \code{xLim}/\code{yLim} be 
+expanded to include any data points outside of these
+limits?
+Please note that the same limits are set for all facets.}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 

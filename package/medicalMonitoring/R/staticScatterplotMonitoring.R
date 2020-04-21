@@ -15,6 +15,11 @@
 #' \code{\link[ggplot2]{scale_x_continuous}}/
 #' \code{\link[ggplot2]{scale_y_continuous}} functions,
 #' besides \code{trans} and \code{limits}.
+#' @param xLimExpandData,yLimExpandData Logical (TRUE by default), should the
+#' limits specified via \code{xLim}/\code{yLim} be 
+#' expanded to include any data points outside of these
+#' limits?
+#' Please note that the same limits are set for all facets.
 #' @param facetType String with facetting type, either:
 #' \itemize{
 #' \item{'wrap': }{\code{\link[ggplot2]{facet_wrap}}}
@@ -45,6 +50,7 @@ staticScatterplotMonitoring <- function(
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
 	yLim = NULL, xLim = NULL, 
+	yLimExpandData = TRUE, xLimExpandData = TRUE,
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
@@ -68,6 +74,13 @@ staticScatterplotMonitoring <- function(
 		if(!is.null(get(paramName)) && length(get(paramName)) != 2)
 			stop("When specified, '", paramName, "' parameter should be of length 2.")
 	checkAxis("yLim");checkAxis("xLim")
+	
+	if(!is.null(xLim) && xLimExpandData){
+		xLim <- range(c(xLim, dataContent[, xVar]), na.rm = TRUE)
+	}
+	if(!is.null(yLim) && yLimExpandData){
+		yLim <- range(c(yLim, dataContent[, yVar]), na.rm = TRUE)
+	}
 	
 	if(missing(aesLab)){
 		aesVar <- unique(unlist(c(aesPointVar, aesLineVar)))
