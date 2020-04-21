@@ -36,6 +36,7 @@ scatterplotMonitoring <- function(
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
 	yLim = NULL, xLim = NULL, 
+	yLimExpandData = TRUE, xLimExpandData = TRUE,
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
@@ -106,6 +107,7 @@ scatterplotMonitoring <- function(
 		xTrans = xTrans, yTrans = yTrans,
 		xPars = xPars, yPars = yPars,
 		yLim = yLim, xLim = xLim, 
+		yLimExpandData = yLimExpandData, xLimExpandData = xLimExpandData,
 		# general plot:
 		titleExtra = titleExtra,
 		title = title,

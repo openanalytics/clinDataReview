@@ -2,5 +2,6 @@
     o formatToHierarchicalData: fix in case same values in different vars
     o annotateData: varFct
     o new 'transformData' function
+    o staticScatterplotMonitoring: [x/y]LimExpandData
 0.1.0
     o initial commit

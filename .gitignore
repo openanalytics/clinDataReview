@@ -1,7 +1,7 @@
 *.Rcheck
 .project
 *.html
-tests
+/tests
 *.tar.gz
 # comments all js folder, excepted in the package
 js
