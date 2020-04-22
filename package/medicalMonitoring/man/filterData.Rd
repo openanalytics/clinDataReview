@@ -51,6 +51,9 @@ is returned.}
 containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
 }}
 
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+in the current console.}
+
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}
 
