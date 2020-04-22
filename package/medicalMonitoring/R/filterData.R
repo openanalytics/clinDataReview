@@ -37,6 +37,7 @@
 #' can be specified between the two conditions, e.g.: 
 #' \code{list(list(var = "SEX", value = "F"), "&", list(var = "COUNTRY", value = "DEU"))}.
 #' @inheritParams filterDataSingle
+#' @inheritParams medicalMonitoring-common-args
 #' @return Filtered \code{data} if \code{returnAll} is FALSE (by default).
 #' Otherwise \code{data} with additional column: \code{keep},
 #' containing TRUE for records which fullfill the specified

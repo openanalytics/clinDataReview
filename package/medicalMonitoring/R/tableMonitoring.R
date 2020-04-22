@@ -109,12 +109,8 @@ tableMonitoring <- function(
 	
 	if(tableButton){
 		
-		idButton <- paste0("button:", id)
-#		class(table) <- c("medicalMonitoringTable", class(table))
-		
 		attributes(table)$metadata <- list(
 			button = tableButton, 
-			buttonId = idButton,
 			buttonTitle = "Click to show or hide the data associated to the plot"
 		)
 		

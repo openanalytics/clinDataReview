@@ -5,15 +5,13 @@
 \title{GLPG-theme medical monitoring format for rmarkdown report.}
 \usage{
 html_medicalMonitoring_report(
-  extra_dependencies = getJsDepMedicalMonitoring(dep = c("FileSaver", "jszip",
-    "jszip-utils", "PatientProfiles")),
+  extra_dependencies = getJsDepMedicalMonitoring(),
   ...
 )
 }
 \arguments{
 \item{extra_dependencies}{List of \code{\link[htmltools]{htmlDependency}}
 by default extracted from \code{\link{getJsDepMedicalMonitoring}}
-(excepted \code{bootstrap} and \code{jquery}).
 (see help of the \link[rmarkdown]{html_document} function)}
 
 \item{...}{Extra parameters passed to the

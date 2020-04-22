@@ -3,5 +3,6 @@
     o annotateData: varFct
     o new 'transformData' function
     o staticScatterplotMonitoring: [x/y]LimExpandData
+    o includeInButton -> collapseHtmlContent, remove bootstrap/jquery dep
 0.1.0
     o initial commit
