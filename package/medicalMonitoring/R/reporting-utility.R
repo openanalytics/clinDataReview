@@ -59,9 +59,8 @@ knit_print.medicalMonitoring <- function(x, ...){
 	xMetadata <- attributes(table)$metadata
 	if(!is.null(xMetadata$button) && xMetadata$button){
 		
-		table <- includeInButton(
+		table <- collapseHtmlContent(
 			input = table, 
-			id = xMetadata$buttonId, 
 			title = xMetadata$buttonTitle
 		)
 	
@@ -69,7 +68,6 @@ knit_print.medicalMonitoring <- function(x, ...){
 	
 	res <- tagList(plot, table)
 	
-	requireNamespace("htmltools")
 	htmltools::knit_print.shiny.tag.list(res)
 	
 }

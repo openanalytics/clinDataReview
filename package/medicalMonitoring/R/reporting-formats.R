@@ -43,7 +43,6 @@ gitbook_medicalMonitoring_report <- function(
 #' report.
 #' @param extra_dependencies List of \code{\link[htmltools]{htmlDependency}}
 #' by default extracted from \code{\link{getJsDepMedicalMonitoring}}
-#' (excepted \code{bootstrap} and \code{jquery}).
 #' (see help of the \link[rmarkdown]{html_document} function)
 #' @param ... Extra parameters passed to the
 #' \link[glpgStyle]{html_report} function.
@@ -52,9 +51,7 @@ gitbook_medicalMonitoring_report <- function(
 #' @author lcougnaud
 #' @export
 html_medicalMonitoring_report <- function(
-	extra_dependencies = getJsDepMedicalMonitoring(
-		dep = c("FileSaver", "jszip", "jszip-utils", "PatientProfiles")
-	),
+	extra_dependencies = getJsDepMedicalMonitoring(),
 	...){
 	
 	glpgStyle::html_report(

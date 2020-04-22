@@ -62,9 +62,7 @@ getJsDepMedicalMonitoring <- function(dep = NULL){
 		getPackageJSDep(name = "FileSaver", version = "1.3.8"),
 		getPackageJSDep(name = "jszip", version = "3.2.2"),
 		getPackageJSDep(name = "jszip-utils", version = "0.1.0"),
-		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring")),
-		getPackageJSDep(name = "jquery", version = "1.12.4"),
-		getPackageJSDep(name = "bootstrap", version = "3.3.7")
+		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring"))
 	)
 	
 	if(!is.null(dep)){
@@ -76,49 +74,27 @@ getJsDepMedicalMonitoring <- function(dep = NULL){
 
 }
 
-#' Function to create collapse with button in html output
-#' @param input Object to be included within the button.
-#' @param id String with button ID. If not specified,
-#' a random id, as 'button:x' is used.
+#' Function to create collapsible HTML content
+#' @param input Object to be collapse, e.g.
+#' datatable.
 #' @param title String with button title.
-#' @param color String witn button color.
-#' @param borderColor String with button color border.
-#' @return \code{\link[htmltools]{HTML}} object
-#' @author Kirsten Van Hoorde, Laure Cougnaud
-#' @importFrom htmltools tag tagList div br
+#' @return \code{\link[htmltools]{tag}} object
+#' @author Laure Cougnaud
+#' @importFrom htmltools tags div
 #' @export
-includeInButton <- function(
-	input, 
-	id = paste0("button:", sample.int(n = 1000, size = 1)), 
-	title = "Click to show or hide",  
-	color = glpgStyle::glpgColor()["green"], 
-	borderColor = glpgStyle::glpgColor()["orange"]){
+collapseHtmlContent <- function(
+	input, title = "Click to show or hide"){
 	
-	# create button
-	id <- gsub("[[:punct:]]| ", "", id)
-	btnStyle <- paste0(
-		"color:", color, " !important;",
-		"border-color:", borderColor, " !important;",
-		"background-color: 'white' !important"
-	)
-	btn <- tag(
-		"button", 
-		varArgs = list(
-			type = "button", class = "btn",
-			style = btnStyle,
-			'data-toggle'= "collapse",
-			title = title,
-			'data-target' = paste0("#", id),
-			title
-		)
+	collapsedCnt <- tags$details(
+		tags$summary(title),
+		div(class = "row", input),
+		# DT github #690: html widgets are not rendered until they are visible
+		# so the 'resize' method should be called on the widget 
+		# when the content is collapsed (which is not the case by default)
+		ontoggle = 'if(this.open){window.dispatchEvent(new Event("resize"));}'
 	)
 	
-	# create content
-	btnContent <- div(class = "row", div(id = id, class= "collapse buttonArrow", input))
-	
-	res <- tagList(btn, btnContent, br(), br(), br(), br())
-	
-	return(res)
+	return(collapsedCnt)
 	
 }
 
