@@ -10,6 +10,12 @@ sunburstMonitoring(...)
 \item{...}{
   Arguments passed on to \code{\link[=plotCountMonitoring]{plotCountMonitoring}}
   \describe{
+    \item{\code{colorVar}}{(optional) String with coloring variable
+(NULL by default).
+By default, the treemap is colored based by section.}
+    \item{\code{colorLab}}{(optional) String with label for \code{colorVar}.}
+    \item{\code{colorRange}}{(optional) Numeric vector of length 2 with range 
+for the color variable, in case it is a numeric variable.}
     \item{\code{vars}}{Character vector with variables of \code{data}
 containing plot nodes.
 If multiple, they should be specified in hierarchical order (from parent to child node).}

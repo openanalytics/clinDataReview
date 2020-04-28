@@ -107,7 +107,7 @@ collapseHtmlContent <- function(
 #' @export
 getPathHyperlink <- function(x){
 	
-	linksSplit <- strsplit(x, split = ", ")
+	linksSplit <- strsplit(as.character(x), split = ", ")
 	
 	paths <- sapply(linksSplit, function(linksAll){
 		linksDest <- sapply(linksAll, function(link){

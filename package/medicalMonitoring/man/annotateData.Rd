@@ -45,6 +45,7 @@ manipulations from column names of \code{data} used to
 create a new variable specified in \code{vars}.}
 \item{'filters': }{(optional) Filters for the annotation dataset, 
 see \code{filters} parameter of \code{\link{filterData}}}
+\item{'varLabel': }{(optional) label for new variable in case \code{varFct} is specified.}
 \item{'varsBy': }{(optional) Character vector with variables used to merge input data and
 the annotation dataset. If not specified, \code{subjectVar} is used if
 an external annotation dataset, or the datasets are merged by rows otherwise.

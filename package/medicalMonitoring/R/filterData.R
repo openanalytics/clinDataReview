@@ -28,8 +28,7 @@
 #' \item{'keepNA': }{(optional) Logical, if TRUE (by default), missing values in \code{var}
 #' are retained. If not specified, \code{keepNA} general parameter is used.}
 #' \item{'varsBy': }{(optional) Character vector with variables in \code{data} containing groups to filter by}
-#' \item{'varNew': }{(optional) String with new variable created, containing TRUE if
-#' condition is fullfilled and FALSE otherwise}
+#' \item{'varNew': }{(optional) String with name for the new variable created}
 #' \item{'labelNew': }{(optional) String with label for \code{varNew}}
 #' }
 #' If a list of filters is specified, the logical operator (see \code{\link[base]{Logic}})
@@ -173,6 +172,7 @@ filterDataSingle <- function(data,
 		varsBy <- filters$varsBy
 		
 		dataList <- dlply(data, varsBy, function(dataBy){
+			print(unique(unique(dataBy[, varsBy, drop = FALSE])))
 			inputArgsBy <- inputArgs
 			inputArgsBy$filters$varsBy <- NULL # remove varsBy
 			inputArgsBy$data <- dataBy # consider data for specific group

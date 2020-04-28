@@ -2,6 +2,12 @@
 #' 
 #' Note: the table and plot are not (yet) linked.
 #' @param typePlot String with plot type, 'treemap' or 'sunburst'.
+#' @param colorVar (optional) String with coloring variable
+#' (NULL by default).
+#' By default, the treemap is colored based by section.
+#' @param colorLab (optional) String with label for \code{colorVar}.
+#' @param colorRange (optional) Numeric vector of length 2 with range 
+#' for the color variable, in case it is a numeric variable.
 #' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
@@ -10,12 +16,16 @@
 #' @import plotly
 #' @importFrom stats as.formula
 #' @importFrom utils head tail
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom glpgUtilityFct getGLPGColorPalette
 #' @author Laure Cougnaud
 plotCountMonitoring <- function(
 	data, 
 	# plot variables:
 	vars, varsLab = getLabelVar(vars, labelVars = labelVars),
 	valueVar, valueLab = getLabelVar(valueVar, labelVars = labelVars),
+	colorVar = NULL, colorLab = getLabelVar(valueVar, labelVars = labelVars),
+	colorRange = NULL,
 	# general plot:
 	valueType = "total",
 	titleExtra = NULL,
@@ -27,7 +37,7 @@ plotCountMonitoring <- function(
 	# interactivity:
 	width = NULL, height = NULL,
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
-	hoverVars = childVar, 
+	hoverVars = c(vars, valueVar, colorVar), 
 	hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
 	table = FALSE, 
 	tableVars,
@@ -56,12 +66,6 @@ plotCountMonitoring <- function(
 	)
 	
 	# format data to: 'SharedData' object
-	if(missing(hoverVars)){
-		hoverVars <- c(vars, valueVar)
-		hoverLab <- setNames(c(varsLab, valueLab), hoverVars)
-	}else	if(missing(hoverLab)){
-		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
-	}
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = dataPlot,
 		keyVar = varID, 
@@ -79,6 +83,21 @@ plotCountMonitoring <- function(
 	width <- unname(dimPlot["width"])
 	height <- unname(dimPlot["height"])
 	
+	# get color vector
+	if(!is.null(colorVar)){
+		if(is.numeric(dataPlot[, colorVar])){
+			if(is.null(colorRange))	colorRange <- range(data[, colorVar], na.rm = TRUE)
+			colorsX <- tapply(dataPlot[, colorVar], dataPlot[, varID], mean)
+			colorGroups <- cut(colorsX, breaks = c(-Inf, seq(from = colorRange[1], to = colorRange[2], length.out = 8), +Inf))
+			colorPalette <- RColorBrewer::brewer.pal(n = nlevels(colorGroups), name = "YlOrRd")
+			names(colorPalette) <- levels(colorGroups)
+		}else{
+			colorGroups <- dataPlot[, colorVar][order(dataPlot[, varID])]
+			if(!is.factor(colorGroups))	colorGroups <- factor(colorGroups)	
+			colorPalette <- getGLPGColorPalette(x = colorGroups)
+		}
+		colors <- unname(colorPalette[as.character(colorGroups)])
+	}
 	# create interactive plot:
 	pl <- plot_ly(
 		data = dataSharedData, 
@@ -86,13 +105,20 @@ plotCountMonitoring <- function(
 		parents = varToFm(varParent), 
 		labels = varToFm(varLabel), 
 		values = varToFm(valueVar), 
+		marker = if(!is.null(colorVar))	list(colors = colors),
 		type = typePlot,
 		branchvalues = valueType,
 		hovertemplate = varToFm("hover"),
 		width = width, height = height,
 		textinfo = "label+value"
 	)
-	pl <- pl %>% layout(title = title)
+	pl <- pl %>% layout(
+		title = title, 
+		# remove the axis labels, included when color is specified in the treemap:
+		xaxis = list(showticklabels = FALSE),
+		yaxis = list(showticklabels = FALSE),
+		legend = list(title = list(text = colorLab))# not yet available in plotly for treemap?
+	)
 	
 	# current hovered element identified by d.points[0].label
 	

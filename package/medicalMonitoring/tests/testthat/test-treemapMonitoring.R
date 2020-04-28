@@ -11,6 +11,10 @@ labelVars <- labelVarsSDTMPelican
 # sunburst takes as input table with counts
 library(inTextSummaryTable)
 
+library(plyr)
+library(plotly)
+library(vdiffr)
+
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
 dataTotal <- subset(dataDM, RFXSTDTC != "")
 
@@ -142,5 +146,71 @@ test_that("repeated labels in child and parent variables", {
 #	htmlwidgets::saveWidget(pl, "test.html")
 #	plotly::orca(pl, "test.png")
 			
+})
+
+test_that("treemap with color variable", {
+			
+	# extract worst-case scenario
+	dataAE$AESEVN <- as.numeric(factor(dataAE$AESEV, levels = c("MILD", "MODERATE")))
+	if(any(is.na(dataAE$AESEVN)))
+		stop("Severity should be filled for all subjects.")
+	
+	dataAEWC <- ddply(dataAE, c("AESOC", "AEDECOD", "USUBJID"), function(x){
+		x[which.max(x$AESEVN), ]
+	})
+	dataTotalRow <- list(AEDECOD = 
+		ddply(dataAEWC, c("AESOC", "USUBJID"), function(x){
+			x[which.max(x$AESEVN), ]
+		})
+	)
+				
+	# compute adverse event table
+	tableAE <- getSummaryStatisticsTable(
+					
+		data = dataAEWC,
+		rowVar = c("AESOC", "AEDECOD"),
+		var = "AESEVN",
+		dataTotal = dataTotal,
+		rowOrder = "total",
+		labelVars = labelVars,
+		
+		# plotly treemap requires records (rows) for each group
+		rowVarTotalInclude = "AEDECOD",
+		dataTotalRow = dataTotalRow,
+		outputType = "data.frame"
+	
+	)
+	
+	dataPlot <- tableAE
+	
+	dataPlot$statN <- as.numeric(dataPlot$statN)
+	dataPlot$statMean <- as.numeric(dataPlot$statMean)
+			
+	# create plot
+	pl <- treemapMonitoring(
+		data = dataPlot,
+		vars = c("AESOC", "AEDECOD"),
+		valueVar = "statN", valueLab = "Number of patients with adverse events",
+		colorVar = "statMean", colorLab = "Mean severity"
+	)
+	dataPlot$ids <- with(dataPlot, paste(AESOC, AEDECOD, sep = "-"))
+	dataPlot$ids <- sub("-Total", "", dataPlot$ids)
+	
+	plData <- plotly_build(pl)$x$data[[1]]
+	colors <- plData$marker$colors
+	ids <- plData$ids
+	
+	colorsData <- dataPlot[match(ids, dataPlot$ids), "statMean"]
+	statPerColor <- tapply(colorsData, colors, function(x) range(x))
+	statPerColorRank <- statPerColor[order(sapply(statPerColor, min), decreasing = FALSE)]
+	isColorGroupOfStat <- all(diff(unlist(statPerColorRank)) >= 0)
+	expect_true(
+		object = isColorGroupOfStat, 
+		label = "color var doesn't represent groups of specified summary statistic"
+	)
+	
+	## check if created plot == reference
+	expect_doppelganger(title = "color", fig = pl, writer = write_svg_plotly)
+				
 })
 			

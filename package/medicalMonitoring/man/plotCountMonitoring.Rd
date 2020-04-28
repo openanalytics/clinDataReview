@@ -10,6 +10,9 @@ plotCountMonitoring(
   varsLab = getLabelVar(vars, labelVars = labelVars),
   valueVar,
   valueLab = getLabelVar(valueVar, labelVars = labelVars),
+  colorVar = NULL,
+  colorLab = getLabelVar(valueVar, labelVars = labelVars),
+  colorRange = NULL,
   valueType = "total",
   titleExtra = NULL,
   title = paste(paste(valueLab, "by", paste(varsLab, collapse = " and "), titleExtra),
@@ -19,7 +22,7 @@ plotCountMonitoring(
   height = NULL,
   pathVar = NULL,
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
-  hoverVars = childVar,
+  hoverVars = c(vars, valueVar, colorVar),
   hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
   table = FALSE,
   tableVars,
@@ -45,6 +48,15 @@ and associated label.}
 
 \item{valueLab}{String with variable of \code{data} containing node value,
 and associated label.}
+
+\item{colorVar}{(optional) String with coloring variable
+(NULL by default).
+By default, the treemap is colored based by section.}
+
+\item{colorLab}{(optional) String with label for \code{colorVar}.}
+
+\item{colorRange}{(optional) Numeric vector of length 2 with range 
+for the color variable, in case it is a numeric variable.}
 
 \item{valueType}{String with type of values in \code{valueVar}
 (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
