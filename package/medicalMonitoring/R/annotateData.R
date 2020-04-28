@@ -31,6 +31,7 @@
 #' create a new variable specified in \code{vars}.}
 #' \item{'filters': }{(optional) Filters for the annotation dataset, 
 #' see \code{filters} parameter of \code{\link{filterData}}}
+#' \item{'varLabel': }{(optional) label for new variable in case \code{varFct} is specified.}
 #' \item{'varsBy': }{(optional) Character vector with variables used to merge input data and
 #' the annotation dataset. If not specified, \code{subjectVar} is used if
 #' an external annotation dataset, or the datasets are merged by rows otherwise.
@@ -289,14 +290,24 @@ annotateData <- function(
 				
 				varNew <- annotations$vars
 				if(is.character(varFct)){
-					annotData[[varNew]] <- eval(expr = parse(text = varFct), envir = data)
+					
+					annotData[[varNew]] <- eval(
+						expr = parse(text = varFct), 
+						envir = annotData
+					)
 					msgVarFct <- varFct
+					
 				}else	if(is.function(varFct)){
-					annotData[[varNew]] <- varFct(data)
-					msgVarFct <- body(varFct)
+					
+					annotData[[varNew]] <- varFct(annotData)
+					msgVarFct <- paste(as.character(body(varFct)), collapse = "")
+					
 				}else	stop("'varFct' should be a character or a function.")
 				
-				labelVarsAnnot[varNew] <- msgVarFct
+				# set label:
+				labelNew <- annotations$varLabel
+				if(is.null(labelNew))	labelNew <- msgVarFct
+				labelVarsAnnot[varNew] <- labelNew
 				
 				msgVarFct <- paste("based on:", msgVarFct)
 				

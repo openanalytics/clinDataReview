@@ -4,5 +4,7 @@
     o new 'transformData' function
     o staticScatterplotMonitoring: [x/y]LimExpandData
     o includeInButton -> collapseHtmlContent, remove bootstrap/jquery dep
+    o plotCountMonitoring: colorVar
+    o getPathHyperlink: works for input factor
 0.1.0
     o initial commit

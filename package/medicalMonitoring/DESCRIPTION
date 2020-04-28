@@ -12,7 +12,7 @@ Imports:
   ggplot2, plotly, 
   htmlwidgets, plyr, htmltools,
   knitr, 
-  pander, rmarkdown
+  pander, rmarkdown, RColorBrewer
 License: file LICENSE
 Suggests: 
     testthat,

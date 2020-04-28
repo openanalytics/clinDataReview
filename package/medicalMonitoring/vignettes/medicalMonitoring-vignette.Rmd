@@ -3,7 +3,7 @@ title: "Vignette of the `medicalMonitoring` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 params:
-  createPatientProfiles: true
+  createPatientProfiles: false
 output: medicalMonitoring::html_medicalMonitoring_report
 vignette: >
   %\VignetteIndexEntry{Introduction to the medicalMonitoring package}
