@@ -141,8 +141,19 @@ plotCountMonitoring <- function(
 		if(missing(tableVars)){
 			tableVars <- c(vars, valueVar)
 			tableLab <- setNames(c(varsLab, valueLab), tableVars)
-		}else	if(missing(tableLab)){
-			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
+		}else{
+			if(missing(tableLab))
+				tableLab <- getLabelVar(tableVars, labelVars = labelVars)
+			
+			if(!valueVar %in% tableVars){
+				tableVars <- c(tableVars, valueVar)
+				tablePars$nonVisible <- c(
+					tablePars$nonVisible,
+					which(colnames(dataPlot) == valueVar)-1
+				)
+				tableLab[valueVar] <- valueLab
+			}
+						
 		}
 		
 		tablePars <- c(tablePars, list(barVar = valueVar))

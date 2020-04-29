@@ -91,7 +91,7 @@ tableMonitoring <- function(
 	# if not specified in input columns
 	# or added in the pathVar column
 	if(!all(idVar %in% tableVarsInit) | (!is.null(pathVar) & !pathExpand)){
-		tablePars$nonVisible <- which(colnames(data) %in% idVar)-1
+		tablePars$nonVisible <- c(tablePars$nonVisible, which(colnames(data) %in% idVar)-1)
 	}
 	
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
