@@ -4,10 +4,13 @@
 \alias{formatComparisonDF}
 \title{Format comparison table}
 \usage{
-formatComparisonDF(comparisonDF)
+formatComparisonDF(comparisonDF, labelVars, patientProfilePath)
 }
 \arguments{
 \item{comparisonDF}{data.frame object output from getComparisonDF}
+
+\item{labelVars}{named character vector for renaming the columns of the output table.
+If NULL, the column names of the data frame are used.}
 }
 \value{
 A data frame formated to be used for the interactive table in \code{compareTables}.

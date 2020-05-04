@@ -4,7 +4,7 @@
 \alias{getComparisonDF}
 \title{Get comparison table}
 \usage{
-getComparisonDF(newData, oldData, referenceVars, labelVars)
+getComparisonDF(newData, oldData, referenceVars)
 }
 \arguments{
 \item{newData}{data.frame object representing the new data}
@@ -13,9 +13,6 @@ getComparisonDF(newData, oldData, referenceVars, labelVars)
 
 \item{referenceVars}{character vector of the columns in the data that are the used as reference for the comparison.
 The \code{referenceVars} need to have the same name in both the new and old data sets.}
-
-\item{labelVars}{named character vector for renaming the columns of the output table.
-If NULL, the column names of the data frame are used.}
 }
 \value{
 A data frame from binding the \code{comparison_df} and \code{comparison_table_diff} from the \code{compareDF} package.
