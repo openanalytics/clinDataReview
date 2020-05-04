@@ -7,5 +7,6 @@
     o includeInButton -> collapseHtmlContent, remove bootstrap/jquery dep
     o plotCountMonitoring: colorVar
     o getPathHyperlink: works for input factor
+    o annotateData: function can be specified as string via varFct
 0.1.0
     o initial commit
