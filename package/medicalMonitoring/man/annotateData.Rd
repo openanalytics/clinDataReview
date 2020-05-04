@@ -40,9 +40,12 @@ based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable
 The input \code{data} is used if 'data' and 'dataset' are not specified.}
 \item{'vars': }{Character vector with variables of interest from annotation dataset.
 If not specified, all variables of the dataset are considered.}
-\item{'varFct': }{(optional) Function of \code{data} or string containing
-manipulations from column names of \code{data} used to 
-create a new variable specified in \code{vars}.}
+\item{'varFct': }{(optional) Either:
+\itemize{
+\item{function of \code{data} or string containing such function (e.g. 'function(data) ...')}
+\item{string containing manipulations from column names of \code{data} (e.g. 'col1 + col2')}
+}
+ used to create a new variable specified in \code{vars}.}
 \item{'filters': }{(optional) Filters for the annotation dataset, 
 see \code{filters} parameter of \code{\link{filterData}}}
 \item{'varLabel': }{(optional) label for new variable in case \code{varFct} is specified.}
