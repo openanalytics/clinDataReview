@@ -3,3 +3,5 @@ vignettes/tables_CSR
 vignettes/patientProfiles
 vignettes/data
 \.docx$
+^doc$
+^Meta$
