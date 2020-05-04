@@ -9,7 +9,8 @@ compareTables(
   oldData,
   referenceVars = NULL,
   changeableVars = NULL,
-  labelVars = NULL
+  labelVars = NULL,
+  patientProfilePath = NULL
 )
 }
 \arguments{

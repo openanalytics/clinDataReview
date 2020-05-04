@@ -12,6 +12,7 @@
 #' The \code{changeableVars} need to have the same name in both the new and old data sets.
 #' @param labelVars named character vector for renaming the columns of the output table.
 #' If NULL, the column names of the data frame are used.
+#' @param patientProfilePath
 #' @return Return an interactive table showing the changes.
 #' Additions and removals are green or red colored, respectively.
 #' @author Michela Pasetto
@@ -23,7 +24,8 @@ compareTables <- function(
 		oldData,
 		referenceVars = NULL,
 		changeableVars = NULL,
-		labelVars = NULL
+		labelVars = NULL,
+		patientProfilePath = NULL
 ) {
 	
 	if(length(referenceVars) == 0) stop("Provide variables for the comparison, 'referenceVars' is empty.")
@@ -34,9 +36,9 @@ compareTables <- function(
 	
 	if(is.null(labelVars)) {		
 		warning("No 'labelVars' specified. The 'referenceVars' and 'changeableVars' names will be used instead.")
-		labelVarsTable <- varsToUse
+		labelVars <- varsToUse
 	} else {
-		labelVarsTable <- labelVars[varsToUse]
+		labelVars <- labelVars
 	}
 	
 	# Extract data
@@ -47,28 +49,32 @@ compareTables <- function(
 	comparisonDF <- getComparisonDF(
 			newData = newDataToUse,
 			oldData = oldDataToUse,
-			referenceVars = referenceVars,
-			labelVars = labelVarsTable)
-	comparisonTable <- formatComparisonDF(comparisonDF)
-		
-	diffVars <- colnames(comparisonTable)[grepl("diff", colnames(comparisonTable))]
+			referenceVars = referenceVars
+	)
+	comparisonTable <- formatComparisonDF(
+			comparisonDF,
+			labelVars = labelVars,
+			patientProfilePath = patientProfilePath
+	)
+	
+	notDisplayVars <- colnames(comparisonTable)[grepl("diff", colnames(comparisonTable))]
 	notDiffVars <- colnames(comparisonTable)[! grepl("diff", colnames(comparisonTable))]
-	coloringVector <- c("grp_diff", diffVars)	
+	coloringVector <- c("grp_diff", notDisplayVars)	
 	
 	# Print comparison table
 	# use datatable or 'toDTGLPG' ?
 	toDTGLPG(
 					comparisonTable,
 					searchBox = TRUE,
+					escape = getJavaScriptColumnsIdx(comparisonTable, "`Unique Subject Identifier`"),
 					width = "100%",
 					pageLength = 50,
+					nonVisible = getJavaScriptColumnsIdx(comparisonTable, notDisplayVars),
 					options = list(
-							fixedHeader = TRUE,
-							columnDefs = list(list(
-											targets = getJavaScriptColumnsIdx(comparisonTable, diffVars),
-											visible = FALSE))
+							fixedHeader = TRUE
 					)
 			) %>%			
+			
 			formatStyle(
 					columns = getColumnsIdx(comparisonTable, notDiffVars),
 					valueColumns = coloringVector,
@@ -89,13 +95,11 @@ compareTables <- function(
 #' @param oldData data.frame object representing the old data
 #' @param referenceVars character vector of the columns in the data that are the used as reference for the comparison.
 #' The \code{referenceVars} need to have the same name in both the new and old data sets.
-#' @param labelVars named character vector for renaming the columns of the output table.
-#' If NULL, the column names of the data frame are used.
 #' @return A data frame from binding the \code{comparison_df} and \code{comparison_table_diff} from the \code{compareDF} package.
 #' @importFrom compareDF compare_df
 #' @author Michela Pasetto
 #' @export 
-getComparisonDF <- function(newData, oldData, referenceVars, labelVars) {
+getComparisonDF <- function(newData, oldData, referenceVars) {
 	
 	outputComparison <- compare_df(
 			df_new = newData,
@@ -103,7 +107,6 @@ getComparisonDF <- function(newData, oldData, referenceVars, labelVars) {
 			group_col = referenceVars
 	)
 	comparedDF <- outputComparison$comparison_df
-	colnames(comparedDF) <- c("grp", "chng_type", labelVars)
 	comparedDiff <- outputComparison$comparison_table_diff
 	colnames(comparedDiff) <- sprintf("%s_diff", colnames(comparedDiff))
 	
@@ -117,22 +120,50 @@ getComparisonDF <- function(newData, oldData, referenceVars, labelVars) {
 #' 
 #' Format a comparison table (data frame) by adding 'Type' and 'Version' columns.
 #' @param comparisonDF data.frame object output from getComparisonDF
+#' @param labelVars named character vector for renaming the columns of the output table.
+#' If NULL, the column names of the data frame are used.
 #' @return A data frame formated to be used for the interactive table in \code{compareTables}.
 #' The 'Type' column indicates what kind of change has occured in the data whereas
 #' the 'Version' column indicates whether the change happens in the old (Previous) or new (Current) data.
 #' @author Michela Pasetto
-formatComparisonDF <- function(comparisonDF) {
-
+#' @export 
+formatComparisonDF <- function(comparisonDF, labelVars, patientProfilePath) {
+	
 	comparisonDF$Type <- gsub("[+]", "Addition", gsub("=", "Change", gsub("[-]", "Removal", comparisonDF$grp_diff)))	
 	comparisonDF$Version <- gsub("[+]", "Current", gsub("[-]", "Previous", comparisonDF$chng_type))
 	
+	comparisonDF$patientProfilePath <- paste0(
+			patientProfilePath,
+			"subjectProfile-", 
+			sub("/", "-", comparisonDF$USUBJID), ".pdf"
+	)
+	
+	comparisonDF$USUBJID <- with(
+			comparisonDF,
+			paste0(
+					'<a href="', patientProfilePath, 
+					'" target="_blank">', USUBJID, '</a>'
+			)
+	)
+	
+	columnsToRemove <- c("grp", "chng_type", "chng_type_diff", "Type", "Version", "patientProfilePath")
+	
+	# Make comparison table and rename columns
 	comparisonTable <- comparisonDF[,
 			c(
 					"Type", "Version",
-					names(comparisonDF)[
-							- which(names(comparisonDF) %in% c("grp", "chng_type", "chng_type_diff", "Type", "Version"))]
+					colnames(comparisonDF)[
+							- which(colnames(comparisonDF) %in% columnsToRemove)
+					]
 			)
 	]
+	colnamesVars <- labelVars[colnames(comparisonTable)]	
+	
+	colnames(comparisonTable) <- c(
+			"Type", "Version",
+			colnamesVars[!is.na(colnamesVars)],
+			colnames(comparisonTable)[grepl("diff", colnames(comparisonTable))]
+	)
 	
 	return(comparisonTable)
 }
