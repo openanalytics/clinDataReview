@@ -48,7 +48,7 @@ treemapMonitoring(
 
 # extract worst-case scenario
 dataAE$AESEVN <- as.numeric(factor(dataAE$AESEV, levels = c("MILD", "MODERATE")))
-if(any(is.na(dataAEWC$AESEVN)))
+if(any(is.na(dataAE$AESEVN)))
 	stop("Severity should be filled for all subjects.")
 
 dataAEWC <- ddply(dataAE, c("AESOC", "AEDECOD", "USUBJID"), function(x){
