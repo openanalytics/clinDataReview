@@ -4,7 +4,7 @@
 \alias{formatComparisonDF}
 \title{Format comparison table}
 \usage{
-formatComparisonDF(comparisonDF, labelVars, patientProfilePath)
+formatComparisonDF(comparisonDF, labelVars, patientProfilePath, subjectIDvar)
 }
 \arguments{
 \item{comparisonDF}{data.frame object output from getComparisonDF}

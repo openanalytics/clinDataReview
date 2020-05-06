@@ -10,7 +10,8 @@ compareTables(
   referenceVars = NULL,
   changeableVars = NULL,
   labelVars = NULL,
-  patientProfilePath = NULL
+  patientProfilePath = NULL,
+  subjectIDvar = "USUBJID"
 )
 }
 \arguments{
@@ -27,6 +28,12 @@ The \code{changeableVars} need to have the same name in both the new and old dat
 
 \item{labelVars}{named character vector for renaming the columns of the output table.
 If NULL, the column names of the data frame are used.}
+
+\item{patientProfilePath}{string indicating the path to the directory
+where the patient profiles are stored.}
+
+\item{subjectIDvar}{string indicating which column in the data represents the unique subject identifier.
+It is "USUBJID" by default.}
 }
 \value{
 Return an interactive table showing the changes.
