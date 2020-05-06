@@ -144,3 +144,66 @@ varToFm <- function(var){
 	fm <- as.formula(paste0("~", var))
 	return(fm)
 }
+
+#' Extract position indices of columns in a data frame
+#' 
+#' @param df data frame
+#' @param vars character vector of columns of the data frame
+#' @author Michela Pasetto
+#' @export 
+getColumnsIdx <- function(df, vars) which(colnames(df) %in% vars)
+
+
+#' Extract position indices of columns in a data frame and subtract 1
+#' 
+#' This function is used for correspondance between R and javascript column indices 
+#' @inheritParams getColumnsIdx
+#' @author Michela Pasetto
+#' @export 
+getJavaScriptColumnsIdx <- function(...) getColumnsIdx(...) - 1
+
+
+
+#' @export 
+createPatientProfileVar <- function(data, patientProfilePath, subjectIDvar = "USUBJID") {
+	
+	data$patientProfilePath <- sprintf(
+			"%ssubjectProfile-%s.pdf",
+			patientProfilePath,
+			sub("/", "-", data[, subjectIDvar])
+	)
+#	# 'sprintf' is identical to 'paste0'
+#	paste0(
+#			patientProfilePath,
+#			"subjectProfile-", 
+#			sub("/", "-", data[, subjectIDvar]), ".pdf"
+#	)
+	
+	data$patientProfileLink <- sprintf(
+			'<a href="%s" target="_blank">%s</a>',
+			data$patientProfilePath,
+			data[, subjectIDvar]
+	)
+	
+	return(data)
+	
+}
+
+
+#' Function for reordering columns
+#' @export 
+reorderColumns <- function(data, vars){
+	
+	# Sort out inputs
+	dataNames <- names(data)
+	numberVars <- length(dataNames)
+	varNames <- names(vars)
+	varPosition <- vars
+	# Prepare output
+	outPosition <- character(numberVars)
+	outPosition[varPosition]  <- varNames
+	outPosition[-varPosition] <- dataNames[ !(dataNames %in% varNames) ]
+	# Re-arrange vars by position
+	data <- data[ , outPosition]
+	return(data)
+}
