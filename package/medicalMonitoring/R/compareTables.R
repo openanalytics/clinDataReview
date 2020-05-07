@@ -54,12 +54,22 @@ compareTables <- function(
 	oldDataToUse <- oldData[, getColumnsIdx(oldData, varsToUse)]
 	newDataToUse <- newData[, getColumnsIdx(newData, varsToUse)]
 	
-	# Get comparison table
-	comparisonDF <- getComparisonDF(
+	# Get comparison output
+	outputComparison <- getComparisonDF(
 			newData = newDataToUse,
 			oldData = oldDataToUse,
 			referenceVars = referenceVars
 	)
+	comparisonDF <- outputComparison[["comparisonDF"]]
+	summaryChanges <- outputComparison[["summaryChanges"]]
+	
+	summaryChangesDF <- t(data.frame(summaryChanges))
+	colnames(summaryChangesDF) <- tools::toTitleCase(
+			gsub(
+					"old_obs", "previous observations",
+					gsub("new_obs", "current observations", colnames(summaryChangesDF))))
+	
+	# Format comparison table to display
 	comparisonTable <- formatComparisonDF(
 			comparisonDF,
 			labelVars = labelVars,
@@ -73,7 +83,7 @@ compareTables <- function(
 	
 	# Print comparison table
 	# use datatable or 'toDTGLPG' ?
-	toDTGLPG(
+	comparisonTableInteractive <- toDTGLPG(
 					comparisonTable,
 					searchBox = TRUE,
 					escape = getJavaScriptColumnsIdx(comparisonTable, "`Unique Subject Identifier`"),
@@ -94,6 +104,16 @@ compareTables <- function(
 					"Version",
 					target = "row",
 					'font-style' = styleEqual("Previous", "italic"))
+	
+	summaryChangesInteractive <- toDTGLPG(summaryChangesDF)
+	
+	output <- list(
+			summaryChanges = summaryChangesDF,
+			summaryChangesInteractive = summaryChangesInteractive,
+			comparisonTableInteractive = comparisonTableInteractive
+	)
+	
+	return(output)
 	
 }
 
@@ -122,7 +142,14 @@ getComparisonDF <- function(newData, oldData, referenceVars) {
 	
 	comparisonDF <- cbind(comparedDF, comparedDiff)
 	
-	return(comparisonDF)
+	summaryChanges <- outputComparison$change_summary
+	
+	outputComparison <- list(
+			comparisonDF = comparisonDF,
+			summaryChanges = summaryChanges
+	)
+	
+	return(outputComparison)
 	
 }
 
