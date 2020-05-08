@@ -50,6 +50,10 @@ compareTables <- function(
 		stop(sprintf("Unique subject identifier '%s' not available in the old data", subjectIDvar))
 	}
 	
+	if(is.null(patientProfilePath)) {
+		message("No patient profile folder specified. No link to patient profiles will be added.")	
+	}
+	
 	# Extract data
 	oldDataToUse <- oldData[, getColumnsIdx(oldData, varsToUse)]
 	newDataToUse <- newData[, getColumnsIdx(newData, varsToUse)]
@@ -175,12 +179,16 @@ formatComparisonDF <- function(
 	comparisonDF$Type <- gsub("[+]", "Addition", gsub("=", "Change", gsub("[-]", "Removal", comparisonDF$grp_diff)))	
 	comparisonDF$Version <- gsub("[+]", "Current", gsub("[-]", "Previous", comparisonDF$chng_type))
 	
-	comparisonDF <- createPatientProfileVar(
-			data = comparisonDF,
-			patientProfilePath = patientProfilePath,
-			subjectIDvar = subjectIDvar
-	)
-	comparisonDF[, subjectIDvar] <- comparisonDF$patientProfileLink
+	if(!is.null(patientProfilePath)) {
+		
+		comparisonDF <- createPatientProfileVar(
+				data = comparisonDF,
+				patientProfilePath = patientProfilePath,
+				subjectIDvar = subjectIDvar
+		)
+		comparisonDF[, subjectIDvar] <- comparisonDF$patientProfileLink
+		
+	}
 	
 	columnsToRemove <- c("grp", "chng_type", "chng_type_diff", "patientProfilePath", "patientProfileLink")
 	columnsToKeep <- colnames(comparisonDF)[- which(colnames(comparisonDF) %in% columnsToRemove)]
