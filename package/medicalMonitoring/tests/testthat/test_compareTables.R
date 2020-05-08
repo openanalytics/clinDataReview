@@ -44,26 +44,38 @@ test_that("Compare data sets", {
 							)
 					)
 			)
+			expect_error(
+					compareTables(
+							newData = newData,
+							oldData = newData,
+							referenceVars = referenceVars,
+							changeableVars = changeableVars,
+							labelVars = labelVars,
+							subjectIDvar = "usubjid"
+					)
+			)			
 			################
 			## Simulation ##
 			expect_message(
-					expect_warning(
-							compareTables(
-									newData = newData,
-									oldData = oldData,
-									referenceVars = referenceVars,
-									changeableVars = changeableVars
-							)
+					compareTables(
+							newData = newData,
+							oldData = oldData,
+							referenceVars = referenceVars,
+							changeableVars = changeableVars,
+							labelVars = labelVars
 					)
 			)
-			dtOutput <- compareTables(
+			comparisonOutput <- compareTables(
 					newData = newData,
 					oldData = oldData,
 					referenceVars = referenceVars,
 					changeableVars = changeableVars,
 					labelVars = labelVars
 			)
-			expect_is(dtOutput, "datatables")
+			expect_is(comparisonOutput, "list")
+			expect_is(comparisonOutput[["summaryChanges"]], "matrix")
+			expect_is(comparisonOutput[["summaryChangesInteractive"]], "datatables")
+			expect_is(comparisonOutput[["comparisonTableInteractive"]], "datatables")
 			
 		})
 
@@ -81,34 +93,42 @@ test_that("getComparisonDF", {
 					getComparisonDF(
 							newData = newDataToUse,
 							oldData = oldDataToUse,
-							referenceVars = referenceVars,
-							labelVars = labeVarsToUse)
+							referenceVars = referenceVars
+					)
 			)
 			dfOutput <- getComparisonDF(
 					newData = newDataToUse,
 					oldData = oldDataToUse,
-					referenceVars = referenceVars,
-					labelVars = labeVarsToUse)
-			
-			expect_is(dfOutput, "data.frame")
-			
-			expect_identical(
-					colnames(dfOutput)[1 : 2],
-					c("grp", "chng_type")
+					referenceVars = referenceVars
 			)			
-			expect_setequal(
-					colnames(dfOutput)[getColumnsIdx(dfOutput, labeVarsToUse)],
-					labeVarsToUse
+			expect_type(dfOutput, "list")
+			expect_length(dfOutput, 2)
+			
+			comparisonDF <- dfOutput[["comparisonDF"]]
+			
+			##########################
+			## Test on comparisonDF ##
+			expect_identical(
+					colnames(comparisonDF)[1 : 2],
+					c("grp", "chng_type")
 			)
 			expect_setequal(
-					colnames(dfOutput)[grepl("_diff", colnames(dfOutput))],
+					colnames(comparisonDF)[grepl("_diff", colnames(comparisonDF))],
 					c("grp_diff", "chng_type_diff", sprintf("%s_diff", varsToUse))
-			)			
+			)
+			############################
+			## Test on summaryChanges ##
+			summaryChanges <- dfOutput[["summaryChanges"]]
+			expect_length(summaryChanges, 5)
+			expect_is(summaryChanges, "numeric")
 			
 		})
 
 test_that("formatComparisonDF", {
 			
-			
+#			expect_setequal(
+#					colnames(dfOutput)[getColumnsIdx(dfOutput, labeVarsToUse)],
+#					labeVarsToUse
+#			)
 		})
 
