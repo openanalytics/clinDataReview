@@ -51,7 +51,7 @@ test_that("Compare data sets", {
 							referenceVars = referenceVars,
 							changeableVars = changeableVars,
 							labelVars = labelVars,
-							subjectIDvar = "usubjid"
+							subjectVar = "usubjid"
 					)
 			)			
 			################

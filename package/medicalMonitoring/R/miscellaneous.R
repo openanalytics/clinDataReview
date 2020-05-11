@@ -165,24 +165,24 @@ getJavaScriptColumnsIdx <- function(...) getColumnsIdx(...) - 1
 
 
 #' @export 
-createPatientProfileVar <- function(data, patientProfilePath, subjectIDvar = "USUBJID") {
+createPatientProfileVar <- function(data, patientProfilePath, subjectVar = "USUBJID") {
 	
 	data$patientProfilePath <- sprintf(
 			"%ssubjectProfile-%s.pdf",
 			patientProfilePath,
-			sub("/", "-", data[, subjectIDvar])
+			sub("/", "-", data[, subjectVar])
 	)
 #	# 'sprintf' is identical to 'paste0'
 #	paste0(
 #			patientProfilePath,
 #			"subjectProfile-", 
-#			sub("/", "-", data[, subjectIDvar]), ".pdf"
+#			sub("/", "-", data[, subjectVar]), ".pdf"
 #	)
 	
 	data$patientProfileLink <- sprintf(
 			'<a href="%s" target="_blank">%s</a>',
 			data$patientProfilePath,
-			data[, subjectIDvar]
+			data[, subjectVar]
 	)
 	
 	return(data)

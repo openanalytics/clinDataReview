@@ -11,7 +11,7 @@ compareTables(
   changeableVars = NULL,
   labelVars = NULL,
   patientProfilePath = NULL,
-  subjectIDvar = "USUBJID"
+  subjectVar = "USUBJID"
 )
 }
 \arguments{
@@ -32,7 +32,7 @@ If NULL, the column names of the data frame are used.}
 \item{patientProfilePath}{string indicating the path to the directory
 where the patient profiles are stored.}
 
-\item{subjectIDvar}{string indicating which column in the data represents the unique subject identifier.
+\item{subjectVar}{string indicating which column in the data represents the unique subject identifier.
 It is "USUBJID" by default.}
 }
 \value{
