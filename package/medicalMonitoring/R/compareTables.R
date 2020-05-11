@@ -14,7 +14,7 @@
 #' If NULL, the column names of the data frame are used.
 #' @param patientProfilePath string indicating the path to the directory
 #' where the patient profiles are stored.
-#' @param subjectIDvar string indicating which column in the data represents the unique subject identifier.
+#' @param subjectVar string indicating which column in the data represents the unique subject identifier.
 #' It is "USUBJID" by default.
 #' @return Return an interactive table showing the changes.
 #' Additions and removals are green or red colored, respectively.
@@ -29,7 +29,7 @@ compareTables <- function(
 		changeableVars = NULL,
 		labelVars = NULL,
 		patientProfilePath = NULL,
-		subjectIDvar = "USUBJID"
+		subjectVar = "USUBJID"
 ) {
 	
 	if(length(referenceVars) == 0) stop("Provide variables for the comparison, 'referenceVars' is empty.")
@@ -43,11 +43,11 @@ compareTables <- function(
 		labelVars <- varsToUse
 	} else labelVars <- labelVars
 	
-	if(! subjectIDvar %in% colnames(newData)) {
-		stop(sprintf("Unique subject identifier '%s' not available in the new data", subjectIDvar))
+	if(! subjectVar %in% colnames(newData)) {
+		stop(sprintf("Unique subject identifier '%s' not available in the new data", subjectVar))
 	}
-	if(! subjectIDvar %in% colnames(oldData)) {
-		stop(sprintf("Unique subject identifier '%s' not available in the old data", subjectIDvar))
+	if(! subjectVar %in% colnames(oldData)) {
+		stop(sprintf("Unique subject identifier '%s' not available in the old data", subjectVar))
 	}
 	
 	if(is.null(patientProfilePath)) {
@@ -78,7 +78,7 @@ compareTables <- function(
 			comparisonDF,
 			labelVars = labelVars,
 			patientProfilePath = patientProfilePath,
-			subjectIDvar = subjectIDvar
+			subjectVar = subjectVar
 	)
 	
 	notDisplayVars <- colnames(comparisonTable)[grepl("diff", colnames(comparisonTable))]
@@ -173,7 +173,7 @@ formatComparisonDF <- function(
 		comparisonDF,
 		labelVars,
 		patientProfilePath,
-		subjectIDvar
+		subjectVar
 ) {
 	
 	comparisonDF$Type <- gsub("[+]", "Addition", gsub("=", "Change", gsub("[-]", "Removal", comparisonDF$grp_diff)))	
@@ -184,9 +184,9 @@ formatComparisonDF <- function(
 		comparisonDF <- createPatientProfileVar(
 				data = comparisonDF,
 				patientProfilePath = patientProfilePath,
-				subjectIDvar = subjectIDvar
+				subjectVar = subjectVar
 		)
-		comparisonDF[, subjectIDvar] <- comparisonDF$patientProfileLink
+		comparisonDF[, subjectVar] <- comparisonDF$patientProfileLink
 		
 	}
 	
