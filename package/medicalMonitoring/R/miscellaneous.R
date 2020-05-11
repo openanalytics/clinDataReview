@@ -164,20 +164,43 @@ getJavaScriptColumnsIdx <- function(...) getColumnsIdx(...) - 1
 
 
 
+#' Create link to patient profile
+#' 
+#' Create a link to a patient profile directory
+#' (where the patient profile files are saved) by adding an extra column with the link
+#' in the data.
+#' @param data a data.frame
+#' @param character indicating the path to the patient profile directory
+#' @param subjectVar string indicating which column in the data represents the
+#' unique subject identifier, "USUBJID" by default.
+#' @return A data.frame with two extra columns:
+#' \code{patientProfilePath} and \code{patientProfileLink} with
+#' the path to the directory and the path to each patient profile, respectively.
+#' @author Michela Pasetto
 #' @export 
-createPatientProfileVar <- function(data, patientProfilePath, subjectVar = "USUBJID") {
+createPatientProfileVar <- function(
+		data,
+		patientProfilePath,
+		subjectVar = "USUBJID"
+) {
+	
+	#pathToDir <- paste(patientProfilePath, collapse = "/")
+	
+	fileExist <- file.exists(patientProfilePath)	
+	if(! fileExist) stop("File path for patient profiles not found.")
+	
+	# Make sure backslahses are replaced with slashes on Windows
+	pathToDir <- normalizePath(patientProfilePath)
+		
+	if(! subjectVar %in% colnames(data)) {
+		stop(sprintf("Unique subject identifier '%s' not available in the data.", subjectVar))
+	}	
 	
 	data$patientProfilePath <- sprintf(
-			"%ssubjectProfile-%s.pdf",
-			patientProfilePath,
+			"%s/subjectProfile-%s.pdf",
+			pathToDir,
 			sub("/", "-", data[, subjectVar])
 	)
-#	# 'sprintf' is identical to 'paste0'
-#	paste0(
-#			patientProfilePath,
-#			"subjectProfile-", 
-#			sub("/", "-", data[, subjectVar]), ".pdf"
-#	)
 	
 	data$patientProfileLink <- sprintf(
 			'<a href="%s" target="_blank">%s</a>',
