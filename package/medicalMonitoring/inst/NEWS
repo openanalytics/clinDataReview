@@ -1,5 +1,4 @@
 0.2.0
-	o compareTables function
     o formatToHierarchicalData: fix in case same values in different vars
     o annotateData: varFct
     o new 'transformData' function
