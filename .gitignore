@@ -22,3 +22,6 @@ documentation
 *.rds
 _main.Rmd
 *.docx
+
+tests
+!/package/medicalMonitoring/tests

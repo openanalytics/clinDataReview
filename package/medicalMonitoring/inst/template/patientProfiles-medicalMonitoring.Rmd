@@ -261,6 +261,8 @@ output:
 		subjectSubset = subjectSubset
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(DM = dmPlots))
+	
+	rm(list = c("dataDM", "dmPlots"));gc() # free memory
 ```
 
 ## Medical history
@@ -354,6 +356,8 @@ output:
 		subjectSubset = subjectSubset
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(MH = mhPlots))
+	
+	rm(list = c("dataMH", "mhPlots"))# free memory
 
 ```
 
@@ -370,7 +374,7 @@ output:
 	dataCM <- dataAll[[dataCMName]]
 	
 	# CMDECOD empty if CM term not in dictionary
-	varCMCode <- intersect(c("ADECOD", "CMDECOD"), colnames(dataMH))[1]
+	varCMCode <- intersect(c("ADECOD", "CMDECOD"), colnames(dataCM))[1]
 	varCM <- if(length(varCMCode) > 0){
 		idxEmptyCode <- which(dataCM[[varCMCode]] == "")
 		if(length(idxEmptyCode) > 0){
@@ -381,7 +385,7 @@ output:
 		}
 		varCMCode
 	}else	if("CMTERM" %in% colnames(dataCM)){
-		dataCM[, "CMTERM"] <- with(dataMH, ifelse(CMTERM == "", "No CM term provided.", CMTERM))
+		dataCM[, "CMTERM"] <- with(dataCM, ifelse(CMTERM == "", "No CM term provided.", CMTERM))
 		"CMTERM"
 	}
 
@@ -463,6 +467,8 @@ output:
 		alpha = 0.8
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(CM = cmPlots))
+	
+	rm(list = c("dataCM", "cmPlots"));gc() # free memory
 
 ```
 
@@ -538,6 +544,8 @@ output:
 		alpha = 0.8
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(EX = exPlots))
+	
+	rm(list = c("dataEX", "exPlots"));gc() # free memory
 ```
 
 ## Adverse events
@@ -641,6 +649,9 @@ output:
 	)
 	
 	patientProfilesPlots <- c(patientProfilesPlots, list(AE = aePlots))
+	
+	rm(list = c("dataAE", "aePlots"));gc() # free memory
+	
 ```
 
 ## Laboratory measurements
@@ -736,6 +747,9 @@ output:
 		alpha = 0.8
 	)	
 	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
+	
+	rm(list = c("dataLB", "lbPlots"));gc() # free memory
+	
 ```
 
 ## Vital signs
@@ -830,6 +844,9 @@ output:
 		alpha = 0.8
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(VS = vsPlots))
+	
+	rm(list = c("dataVS", "vsPlots"));gc() # free memory
+	
 ```
 
 ## Electrocardiogram
@@ -927,6 +944,9 @@ output:
 		alpha = 0.8
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(EG = egPlots))
+	
+	rm(list = c("dataEG", "egPlots"));gc() # free memory
+	
 ```
 
 ## Creation of the subject profiles
