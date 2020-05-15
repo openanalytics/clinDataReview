@@ -3,6 +3,7 @@
 #' Interactive table is created, with the possibility to have
 #' clickeable link to patient-specific report, and included
 #' within a button.
+#' @param keyLab String with label for \code{keyVar}.
 #' @param tableButton Logical, if TRUE (by default)
 #' the table is included within an HTML button.
 #' @param tableVars,tableLab Character vector with variables to be included 
@@ -11,6 +12,7 @@
 #' \code{\link[glpgUtilityFct]{toDTGLPG}} function.
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' in the current console.
+#' @inheritParams formatDataForPlotMonitoring
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @return \code{\link[DT]{datatable}}
@@ -22,6 +24,7 @@
 tableMonitoring <- function(
 	data, 
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
+	keyVar = NULL, keyLab = getLabelVar(keyVar, labelVars = labelVars),
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	pathExpand = FALSE,
 	tableVars,
@@ -33,11 +36,11 @@ tableMonitoring <- function(
 	
 	tableVarsInit <- tableVars
 
-	# add idVar in variables to display (used for linking plot <-> table)
-	if(!all(idVar %in% tableVars)){
-		tableVars <- c(idVar, tableVars)
-		tableLab <- c(setNames(idLab, idVar), tableLab)
-	}
+	# add key/id in variables to display
+	# (used for linking plot <-> table and for the path)
+	tableVars <- unique(c(tableVars, idVar, keyVar))
+	tableLab <- c(tableLab, idLab[idVar], keyLab[keyVar])
+	tableLab <- tableLab[!duplicated(names(tableLab))]
 	
 	# add hyperlink in the table:
 	if(!is.null(pathVar)){
@@ -90,16 +93,22 @@ tableMonitoring <- function(
 	# ID column non visible:
 	# if not specified in input columns
 	# or added in the pathVar column
-	if(!all(idVar %in% tableVarsInit) | (!is.null(pathVar) & !pathExpand)){
-		tablePars$nonVisible <- c(tablePars$nonVisible, which(colnames(data) %in% idVar)-1)
+	colsNonVisibleExtra <- c(
+		# remove idVar if saved in pathVar column
+		if(!is.null(pathVar) & !pathExpand)	idVar,
+		# key-columns not displayed
+		if(!all(keyVar %in% tableVarsInit))	setdiff(keyVar, tableVarsInit)
+	)
+	if(length(colsNonVisibleExtra) > 0){
+		jNonVisible <- which(colnames(data) %in% colsNonVisibleExtra)-1
+		tablePars$nonVisible <- unique(c(tablePars$nonVisible, jNonVisible))
 	}
-	
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
 	
 	# build shared data
 	dataTableSharedData <- highlight_key(
 		data = data, 
-		key = varToFm(idVar), 
+		key = if(!is.null(keyVar))	varToFm(keyVar), 
 		group = id
 	)
 	

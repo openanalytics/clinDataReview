@@ -22,6 +22,10 @@ documentation
 *.rds
 _main.Rmd
 *.docx
+libs
 
 tests
 !/package/medicalMonitoring/tests
+
+package/doc
+package/Meta

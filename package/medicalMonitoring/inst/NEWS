@@ -7,5 +7,6 @@
     o plotCountMonitoring: colorVar
     o getPathHyperlink: works for input factor
     o annotateData: function can be specified as string via varFct
+    o timeProfileIntervalPlot
 0.1.0
     o initial commit

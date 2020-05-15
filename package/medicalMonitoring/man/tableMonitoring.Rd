@@ -8,6 +8,8 @@ tableMonitoring(
   data,
   idVar = "USUBJID",
   idLab = getLabelVar(idVar, labelVars = labelVars),
+  keyVar = NULL,
+  keyLab = getLabelVar(keyVar, labelVars = labelVars),
   pathVar = NULL,
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
   pathExpand = FALSE,
@@ -26,6 +28,11 @@ tableMonitoring(
 \item{idVar}{String with variable containing subject ID.}
 
 \item{idLab}{String with label for \code{idVar}.}
+
+\item{keyVar}{String with unique key variable, identifying unique
+group for which the link between the table and the plot should be done.}
+
+\item{keyLab}{String with label for \code{keyVar}.}
 
 \item{pathVar}{String with variable of \code{data} containing hyperlinks 
 with path to the subject-specific report, formatted as: \cr

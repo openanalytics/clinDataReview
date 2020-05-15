@@ -8,7 +8,8 @@ to be used in aesthetic specification in \code{\link[plotly]{plot_ly}}.}
 varToFm(var)
 }
 \arguments{
-\item{var}{String with variable.}
+\item{var}{Character vector with variable to combine.
+Otherwise with the '+' operator.}
 }
 \value{
 \code{\link[stats]{as.formula}}

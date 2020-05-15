@@ -3,7 +3,7 @@
 #' unique elements in the plot, usually x, y, facet variables.
 #' These variables are used to identify records with the same position
 #' in the plot, their information are combined in the hover.
-#' @param keyVar Character vector with key variables, identifying unique
+#' @param keyVar String with unique key variable, identifying unique
 #' group for which the link between the table and the plot should be done.
 #' @inheritParams medicalMonitoring-common-args
 #' @return Updated \code{\link[crosstalk]{SharedData}} with:
@@ -23,6 +23,9 @@ formatDataForPlotMonitoring <- function(
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	labelVars = NULL){
 
+	if(length(keyVar) > 1)
+		stop("'keyVar' should be of length 1.")
+
 	# create hover variable: combine hover if points have the same x/y coordinates
 	# by default in plotly: hover var only displayed for one of the overlapping point
 	if(!is.null(hoverVars)){
@@ -38,17 +41,12 @@ formatDataForPlotMonitoring <- function(
 		})
 	}
 	
-	# SharedData object:
-	if(!is.null(keyVar) && length(keyVar) > 1){
-		data$key <- do.call(interaction, data[, keyVar])
-		keyVar <- "key"
-	}
-	argsHighlightKey <- list(data = data, group = id)
-	if(!is.null(keyVar)){
-		argsHighlightKey <- c(argsHighlightKey, list(key = varToFm(keyVar)))
-	}
-	
-	dataSharedData <- do.call(highlight_key, argsHighlightKey)
+	# SharedData object:	
+	dataSharedData <- highlight_key(
+		data = data, 
+		key = if(!is.null(keyVar))	varToFm(keyVar), 
+		group = id
+	)
 	
 	return(dataSharedData)
 	
