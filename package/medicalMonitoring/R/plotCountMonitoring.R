@@ -139,9 +139,15 @@ plotCountMonitoring <- function(
 	if(table){
 		
 		if(missing(tableVars)){
+			
 			tableVars <- c(vars, valueVar)
-			tableLab <- setNames(c(varsLab, valueLab), tableVars)
+			tableLab <- c(
+				getLabelVar(var = vars, label = varsLab, labelVars = labelVars),
+				getLabelVar(var = valueVar, label = valueLab, labelVars = labelVars)
+			)
+			
 		}else{
+			
 			if(missing(tableLab))
 				tableLab <- getLabelVar(tableVars, labelVars = labelVars)
 			
@@ -160,7 +166,7 @@ plotCountMonitoring <- function(
 		
 		table <- tableMonitoring(
 			data = dataPlot, 
-			idVar = varID, 
+			idVar = varID, keyVar = varID,
 			pathVar = pathVar, pathLab = pathLab,
 			pathExpand = TRUE,
 			tableVars = tableVars,

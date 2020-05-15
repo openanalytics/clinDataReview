@@ -249,7 +249,7 @@ filterDataSingle <- function(data,
 	msg <- paste0(
 		sum(!isKept), " records with ", varMsg,
 		if(sum(isNA) > 0 & all(!is.na(value)))
-			paste0(" (", if(keepNAFilter)	"not ", "including", msgNA, ")")
+			paste0(" (", if(keepNAFilter)	"not ", "including ", msgNA, ")")
 	)
 	
 	# add a new variable with filtering

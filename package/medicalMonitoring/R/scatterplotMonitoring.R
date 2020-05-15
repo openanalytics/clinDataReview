@@ -69,12 +69,15 @@ scatterplotMonitoring <- function(
 	if(missing(hoverVars)){
 		aesVar <- unlist(c(aesPointVar, aesLineVar))
 		hoverVars <- c(xVar, yVar, aesVar)
-		hoverLab <- setNames(c(xLab, yLab, aesLab[aesVar]), hoverVars)
+		hoverLab <- c(
+			getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
+			getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
+			getLabelVar(var = aesVar, label = aesLab, labelVars = labelVars)
+		)
 	}else	if(missing(hoverLab)){
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
-	hoverVars <- unique(hoverVars)
-	hoverLab <- hoverLab[!duplicated(hoverLab)]
+	hoverVars <- unique(hoverVars);hoverLab <- hoverLab[hoverVars]
 	
 	# remove records with missing x or y variable
 	idxNonMissing <- which(!(is.na(data[, xVar]) | is.na(data[, yVar])))
@@ -88,10 +91,10 @@ scatterplotMonitoring <- function(
 	
 	dataSharedData <- formatDataForPlotMonitoring(
 		data = data, 
-		hoverVars = hoverVars, hoverLab = hoverLab,
-		hoverByVar = idVars,
 		keyVar = idVar, id = id,
-		labelVars = labelVars
+		labelVars = labelVars,
+		hoverVars = hoverVars, hoverLab = hoverLab,
+		hoverByVar = idVars
 	)
 	
 	# create static plot:
@@ -173,22 +176,22 @@ scatterplotMonitoring <- function(
 		
 		if(missing(tableVars)){
 			aesVar <- unlist(c(aesPointVar, aesLineVar))
-			if(missing(aesLab))
-				aesLab <- setNames(getLabelVar(aesVar, labelVars = labelVars), aesVar)
 			tableVars <- unique(c(idVar, xVar, yVar, aesVar))
-			tableLab <- setNames(
-				c(idLab, xLab, yLab, aesLab[aesVar]), 
-				c(idVar, xVar, yVar, aesVar)
+			tableLab <- c(
+				getLabelVar(var = idVar, label = xLab, labelVars = labelVars),
+				getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
+				getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
+				getLabelVar(var = aesVar, label = aesLab, labelVars = labelVars)
 			)
 		}else	if(missing(tableLab)){
 			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
 		}
-		tableVars <- tableVars[!duplicated(tableVars)]
-		tableLab <- tableLab[!duplicated(tableLab)]
+		tableVars <- unique(tableVars);tableLab <- tableLab[tableVars]
 		
 		table <- tableMonitoring(
 			data = data, 
 			idVar = idVar, idLab = idLab,
+			keyVar = idVar, keyLab = idLab,
 			pathVar = pathVar,
 			tableVars = tableVars,
 			tableLab = tableLab,

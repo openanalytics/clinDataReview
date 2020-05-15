@@ -136,12 +136,13 @@ getPathHyperlink <- function(x){
 
 #' Get formula for a specific variable,
 #' to be used in aesthetic specification in \code{\link[plotly]{plot_ly}}.
-#' @param var String with variable.
+#' @param var Character vector with variable to combine.
+#' Otherwise with the '+' operator.
 #' @return \code{\link[stats]{as.formula}}
 #' @author Laure Cougnaud
 #' @export
 varToFm <- function(var){
-	fm <- as.formula(paste0("~", var))
+	fm <- as.formula(paste0("~", paste(var, collapse = "+")))
 	return(fm)
 }
 
