@@ -1,3 +1,5 @@
+#' Create alert data
+#' 
 #' @param data Data.frame with data to create the subject level alerts.
 #' By default 'adsl'.
 #' @param dataPath String with path to the data.
@@ -30,121 +32,144 @@
 #' @param labelVars Named character vector containing variable labels of \code{data}.
 #' This will be updated with the labels of the extra annotation variables
 #' (in \code{attr(output, 'labelVars')}).
-#' @importFrom glpgUtilityFct loadDataADaMSDTM
+#' @param labelData (optional) String with label for input \code{data},
+#' that will be included in progress messages.
+#' @inheritParams medicalMonitoring-common-args
+#' @importFrom glpgUtilityFct loadDataADaMSDTM getLabelVar simpleCap
+#' @author Michela Pasetto
+#' @export 
 alertData <- function(
 		data = "adsl",
 		dataPath = ".",
 		alerts,
 		subjectVar = "USUBJID",
-		labelVars = NULL	
+		verbose = FALSE,
+		labelVars = NULL,
+		labelData = "data"
 ) {
 	
-#	isNest <- ifelse(
-#			is.list(alerts), 
-#			is.null(names(alerts)), # if TRUE means that are nested lists
-#			length(alerts) > 1
-#	)
-#	if(isNest){
-#		for(par in alerts){	
-#			data <- alertData(
-#			)
-#			if(!is.null(labelVars))
-#				labelVars <- attr(data, "labelVars")
-#		}
-#		return(data)
-#	}
+	isNest <- ifelse(
+			is.list(alerts), 
+			is.null(names(alerts)), # if TRUE means that are nested lists
+			length(alerts) > 1
+	)
+	if(isNest){
+		for(par in alerts){	
+			data <- alertData(
+					data = data,
+					dataPath = dataPath,
+					alerts = par,
+					subjectVar = subjectVar,
+					labelVars = labelVars	
+			)
+			if(!is.null(labelVars))
+				labelVars <- attr(data, "labelVars")
+		}
+		return(data)
+	}
 	
-	sapply(1 : length(alerts), function(idx) {
-				
-				alertsArgs <- alerts[[idx]]	
-				
-				# Alert by
-				varsBy <- alerts[["varsBy"]]
-				if(is.null(varsBy))	varsBy <- subjectVar
-				
-				# Get data				
-				alertData <- getDataFromAlertList(listArgs = alertsArgs, dataPath = dataPath)
-				labelVars <- attr(alertData, "labelVars")
-								
-				# Filter if required:
-				alertFilter <- alertsArgs$filters
-				if(!is.null(alertFilter)) {
-					alertData <- filterData(
-							data = alertData, 
-							filters = alertFilter,
-							labelVars = labelVarsAlert
-					)
-					labelVarsAlert <- attr(alertData, "labelVars")
-					msgFilter <- attr(alertData, "msg")
-				}
-				
-				# Get var function
-				varFct <- alertsArgs$varFct
-				if(!is.null(varFct)) {
-					
-					if(is.null(alertsArgs$vars) || length(alertsArgs$vars) != 1)
-						stop("'vars' should be specified and of length 1 for 'varFct':\n", 
-								capture.output(varFct))
-					
-					varNew <- alertsArgs$vars
-					if(is.function(varFct)) {
-						
-						alertsArgs[[varNew]] <- varFct(alertData)
-						msgVarFct <- paste(as.character(body(varFct)), collapse = "")
-						
-					} else	stop("'varFct' should be a character or a function.")
-					
-					# set label:
-					labelNew <- alertsArgs$varLabel
-					if(is.null(labelNew))	labelNew <- msgVarFct
-					labelVarsAnnot[varNew] <- labelNew
-					
-					msgVarFct <- paste("based on:", msgVarFct)
-					# remove variable in data if already present
-					data[[varNew]] <- NULL
-					
-				}
-				
-				# alertsArgs[[varNew]] va attaccata al db e poi bisogna fare il match con data
-#					if(length(annotVar) > 0){
-#						
-#						varsByNotInData <- setdiff(varsBy, colnames(annotData))
-#						if(length(varsByNotInData) > 0)
-#							stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
-#						
-#						annotData <- unique(annotData[, unique(c(varsBy, annotVar)), drop = FALSE])
-#						
-#						data <- leftJoinBase(x = data, y = annotData, by = varsBy)
-#						
-#						if(annotDataset == "current")	data$idAnnot <- NULL
-#						
-#						msgAnnot <- paste0(
-#								simpleCap(labelData), " annotated with variable(s): ", 
-#								toString(paste0(
-#												getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), 
-#												" (", sQuote(annotVar), ")"
-#										)),
-#								" from the ", sQuote(annotDataset), " dataset",
-#								if(!is.null(annotations$varFct))	paste0(" ", msgVarFct),
-#								if(!is.null(annotFilter))	paste(" whose", msgFilter),
+	
+	alertsArgs <- alerts	
+	
+	# Alert by
+	varsBy <- alertsArgs[["varsBy"]]
+	if(is.null(varsBy))	varsBy <- subjectVar
+	
+	# Get data				
+	alertData <- getDataFromAlertList(listArgs = alertsArgs, dataPath = dataPath)
+	labelVarsAlert <- attr(alertData, "labelVars")
+	
+	# Filter if required:
+	alertFilter <- alertsArgs$filters
+	if(!is.null(alertFilter)) {
+		alertData <- filterData(
+				data = alertData, 
+				filters = alertFilter,
+				labelVars = labelVarsAlert
+		)
+		labelVarsAlert <- attr(alertData, "labelVars")
+		msgFilter <- attr(alertData, "msg")
+	}
+	
+	# Get var function
+	varFct <- alertsArgs$varFct
+	if(!is.null(varFct)) {
+		
+		if(is.null(alertsArgs$vars) || length(alertsArgs$vars) != 1)
+			stop("'vars' should be specified and of length 1 for 'varFct':\n", 
+					capture.output(varFct))
+		
+		varNew <- alertsArgs$vars
+		if(is.function(varFct)) {
+			
+			# Add new variable in the alertData
+			alertData[[varNew]] <- varFct(alertData)
+			msgVarFct <- paste(as.character(body(varFct)), collapse = "")
+			
+		} else	stop("'varFct' should be a character or a function.")
+		
+		# set label:
+		labelNew <- alertsArgs$varLabel
+		if(is.null(labelNew))	labelNew <- msgVarFct
+		labelVarsAlert[varNew] <- labelNew
+		
+		msgVarFct <- paste("based on:", msgVarFct)
+		# remove variable in data if already present
+		data[[varNew]] <- NULL					
+	}
+	
+	alertVar <- alertsArgs$vars	
+	if(length(alertVar) > 0) {
+		
+		varsByNotInData <- setdiff(varsBy, colnames(alertData))
+		if(length(varsByNotInData) > 0)
+			stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
+		
+		# Critical!
+		alertDataSubset <- unique(alertData[, unique(c(varsBy, alertVar)), drop = FALSE])
+#		presentDuplicates <- any(duplicated(alertDataSubset[[varsBy]]))
+#		if(presentDuplicates) {
+#			
+#			idxDuplicate <- which(duplicated(alertDataSubset[[varsBy]]))
+#			idDuplicate <- alertDataSubset[[varsBy]][idxDuplicate]
+#			idxToRemove <- which(
+#					alertDataSubset[[varsBy]] %in% idDuplicate &
+#							alertDataSubset[[alertVar]] == "N"
+#			)
+#			alertDataSubset <- alertDataSubset[- idxToRemove, ]					
+#		}
+		
+		data <- leftJoinBase(x = data, y = alertDataSubset, by = varsBy)
+#	B <- data.frame(
+#			data,
+#			alertDataSubset[match(data$USUBJID, alertDataSubset$USUBJID), ]	
+#	)
+	
+	
+		msgAnnot <- sprintf("Alert variable %s (%s) created in %s.",
+				getLabelVar(var = alertVar, data = alertData, labelVars = labelVarsAlert), 
+				sQuote(alertVar), simpleCap(labelData)
+		) #,
+#								if(!is.null(alertsArgs$varFct))	paste0(" ", msgVarFct),
+#								if(!is.null(alertFilter))	paste(" whose", msgFilter),
 #								if(annotDataset != "current"){
 #									paste0(
 #											" based on the variable(s):	", 
-#											getLabelVar(var = varsBy, data = annotData, labelVars = labelVarsAnnot), 
+#											getLabelVar(var = varsBy, data = alertData, labelVars = labelVarsAlert), 
 #											" (", sQuote(varsBy), ")"
 #									)
 #								},
 #								"."
 #						)
-#						if(verbose)	message(msgAnnot)
-#						
-#						if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAnnot[annotVar])
-#						
-#					}
-				
-			}
+		if(verbose)	message(msgAnnot)
+		
+		if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAlert[alertVar])						
+	}
 	
-	)
+	if(!is.null(labelVars))	 attr(data, "labelVars") <- labelVars
+	
+	return(data)	
+	
 }
 
 #' @importFrom glpgUtilityFct loadDataADaMSDTM
@@ -165,4 +190,24 @@ getDataFromAlertList <- function(listArgs, dataPath) {
 	} else stop("Provide either a dataset name or a data frame object.")
 	
 	return(data)
+}
+
+
+# custom 'left-join' function without ordering of rows and columns in x
+leftJoinBase <- function(x, y, by, ...){
+	if(any(duplicated(y[, by])))
+		warning("Duplicated records in y dataset for: ", 
+				toString(sQuote(by)), ", this might create replicated rows in the ",
+				"input data."
+		)
+	res <- merge(
+			x = x, y = y, 
+			all.x = TRUE, all.y = FALSE, # left join
+			by = by,
+			sort = FALSE, # doesn't sort rows
+			...)
+	colsX <- colnames(x)
+	cols <- c(colsX, setdiff(colnames(res), colsX))
+	res <- res[, cols, drop = FALSE]
+	return(res)
 }

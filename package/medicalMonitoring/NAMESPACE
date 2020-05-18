@@ -2,6 +2,7 @@
 
 S3method(knit_print,medicalMonitoring)
 export(addReferenceLinesMonitoringPlot)
+export(alertData)
 export(annotateData)
 export(barplotMonitoring)
 export(collapseHtmlContent)
