@@ -64,7 +64,9 @@ by default any position and aesthetic variables displayed in the plot.}
 }
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
     \item{\code{verbose}}{Logical, if TRUE (FALSE by default) progress messages are printed
-in the current console.}
+in the current console.
+For the visualizations, progress messages during download
+of subject-specific report are displayed in the browser console.}
     \item{\code{tableVars}}{Character vector with variables to be included 
 in the table; and associated labels.}
     \item{\code{tableLab}}{Character vector with variables to be included 

@@ -232,10 +232,12 @@ timeProfileIntervalPlot <- function(data,
 		# extract patient profile based on the 'yVar' variable
 		# (should be included in the plot)
 		idVar = "yVar", pathVar = pathVar,
+		# extract ID from 'y' column in the plot output object directly
 		idVarPlot = "y", idFromDataPlot = FALSE, 
+		# patient prof filename based on the 'y' label
+		labelVarPlot = "y",
 		id = id, 
-		verbose = verbose,
-		labelVarPlot = "y"
+		verbose = verbose
 	)
 	
 	# create associated table

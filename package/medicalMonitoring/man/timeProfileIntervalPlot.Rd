@@ -143,7 +143,9 @@ the table is included within an HTML button.}
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
-in the current console.}
+in the current console.
+For the visualizations, progress messages during download
+of subject-specific report are displayed in the browser console.}
 }
 \value{
 If a \code{table} is requested:

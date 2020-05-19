@@ -142,11 +142,15 @@ function getPatientProfilesPlotly(el, x, data, fromdata, idvar, labelplot, label
 			// take distinct values (only if array, if idvar is of length 1: string object)
 			if(Object.prototype.toString.call(ids) === '[object Array]')
 				ids = [... new Set(ids)];
+			// convert string to an array if only one element
+			// otherwise filtering might select any elements with key containing a subpart of the id
+			if (typeof ids === 'string')
+				ids = new Array(ids);
 
 			if(verbose)	console.log('Selected IDs:', ids);
 			
 			// filter data to only ids
-			linksArray = data.filter(e => e.key.includes(ids));
+			linksArray = data.filter(e => (ids.indexOf(e.key) > -1));
 			if(verbose)	console.log('Patient profile paths filtered:', linksArray);
 			// split if multiple links are present
 			linksArray = linksArray.map(el => el.path.split(', '));

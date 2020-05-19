@@ -126,13 +126,15 @@ plotCountMonitoring <- function(
 	pl <- formatPlotlyMonitoring(
 		data = dataPlot, pl = pl,
 		idVar = varID, pathVar = pathVar,
-		idFromDataPlot = FALSE, idVarPlot = "label",
+		# extract ID from 'id' column in the plot output object directly
+		idFromDataPlot = FALSE, idVarPlot = "id",
+		# patient prof filename based on the 'id' label
+		labelVarPlot = "id",
 		# click and double-click events already used to zoom/unzoom in sunburst
 		highlightOn = "plotly_selected",
 		highlightOff = "plotly_relayout",
 		id = id, 
-		verbose = verbose,
-		labelVarPlot = "label"
+		verbose = verbose
 	)
 	
 	# create associated table

@@ -6,8 +6,10 @@
 #' @param idVarPlot String with variable in the \code{\link[plotly]{plotly}}
 #' output containing IDs.
 #' @param idFromDataPlot Logical, if TRUE (by default) \code{idVarPlot}
-#' is extracted from the data of the plot object, otherwise
-#' directly from the plot object.
+#' is extracted from the data of the plot output object (e.g. if this plot
+#' was created from \code{\link[plotly]{ggplotly}}), otherwise
+#' directly from the plot object 
+#' (if the plot was created from \code{\link[plotly]{plot_ly}} directly).
 #' @param pl \code{\link[plotly]{ggplotly}} object.
 #' @param highlightOn String with event to turn on the selection
 #' (\code{on} parameter of \code{\link[plotly]{highlight}}),
@@ -26,6 +28,8 @@
 #' @param labelVarPlot String with plotly variable used to
 #' extract label to build the file name of the zip compressed
 #' file containing patient report.
+#' If not specified, the label are extracted based on the \code{idVarPlot}
+#' of the selected plot element.
 #' @inheritParams formatDataForPlotMonitoring
 #' @inheritParams medicalMonitoring-common-args
 #' @return Updated \code{\link[plotly]{plotly}} object.
@@ -37,7 +41,7 @@ formatPlotlyMonitoring <- function(
 	pl, data,
 	idVar = "USUBJID", 
 	pathVar = NULL, pathDownload = TRUE,
-	idFromDataPlot = TRUE, 
+	idFromDataPlot = FALSE, 
 	idVarPlot = "key", labelVarPlot = NULL,
 	highlightOn = "plotly_click",
 	highlightOff = "plotly_doubleclick",

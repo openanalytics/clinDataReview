@@ -2,6 +2,8 @@
 #' @param data Data.frame with data.
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' in the current console.
+#' For the visualizations, progress messages during download
+#' of subject-specific report are displayed in the browser console.
 #' @param gg \code{\link[ggplot2]{ggplot}} object.
 #' @param xVar String with column of \code{data} containing x-variable.
 #' @param yVar String with column of \code{data} containing y-variable.
