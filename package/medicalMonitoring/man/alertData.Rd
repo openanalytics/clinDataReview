@@ -23,7 +23,9 @@ By default 'adsl'.}
 \item{subjectVar}{String with subject ID variable, 'USUBJID' by default.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
-in the current console.}
+in the current console.
+For the visualizations, progress messages during download
+of subject-specific report are displayed in the browser console.}
 
 \item{labelVars}{Named character vector containing variable labels of \code{data}.
 This will be updated with the labels of the extra annotation variables
