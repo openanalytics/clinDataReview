@@ -81,10 +81,12 @@ barplotMonitoring <- function(
 	pl <- formatPlotlyMonitoring(
 		data = data, pl = pl,
 		idVar = idVar, pathVar = pathVar,
+		# extract ID from 'label' column directly the plot output object
 		idFromDataPlot = FALSE, idVarPlot = "label",
+		# patient prof filename based on the 'y' label
+		labelVarPlot = "label",
 		id = id, 
-		verbose = verbose,
-		labelVarPlot = "label"
+		verbose = verbose
 	)
 	
 	# create associated table
