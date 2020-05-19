@@ -51,7 +51,9 @@ containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
 }}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
-in the current console.}
+in the current console.
+For the visualizations, progress messages during download
+of subject-specific report are displayed in the browser console.}
 
 \item{labelVars}{Named character vector containing variable labels,
 used by default for all labels in the plot.}

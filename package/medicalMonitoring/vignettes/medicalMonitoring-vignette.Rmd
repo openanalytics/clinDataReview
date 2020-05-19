@@ -269,7 +269,8 @@ scatterplotMonitoring(
 	facetPars = list(facets = ~ VISIT),
 	labelVars = labelVars,
 	pathVar = "patientProfilePath",
-	table = TRUE
+	table = TRUE,
+	verbose = TRUE
 )
 
 
@@ -312,7 +313,8 @@ scatterplotMonitoring(
 		themePars = list(legend.position = "bottom"),
 		labelVars = labelVars,
 		table = TRUE, id = "eDish",
-		pathVar = "patientProfilePath"
+		pathVar = "patientProfilePath",
+		verbose = TRUE
 	)
 
 ```
@@ -335,7 +337,8 @@ Time-intervals are displayed with the `timeProfileIntervalPlot` function:
 		timeStartVar = "AESTDY",
 		timeEndVar = "AEENDY",
 		labelVars = labelVars,
-		table = TRUE, pathVar = "patientProfilePath"
+		table = TRUE, pathVar = "patientProfilePath",
+		verbose = TRUE
 	)
 
 ```

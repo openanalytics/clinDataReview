@@ -168,7 +168,9 @@ scatterplotMonitoring <- function(
 		data = data, pl = pl,
 		idVar = idVar, pathVar = pathVar,
 		id = id, verbose = verbose,
-		pathDownload = FALSE
+		# extract ID from 'key' column in 'data' of the plot output object
+		idFromDataPlot = TRUE, idVarPlot = "key",
+		pathDownload = FALSE # open in new tab
 	)
 	
 	# create associated table
