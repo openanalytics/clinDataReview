@@ -114,7 +114,8 @@ output:
 
 	# In ADaM-like format, date flag variables are formatted as following:
 	shapePaletteDateFlag <- c(
-		Complete = '\u25A0', Partial = '\u25CF', 
+		# u25A0 bigger square
+		Complete = '\u25AA', Partial = '\u25CF', 
 		`Missing start` = "\u25C0", `Missing end` = "\u25B6"
 	)
 	# convert date-flag variable to factor and returm warning if extra elements are present
