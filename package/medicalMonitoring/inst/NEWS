@@ -9,5 +9,6 @@
     o annotateData: function can be specified as string via varFct
     o timeProfileIntervalPlot
     o patientProfiles.js: fix for one selected ID
+    o render_medicalMonitoringReport
 0.1.0
     o initial commit
