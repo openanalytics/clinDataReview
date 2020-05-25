@@ -122,6 +122,7 @@ function getPatientProfilesPlotly(el, x, data, fromdata, idvar, labelplot, label
 			console.log('Plot object:', plObj);
 			console.log('Extra data:', data);
 			console.log('label plot:', labelplot);
+			console.log('download:', download);
 		}
 
 		if(plObj != null && iskey && (plObj.data.set == labelplot)){

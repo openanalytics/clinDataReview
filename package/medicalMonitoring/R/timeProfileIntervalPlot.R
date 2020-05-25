@@ -24,7 +24,7 @@
 #' @inherit scatterplotMonitoring return
 #' @author Laure Cougnaud
 #' @import plotly
-#' @importFrom glpgUtilityFct getGLPGColorPalette getGLPGShapePalette
+#' @importFrom glpgUtilityFct getGLPGColorPalette getGLPGShapePalette formatVarForPlotLabel
 #' @export
 timeProfileIntervalPlot <- function(data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
@@ -42,7 +42,7 @@ timeProfileIntervalPlot <- function(data,
 	# transparency
 	alpha = 1,
 	# labels
-	yLab = paste(paramLab, collapse = "\n"),
+	yLab = "", #paste(paramLab, collapse = "\n"),
 	xLab = paste(c(timeStartLab, timeEndLab), collapse = " and "),
 	title = NULL,
 	labelVars = NULL,
@@ -82,11 +82,17 @@ timeProfileIntervalPlot <- function(data,
 		data$yVar <- data[, paramVar]
 	}
 	
-	if(!is.null(paramGroupVar)){
-		idxOrder <- order(data[, paramGroupVar, drop = FALSE])
-		yValueOrdered <- unique(as.character(data[idxOrder, 'yVar']))
-		data$yVar <- factor(data$yVar, levels = yValueOrdered)
-	}
+	data$yVar <- formatVarForPlotLabel(
+		data = data, 
+		paramVar = "yVar", paramGroupVar = paramGroupVar, 
+		width = 20, revert = TRUE
+	)
+	
+	yLevels <- levels(data$yVar)
+	
+	# plotly ignores missing values by default,
+	# so convert y-variable to numeric to ensure that all values are represented
+	data$yVar <- as.numeric(data$yVar)
 	
 	# variables used to uniquely identify a record
 	# between the table and the plot
@@ -148,9 +154,15 @@ timeProfileIntervalPlot <- function(data,
 
 	# get plot dim
 	if(is.null(height)){
+		linesYVar <- regmatches(
+			x = yLevels, 
+			m = gregexpr(pattern = "\n", text = yLevels, fixed = TRUE)
+		)
+		nLinesYVar <- sapply(linesYVar, length) + 1
 		height <- 
-			length(unique(data$yVar)) * 10 + 
-			ifelse(!is.null(colorVar), 40, 0)
+			30 +
+			sum(nLinesYVar) * 15 + 
+			ifelse(!is.null(colorVar), 20, 0)
 	}
 	
 	pl <- plot_ly(
@@ -200,17 +212,19 @@ timeProfileIntervalPlot <- function(data,
 	}
 	
 	# segments for time-interval
-	pl <- pl %>% add_segments(
-		x = varToFm(timeStartVar), 
-		xend = varToFm(timeEndVar),
-		y = varToFm("yVar"),
-		yend = varToFm("yVar"),
-		color = if(!is.null(colorVar))	varToFm(colorVar)	else	I(colorPalette), 
-		colors = if(!is.null(colorVar))	colorPalette,
-		hoverinfo = ifelse(!isShape, 'text', 'none'),
-		hovertemplate = if(!isShape)	varToFm("hover"),
-		opacity = alpha
-	)
+	# plotly returns an error when no non-missing values in start/end time vars
+	if(!all(is.na(data[, c(timeStartVar, timeEndVar)])))
+		pl <- pl %>% add_segments(
+			x = varToFm(timeStartVar), 
+			xend = varToFm(timeEndVar),
+			y = varToFm("yVar"),
+			yend = varToFm("yVar"),
+			color = if(!is.null(colorVar))	varToFm(colorVar)	else	I(colorPalette), 
+			colors = if(!is.null(colorVar))	colorPalette,
+			hoverinfo = ifelse(!isShape, 'text', 'none'),
+			hovertemplate = if(!isShape)	varToFm("hover"),
+			opacity = alpha
+		)
 
 #	xMax <- max(data[, c(timeStartVar, timeEndVar)], na.rm = TRUE)
 	pl <- pl %>% layout(
@@ -218,9 +232,14 @@ timeProfileIntervalPlot <- function(data,
 		xaxis = list(title = list(text = xLab)),
 #			rangeslider = list(range = c(0, xMax)), 
 		yaxis = list(
-			showticklabels = FALSE, ticks = "", 
+#			showticklabels = FALSE, ticks = "", 
+			showgrid = TRUE,
 			title = list(text = yLab),
-			showgrid = FALSE
+			type = "array", 
+			tickvals = seq_along(yLevels), 
+			ticktext = yLevels,
+			tickangle = 0,
+			range = c(0.5, length(yLevels)+0.5)
 		),
 		legend = list(orientation = "h", xanchor = "center", x = 0.5),
 		hovermode = "closest"
@@ -229,15 +248,17 @@ timeProfileIntervalPlot <- function(data,
 	# specific formatting for medical monitoring
 	pl <- formatPlotlyMonitoring(
 		data = data, pl = pl,
-		# extract patient profile based on the 'yVar' variable
+		# extract patient profile based on the 'key' variable
+		# (not yVar because different records could be grouped in the same yVar)
 		# (should be included in the plot)
-		idVar = "yVar", pathVar = pathVar,
+		idVar = keyVar, pathVar = pathVar,
 		# extract ID from 'y' column in the plot output object directly
-		idVarPlot = "y", idFromDataPlot = FALSE, 
-		# patient prof filename based on the 'y' label
-		labelVarPlot = "y",
+		idVarPlot = "key", idFromDataPlot = TRUE, 
+		# no label for patient prof filename because y is a numeric (not informative)
+#		labelVarPlot = "y",
 		id = id, 
-		verbose = verbose
+		verbose = verbose,
+		pathDownload = FALSE # open in new tab
 	)
 	
 	# create associated table

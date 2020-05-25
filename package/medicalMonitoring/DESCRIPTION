@@ -2,13 +2,13 @@ Package: medicalMonitoring
 Type: Package
 Title: Medical Monitoring Reporting Tool
 Version: 0.2.0
-Date: 2020-05-14
+Date: 2020-05-25
 Author: Arne De Roeck, Laure Cougnaud, Michela Pasetto
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring
   during a clinical trial.
 Imports: 
-  patientProfilesVis (>= 0.12.0), glpgStyle, glpgUtilityFct (>= 0.21.0), 
+  patientProfilesVis (>= 0.12.0), glpgStyle, glpgUtilityFct (>= 0.23.0), 
   ggplot2, plotly, 
   htmlwidgets, plyr, htmltools,
   knitr, 
