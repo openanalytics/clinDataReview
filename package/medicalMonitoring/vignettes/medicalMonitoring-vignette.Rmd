@@ -332,12 +332,15 @@ Time-intervals are displayed with the `timeProfileIntervalPlot` function:
 	)
 	timeProfileIntervalPlot(
 		data = dataAE,
-		paramVar = c("USUBJID", "AEDECOD"),
+		paramVar = "USUBJID",
 		# time-variables
 		timeStartVar = "AESTDY",
 		timeEndVar = "AEENDY",
+		colorVar = "AESEV",
+		hoverVars = c("USUBJID", "AEDECOD", "AESTDY", "AEENDY", "AESEV"),
 		labelVars = labelVars,
 		table = TRUE, pathVar = "patientProfilePath",
+		tableVars = c("USUBJID", "AEDECOD", "AESTDY", "AEENDY", "AESEV"),
 		verbose = TRUE
 	)
 
@@ -366,7 +369,7 @@ can be used to represent such cases:
 
 	timeProfileIntervalPlot(
 		data = dataAE,
-		paramVar = c("USUBJID", "AEDECOD"),
+		paramVar = "USUBJID", 
 		# time-variables
 		timeStartVar = "AESTDYIMP", timeStartLab = "Start day",
 		timeEndVar = "AEENDYIMP", timeEndLab = "End day",
@@ -374,8 +377,11 @@ can be used to represent such cases:
 		timeStartShapeVar = "AESTFLG", timeStartShapeLab = "Status of start date",
 		timeEndShapeVar = "AEENFLG", timeEndShapeLab = "Status of end date",
 		shapePalette = shapePalette,
+		hoverVars = c("USUBJID", "AEDECOD", "AESEV", "AESTDY", "AESTFLG", "AEENDY", "AEENFLG"),
 		labelVars = labelVars,
-		table = TRUE, pathVar = "patientProfilePath"
+		table = TRUE, 
+		tableVars = c("USUBJID", "AEDECOD", "AESEV", "AESTDY", "AESTFLG", "AEENDY", "AEENFLG"),
+		pathVar = "patientProfilePath"
 	)
 
 ```

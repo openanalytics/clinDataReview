@@ -62,7 +62,8 @@ getJsDepMedicalMonitoring <- function(dep = NULL){
 		getPackageJSDep(name = "FileSaver", version = "1.3.8"),
 		getPackageJSDep(name = "jszip", version = "3.2.2"),
 		getPackageJSDep(name = "jszip-utils", version = "0.1.0"),
-		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring"))
+		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring")),
+		getPackageJSDep(name = "collapsibleButton", version = packageVersion("medicalMonitoring"))
 	)
 	
 	if(!is.null(dep)){
@@ -75,26 +76,44 @@ getJsDepMedicalMonitoring <- function(dep = NULL){
 }
 
 #' Function to create collapsible HTML content
+#' 
+#' Please note that the button is of class:
+#' 'hideshow', defined in the 'input.hideshow.js' js file
+#' included in the package.
 #' @param input Object to be collapse, e.g.
 #' datatable.
 #' @param title String with button title.
 #' @return \code{\link[htmltools]{tag}} object
 #' @author Laure Cougnaud
-#' @importFrom htmltools tags div
+#' @importFrom htmltools tags div tagList
+#' @importFrom glpgStyle glpgColor
 #' @export
 collapseHtmlContent <- function(
-	input, title = "Click to show or hide"){
+	input, 
+	title = "Click to show or hide",
+	color = glpgStyle::glpgColor()["green"], 
+	borderColor = glpgStyle::glpgColor()["orange"]
+	){
 	
-	collapsedCnt <- tags$details(
-		tags$summary(title),
-		div(class = "row", input),
-		# DT github #690: html widgets are not rendered until they are visible
-		# so the 'resize' method should be called on the widget 
-		# when the content is collapsed (which is not the case by default)
-		ontoggle = 'if(this.open){window.dispatchEvent(new Event("resize"));}'
+	btnStyle <- paste0(
+		"color:", color, ";",
+		"border-color:", borderColor, ";",
+		#"border: none;",
+		"background-color: transparent"
 	)
+		
+	btn <- tags$input(
+		type = "button", 
+		class = "hideshow",
+		value = title,
+		style = btnStyle
+	)
+
+	btnContent <- div(input, style = "height:100%; display: inline-block;") #div(class = "row", div(input))
 	
-	return(collapsedCnt)
+	res <- tagList(btn, btnContent, br(), br())
+	
+	return(res)
 	
 }
 

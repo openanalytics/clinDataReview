@@ -1,3 +1,5 @@
+0.3.0
+    o collapseHtmlContent: custom 'hideshow' button
 0.2.0
     o formatToHierarchicalData: fix in case same values in different vars
     o annotateData: varFct
