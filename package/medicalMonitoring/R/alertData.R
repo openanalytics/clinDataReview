@@ -3,7 +3,7 @@
 #' @param data Data.frame with data to create the subject level alerts.
 #' By default 'adsl'.
 #' @param dataPath String with path to the data.
-#' @param alert A list of custom alerts as:
+#' @param alerts A list of custom alerts as:
 #' \itemize{
 #' 		\item{(optional) annotation dataset, either:
 #' 		\item{'dataset': }{
@@ -123,7 +123,7 @@ alertData <- function(
 		
 		varsByNotInData <- setdiff(varsBy, colnames(alertData))
 		if(length(varsByNotInData) > 0)
-			stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
+			stop(simpleCap(labelData), " is not annotated, because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
 		
 		# Critical!
 		alertDataSubset <- unique(alertData[, unique(c(varsBy, alertVar)), drop = FALSE])
