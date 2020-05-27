@@ -4,7 +4,12 @@
 \alias{collapseHtmlContent}
 \title{Function to create collapsible HTML content}
 \usage{
-collapseHtmlContent(input, title = "Click to show or hide")
+collapseHtmlContent(
+  input,
+  title = "Click to show or hide",
+  color = glpgStyle::glpgColor()["green"],
+  borderColor = glpgStyle::glpgColor()["orange"]
+)
 }
 \arguments{
 \item{input}{Object to be collapse, e.g.
@@ -16,7 +21,9 @@ datatable.}
 \code{\link[htmltools]{tag}} object
 }
 \description{
-Function to create collapsible HTML content
+Please note that the button is of class:
+'hideshow', defined in the 'input.hideshow.js' js file
+included in the package.
 }
 \author{
 Laure Cougnaud
