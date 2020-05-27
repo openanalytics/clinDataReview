@@ -50,6 +50,8 @@ timeProfileIntervalPlot(
 \item{paramVar}{Character vector with variable of \code{data}
 to represent in the y-axis.}
 
+\item{paramLab}{(optional) String with label for \code{paramVar}.}
+
 \item{paramVarSep}{(optional) String with separator used to combined \code{paramVar}
 if multiple.}
 
@@ -58,10 +60,16 @@ the \code{paramVar} elements in the y-axis.}
 
 \item{timeStartVar}{String with variable with the start of the time interval.}
 
+\item{timeStartLab}{(optional) String with label for \code{timeStartVar}.}
+
 \item{timeEndVar}{String with variable with the end of the time interval.}
+
+\item{timeEndLab}{(optional) String with label for \code{timeEndVar}.}
 
 \item{timeStartShapeVar}{(optional) String with variable used for the shape
 of the start of the time interval.}
+
+\item{timeStartShapeLab}{(optional) String with label for \code{timeStartShapeVar}.}
 
 \item{timeEndShapeVar}{(optional) String with variable used for the shape
 of the end of the time interval.}
@@ -73,7 +81,9 @@ of the end of the time interval.}
 
 \item{colorVar}{(optional) String with color variable.}
 
-\item{colorLab}{(optional) String with label for \code{colorVar}}
+\item{colorLab}{(optional) String with label for \code{colorVar}.}
+
+\item{colorPalette}{(optional) Named character vector with color palette.}
 
 \item{alpha}{(optional) Numeric with transparency, 1 by default.}
 

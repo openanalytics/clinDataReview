@@ -1,4 +1,4 @@
-context("Sunburst monitoring")
+context("Barplot monitoring")
 
 # load example data
 library(glpgUtilityFct)
@@ -97,6 +97,7 @@ test_that("plotting function runs properly", {
 	)
 	
 	dataPlot <- dataPlot[, c("AEDECOD", "n")]
+	dataPlot$AEDECOD <- as.character(dataPlot$AEDECOD)
 	expect_equivalent(object = plDataBarDf, expected = dataPlot)
 	
 	## check if created plot == reference

@@ -1,4 +1,4 @@
-context("Sunburst monitoring")
+context("Treemap monitoring")
 
 # load example data
 library(glpgUtilityFct)

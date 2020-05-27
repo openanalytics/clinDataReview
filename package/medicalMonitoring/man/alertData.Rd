@@ -20,21 +20,7 @@ By default 'adsl'.}
 
 \item{dataPath}{String with path to the data.}
 
-\item{subjectVar}{String with subject ID variable, 'USUBJID' by default.}
-
-\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
-in the current console.
-For the visualizations, progress messages during download
-of subject-specific report are displayed in the browser console.}
-
-\item{labelVars}{Named character vector containing variable labels of \code{data}.
-This will be updated with the labels of the extra annotation variables
-(in \code{attr(output, 'labelVars')}).}
-
-\item{labelData}{(optional) String with label for input \code{data},
-that will be included in progress messages.}
-
-\item{alert}{A list of custom alerts as:
+\item{alerts}{A list of custom alerts as:
 \itemize{
         \item{(optional) annotation dataset, either:
         \item{'dataset': }{
@@ -59,6 +45,20 @@ that will be included in progress messages.}
             an external annotation dataset, or the datasets are merged by rows otherwise.
 }
 }}
+
+\item{subjectVar}{String with subject ID variable, 'USUBJID' by default.}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+in the current console.
+For the visualizations, progress messages during download
+of subject-specific report are displayed in the browser console.}
+
+\item{labelVars}{Named character vector containing variable labels of \code{data}.
+This will be updated with the labels of the extra annotation variables
+(in \code{attr(output, 'labelVars')}).}
+
+\item{labelData}{(optional) String with label for input \code{data},
+that will be included in progress messages.}
 }
 \description{
 Create alert data

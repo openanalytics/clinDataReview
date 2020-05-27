@@ -1,15 +1,18 @@
 #' Visualize time intervals across subjects/parameters.
 #' @param paramVar Character vector with variable of \code{data}
 #' to represent in the y-axis.
+#' @param paramLab (optional) String with label for \code{paramVar}.
 #' @param paramVarSep (optional) String with separator used to combined \code{paramVar}
 #' if multiple.
 #' @param paramGroupVar (optional) Character vector with variable(s) to group/order
 #' the \code{paramVar} elements in the y-axis.
 #' @param timeStartVar String with variable with the start of the time interval.
+#' @param timeStartLab (optional) String with label for \code{timeStartVar}.
 #' @param timeEndVar String with variable with the end of the time interval.
+#' @param timeEndLab (optional) String with label for \code{timeEndVar}.
 #' @param timeStartShapeVar (optional) String with variable used for the shape
 #' of the start of the time interval.
-#' @param timeEndShapeLab (optional) String with label for \code{timeStartShapeVar}.
+#' @param timeStartShapeLab (optional) String with label for \code{timeStartShapeVar}.
 #' @param timeEndShapeVar (optional) String with variable used for the shape
 #' of the end of the time interval.
 #' @param timeEndShapeLab (optional) String with label for \code{timeEndShapeVar}.
@@ -17,7 +20,8 @@
 #' \code{timeStartShapeVar} and \code{timeEndShapeVar}.
 #' @param xLab,yLab (optional) String with labels for the x/y-axis.
 #' @param colorVar (optional) String with color variable.
-#' @param colorLab (optional) String with label for \code{colorVar}
+#' @param colorLab (optional) String with label for \code{colorVar}.
+#' @param colorPalette (optional) Named character vector with color palette.
 #' @param alpha (optional) Numeric with transparency, 1 by default.
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
