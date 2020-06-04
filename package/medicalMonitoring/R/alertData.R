@@ -39,7 +39,7 @@
 #' @author Michela Pasetto
 #' @export 
 alertData <- function(
-		data = "adsl",
+		data,
 		dataPath = ".",
 		alerts,
 		subjectVar = "USUBJID",
@@ -53,8 +53,8 @@ alertData <- function(
 			is.null(names(alerts)), # if TRUE means that are nested lists
 			length(alerts) > 1
 	)
-	if(isNest){
-		for(par in alerts){	
+	if(isNest) {
+		for(par in alerts) {	
 			data <- alertData(
 					data = data,
 					dataPath = dataPath,
@@ -76,7 +76,8 @@ alertData <- function(
 	if(is.null(varsBy))	varsBy <- subjectVar
 	
 	# Get data				
-	alertData <- getDataFromAlertList(listArgs = alertsArgs, dataPath = dataPath)
+	#alertData <- getDataFromAlertList(listArgs = alertsArgs, dataPath = dataPath)
+	alertData <- data
 	labelVarsAlert <- attr(alertData, "labelVars")
 	
 	# Filter if required:
@@ -103,49 +104,56 @@ alertData <- function(
 		if(is.function(varFct)) {
 			
 			# Add new variable in the alertData
-			alertData[[varNew]] <- varFct(alertData)
-			msgVarFct <- paste(as.character(body(varFct)), collapse = "")
+			alertData[[varNew]] <- varFct(alertData)			
+			if(! is.logical(alertData[[varNew]])) stop("'varFct' should provide a logical object.")
 			
-		} else	stop("'varFct' should be a character or a function.")
+		} else stop("'varFct' should be a function.")
+		
+		
+		msgVarFct <- paste(as.character(body(varFct)), collapse = "")
+		msgVarFct <- paste("based on:", msgVarFct)
 		
 		# set label:
 		labelNew <- alertsArgs$varLabel
 		if(is.null(labelNew))	labelNew <- msgVarFct
 		labelVarsAlert[varNew] <- labelNew
 		
-		msgVarFct <- paste("based on:", msgVarFct)
-		# remove variable in data if already present
-		data[[varNew]] <- NULL					
 	}
 	
 	alertVar <- alertsArgs$vars	
-	if(length(alertVar) > 0) {
-		
-		varsByNotInData <- setdiff(varsBy, colnames(alertData))
-		if(length(varsByNotInData) > 0)
-			stop(simpleCap(labelData), " is not annotated, because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
-		
-		# Critical!
-		alertDataSubset <- unique(alertData[, unique(c(varsBy, alertVar)), drop = FALSE])
-#		presentDuplicates <- any(duplicated(alertDataSubset[[varsBy]]))
-#		if(presentDuplicates) {
-#			
-#			idxDuplicate <- which(duplicated(alertDataSubset[[varsBy]]))
-#			idDuplicate <- alertDataSubset[[varsBy]][idxDuplicate]
-#			idxToRemove <- which(
-#					alertDataSubset[[varsBy]] %in% idDuplicate &
-#							alertDataSubset[[alertVar]] == "N"
-#			)
-#			alertDataSubset <- alertDataSubset[- idxToRemove, ]					
-#		}
-		
-		data <- leftJoinBase(x = data, y = alertDataSubset, by = varsBy)
-#	B <- data.frame(
-#			data,
-#			alertDataSubset[match(data$USUBJID, alertDataSubset$USUBJID), ]	
-#	)
 	
+	# Create the flagged variable
+	alertData[[varNew]] <- ifelse(
+			alertData[[varNew]],
+			"Y", "N"
+			)
 	
+#	if(length(alertVar) > 0) {
+#		
+#		varsByNotInData <- setdiff(varsBy, colnames(alertData))
+#		if(length(varsByNotInData) > 0)
+#			stop(simpleCap(labelData), " is not annotated, because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
+#		
+#		# Critical!
+#		alertDataSubset <- unique(alertData[, unique(c(varsBy, alertVar)), drop = FALSE])
+##		presentDuplicates <- any(duplicated(alertDataSubset[[varsBy]]))
+##		if(presentDuplicates) {
+##			
+##			idxDuplicate <- which(duplicated(alertDataSubset[[varsBy]]))
+##			idDuplicate <- alertDataSubset[[varsBy]][idxDuplicate]
+##			idxToRemove <- which(
+##					alertDataSubset[[varsBy]] %in% idDuplicate &
+##							alertDataSubset[[alertVar]] == "N"
+##			)
+##			alertDataSubset <- alertDataSubset[- idxToRemove, ]					
+##		}
+#		
+#		data <- leftJoinBase(x = data, y = alertDataSubset, by = varsBy)
+##	B <- data.frame(
+##			data,
+##			alertDataSubset[match(data$USUBJID, alertDataSubset$USUBJID), ]	
+##	)
+		
 		msgAnnot <- sprintf("Alert variable %s (%s) created in %s.",
 				getLabelVar(var = alertVar, data = alertData, labelVars = labelVarsAlert), 
 				sQuote(alertVar), simpleCap(labelData)
@@ -164,9 +172,12 @@ alertData <- function(
 		if(verbose)	message(msgAnnot)
 		
 		if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAlert[alertVar])						
-	}
+#	}
 	
 	if(!is.null(labelVars))	 attr(data, "labelVars") <- labelVars
+	
+	
+	data <- alertData
 	
 	return(data)	
 	
