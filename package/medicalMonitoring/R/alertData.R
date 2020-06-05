@@ -1,31 +1,17 @@
 #' Create alert data
 #' 
-#' @param data Data.frame with data to create the subject level alerts.
-#' By default 'adsl'.
+#' @param data Data.frame with data to create the alerts.
 #' @param dataPath String with path to the data.
 #' @param alerts A list of custom alerts as:
 #' \itemize{
-#' 		\item{(optional) annotation dataset, either:
-#' 		\item{'dataset': }{
-#' 			String with name of the annotation dataset,
-#'  		e.g. 'ex' to import data from the file: '[dataset].sas7bdat'in \code{dataPath}
-#' 			}
-#' 		\item{'data': }{
-#' 			Data.frame with annotation dataset
-#' 			}
-#' 		}
 #' 		\item{'vars': }{
-#' 			Character vector with variables of interest from annotation dataset
+#' 			Character vector with (new) variables of alerts
 #' 			}
-#' 		\item{'varFct': }{(optional) Function of \code{data} or string containing
-#' 			manipulations from column names of \code{data} used to 
-#'			create a new variable specified in \code{vars}.}
-#' 		\item{'filters': }{(optional) Filters for the annotation dataset, 
+#' 		\item{'varFct': }{Function of \code{data} based on column names of \code{data} used to 
+#'			create the alert specified in \code{vars}. This function should provide a logical evaluation.}
+#' 		\item{'filters': }{(optional) Filters for the \code{data}, 
 #' 			see \code{filters} parameter of \code{\link{filterData}}}
-#' 		\item{'varLabel': }{(optional) label for new variable in case \code{varFct} is specified.}
-#' 		\item{'varsBy': }{(optional) Character vector with variables used to merge input data and
-#' 			the annotation dataset. If not specified, \code{subjectVar} is used if
-#' 			an external annotation dataset, or the datasets are merged by rows otherwise.
+#' 		\item{'varLabel': }{(optional) label for new variable. Otherwise the name from \code{varFct} is specified.}
 #' }
 #' }
 #' @param subjectVar String with subject ID variable, 'USUBJID' by default.
@@ -69,19 +55,17 @@ alertData <- function(
 	}
 	
 	
-	alertsArgs <- alerts	
-	
 	# Alert by
-	varsBy <- alertsArgs[["varsBy"]]
-	if(is.null(varsBy))	varsBy <- subjectVar
+#	varsBy <- alerts[["varsBy"]]
+#	if(is.null(varsBy))	varsBy <- subjectVar
 	
 	# Get data				
-	#alertData <- getDataFromAlertList(listArgs = alertsArgs, dataPath = dataPath)
+	#alertData <- getDataFromAlertList(listArgs = alerts, dataPath = dataPath)
 	alertData <- data
 	labelVarsAlert <- attr(alertData, "labelVars")
 	
 	# Filter if required:
-	alertFilter <- alertsArgs$filters
+	alertFilter <- alerts$filters
 	if(!is.null(alertFilter)) {
 		alertData <- filterData(
 				data = alertData, 
@@ -93,40 +77,34 @@ alertData <- function(
 	}
 	
 	# Get var function
-	varFct <- alertsArgs$varFct
-	if(!is.null(varFct)) {
-		
-		if(is.null(alertsArgs$vars) || length(alertsArgs$vars) != 1)
-			stop("'vars' should be specified and of length 1 for 'varFct':\n", 
-					capture.output(varFct))
-		
-		varNew <- alertsArgs$vars
-		if(is.function(varFct)) {
-			
-			# Add new variable in the alertData
-			alertData[[varNew]] <- varFct(alertData)			
-			if(! is.logical(alertData[[varNew]])) stop("'varFct' should provide a logical object.")
-			
-		} else stop("'varFct' should be a function.")
-		
-		
-		msgVarFct <- paste(as.character(body(varFct)), collapse = "")
-		msgVarFct <- paste("based on:", msgVarFct)
-		
-		# set label:
-		labelNew <- alertsArgs$varLabel
-		if(is.null(labelNew))	labelNew <- msgVarFct
-		labelVarsAlert[varNew] <- labelNew
-		
-	}
+	varFct <- alerts$varFct
+	alertVar <- alerts$vars
 	
-	alertVar <- alertsArgs$vars	
+	# Stops if not meeting requirements
+	if(is.null(varFct)) stop("Please provide a 'varFct'")
+	if(! is.function(varFct)) stop("'varFct' should be a function.")
+	if(is.null(alertVar) || length(alertVar) != 1)
+		stop("'vars' should be specified and of length 1 for 'varFct':\n", 
+				capture.output(varFct))
 	
+	#######################
+	## Create the alerts ##	
+	# Add new variable in the alertData
+	alertData[[alertVar]] <- varFct(alertData)			
+	if(! is.logical(alertData[[alertVar]])) stop("'varFct' should provide a logical object.")	
 	# Create the flagged variable
-	alertData[[varNew]] <- ifelse(
-			alertData[[varNew]],
+	alertData[[alertVar]] <- ifelse(
+			alertData[[alertVar]],
 			"Y", "N"
-			)
+	)
+		
+	# set label:
+	labelNew <- alerts$varLabel
+	if(is.null(labelNew))	labelNew <- msgVarFct
+	labelVarsAlert[alertVar] <- labelNew
+	
+	
+	
 	
 #	if(length(alertVar) > 0) {
 #		
@@ -136,42 +114,32 @@ alertData <- function(
 #		
 #		# Critical!
 #		alertDataSubset <- unique(alertData[, unique(c(varsBy, alertVar)), drop = FALSE])
-##		presentDuplicates <- any(duplicated(alertDataSubset[[varsBy]]))
-##		if(presentDuplicates) {
-##			
-##			idxDuplicate <- which(duplicated(alertDataSubset[[varsBy]]))
-##			idDuplicate <- alertDataSubset[[varsBy]][idxDuplicate]
-##			idxToRemove <- which(
-##					alertDataSubset[[varsBy]] %in% idDuplicate &
-##							alertDataSubset[[alertVar]] == "N"
-##			)
-##			alertDataSubset <- alertDataSubset[- idxToRemove, ]					
-##		}
+	##		presentDuplicates <- any(duplicated(alertDataSubset[[varsBy]]))
+	##		if(presentDuplicates) {
+	##			
+	##			idxDuplicate <- which(duplicated(alertDataSubset[[varsBy]]))
+	##			idDuplicate <- alertDataSubset[[varsBy]][idxDuplicate]
+	##			idxToRemove <- which(
+	##					alertDataSubset[[varsBy]] %in% idDuplicate &
+	##							alertDataSubset[[alertVar]] == "N"
+	##			)
+	##			alertDataSubset <- alertDataSubset[- idxToRemove, ]					
+	##		}
 #		
 #		data <- leftJoinBase(x = data, y = alertDataSubset, by = varsBy)
-##	B <- data.frame(
-##			data,
-##			alertDataSubset[match(data$USUBJID, alertDataSubset$USUBJID), ]	
-##	)
+	
+	if(verbose) {
 		
-		msgAnnot <- sprintf("Alert variable %s (%s) created in %s.",
+		msgVarFct <- paste(as.character(body(varFct)), collapse = "")		
+		msgAnnot <- sprintf("Alert variable %s (%s) created in %s based on %s",
 				getLabelVar(var = alertVar, data = alertData, labelVars = labelVarsAlert), 
-				sQuote(alertVar), simpleCap(labelData)
-		) #,
-#								if(!is.null(alertsArgs$varFct))	paste0(" ", msgVarFct),
-#								if(!is.null(alertFilter))	paste(" whose", msgFilter),
-#								if(annotDataset != "current"){
-#									paste0(
-#											" based on the variable(s):	", 
-#											getLabelVar(var = varsBy, data = alertData, labelVars = labelVarsAlert), 
-#											" (", sQuote(varsBy), ")"
-#									)
-#								},
-#								"."
-#						)
-		if(verbose)	message(msgAnnot)
-		
-		if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAlert[alertVar])						
+				sQuote(alertVar), simpleCap(labelData), msgVarFct
+		)
+		if(!is.null(alertFilter)) msgAnnot <- sprintf("%s whose %s", msgAnnot, msgFilter)		
+		message(msgAnnot)
+	}
+	
+	if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAlert[alertVar])						
 #	}
 	
 	if(!is.null(labelVars))	 attr(data, "labelVars") <- labelVars
@@ -183,42 +151,42 @@ alertData <- function(
 	
 }
 
-#' @importFrom glpgUtilityFct loadDataADaMSDTM
-getDataFromAlertList <- function(listArgs, dataPath) {
-	
-	if("dataset" %in% names(listArgs)) {
-		
-		datasetName <- listArgs[["dataset"]]
-		datasetPath <- file.path(dataPath, paste0(datasetName, ".sas7bdat"))
-		dataAll <- loadDataADaMSDTM(datasetPath, verbose = FALSE)
-		data <- dataAll[[1]]
-		attr(data, "labelVars") <- attr(dataAll, "labelVars")
-		
-	} else if("data" %in% names(listArgs)) {
-		
-		data <- listArgs$data
-		
-	} else stop("Provide either a dataset name or a data frame object.")
-	
-	return(data)
-}
-
-
-# custom 'left-join' function without ordering of rows and columns in x
-leftJoinBase <- function(x, y, by, ...){
-	if(any(duplicated(y[, by])))
-		warning("Duplicated records in y dataset for: ", 
-				toString(sQuote(by)), ", this might create replicated rows in the ",
-				"input data."
-		)
-	res <- merge(
-			x = x, y = y, 
-			all.x = TRUE, all.y = FALSE, # left join
-			by = by,
-			sort = FALSE, # doesn't sort rows
-			...)
-	colsX <- colnames(x)
-	cols <- c(colsX, setdiff(colnames(res), colsX))
-	res <- res[, cols, drop = FALSE]
-	return(res)
-}
+##' @importFrom glpgUtilityFct loadDataADaMSDTM
+#getDataFromAlertList <- function(listArgs, dataPath) {
+#	
+#	if("dataset" %in% names(listArgs)) {
+#		
+#		datasetName <- listArgs[["dataset"]]
+#		datasetPath <- file.path(dataPath, paste0(datasetName, ".sas7bdat"))
+#		dataAll <- loadDataADaMSDTM(datasetPath, verbose = FALSE)
+#		data <- dataAll[[1]]
+#		attr(data, "labelVars") <- attr(dataAll, "labelVars")
+#		
+#	} else if("data" %in% names(listArgs)) {
+#		
+#		data <- listArgs$data
+#		
+#	} else stop("Provide either a dataset name or a data frame object.")
+#	
+#	return(data)
+#}
+#
+#
+## custom 'left-join' function without ordering of rows and columns in x
+#leftJoinBase <- function(x, y, by, ...){
+#	if(any(duplicated(y[, by])))
+#		warning("Duplicated records in y dataset for: ", 
+#				toString(sQuote(by)), ", this might create replicated rows in the ",
+#				"input data."
+#		)
+#	res <- merge(
+#			x = x, y = y, 
+#			all.x = TRUE, all.y = FALSE, # left join
+#			by = by,
+#			sort = FALSE, # doesn't sort rows
+#			...)
+#	colsX <- colnames(x)
+#	cols <- c(colsX, setdiff(colnames(res), colsX))
+#	res <- res[, cols, drop = FALSE]
+#	return(res)
+#}
