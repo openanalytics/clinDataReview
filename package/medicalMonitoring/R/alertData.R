@@ -97,7 +97,8 @@ alertData <- function(
 			alertData[[alertVar]],
 			"Y", "N"
 	)
-		
+	
+	msgVarFct <- paste(as.character(body(varFct)), collapse = "")	
 	# set label:
 	labelNew <- alerts$varLabel
 	if(is.null(labelNew))	labelNew <- msgVarFct
@@ -129,8 +130,7 @@ alertData <- function(
 #		data <- leftJoinBase(x = data, y = alertDataSubset, by = varsBy)
 	
 	if(verbose) {
-		
-		msgVarFct <- paste(as.character(body(varFct)), collapse = "")		
+			
 		msgAnnot <- sprintf("Alert variable %s (%s) created in %s based on %s",
 				getLabelVar(var = alertVar, data = alertData, labelVars = labelVarsAlert), 
 				sQuote(alertVar), simpleCap(labelData), msgVarFct
