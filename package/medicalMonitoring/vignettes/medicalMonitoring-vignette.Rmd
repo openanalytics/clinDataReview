@@ -610,6 +610,52 @@ package.
 
 ```
 
+# Render a medical monitoring report
+
+A **medical monitoring report is assumed to have the following structure**:
+
+* A set of _Rmarkdown_ files in the current directory
+    + _index.Rmd_ file, containing the front page of the document.  
+This file should be formatted as a _Rmarkdown_ report with _YAML_ header,
+with `output` set to: `medicalMonitoring::gitbook_medicalMonitoring_report`
+    + multiple Rmd files, one for each chapter (or template for multiple chapters)
+* a `config` directory containing:
+    + a general configuration file: _config.yml_ with:
+        + `pathDataFolder`: path to a directory containing input data in _sas7bdat_
+        or _xpt_ format
+        + `patientProfilesPath`(optional) : path to a directory containing the patient profiles
+        + `study` (optional): study name
+        + `version` (optional): data version, e.g. batch
+    + a configuration file for each chapter, as: _config-[chapterName].yml_ containing:
+        + `template`: filename of the _Rmd_ file to consider for this chapter
+        + `reportTitle`: chapter title, used for section header
+        + `fileName`: filename of the dataset of interest for this chapter, e.g.: 'adae.sas7bdat'
+        + `level`: integer with section level, e.g. 2
+        + (optional) template-specific parameters, accessed in the template
+        via `params$`
+
+## Production mode
+
+The function **`render_medicalMonitoringReport` renders a medical monitoring report
+for production**.
+
+```{r render_medicalMonitoringReport, eval = FALSE}
+medicalMonitoring::render_medicalMonitoringReport()
+```
+
+## Development mode
+
+To debug or execute one specific report in development mode:
+
+```{r render_medicalMonitoringReport-devel, eval = FALSE}
+
+# get parameters from the general 'config.yml' and the specified config file
+params <- getParamsFromConfig(configFile = "config-AE_timeprofile.yml")
+
+# preview a specific chapter
+bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)
+```
+
 # Appendix
 
 ## Session information

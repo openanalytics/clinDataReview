@@ -23,7 +23,6 @@
 #' @author Laure Cougnaud
 #' @importFrom tools file_path_sans_ext
 #' @importFrom rmarkdown render
-#' @importFrom yaml read_yaml
 #' @export
 render_medicalMonitoringReport <- function(
 	indexPath = "index.Rmd", 
@@ -43,75 +42,69 @@ render_medicalMonitoringReport <- function(
 		return(path)
 	}
 	
-	# load general config file
-	configGeneralPath <- file.path(configDir, "config.yml")
-	if(file.exists(configGeneralPath)){
-		
-		configGeneralParams <- yaml::read_yaml(configGeneralPath)
-		# add patient profiles dir to repos to copy
-		extraDirs <- c(extraDirs, configGeneralParams$patientProfilePath)
-		
-	}else	stop("General config file not available in:", configDir, ".")
+	# add patient profiles dir to repos to copy
+	configGeneralParams <- getParamsFromConfig(configFile = "config.yml", configDir = configDir)
+	extraDirs <- c(extraDirs, configGeneralParams$patientProfilePath)
+
+	configFiles <- c("config.yml", configGeneralParams[["config"]])
 	
-	# render Rmd report to Rmd
-	renderToMd <- function(input, output_file, params, ...){
+	## run index file + each chapter
+	
+	mdFiles <- c()
+	knit_meta_reports <- c()
+	for(configFile in configFiles){
 		
+		if(configFile == "config.yml"){
+			
+			params <- configGeneralParams
+			inputRmdFile <- indexPath
+			outputMdFile <- getMdFile(indexPath)
+			
+		}else{
+			
+			# extract chapter-specific parameters from config file
+			params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
+			
+			inputRmdFile <- params$template
+			outputMdFile <- getMdFile(sub("^config-", "", configFile))
+			
+			# extract path of the template from the R package:
+			# if(!params$templateCustom)
+			
+		}
+		
+		if(is.null(inputRmdFile))
+			stop("Template missing for config file: ", sQuote(configFile), ".")
+
 		# specify report-specific input parameters
 		# in a new environment
 		envReport <- new.env()
 		assign("params", params, envir = envReport)
 		
+		# run report
+		message("Run report for config file: ", sQuote(configFile), ".")
+		
 		# render report
 		outputRmd <- rmarkdown::render(
-			input = input, 
-			output_file = output_file,
-			run_pandoc = FALSE,
-			output_options = list(keep_md = TRUE),
-#			params = configGeneralParams,
-			env = envReport,
-      		encoding = "UTF-8",
-			...
-		)
-		return(attr(outputRmd, "knit_meta"))
-	}
-	
-	# run index document
-	outputMdFile <- getMdFile(indexPath)
-	knitMetaIndex <- renderToMd(
-		input = indexPath, 
-		output_file = outputMdFile,
-		params = configGeneralParams
-	)
-	mdFiles <- outputMdFile
-	knit_meta_reports <- knitMetaIndex
-
-	# run each chapter
-	for(configFile in configGeneralParams[["config"]]){
-		
-		configFilePath <- file.path(configDir, configFile)
-		
-		# extract chapter-specific parameters from config file
-		configParams <- c(
-			configGeneralParams,
-			yaml::read_yaml(configFilePath)
-		)
-		inputRmdFile <- configParams$template
-		if(is.null(inputRmdFile))
-			stop("Template missing for config file: ", sQuote(configFile), ".")
-		# extract path of the template from the R package:
-#		if(!configParams$templateCustom)
-		
-		outputMdFile <- getMdFile(sub("^config-", "", configFile))
-		
-		# run report
-		message("Run report for config file", sQuote(configFile), ".")
-		knitMetaReport <- renderToMd(
 			input = inputRmdFile, 
 			output_file = outputMdFile,
-			params = configParams
+			run_pandoc = FALSE,
+			output_options = list(keep_md = TRUE),
+			env = envReport,
+			encoding = "UTF-8"
 		)
+		
+		# and knit_meat attributes
+		knit_meta_reports <- c(knit_meta_reports, attr(outputRmd, "knit_meta"))
+		
+		# store Markdown file path
 		mdFiles <- c(mdFiles, outputMdFile)
-		knit_meta_reports <- c(knit_meta_reports, knitMetaReport)
+		
+		# remove objects created in Rmd file
+#		envReportEnd <- environment()
+#		objReportEnd <- ls(envir = envReportEnd)
+#		rm(list = setdiff(objReportEnd, c("envFct", "knit_meta_reports", "mdFiles")))
+#		attach(envFct)
 		
 	}
 		
@@ -133,5 +126,42 @@ render_medicalMonitoringReport <- function(
 	)
 	
 	return(outputFile)
+	
+}
+
+#' Get parameters from a config file
+#' @param configFile String with filename of the config
+#' file of interest.
+#' @param configDir String with directory with config files,
+#' ('config' by default).
+#' @return List with parameters from the specified \code{configFile}
+#' and the general config file: \code{config.yml}.
+#' @author Laure Cougnaud
+#' @importFrom yaml read_yaml
+#' @export
+getParamsFromConfig <- function(
+	configFile, configDir = "./config"){
+	
+	# load general config file
+	configGeneralPath <- file.path(configDir, "config.yml")
+	if(file.exists(configGeneralPath)){
+		
+		configGeneralParams <- yaml::read_yaml(configGeneralPath)
+		
+	}else	warning("General config file: 'config.yml' not available in:", configDir, ".")
+
+	if(configFile != "config.yml"){
+
+		configFilePath <- file.path(configDir, configFile)
+		configParams <- yaml::read_yaml(configFilePath)
+		params <- c(configGeneralParams, configParams)
+	
+	}else{
+		
+		params <- configGeneralParams
+		
+	}
+	
+	return(params)
 	
 }
