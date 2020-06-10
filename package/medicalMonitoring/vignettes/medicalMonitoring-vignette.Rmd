@@ -612,7 +612,11 @@ package.
 
 # Render a medical monitoring report
 
-A **medical monitoring report is assumed to have the following structure**:
+## File structure
+
+### Input
+
+The input for the medical monitoring report consists of:
 
 * A set of _Rmarkdown_ files in the current directory
     + _index.Rmd_ file, containing the front page of the document.  
@@ -633,6 +637,22 @@ with `output` set to: `medicalMonitoring::gitbook_medicalMonitoring_report`
         + `level`: integer with section level, e.g. 2
         + (optional) template-specific parameters, accessed in the template
         via `params$`
+        
+#### Output
+
+The medical monitoring report output consists of:
+
+* a final output folder ('MOMP' by default) containing the:
+    + final medical monitoring report, in a set of
+multiple HTML files
+    + required _Javascript_ libraries in the subfolder: _'libs'_
+    + any extra directories created during report execution, by
+    default: 'tables' and 'figures' (`extraDirs` parameter)
+    + (optionally) directory with patient profiles
+* a folder of intermediary results ('interim' by default)
+    + _Markdown_ file for each report part (one per config file)
+    + associated _rds_ file containing specification of the
+    _Javascript_ libraries required for each report part (`knit_meta`)
 
 ## Production mode
 
@@ -645,7 +665,9 @@ medicalMonitoring::render_medicalMonitoringReport()
 
 ## Development mode
 
-To debug or execute one specific report in development mode:
+### Create one part of the report only
+
+To create only one specific report:
 
 ```{r render_medicalMonitoringReport-devel, eval = FALSE}
 
@@ -653,7 +675,35 @@ To debug or execute one specific report in development mode:
 params <- getParamsFromConfig(configFile = "config-AE_timeprofile.yml")
 
 # preview a specific chapter
+bookdown::render_book(input = params$template, preview = TRUE)
+# included the index file:
 bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)
+
+```
+
+### Modular framework
+
+#### (Re-)run part(s) of the report
+
+In case the creation of the entire report is time-consuming, and
+only part(s) of the report have been updated, it might be interesting to
+only re-run some parts of the report. Config files associated to the
+parts of the report that should be rerun can be specified via the
+`configFiles` parameter.
+
+```{r render_medicalMonitoringReport-configFiles, eval = FALSE}
+medicalMonitoring::render_medicalMonitoringReport(configFiles = "config-AE_timeprofile.yml")
+```
+
+#### Create the final medical monitoring report from the Markdown reports
+
+To convert all created _Markdown_ files to HTML, the dedicated function `convertMdToHtml`
+can be used.
+
+```{r convertMdToHtml, eval = FALSE}
+
+	convertMdToHtml()
+
 ```
 
 # Appendix

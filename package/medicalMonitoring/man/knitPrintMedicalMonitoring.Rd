@@ -41,6 +41,17 @@ report.
 Include output from medical monitoring, or list 
 of such outputs in a Rmarkdown report.
 }
+\seealso{
+Other medical monitoring reporting: 
+\code{\link{convertMdToHtml}()},
+\code{\link{getMdFromConfig}()},
+\code{\link{getMdHeader}()},
+\code{\link{getParamsFromConfig}()},
+\code{\link{gitbook_medicalMonitoring_report}()},
+\code{\link{html_medicalMonitoring_report}()},
+\code{\link{render_medicalMonitoringReport}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{medical monitoring reporting}

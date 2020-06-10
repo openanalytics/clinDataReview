@@ -11,7 +11,11 @@ getParamsFromConfig(configFile, configDir = "./config")
 file of interest.}
 
 \item{configDir}{String with directory with config files,
-('config' by default).}
+('config' by default).
+It should contain a general 'config.yml' file and dedicated
+'config-[X].yml' for each chapter.
+The order of each chapter is specified in the 'config' slot in the general 
+general 'config.yml'.}
 }
 \value{
 List with parameters from the specified \code{configFile}
@@ -20,6 +24,17 @@ and the general config file: \code{config.yml}.
 \description{
 Get parameters from a config file
 }
+\seealso{
+Other medical monitoring reporting: 
+\code{\link{convertMdToHtml}()},
+\code{\link{getMdFromConfig}()},
+\code{\link{getMdHeader}()},
+\code{\link{gitbook_medicalMonitoring_report}()},
+\code{\link{html_medicalMonitoring_report}()},
+\code{\link{knitPrintMedicalMonitoring}()},
+\code{\link{render_medicalMonitoringReport}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{medical monitoring reporting}

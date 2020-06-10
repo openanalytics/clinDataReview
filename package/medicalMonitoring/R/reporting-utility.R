@@ -17,6 +17,7 @@
 #' }
 #' @return String with Markdown header,
 #' to be included in R within \code{cat}.
+#' @family medical monitoring reporting
 #' @export
 getMdHeader <- function(title, level = 1, settings = NULL){
 	
@@ -94,6 +95,7 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' report.
 #' @author Laure Cougnaud
 #' @importFrom glpgUtilityFct knitPrintListObjects
+#' @family medical monitoring reporting
 #' @export
 knitPrintMedicalMonitoring <- function(
 	list, sep = ".", level = 1,

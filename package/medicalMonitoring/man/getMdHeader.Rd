@@ -31,3 +31,14 @@ current knitted file}
 \item{\code{depth} parameter otherwise}
 }
 }
+\seealso{
+Other medical monitoring reporting: 
+\code{\link{convertMdToHtml}()},
+\code{\link{getMdFromConfig}()},
+\code{\link{getParamsFromConfig}()},
+\code{\link{gitbook_medicalMonitoring_report}()},
+\code{\link{html_medicalMonitoring_report}()},
+\code{\link{knitPrintMedicalMonitoring}()},
+\code{\link{render_medicalMonitoringReport}()}
+}
+\concept{medical monitoring reporting}

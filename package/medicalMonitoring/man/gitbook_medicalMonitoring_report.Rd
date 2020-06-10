@@ -34,6 +34,17 @@ This format includes also additional javascript libraries
 required for visualization/tables of a medical monitoring
 report.
 }
+\seealso{
+Other medical monitoring reporting: 
+\code{\link{convertMdToHtml}()},
+\code{\link{getMdFromConfig}()},
+\code{\link{getMdHeader}()},
+\code{\link{getParamsFromConfig}()},
+\code{\link{html_medicalMonitoring_report}()},
+\code{\link{knitPrintMedicalMonitoring}()},
+\code{\link{render_medicalMonitoringReport}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{medical monitoring reporting}
