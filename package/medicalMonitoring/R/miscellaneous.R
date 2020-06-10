@@ -83,9 +83,11 @@ getJsDepMedicalMonitoring <- function(dep = NULL){
 #' @param input Object to be collapse, e.g.
 #' datatable.
 #' @param title String with button title.
+#' @param color String with color for the collapsible object.
+#' @param borderColor String with border color for the collapsible object.
 #' @return \code{\link[htmltools]{tag}} object
 #' @author Laure Cougnaud
-#' @importFrom htmltools tags div tagList
+#' @importFrom htmltools tags div tagList br
 #' @importFrom glpgStyle glpgColor
 #' @export
 collapseHtmlContent <- function(

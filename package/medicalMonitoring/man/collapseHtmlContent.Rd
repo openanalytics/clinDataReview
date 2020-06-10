@@ -16,6 +16,10 @@ collapseHtmlContent(
 datatable.}
 
 \item{title}{String with button title.}
+
+\item{color}{String with color for the collapsible object.}
+
+\item{borderColor}{String with border color for the collapsible object.}
 }
 \value{
 \code{\link[htmltools]{tag}} object

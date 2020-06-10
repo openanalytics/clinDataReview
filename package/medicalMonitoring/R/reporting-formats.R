@@ -16,6 +16,7 @@
 #' @return R Markdown output format to pass to \code{\link[bookdown]{render_book}}.
 #' @importFrom glpgStyle gitbook_report
 #' @author Laure Cougnaud
+#' @family medical monitoring reporting
 #' @export
 gitbook_medicalMonitoring_report <- function(
 	split_by = 'section+number',
@@ -48,7 +49,8 @@ gitbook_medicalMonitoring_report <- function(
 #' \link[glpgStyle]{html_report} function.
 #' @return R Markdown output format to pass to \code{\link[rmarkdown]{render}}.
 #' @importFrom glpgStyle gitbook_report
-#' @author lcougnaud
+#' @author Laure Cougnaud
+#' @family medical monitoring reporting
 #' @export
 html_medicalMonitoring_report <- function(
 	extra_dependencies = getJsDepMedicalMonitoring(),

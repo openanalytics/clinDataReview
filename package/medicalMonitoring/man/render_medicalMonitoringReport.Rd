@@ -7,9 +7,10 @@
 render_medicalMonitoringReport(
   indexPath = "index.Rmd",
   outputDir = "./MOMP",
+  intermediateDir = "./interim",
   configDir = "./config",
-  extraDirs = c("figures", "tables"),
-  ...
+  configFiles = NULL,
+  extraDirs = c("figures", "tables")
 )
 }
 \arguments{
@@ -19,6 +20,11 @@ render_medicalMonitoringReport(
 \item{outputDir}{String with output directory,
 ('MOMP', for: 'Medical Oversight and monitoring Plan' by default).}
 
+\item{intermediateDir}{String with intermediate directory ('inter'
+by default), where
+markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
+each sub report are stored.}
+
 \item{configDir}{String with directory with config files,
 ('config' by default).
 It should contain a general 'config.yml' file and dedicated
@@ -26,22 +32,59 @@ It should contain a general 'config.yml' file and dedicated
 The order of each chapter is specified in the 'config' slot in the general 
 general 'config.yml'.}
 
+\item{configFiles}{(optional) Character vector with specific config files
+to be converted from Rmarkdown to Markdown. If
+\itemize{
+\item{not specified (by default): }{all config files
+specified in the general 'config.yml' will be run (Rmd -> md)}
+\item{specified (\strong(expert use only)): }{only the specified files will be run (Rmd -> md).
+Other config files mentioned in the general 
+'config.yml' file won't be rerun, so the associated 'md' file
+should be already available in the \code{intermediateDir} folder.
+}
+}}
+
 \item{extraDirs}{Character vector with extra directories required by
 the report, directory with external images  .
 By default, the directories: 'figures', 'tables' and 
 directory included in the 'patientProfilePath' parameter of the
 general config file are considered.}
-
-\item{...}{Extra parameters for the link[rmarkdown]{render} function.}
 }
 \value{
-String with path to the medical monitoring report.
+String with path to the front page of the 
+medical monitoring report.
 }
 \description{
 This function is based on the \link[bookdown]{render_book}
 function, enabling specification of chapter-specific input parameters,
 specified in YAML configuration files.
+This consists of:
+\enumerate{
+\item{importing the general config file ('config'.yml) to identify
+each report of interest ('config' tag)}
+\item{for each report of interest:
+\itemize{
+\item{loading the report specific parameter from the associated 'config' file
+(see the \code{\link{getParamsFromConfig}} function)}
+\item{executing the report ('template' tag) with the associated
+parameters, to obtain the associated Md file}
+}}
+\item{combining all Markdown files to a html document
+(see the \code{\link{convertMdToHtml}} function)
+}
+}
+}
+\seealso{
+Other medical monitoring reporting: 
+\code{\link{convertMdToHtml}()},
+\code{\link{getMdFromConfig}()},
+\code{\link{getMdHeader}()},
+\code{\link{getParamsFromConfig}()},
+\code{\link{gitbook_medicalMonitoring_report}()},
+\code{\link{html_medicalMonitoring_report}()},
+\code{\link{knitPrintMedicalMonitoring}()}
 }
 \author{
 Laure Cougnaud
 }
+\concept{medical monitoring reporting}
