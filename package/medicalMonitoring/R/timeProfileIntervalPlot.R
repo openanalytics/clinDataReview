@@ -46,7 +46,7 @@ timeProfileIntervalPlot <- function(data,
 	# transparency
 	alpha = 1,
 	# labels
-	yLab = "", #paste(paramLab, collapse = "\n"),
+	yLab = NULL, #paste(paramLab, collapse = "\n"),
 	xLab = paste(c(timeStartLab, timeEndLab), collapse = " and "),
 	title = NULL,
 	labelVars = NULL,
@@ -141,14 +141,16 @@ timeProfileIntervalPlot <- function(data,
 	hoverVars <- unique(hoverVars);hoverLab <- hoverLab[hoverVars]
 	
 	## Convert to SharedData
-	dataPlotSharedData <- formatDataForPlotMonitoring(
-		data = data, 
-		id = id,
-		keyVar = keyVar,
-		labelVars = labelVars,
-		hoverVars = hoverVars, hoverLab = hoverLab,
-		hoverByVar = c(paramVar, timeStartVar, timeEndVar)
-	)
+	convertToSharedDataIntPlot <- function(data)
+		formatDataForPlotMonitoring(
+			data = data, 
+			id = id,
+			keyVar = keyVar,
+			labelVars = labelVars,
+			hoverVars = hoverVars, hoverLab = hoverLab,
+			hoverByVar = c(paramVar, timeStartVar, timeEndVar)
+		)
+	dataPlotSharedData <- convertToSharedDataIntPlot(data)
 	
 	if(is.null(colorPalette)){
 		if(!is.null(colorVar)){
@@ -156,87 +158,100 @@ timeProfileIntervalPlot <- function(data,
 		}else	colorPalette <- getGLPGColorPalette(n = 1)
 	}
 
+	linesYVar <- regmatches(
+		x = yLevels, 
+		m = gregexpr(pattern = "\n", text = yLevels, fixed = TRUE)
+	)
+	nLinesY <- sum(sapply(linesYVar, length) + 1)
+	plotHeight <- sum(nLinesY) * 20
+	
+	# top margin: top bar + title
+	topMargin <- 20 + ifelse(!is.null(title), 20, 0) 
+	# bottom margin: # x-axis + x-lab + legend
+	bottomMargin <- 20 + ifelse(!is.null(xLab), 20, 0) + ifelse(!is.null(colorVar), 20, 0)
+	layoutMargin <- list(t = topMargin, b = bottomMargin)
+	
 	# get plot dim
 	if(is.null(height)){
-		linesYVar <- regmatches(
-			x = yLevels, 
-			m = gregexpr(pattern = "\n", text = yLevels, fixed = TRUE)
-		)
-		nLinesYVar <- sapply(linesYVar, length) + 1
-		height <- 
-			30 +
-			sum(nLinesYVar) * 15 + 
-			ifelse(!is.null(colorVar), 20, 0)
+		height <- topMargin + plotHeight + bottomMargin
 	}
 	
-	pl <- plot_ly(
-		data = dataPlotSharedData, 
-		width = width, height = height
-	)
+	pl <- plot_ly(width = width, height = height)
 
-	# markers for symbols
-	isShape <- !is.null(timeStartShapeVar) | !is.null(timeEndShapeVar)
-	if(isShape){
-
+	## markers for symbols
+	# always display symbols to:
+	# 1) have a hover (not possible in rectangle)
+	# 2) have a symbol when start and end is the same
+	if(!is.null(timeStartShapeVar) | !is.null(timeEndShapeVar)){
 		if(is.null(shapePalette)){
 			shapePalette <- getGLPGShapePalette(x = shapeLevels)
 		}else	shapePalette <- shapePalette[shapeLevels]
-	
-		addMarkers <- function(p, ...){
-			add_markers(
-				p = p,
-				y = varToFm("yVar"),
-				color = if(!is.null(colorVar))	varToFm(colorVar)	else	I(colorPalette), 
-				colors = if(!is.null(colorVar))	colorPalette,
-				showlegend = FALSE,
-				hovertemplate = varToFm("hover"),
-				opacity = alpha,
-				...
-			)
-		}
-		
-		if(!is.null(timeStartShapeVar)){
-			pl <- addMarkers(
-				p = pl,
-				x = varToFm(timeStartVar), 
-				symbol = varToFm(timeStartShapeVar),
-				symbols = I(shapePalette)
-			)
-		}
-	
-		if(!is.null(timeEndShapeVar)){
-			pl <- addMarkers(
-				p = pl,
-				x = varToFm(timeEndVar), 
-				symbol = varToFm(timeEndShapeVar),
-				symbols = I(shapePalette)
-			)
-		}
-	
+	}else	shapePalette <- NULL
+
+	addMarkers <- function(p, showlegend = FALSE, ...){
+		add_markers(
+			data = dataPlotSharedData, 
+			p = p,
+			y = varToFm("yVar"),
+			color = if(!is.null(colorVar))	varToFm(colorVar)	else	I(colorPalette), 
+			colors = if(!is.null(colorVar))	colorPalette,
+			hovertemplate = varToFm("hover"),
+			showlegend = showlegend,
+			opacity = alpha,
+			...
+		)
 	}
 	
-	# segments for time-interval
+	pl <- addMarkers(
+		p = pl,
+		x = varToFm(timeStartVar), 
+		symbol = if(!is.null(timeStartShapeVar))	varToFm(timeStartShapeVar),
+		symbols = if(!is.null(shapePalette))	I(shapePalette)
+	)
+
+	pl <- addMarkers(
+		p = pl,
+		x = varToFm(timeEndVar), 
+		symbol = if(!is.null(timeEndShapeVar))	varToFm(timeEndShapeVar),
+		symbols = if(!is.null(shapePalette))	I(shapePalette)
+	)
+	
+	# create legend only with color
+	# because plotly doesn't support multiple legend
+	if(!is.null(colorVar))
+		pl <- addMarkers(
+			p = pl, x = varToFm(timeStartVar), 
+			showlegend = TRUE, visible = "legendonly"
+		)
+	
+	## segments for time-interval
 	# plotly returns an error when no non-missing values in start/end time vars
-	if(!all(is.na(data[, c(timeStartVar, timeEndVar)])))
+	# and if start value == end value
+	idxSegments <- which(
+		rowSums(is.na(data[, c(timeStartVar, timeEndVar)])) != length(c(timeStartVar, timeEndVar)) &
+		data[, timeStartVar] != data[, timeEndVar]
+	)
+	if(length(idxSegments) > 0){
+		dataPlotSharedDataSeg <- convertToSharedDataIntPlot(data[idxSegments, ])
 		pl <- pl %>% add_segments(
+			data = dataPlotSharedDataSeg,
 			x = varToFm(timeStartVar), 
 			xend = varToFm(timeEndVar),
 			y = varToFm("yVar"),
 			yend = varToFm("yVar"),
 			color = if(!is.null(colorVar))	varToFm(colorVar)	else	I(colorPalette), 
 			colors = if(!is.null(colorVar))	colorPalette,
-			hoverinfo = ifelse(!isShape, 'text', 'none'),
-			hovertemplate = if(!isShape)	varToFm("hover"),
+			showlegend = FALSE,
+			hoverinfo = "none",
 			opacity = alpha
 		)
+	}
 
 #	xMax <- max(data[, c(timeStartVar, timeEndVar)], na.rm = TRUE)
 	pl <- pl %>% layout(
 		title = title,
 		xaxis = list(title = list(text = xLab)),
-#			rangeslider = list(range = c(0, xMax)), 
 		yaxis = list(
-#			showticklabels = FALSE, ticks = "", 
 			showgrid = TRUE,
 			title = list(text = yLab),
 			type = "array", 
@@ -245,8 +260,16 @@ timeProfileIntervalPlot <- function(data,
 			tickangle = 0,
 			range = c(0.5, length(yLevels)+0.5)
 		),
-		legend = list(orientation = "h", xanchor = "center", x = 0.5),
-		hovermode = "closest"
+		# x/y are in normalized coordinates
+		showlegend = TRUE, # print legend even if only one y-element
+		legend = list(
+			orientation = "h", 
+			xanchor = "center", x = 0.5, 
+			yanchor = "top", y = -min(bottomMargin/plotHeight, 1)
+		),
+		hovermode = "closest",
+		# margin in pixels
+		margin = layoutMargin
 	)
 	
 	# specific formatting for medical monitoring
