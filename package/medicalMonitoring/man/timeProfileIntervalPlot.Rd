@@ -23,7 +23,7 @@ timeProfileIntervalPlot(
   colorLab = getLabelVar(timeStartShapeVar, labelVars = labelVars),
   colorPalette = NULL,
   alpha = 1,
-  yLab = "",
+  yLab = NULL,
   xLab = paste(c(timeStartLab, timeEndLab), collapse = " and "),
   title = NULL,
   labelVars = NULL,
