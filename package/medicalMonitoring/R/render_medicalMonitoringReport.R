@@ -12,7 +12,8 @@
 #' \item{loading the report specific parameter from the associated 'config' file
 #' (see the \code{\link{getParamsFromConfig}} function)}
 #' \item{executing the report ('template' tag) with the associated
-#' parameters, to obtain the associated Md file}
+#' parameters in a \strong{new R session for reproducibility}, 
+#' to obtain the associated Markdown file}
 #' }}
 #' \item{combining all Markdown files to a html document
 #' (see the \code{\link{convertMdToHtml}} function)
@@ -38,6 +39,7 @@
 #' @inherit convertMdToHtml return
 #' @author Laure Cougnaud
 #' @importFrom rmarkdown render
+#' @importFrom xfun Rscript_call
 #' @family medical monitoring reporting
 #' @export
 render_medicalMonitoringReport <- function(
@@ -107,23 +109,32 @@ render_medicalMonitoringReport <- function(
 		)
 
 		# specify report-specific input parameters
-		# in a new environment
-		envReport <- new.env()
+		# in a new environment ('params' doesn't work within 'Rscript_call'?)
+		# Note: new.env will inherit of parent environments
+		# so objects created in global environment also available there
+		envReport <- new.env() # parent = baseenv()
 		assign("params", params, envir = envReport)
 		
 		# run report
 		message("Run report for config file: ", sQuote(configFile), ".")
 		
 		# render report
-		outputRmd <- rmarkdown::render(
-			input = inputRmdFile, 
-			output_file = basename(outputMdFile),
-			output_dir = dirname(outputMdFile),
-			run_pandoc = FALSE,
-			output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
-			env = envReport,
-			encoding = "UTF-8"
+		# call each Rmd doc within a new R session
+		# to ensure that current R session doesn't pollute Rmd doc
+		outputRmd <- Rscript_call(
+			fun = rmarkdown::render, 
+			args = list(
+				input = inputRmdFile, 
+				output_file = basename(outputMdFile),
+				output_dir = dirname(outputMdFile),
+				run_pandoc = FALSE,
+				output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
+				env = envReport,
+				encoding = "UTF-8"
+			)
 		)
+		
+		# save knit_meta parameters (contain required Js lib for each report)
 		knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
 		knitMetaReportFile <- file.path(
 			intermediateDir,

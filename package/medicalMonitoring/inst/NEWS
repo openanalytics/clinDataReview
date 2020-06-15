@@ -1,7 +1,7 @@
 0.3.0
     o collapseHtmlContent: custom 'hideshow' button
     o alertData function
-    o render med mon: modular approach (convertMdToHtml, getParamsFromConfig)
+    o render med mon: modular approach (convertMdToHtml, getParamsFromConfig), render in new R session
     o timeProfileIntervalPlot: fix height plot + fix in case start and end value are the same
 0.2.0
     o formatToHierarchicalData: fix in case same values in different vars

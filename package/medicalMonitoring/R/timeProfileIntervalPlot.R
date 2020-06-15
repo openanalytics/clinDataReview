@@ -226,7 +226,7 @@ timeProfileIntervalPlot <- function(data,
 	
 	## segments for time-interval
 	# plotly returns an error when no non-missing values in start/end time vars
-	# and if start value == end value
+	# and 'crossed' segments if start value == end value
 	idxSegments <- which(
 		rowSums(is.na(data[, c(timeStartVar, timeEndVar)])) != length(c(timeStartVar, timeEndVar)) &
 		data[, timeStartVar] != data[, timeEndVar]
