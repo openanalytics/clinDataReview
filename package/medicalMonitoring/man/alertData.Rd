@@ -19,6 +19,18 @@ alertData(
 
 \item{dataPath}{String with path to the data.}
 
+\item{alerts}{A list of custom alerts as:
+\itemize{
+        \item{'vars': }{
+            Character vector with (new) variables of alerts
+            }
+        \item{'varFct': }{Function of \code{data} based on column names of \code{data} used to 
+        create the alert specified in \code{vars}. This function should provide a logical evaluation.}
+        \item{'filters': }{(optional) Filters for the \code{data}, 
+            see \code{filters} parameter of \code{\link{filterData}}}
+        \item{'varLabel': }{(optional) label for new variable. Otherwise the name from \code{varFct} is specified.}
+}}
+
 \item{subjectVar}{String with subject ID variable, 'USUBJID' by default.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed

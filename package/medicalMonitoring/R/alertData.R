@@ -13,7 +13,6 @@
 #' 			see \code{filters} parameter of \code{\link{filterData}}}
 #' 		\item{'varLabel': }{(optional) label for new variable. Otherwise the name from \code{varFct} is specified.}
 #' }
-#' }
 #' @param subjectVar String with subject ID variable, 'USUBJID' by default.
 #' @param labelVars Named character vector containing variable labels of \code{data}.
 #' This will be updated with the labels of the extra annotation variables
