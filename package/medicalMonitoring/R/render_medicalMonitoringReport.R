@@ -29,7 +29,7 @@
 #' \itemize{
 #' \item{not specified (by default): }{all config files
 #' specified in the general 'config.yml' will be run (Rmd -> md)}
-#' \item{specified (\strong(expert use only)): }{only the specified files will be run (Rmd -> md).
+#' \item{specified (\strong{expert use only}): }{only the specified files will be run (Rmd -> md).
 #' Other config files mentioned in the general 
 #' 'config.yml' file won't be rerun, so the associated 'md' file
 #' should be already available in the \code{intermediateDir} folder.
@@ -270,7 +270,7 @@ convertMdToHtml <- function(
 		configFiles <- c("config.yml", configGeneralParams$config)
 		
 		mdFiles <- getMdFromConfig(
-			configFile = configFiles, 
+			configFiles = configFiles, 
 			indexPath = indexPath, 
 			intermediateDir = intermediateDir
 		)

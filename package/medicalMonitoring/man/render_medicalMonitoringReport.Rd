@@ -37,7 +37,7 @@ to be converted from Rmarkdown to Markdown. If
 \itemize{
 \item{not specified (by default): }{all config files
 specified in the general 'config.yml' will be run (Rmd -> md)}
-\item{specified (\strong(expert use only)): }{only the specified files will be run (Rmd -> md).
+\item{specified (\strong{expert use only}): }{only the specified files will be run (Rmd -> md).
 Other config files mentioned in the general 
 'config.yml' file won't be rerun, so the associated 'md' file
 should be already available in the \code{intermediateDir} folder.
@@ -67,7 +67,8 @@ each report of interest ('config' tag)}
 \item{loading the report specific parameter from the associated 'config' file
 (see the \code{\link{getParamsFromConfig}} function)}
 \item{executing the report ('template' tag) with the associated
-parameters, to obtain the associated Md file}
+parameters in a \strong{new R session for reproducibility}, 
+to obtain the associated Markdown file}
 }}
 \item{combining all Markdown files to a html document
 (see the \code{\link{convertMdToHtml}} function)
