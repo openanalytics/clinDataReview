@@ -11,7 +11,7 @@ Imports:
   patientProfilesVis (>= 0.12.0), glpgStyle, glpgUtilityFct (>= 0.23.0), 
   ggplot2, plotly, 
   htmlwidgets, plyr, htmltools,
-  knitr, 
+  knitr, xfun (>= 0.13),
   pander, rmarkdown, RColorBrewer, yaml
 License: file LICENSE
 Suggests: 
