@@ -17,7 +17,7 @@
 #' @importFrom stats as.formula
 #' @importFrom utils head tail
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom glpgUtilityFct getGLPGColorPalette
+#' @importFrom glpgStyle getGLPGColorPalette
 #' @author Laure Cougnaud
 plotCountMonitoring <- function(
 	data, 
