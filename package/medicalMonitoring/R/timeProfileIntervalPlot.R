@@ -28,7 +28,8 @@
 #' @inherit scatterplotMonitoring return
 #' @author Laure Cougnaud
 #' @import plotly
-#' @importFrom glpgUtilityFct getGLPGColorPalette getGLPGShapePalette formatVarForPlotLabel
+#' @importFrom glpgStyle getGLPGColorPalette getGLPGShapePalette
+#' @importFrom glpgUtilityFct formatVarForPlotLabel
 #' @export
 timeProfileIntervalPlot <- function(data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
