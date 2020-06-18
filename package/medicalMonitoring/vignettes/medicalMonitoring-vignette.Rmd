@@ -706,6 +706,13 @@ can be used.
 
 ```
 
+# For package tester/developer
+
+To run the different tests in the package (e.g. with `R CMD check`),
+the [orca](https://github.com/plotly/orca) tool is required.
+Please check the installation guidelines available at:
+https://github.com/plotly/orca#installation
+
 # Appendix
 
 ## Session information
