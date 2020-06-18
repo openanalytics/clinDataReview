@@ -3,7 +3,10 @@
 #' This function is not intended to be used directly, but 
 #' within the package unit tests,
 #' and be passed to the \code{writer} parameter of the
-#' \code{\link[vdiffr]{expect_doppelganger}} function.
+#' \code{\link[vdiffr]{expect_doppelganger}} function.\cr
+#' Please note that the command-line tool:
+#' \href{https://github.com/plotly/orca#installation}{orca}
+#' is required to save plotly plot for testing.
 #' @param plot \code{\link[plotly]{plotly}}
 #' @param file String with path to file where the figure should be exported.
 #' @param title (optional) String with figure title,
