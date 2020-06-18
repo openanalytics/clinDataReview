@@ -67,10 +67,6 @@ render_medicalMonitoringReport <- function(
 	extraDirs <- c(extraDirs, configGeneralParams$patientProfilePath)
 	extraDirs <- extraDirs[dir.exists(extraDirs)]
 	
-	if(length(extraDirs) > 0)
-		file.copy(from = extraDirs, to = outputDir, overwrite = TRUE, recursive = TRUE)
-
-	
 	## run index file + each chapter
 	
 	# consider all config files
@@ -152,6 +148,10 @@ render_medicalMonitoringReport <- function(
 		indexPath = indexPath,
 		intermediateDir = intermediateDir
 	)
+	
+	if (length(extraDirs) > 0) 
+	  file.copy(from = extraDirs, to = outputDir, overwrite = TRUE, 
+	            recursive = TRUE)
 	
 	return(outputFile)
 	
@@ -348,3 +348,4 @@ convertMdToHtml <- function(
 #' each sub report are stored.
 #' @name medicalMonitoring-common-args-report
 NULL
+
