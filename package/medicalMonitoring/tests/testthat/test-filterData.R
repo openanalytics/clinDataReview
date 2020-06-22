@@ -57,3 +57,26 @@ test_that("multiple condition with specification operator and without", {
 	expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, (AGE <= 20 | SEX == "M") & ARMCD == "SCRNFAIL"))
 
 })
+
+test_that("Filtering of missing values", {
+		
+	var <- "SEX"
+	nMissing <- 2
+	dataDM[seq_len(nMissing), "SEX"] <- NA_character_
+	
+	expect_error(
+		filterData(data = dataDM, filters = list(var = "SEX")), 
+		regexp = "should be specified for the filtering of data"
+	)
+	
+	expect_silent(dataFilterNA <- filterData(data = dataDM, filters = list(var = "SEX", keepNA = FALSE)))
+	expect_equal(nrow(dataFilterNA), nrow(dataDM)-nMissing)
+	
+	expect_silent(
+		dataFilterNA2 <- filterData(dataDM, 
+			filters = list(var = "SEX", value = NA_character_, keepNA = FALSE, rev = TRUE)
+		)
+	)
+	expect_equivalent(dataFilterNA, dataFilterNA2) # check without message attribute
+	
+})

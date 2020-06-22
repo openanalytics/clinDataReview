@@ -21,12 +21,13 @@ filterData(
 Each filter should be a list containing:
 \itemize{
 \item{'var': }{String with variable from \code{data} to filter on.}
-\item{'value': }{Character vector with values from \code{var} to consider.}
-\item{'valueFct': }{Function to be applied on \code{var} to extract value to consider}
+\item{'value': }{(optional) Character vector with values from \code{var} to consider.}
+\item{'valueFct': }{(optional) Function to be applied on \code{var} to extract value to consider}
 \item{'op': }{(optional) String with operator used to retain records from \code{value}.
 If not specified, the inclusion operator: '\%in\%' is considered, a.k.a
 records with \code{var} in \code{value} are retained.}
-\item{'rev': }{(optional) Logical, if TRUE (FALSE by default), records with \code{var} NOT  are retained.}
+\item{'rev': }{(optional) Logical, if TRUE (FALSE by default), 
+filtering condition based on \code{value}/\code{valueFct} is reversed.}
 \item{'keepNA': }{(optional) Logical, if TRUE (by default), missing values in \code{var}
 are retained. If not specified, \code{keepNA} general parameter is used.}
 \item{'varsBy': }{(optional) Character vector with variables in \code{data} containing groups to filter by}
@@ -72,18 +73,19 @@ The data contains also any new variable(s)
 \description{
 A dataset can be filtered:
 \itemize{
-\item{based on:
+\item{based:
 \itemize{
-\item{specified for a variable: \code{value} parameter)}
+\item{on a specific \code{value} of interest)}
 \item{on a function of the variable (\code{valueFct} parameter), 
 e.g. maximum of the variable)}
+\item{to retain only non missing values of a variable (\code{keepNA} set to \code{FALSE})}
 }
 }
 \item{by groups (\code{varsBy} parameter)}
 }
 **Note that by default, missing values in the filtering variable are retained
 (which differs from the default behaviour in R)**.
-To filter missing records, please use the \code{keepNA} parameter.
+To filter missing records, please set the \code{keepNA} parameter to \code{FALSE}.
 }
 \examples{
 library(glpgUtilityFct)
@@ -134,9 +136,17 @@ filterData(
 # retain only missing values
 filterData(
 	data = dataDMNA, 
-	filters = list(var = "AGE", value = NA, keepNA = FALSE), 
+	filters = list(var = "AGE", value = NA, keepNA = TRUE), 
 	verbose = TRUE
 )
+
+# filter missing values
+filterData(
+	data = dataDMNA, 
+	filters = list(var = "AGE", keepNA = FALSE), 
+	verbose = TRUE
+)
+
 
 ## multiple filters
 

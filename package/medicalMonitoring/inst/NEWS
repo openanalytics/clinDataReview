@@ -3,6 +3,7 @@
     o alertData function
     o render med mon: modular approach (convertMdToHtml, getParamsFromConfig), render in new R session
     o timeProfileIntervalPlot: fix height plot + fix in case start and end value are the same
+    o filterData: filter of missing values only
 0.2.0
     o formatToHierarchicalData: fix in case same values in different vars
     o annotateData: varFct
