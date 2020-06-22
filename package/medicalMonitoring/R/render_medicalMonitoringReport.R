@@ -19,6 +19,9 @@
 #' (see the \code{\link{convertMdToHtml}} function)
 #' }
 #' }
+#' If the execution of a specific report fails with error, this report
+#' is ignored and a warning message is triggered. Intermediary results
+#' from previous execution, if any, are deleted.
 #' @param extraDirs Character vector with extra directories required by
 #' the report, directory with external images  .
 #' By default, the directories: 'figures', 'tables' and 
@@ -121,26 +124,49 @@ render_medicalMonitoringReport <- function(
 		# render report
 		# call each Rmd doc within a new R session
 		# to ensure that current R session doesn't pollute Rmd doc
-		outputRmd <- Rscript_call(
-			fun = rmarkdown::render, 
-			args = list(
-				input = inputRmdFile, 
-				output_file = basename(outputMdFile),
-				output_dir = dirname(outputMdFile),
-				run_pandoc = FALSE,
-				output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
-				env = envReport,
-				encoding = "UTF-8"
-			)
+		resRender <- try(
+			outputRmd <- Rscript_call(
+				fun = rmarkdown::render, 
+				args = list(
+					input = inputRmdFile, 
+					output_file = basename(outputMdFile),
+					output_dir = dirname(outputMdFile),
+					run_pandoc = FALSE,
+					output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
+					env = envReport,
+					encoding = "UTF-8"
+				)
+			),
+			silent = TRUE
 		)
-		
+
+			
 		# save knit_meta parameters (contain required Js lib for each report)
 		knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
 		knitMetaReportFile <- file.path(
 			intermediateDir,
 			paste0(file_path_sans_ext(basename(outputMdFile)), ".rds")
 		)
-		saveRDS(knitMetaReport, file = knitMetaReportFile)
+			
+		if(inherits(resRender, "try-error")){
+			
+			warning(
+				paste0("Rendering of the ", sQuote(basename(inputRmdFile)),
+				" report for config file: ", sQuote(configFile), " failed, ",
+				"this report is ignored."
+				), immediate. = TRUE, call. = FALSE
+			)
+			
+			# remove results from previous execution
+			reportIntRes <- c(outputMdFile, knitMetaReportFile)
+			reportIntRes <- reportIntRes[file.exists(reportIntRes)]
+			if(length(reportIntRes) > 0)	file.remove(reportIntRes)
+			
+		}else{
+			
+			saveRDS(knitMetaReport, file = knitMetaReportFile)
+			
+		}
 		
 	}
 	
@@ -236,10 +262,10 @@ getParamsFromConfig <- function(
 #' \item{importing the general config file ('config'.yml) to identify
 #' each report of interest ('config' tag)}
 #' \item{for each report of interest:
-#' checking if the associated _Markdown_ and _rds_ file
+#' checking if the associated \code{Markdown} and \code{rds} file
 #' (list of Js dependencies) are available in \code{intermediateDir}}
-#' \item{combining all _Rmarkdown_ report to a single document: _main.md_}
-#' \item{converting _main.md_ to the HTML document}
+#' \item{combining all \code{Rmarkdown} reports to a single document: \code{main.md}}
+#' \item{converting \code{main.md} to an HTML document}
 #' }
 #' @param mdFiles (optional) Path to the \code{Markdown} files that
 #' should be converted. If specified, the specified config files 
@@ -283,7 +309,7 @@ convertMdToHtml <- function(
 		warning(paste(
 			"Markdown file(s):", toString(sQuote(basename(mdFiles[mdFilesMissing]))),
 			"are missing, these files are ignored."
-		), call. = FALSE)
+		), call. = FALSE, immediate. = TRUE)
 		mdFiles <- mdFiles[!mdFilesMissing]
 	}
 	

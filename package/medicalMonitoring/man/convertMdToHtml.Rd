@@ -45,10 +45,10 @@ This consists of:
 \item{importing the general config file ('config'.yml) to identify
 each report of interest ('config' tag)}
 \item{for each report of interest:
-checking if the associated _Markdown_ and _rds_ file
+checking if the associated \code{Markdown} and \code{rds} file
 (list of Js dependencies) are available in \code{intermediateDir}}
-\item{combining all _Rmarkdown_ report to a single document: _main.md_}
-\item{converting _main.md_ to the HTML document}
+\item{combining all \code{Rmarkdown} reports to a single document: \code{main.md}}
+\item{converting \code{main.md} to an HTML document}
 }
 }
 \seealso{

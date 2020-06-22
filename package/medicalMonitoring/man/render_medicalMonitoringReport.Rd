@@ -74,6 +74,9 @@ to obtain the associated Markdown file}
 (see the \code{\link{convertMdToHtml}} function)
 }
 }
+If the execution of a specific report fails with error, this report
+is ignored and a warning message is triggered. Intermediary results
+from previous execution, if any, are deleted.
 }
 \seealso{
 Other medical monitoring reporting: 
