@@ -2,29 +2,31 @@
 #' 
 #' A dataset can be filtered:
 #' \itemize{
-#' \item{based on:
+#' \item{based:
 #' \itemize{
-#' \item{specified for a variable: \code{value} parameter)}
+#' \item{on a specific \code{value} of interest)}
 #' \item{on a function of the variable (\code{valueFct} parameter), 
 #' e.g. maximum of the variable)}
+#' \item{to retain only non missing values of a variable (\code{keepNA} set to \code{FALSE})}
 #' }
 #' }
 #' \item{by groups (\code{varsBy} parameter)}
 #' }
 #' **Note that by default, missing values in the filtering variable are retained
 #' (which differs from the default behaviour in R)**.
-#' To filter missing records, please use the \code{keepNA} parameter.
+#' To filter missing records, please set the \code{keepNA} parameter to \code{FALSE}.
 #' @param data Data.frame with data.
 #' @param filters Unique filter or list of filters.
 #' Each filter should be a list containing:
 #' \itemize{
 #' \item{'var': }{String with variable from \code{data} to filter on.}
-#' \item{'value': }{Character vector with values from \code{var} to consider.}
-#' \item{'valueFct': }{Function to be applied on \code{var} to extract value to consider}
+#' \item{'value': }{(optional) Character vector with values from \code{var} to consider.}
+#' \item{'valueFct': }{(optional) Function to be applied on \code{var} to extract value to consider}
 #' \item{'op': }{(optional) String with operator used to retain records from \code{value}.
 #' If not specified, the inclusion operator: '\%in\%' is considered, a.k.a
 #' records with \code{var} in \code{value} are retained.}
-#' \item{'rev': }{(optional) Logical, if TRUE (FALSE by default), records with \code{var} NOT  are retained.}
+#' \item{'rev': }{(optional) Logical, if TRUE (FALSE by default), 
+#' filtering condition based on \code{value}/\code{valueFct} is reversed.}
 #' \item{'keepNA': }{(optional) Logical, if TRUE (by default), missing values in \code{var}
 #' are retained. If not specified, \code{keepNA} general parameter is used.}
 #' \item{'varsBy': }{(optional) Character vector with variables in \code{data} containing groups to filter by}
@@ -210,33 +212,54 @@ filterDataSingle <- function(data,
 			"because", varST, "is not available in the input data."))
 		return(data)
 	}
-		
-	# value used to filter
-	if("value" %in% names(filters)){
-		value <- filters$value
-		valueST <- toString(sQuote(value))
-	}else	if("valueFct" %in% names(filters)){
-		fct <- filters$valueFct
-		value <- match.fun(fct)(data[, var])
-		valueST <- toString(deparse(substitute(fct)))
-	}else	stop(paste0("'value' of interest or 'fct' to obtain it",
-		"should be specified for the filtering of ", labelData, "."))
-	
-	# operand: '%in%' by default
-	op <- filters$op
-	if(is.null(op))	op <- '%in%'
-	
-	# inversion:
-	rev <- filters$rev
-	if(is.null(rev))	rev <- FALSE
-	
-	# extract records matching condition
-	isKept <- match.fun(op)(x = data[, var], table = value)
-	if(rev)	isKept <- !isKept
 	
 	# keep missing values?
 	keepNAFilter <- filters$keepNA
 	if(is.null(keepNAFilter))	keepNAFilter <- keepNA
+		
+	# value used to filter
+	filterOnValue <- any(c("value", "valueFct") %in% names(filters))
+	
+	if(filterOnValue){
+	
+		if("value" %in% names(filters)){
+			value <- filters$value
+			valueST <- toString(sQuote(value))
+			filterOnValue <- TRUE
+		}else	if("valueFct" %in% names(filters)){
+			fct <- filters$valueFct
+			value <- match.fun(fct)(data[, var])
+			valueST <- toString(deparse(substitute(fct)))
+		}
+	
+		# operand: '%in%' by default
+		op <- filters$op
+		if(is.null(op))	op <- '%in%'
+		
+		# inversion:
+		rev <- filters$rev
+		if(is.null(rev))	rev <- FALSE
+	
+		# extract records matching condition
+		isKept <- match.fun(op)(x = data[, var], table = value)
+		if(rev)	isKept <- !isKept
+		
+	}else if(!keepNAFilter){
+		
+		isKept <- rep(TRUE, length(data[, var]))
+		
+	}else{
+		
+		stop(
+			paste0("'value' of interest or 'valueFct' to obtain it, ",
+				"or filtering of missing values ",
+				"should be specified for the filtering of ", 
+				labelData, "."
+			)
+		)
+	}
+
+	# filter missing values
 	isNA <- is.na(data[, var])
 	isKept[isNA] <- (keepNAFilter)
 	
@@ -245,10 +268,12 @@ filterDataSingle <- function(data,
 	
 	# store all steps in a message string
 	msgNA <- paste(sum(isNA), "records with missing", varST)
-	varMsg <- paste0(varST, if(!rev)	" not", " ", op, " ", valueST)
+	varMsg <- varST
+	if(filterOnValue)
+		varMsg <- paste0(varST, if(!rev)	" not", " ", op, " ", valueST)
 	msg <- paste0(
 		sum(!isKept), " records with ", varMsg,
-		if(sum(isNA) > 0 & all(!is.na(value)))
+		if(sum(isNA) > 0 & ((filterOnValue && all(!is.na(value))) | !filterOnValue))
 			paste0(" (", if(keepNAFilter)	"not ", "including ", msgNA, ")")
 	)
 	

@@ -46,9 +46,17 @@ filterData(
 # retain only missing values
 filterData(
 	data = dataDMNA, 
-	filters = list(var = "AGE", value = NA, keepNA = FALSE), 
+	filters = list(var = "AGE", value = NA, keepNA = TRUE), 
 	verbose = TRUE
 )
+
+# filter missing values
+filterData(
+	data = dataDMNA, 
+	filters = list(var = "AGE", keepNA = FALSE), 
+	verbose = TRUE
+)
+
 
 ## multiple filters
 
