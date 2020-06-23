@@ -21,7 +21,8 @@
 #' \itemize{
 #' \item{'var': }{String with variable from \code{data} to filter on.}
 #' \item{'value': }{(optional) Character vector with values from \code{var} to consider.}
-#' \item{'valueFct': }{(optional) Function to be applied on \code{var} to extract value to consider}
+#' \item{'valueFct': }{(optional) Function (or string wit this function)
+#' to be applied on \code{var} to extract value to consider}
 #' \item{'op': }{(optional) String with operator used to retain records from \code{value}.
 #' If not specified, the inclusion operator: '\%in\%' is considered, a.k.a
 #' records with \code{var} in \code{value} are retained.}
@@ -227,9 +228,14 @@ filterDataSingle <- function(data,
 			valueST <- toString(sQuote(value))
 			filterOnValue <- TRUE
 		}else	if("valueFct" %in% names(filters)){
-			fct <- filters$valueFct
-			value <- match.fun(fct)(data[, var])
-			valueST <- toString(deparse(substitute(fct)))
+			valueFct <- filters$valueFct
+			if(is.character(valueFct)){
+				value <- eval(expr = parse(text = valueFct))(data[, var])
+				valueST <- valueFct
+			}else if(is.function(valueFct)){
+				value <- valueFct(data[, var])
+				valueST <- paste(as.character(body(valueFct)), collapse = "")
+			}else	stop("'valueFct' should be a character or a function.")
 		}
 	
 		# operand: '%in%' by default

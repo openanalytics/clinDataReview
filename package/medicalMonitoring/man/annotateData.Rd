@@ -34,12 +34,18 @@ based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable
 \item{list of custom annotation, with:
 \itemize{
 \item{(optional) annotation dataset, either:
+\itemize{
 \item{'dataset': }{String with name of the annotation dataset,
  e.g. 'ex' to import data from the file: '[dataset].sas7bdat'in \code{dataPath}}
 \item{'data': }{Data.frame with annotation dataset}
+}
 The input \code{data} is used if 'data' and 'dataset' are not specified.}
-\item{'vars': }{Character vector with variables of interest from annotation dataset.
+\item{'vars': }{Either:
+\itemize{
+\item{Character vector with variables of interest from annotation dataset.
 If not specified, all variables of the dataset are considered.}
+\item{String with new variable name computed from \code{varFct}}
+}}
 \item{'varFct': }{(optional) Either:
 \itemize{
 \item{function of \code{data} or string containing such function (e.g. 'function(data) ...')}
