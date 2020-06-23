@@ -665,22 +665,6 @@ medicalMonitoring::render_medicalMonitoringReport()
 
 ## Development mode
 
-### Create one part of the report only
-
-To create only one specific report:
-
-```{r render_medicalMonitoringReport-devel, eval = FALSE}
-
-# get parameters from the general 'config.yml' and the specified config file
-params <- getParamsFromConfig(configFile = "config-AE_timeprofile.yml")
-
-# preview a specific chapter
-bookdown::render_book(input = params$template, preview = TRUE)
-# included the index file:
-bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)
-
-```
-
 ### Modular framework
 
 #### (Re-)run part(s) of the report
@@ -703,6 +687,29 @@ can be used.
 ```{r convertMdToHtml, eval = FALSE}
 
 	convertMdToHtml()
+
+```
+
+### Debug a sub-report
+
+To debug a sub-report, it might be interesting to run
+only one specific R report in the current R session, with
+the parameters provided by the associated config file.
+This can be achieved as followed:
+
+```{r render_medicalMonitoringReport-devel, eval = FALSE}
+
+# get parameters from the general 'config.yml' and the specified config file
+params <- getParamsFromConfig(configFile = "config-AE_timeprofile.yml")
+
+# run a current chapter (without medical monitoring Js libraries and GLPG style)
+# Note that Js library to have the functionality to download patient profiles is not imported
+rmarkdown::render(input = params$template)
+
+# preview a specific chapter (with medical monitoring Js libraries and GLPG style)
+bookdown::render_book(input = params$template, preview = TRUE)
+# include the index file:
+bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)
 
 ```
 
