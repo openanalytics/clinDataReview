@@ -22,7 +22,8 @@ Each filter should be a list containing:
 \itemize{
 \item{'var': }{String with variable from \code{data} to filter on.}
 \item{'value': }{(optional) Character vector with values from \code{var} to consider.}
-\item{'valueFct': }{(optional) Function to be applied on \code{var} to extract value to consider}
+\item{'valueFct': }{(optional) Function (or string wit this function)
+to be applied on \code{var} to extract value to consider}
 \item{'op': }{(optional) String with operator used to retain records from \code{value}.
 If not specified, the inclusion operator: '\%in\%' is considered, a.k.a
 records with \code{var} in \code{value} are retained.}
