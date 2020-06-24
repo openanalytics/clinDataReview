@@ -633,8 +633,8 @@ with `output` set to: `medicalMonitoring::gitbook_medicalMonitoring_report`
     + a configuration file for each chapter, as: _config-[chapterName].yml_ containing:
         + `template`: filename of the _Rmd_ file to consider for this chapter
         + `reportTitle`: chapter title, used for section header
-        + `fileName`: filename of the dataset of interest for this chapter, e.g.: 'adae.sas7bdat'
-        + `level`: integer with section level, e.g. 2
+        + `dataFileName`: filename of the dataset of interest for this chapter, e.g.: 'adae.sas7bdat'
+        + `reportTitleLevel`: integer with section level, e.g. 2
         + (optional) template-specific parameters, accessed in the template
         via `params$`
         
@@ -676,7 +676,10 @@ parts of the report that should be rerun can be specified via the
 `configFiles` parameter.
 
 ```{r render_medicalMonitoringReport-configFiles, eval = FALSE}
+# run one specific report
 medicalMonitoring::render_medicalMonitoringReport(configFiles = "config-AE_timeprofile.yml")
+# only run the listings:
+medicalMonitoring::render_medicalMonitoringReport(configFiles = list.files(pattern = "listing", "config"))
 ```
 
 #### Create the final medical monitoring report from the Markdown reports
