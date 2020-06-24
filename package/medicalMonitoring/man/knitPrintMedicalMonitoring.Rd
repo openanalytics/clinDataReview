@@ -14,10 +14,12 @@ knitPrintMedicalMonitoring(
 }
 \arguments{
 \item{list}{List of medical monitoring plots,
-potentially nested.
-If nested, the list should be named by the different elements,
+the names are used for the section header.
+If multiple group variables are considered, the list
+should be named by the different group elements,
 separated by \code{sep}, e.g. 
-\code{list('group1.param1' = .., 'group1.param2' = ...)}.}
+\code{list('group1.param1' = .., 'group1.param2' = ...)}.
+Such list is e.g. created with \code{\link[plyr]{dlply}}.}
 
 \item{sep}{String with separator used to distinguish 
 different levels in the labels of the list.

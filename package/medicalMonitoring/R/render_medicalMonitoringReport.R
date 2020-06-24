@@ -138,7 +138,6 @@ render_medicalMonitoringReport <- function(
 
 			
 		# save knit_meta parameters (contain required Js lib for each report)
-		knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
 		knitMetaReportFile <- file.path(
 			intermediateDir,
 			paste0(file_path_sans_ext(basename(outputMdFile)), ".rds")
@@ -160,6 +159,7 @@ render_medicalMonitoringReport <- function(
 			
 		}else{
 			
+			knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
 			saveRDS(knitMetaReport, file = knitMetaReportFile)
 			
 		}
