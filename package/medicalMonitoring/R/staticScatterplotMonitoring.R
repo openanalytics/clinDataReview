@@ -4,9 +4,13 @@
 #' @param aesPointVar List with specification of aesthetic variable(s),
 #' for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 #' e.g. \code{list(color = "TRTP")}.
+#' @param pointInclude Logical, if TRUE (by default if \code{aesPointVar} is specified)
+#' include a scatterplot.
 #' @param aesLineVar List with specification of aesthetic variable(s),
 #' for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 #' e.g. \code{list(group = "USUBJID")}.
+#' @param lineInclude Logical, if TRUE (by default if \code{aesLineVar} is specified)
+#' include a scatterplot.
 #' @param aesLab Named character vector with labels for each aesthetic variable.
 #' @param xTrans,yTrans Transformation for the x/y- variables,
 #' passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
@@ -30,7 +34,10 @@
 #' @param hoverVars Character vector with variables to be displayed in the hover,
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
 #' @param geomType String with type of the geom used, either:
-#' 'point' or 'col'
+#' \itemize{
+#' \item{'point': }{scatterplot with \code[ggplot2]{geom_point} is created}
+#' \item{'col': }{barplot with \code[ggplot2]{geom_col} is created}
+#' }
 #' @inheritParams medicalMonitoring-common-args
 #' @return \code{\link[ggplot2]{ggplot}} object
 #' @import ggplot2
@@ -44,7 +51,8 @@ staticScatterplotMonitoring <- function(
 	xLab = getLabelVar(xVar, labelVars = labelVars),
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetics specifications
-	aesPointVar = list(), aesLineVar = list(),
+	aesPointVar = list(), pointInclude = length(aesPointVar) > 0,
+	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
 	aesLab,
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
@@ -93,7 +101,7 @@ staticScatterplotMonitoring <- function(
 	gg <- ggplot(data = data, mapping = do.call(aes_string, aesBase))
 	
 	# line
-	if(length(aesLineVar) > 0){
+	if(lineInclude){
 		if(!"group" %in% names(aesLineVar)){
 			warning("'group' should be specified in the 'aesLineVar'; no line is created.")
 		}else{
@@ -106,7 +114,7 @@ staticScatterplotMonitoring <- function(
 	
 	# scatter
 	aesGeom <- c(aesPointVar, if(!is.null(hoverVars))	list(text = "hover"))
-	argsGeom <- if(length(aesGeom)){
+	argsGeom <- if(pointInclude){
 		list(mapping = do.call(aes_string, aesGeom))
 	}
 	geomFct <- match.fun(paste("geom", geomType, sep = "_"))

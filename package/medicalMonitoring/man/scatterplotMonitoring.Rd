@@ -11,7 +11,9 @@ scatterplotMonitoring(
   xLab = getLabelVar(xVar, labelVars = labelVars),
   yLab = getLabelVar(yVar, labelVars = labelVars),
   aesPointVar = list(),
+  pointInclude = length(aesPointVar) > 0,
   aesLineVar = list(),
+  lineInclude = length(aesLineVar) > 0,
   aesLab = getLabelVar(unique(unlist(c(aesPointVar, aesLineVar))), labelVars =
     labelVars),
   xTrans = "identity",
@@ -36,6 +38,7 @@ scatterplotMonitoring(
   idVar = "USUBJID",
   idLab = getLabelVar(idVar, labelVars = labelVars),
   pathVar = NULL,
+  pathExpand = FALSE,
   table = FALSE,
   tableVars,
   tableLab,
@@ -60,9 +63,15 @@ scatterplotMonitoring(
 for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 e.g. \code{list(color = "TRTP")}.}
 
+\item{pointInclude}{Logical, if TRUE (by default if \code{aesPointVar} is specified)
+include a scatterplot.}
+
 \item{aesLineVar}{List with specification of aesthetic variable(s),
 for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 e.g. \code{list(group = "USUBJID")}.}
+
+\item{lineInclude}{Logical, if TRUE (by default if \code{aesLineVar} is specified)
+include a scatterplot.}
 
 \item{aesLab}{Named character vector with labels for each aesthetic variable.}
 
@@ -151,7 +160,7 @@ by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 \item{idLab}{String with label for \code{idVar}.}
 
 \item{pathVar}{String with variable of \code{data} containing
-path to a subject-specific report. The report should be unique 
+path to a subject-specific report. The report info should be unique 
 for each element of \code{idVar}.
 The report will be:
 \itemize{
@@ -159,6 +168,13 @@ The report will be:
 when hovering on a point of the plot}
 \item{opened in the browser via hyperlink in the table}
 }}
+
+\item{pathExpand}{Logical, if FALSE (by default)
+the path to subject-report is included in an hyperlink in the table,
+otherwise a collapsed row is created.
+This should be set to TRUE only if multiple paths 
+are included for each row in \code{pathVar}
+(e.g. in case of summary table).}
 
 \item{table}{Logical, if TRUE (FALSE by default)
 returns also a \code{datatable} containing the plot data.

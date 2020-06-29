@@ -1,6 +1,6 @@
 #' Scatterplot of variables of interest for medical monitoring.
 #' @param pathVar String with variable of \code{data} containing
-#' path to a subject-specific report. The report should be unique 
+#' path to a subject-specific report. The report info should be unique 
 #' for each element of \code{idVar}.
 #' The report will be:
 #' \itemize{
@@ -8,6 +8,12 @@
 #' when hovering on a point of the plot}
 #' \item{opened in the browser via hyperlink in the table}
 #' }
+#' @param pathExpand Logical, if FALSE (by default)
+#' the path to subject-report is included in an hyperlink in the table,
+#' otherwise a collapsed row is created.
+#' This should be set to TRUE only if multiple paths 
+#' are included for each row in \code{pathVar}
+#' (e.g. in case of summary table).
 #' @inheritParams staticScatterplotMonitoring
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
@@ -30,7 +36,8 @@ scatterplotMonitoring <- function(
 	xLab = getLabelVar(xVar, labelVars = labelVars),
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetics specifications
-	aesPointVar = list(), aesLineVar = list(),
+	aesPointVar = list(), pointInclude = length(aesPointVar) > 0,
+	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
 	aesLab = getLabelVar(unique(unlist(c(aesPointVar, aesLineVar))), labelVars = labelVars),
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
@@ -48,7 +55,7 @@ scatterplotMonitoring <- function(
 	width = NULL, height = NULL,
 	hoverVars, hoverLab,
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
-	pathVar = NULL,
+	pathVar = NULL, pathExpand = FALSE,
 	table = FALSE, 
 	tableVars,
 	tableLab,
@@ -104,7 +111,8 @@ scatterplotMonitoring <- function(
 		xVar = xVar, yVar = yVar, 
 		xLab = xLab, yLab = yLab, 
 		# aesthetics specifications
-		aesPointVar = aesPointVar, aesLineVar = aesLineVar,
+		aesPointVar = aesPointVar, pointInclude = pointInclude,
+		aesLineVar = aesLineVar, lineInclude = lineInclude,
 		aesLab = aesLab,
 		# axis specification:
 		xTrans = xTrans, yTrans = yTrans,
@@ -194,10 +202,11 @@ scatterplotMonitoring <- function(
 			data = data, 
 			idVar = idVar, idLab = idLab,
 			keyVar = idVar, keyLab = idLab,
-			pathVar = pathVar,
+			pathVar = pathVar, pathExpand = pathExpand,
 			tableVars = tableVars,
 			tableLab = tableLab,
-			tableButton = tableButton, tablePars = tablePars,
+			tableButton = tableButton, 
+			tablePars = tablePars,
 			id = id,
 			labelVars = labelVars
 		)
