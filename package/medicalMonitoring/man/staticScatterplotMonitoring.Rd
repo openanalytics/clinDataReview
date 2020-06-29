@@ -11,7 +11,9 @@ staticScatterplotMonitoring(
   xLab = getLabelVar(xVar, labelVars = labelVars),
   yLab = getLabelVar(yVar, labelVars = labelVars),
   aesPointVar = list(),
+  pointInclude = length(aesPointVar) > 0,
   aesLineVar = list(),
+  lineInclude = length(aesLineVar) > 0,
   aesLab,
   xTrans = "identity",
   yTrans = "identity",
@@ -47,9 +49,15 @@ staticScatterplotMonitoring(
 for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 e.g. \code{list(color = "TRTP")}.}
 
+\item{pointInclude}{Logical, if TRUE (by default if \code{aesPointVar} is specified)
+include a scatterplot.}
+
 \item{aesLineVar}{List with specification of aesthetic variable(s),
 for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 e.g. \code{list(group = "USUBJID")}.}
+
+\item{lineInclude}{Logical, if TRUE (by default if \code{aesLineVar} is specified)
+include a scatterplot.}
 
 \item{aesLab}{Named character vector with labels for each aesthetic variable.}
 
@@ -111,7 +119,10 @@ used by default for all labels in the plot.}
 by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 
 \item{geomType}{String with type of the geom used, either:
-'point' or 'col'}
+\itemize{
+\item{'point': }{scatterplot with \code[ggplot2]{geom_point} is created}
+\item{'col': }{barplot with \code[ggplot2]{geom_col} is created}
+}}
 }
 \value{
 \code{\link[ggplot2]{ggplot}} object
