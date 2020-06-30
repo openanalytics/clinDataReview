@@ -10,7 +10,7 @@ render_medicalMonitoringReport(
   intermediateDir = "./interim",
   configDir = "./config",
   configFiles = NULL,
-  extraDirs = c("figures", "tables")
+  extraDirs = c("figures", "tables", "patientProfiles")
 )
 }
 \arguments{

@@ -25,7 +25,7 @@ output:
 <!-- labels are unique if this report is created within another Rmd document -->
 <!-- (otherwise: issue might encounter error: 'duplicated label ...') -->
 
-```{r patientProfiles-runDocument-example, eval = FALSE}
+```{r patientProfiles-runDocument-example, eval = FALSE, echo = FALSE}
 
 	dataPath <- "/home/lcougnaud/git/GLPGSAPCysticFibrosis/data/GLPG1972/GLPG1972-CL-201/DM010 SDTM locked DB/DSMB Snapshots/20191023_transfer12/SAS_Datasets"
 	outputFile <- file.path("../MOMP", "patientProfiles", "subjectProfile.pdf")
@@ -74,25 +74,24 @@ output:
 
 	knitr::opts_chunk$set(
 		# don't print code in the report
-		echo = FALSE, 
+		echo = TRUE, 
 		message = TRUE,
 		# stop document execution if error (not the default)
 		error = FALSE, # stop-on-error
 		fig.align = "center",
 		warning = FALSE,
-		# to have list of DT included within a chunk with: glpgUtilityFct::knitPrintListObjects
 		results = 'asis'
 	)
 	
 ```
 
-```{r patientProfiles-loadPackages}
+```{r patientProfiles-loadPackages, message = FALSE}
 
 	library(patientProfilesVis)
 
 ```
 
-```{r patientProfiles-loadData}
+```{r patientProfiles-loadData, message = FALSE}
 
 	library(glpgUtilityFct)
 
@@ -104,6 +103,8 @@ output:
 	# this step is time-consuming:
 	tmp <- system.time(dataAll <- loadDataADaMSDTM(files = pathFiles))# 25s
 	labelVars <- attr(dataAll, "labelVars")
+	
+	cat("Data is available for the datasets:", toString(names(dataAll)), ".")
 
 ```
 
@@ -170,7 +171,9 @@ output:
 	# extract the subjects of interest for the visualization
 	subjectSubset <- NULL
 	if(!is.null(params$subsetDataset)){
+		
 		if(params$subsetDataset %in% names(dataAll)){
+			
 			dataSubset <- dataAll[[params$subsetDataset]]
 			if(!is.null(params$subsetVar) & !is.null(params$subsetValue) &&
 				params$subsetVar %in% colnames(dataSubset)){
@@ -178,10 +181,16 @@ output:
 					dataSubset[, params$subsetVar] %in% params$subsetValue
 				), ]
 			}
+			
 			subjectSubset <- unique(dataSubset$USUBJID)
+			
 			if(!is.null(params$subsetSample) && length(params$subsetSample) < length(subjectSubset)){
 				subjectSubset <- sample(x = subjectSubset, size = params$subsetSample)
 			}
+			
+			if(length(subjectSubset) == 0)
+				stop("No subjects are retained after filtering.")
+			
 		}else{
 			warning(paste("The specified data subset is not used because the",
 				params$subsetDataset, "dataset not available."))
@@ -263,7 +272,10 @@ output:
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(DM = dmPlots))
 	
-	rm(list = c("dataDM", "dmPlots"));gc() # free memory
+	cat("Subject profiles created for demographics for", length(dmPlots), "subject(s).")
+	
+	
+	rm(list = c("dataDM", "dmPlots"));tmp <- gc(verbose = FALSE) # free memory
 ```
 
 ## Medical history
@@ -358,7 +370,9 @@ output:
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(MH = mhPlots))
 	
-	rm(list = c("dataMH", "mhPlots"))# free memory
+	cat("Subject profiles created for medical history for", length(mhPlots), "subject(s).")
+	
+	rm(list = c("dataMH", "mhPlots"));tmp <- gc(verbose = FALSE)# free memory
 
 ```
 
@@ -469,7 +483,9 @@ output:
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(CM = cmPlots))
 	
-	rm(list = c("dataCM", "cmPlots"));gc() # free memory
+	cat("Subject profiles created for concomitant medications for", length(cmPlots), "subject(s).")
+	
+	rm(list = c("dataCM", "cmPlots"));tmp <- gc(verbose = FALSE) # free memory
 
 ```
 
@@ -546,7 +562,9 @@ output:
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(EX = exPlots))
 	
-	rm(list = c("dataEX", "exPlots"));gc() # free memory
+	cat("Subject profiles created for exposure for", length(exPlots), "subject(s).")
+	
+	rm(list = c("dataEX", "exPlots"));tmp <- gc(verbose = FALSE) # free memory
 ```
 
 ## Adverse events
@@ -651,7 +669,9 @@ output:
 	
 	patientProfilesPlots <- c(patientProfilesPlots, list(AE = aePlots))
 	
-	rm(list = c("dataAE", "aePlots"));gc() # free memory
+	cat("Subject profiles created for adverse events for", length(aePlots), "subject(s).")
+	
+	rm(list = c("dataAE", "aePlots"));tmp <- gc(verbose = FALSE) # free memory
 	
 ```
 
@@ -749,7 +769,9 @@ output:
 	)	
 	patientProfilesPlots <- c(patientProfilesPlots, list(LB = lbPlots))
 	
-	rm(list = c("dataLB", "lbPlots"));gc() # free memory
+	cat("Subject profiles created for laboratory parameters for", length(lbPlots), "subject(s).")
+	
+	rm(list = c("dataLB", "lbPlots"));tmp <- gc(verbose = FALSE) # free memory
 	
 ```
 
@@ -846,7 +868,9 @@ output:
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(VS = vsPlots))
 	
-	rm(list = c("dataVS", "vsPlots"));gc() # free memory
+	cat("Subject profiles created for vital signs for", length(vsPlots), "subject(s).")
+	
+	rm(list = c("dataVS", "vsPlots"));tmp <- gc(verbose = FALSE) # free memory
 	
 ```
 
@@ -946,7 +970,9 @@ output:
 	)
 	patientProfilesPlots <- c(patientProfilesPlots, list(EG = egPlots))
 	
-	rm(list = c("dataEG", "egPlots"));gc() # free memory
+	cat("Subject profiles created for exposure for", length(egPlots), "subject(s).")
+	
+	rm(list = c("dataEG", "egPlots"));tmp <- gc(verbose = FALSE) # free memory
 	
 ```
 
@@ -974,7 +1000,7 @@ pathsPatientProfiles <- createSubjectProfileReport(
 
 # Session information
 
-```{r sessionInformation}
+```{r sessionInformation, echo = FALSE}
 
 	library(pander)
 	pander(sessionInfo())

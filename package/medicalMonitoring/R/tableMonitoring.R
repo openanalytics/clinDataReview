@@ -27,7 +27,7 @@ tableMonitoring <- function(
 	keyVar = NULL, keyLab = getLabelVar(keyVar, labelVars = labelVars),
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	pathExpand = FALSE,
-	tableVars,
+	tableVars = colnames(data),
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),

@@ -50,7 +50,7 @@ render_medicalMonitoringReport <- function(
 	outputDir = "./MOMP", intermediateDir = "./interim",
 	configDir = "./config", 
 	configFiles = NULL, 
-	extraDirs = c("figures", "tables")){
+	extraDirs = c("figures", "tables", "patientProfiles")){
 	
 	if(!dir.exists(configDir))	stop("Config directory doesn't exist.")
 	
