@@ -4,8 +4,6 @@
 #' @param aesPointVar List with specification of aesthetic variable(s),
 #' for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 #' e.g. \code{list(color = "TRTP")}.
-#' @param pointInclude Logical, if TRUE (by default if \code{aesPointVar} is specified)
-#' include a scatterplot.
 #' @param aesLineVar List with specification of aesthetic variable(s),
 #' for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 #' e.g. \code{list(group = "USUBJID")}.
@@ -36,7 +34,7 @@
 #' @param geomType String with type of the geom used, either:
 #' \itemize{
 #' \item{'point': }{scatterplot with \code{\link[ggplot2]{geom_point}} is created}
-#' \item{'col': }{barplot with \code[ggplot2]{geom_col} is created}
+#' \item{'col': }{barplot with \code{\link[ggplot2]{geom_col}} is created}
 #' }
 #' @inheritParams medicalMonitoring-common-args
 #' @return \code{\link[ggplot2]{ggplot}} object
@@ -51,7 +49,7 @@ staticScatterplotMonitoring <- function(
 	xLab = getLabelVar(xVar, labelVars = labelVars),
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetics specifications
-	aesPointVar = list(), pointInclude = length(aesPointVar) > 0,
+	aesPointVar = list(), 
 	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
 	aesLab,
 	# axis specification:
@@ -105,18 +103,14 @@ staticScatterplotMonitoring <- function(
 		if(!"group" %in% names(aesLineVar)){
 			warning("'group' should be specified in the 'aesLineVar'; no line is created.")
 		}else{
-			argsGeomLine <- if(length(aesLineVar)){
-				list(mapping = do.call(aes_string, aesLineVar))
-			}
+			argsGeomLine <- list(mapping = do.call(aes_string, aesLineVar))
 			gg <- gg + do.call(geom_line, argsGeomLine)
 		}
 	}
 	
 	# scatter
 	aesGeom <- c(aesPointVar, if(!is.null(hoverVars))	list(text = "hover"))
-	argsGeom <- if(pointInclude){
-		list(mapping = do.call(aes_string, aesGeom))
-	}
+	argsGeom <- list(mapping = do.call(aes_string, aesGeom))
 	geomFct <- match.fun(paste("geom", geomType, sep = "_"))
 	gg <- gg + do.call(geomFct, argsGeom)
 	

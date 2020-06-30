@@ -36,7 +36,7 @@ scatterplotMonitoring <- function(
 	xLab = getLabelVar(xVar, labelVars = labelVars),
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetics specifications
-	aesPointVar = list(), pointInclude = length(aesPointVar) > 0,
+	aesPointVar = list(), 
 	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
 	aesLab = getLabelVar(unique(unlist(c(aesPointVar, aesLineVar))), labelVars = labelVars),
 	# axis specification:
@@ -111,7 +111,7 @@ scatterplotMonitoring <- function(
 		xVar = xVar, yVar = yVar, 
 		xLab = xLab, yLab = yLab, 
 		# aesthetics specifications
-		aesPointVar = aesPointVar, pointInclude = pointInclude,
+		aesPointVar = aesPointVar, 
 		aesLineVar = aesLineVar, lineInclude = lineInclude,
 		aesLab = aesLab,
 		# axis specification:

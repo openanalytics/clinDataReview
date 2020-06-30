@@ -19,7 +19,7 @@ vignette: >
 	library(plotly)
 	opts_chunk$set(
 		echo = TRUE, 
-#		results = 'asis', 
+		results = 'asis', 
 		warning = FALSE, 
 		error = FALSE, message = FALSE, cache = FALSE,
 		fig.width = 8, fig.height = 7,
@@ -114,7 +114,7 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 
 The `annotateData` enables to add metadata for a specific domain/dataset.
 
-```{r annotateData, message = TRUE}
+```{r annotateData, message = TRUE, warning = TRUE}
 dataLB <- annotateData(dataLB, annotations = list(data = dataDM), verbose = TRUE)
 pander(
 	head(dataLB), 
@@ -132,7 +132,7 @@ For example, the laboratory data is converted from a long format, containing
 one record per endpoint*visit*subject to a wide format containing
 one record per visit*subject, the endpoints being included in different columns.
 
-```{r transformData, message = TRUE}
+```{r transformData, message = TRUE, warning = TRUE}
 
 	eDishData <- transformData(
 		data = subset(dataLB, LBTESTCD %in% c("ALT", "BILI")),
