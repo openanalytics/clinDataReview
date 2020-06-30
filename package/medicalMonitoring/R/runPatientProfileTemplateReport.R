@@ -21,6 +21,8 @@
 #' Dataset, variable, corresponding value and random number of subjects
 #' to consider to subset subjects
 #' for which patient profiles should be created.
+#' Note that for \code{subsetSample}, a seed should
+#' be specified upfront to get reproducible results.
 #' @return Character vector with output path.
 #' The patient profile(s) and the Rmd template
 #' are created at \code{outputFile}.
@@ -67,26 +69,41 @@ runPatientProfileTemplateReport <- function(
 		)
 	}else	file.copy(from = pathTemplate, to = outputDir, overwrite = TRUE)
 	
+	params <- list(
+		dataPath = dataPath,
+		outputFile = basename(outputFile),
+		study = study,
+		batch = batch,
+		author = author,
+		subsetDataset = subsetDataset,
+		subsetVar = subsetVar,
+		subsetValue = subsetValue,
+		subsetSample = subsetSample,
+		subjectSortDataset = subjectSortDataset,
+		subjectSortVar = subjectSortVar,
+		subjectSortDecreasing = subjectSortDecreasing,
+		exportBatchSize = exportBatchSize
+	)
+	
+#	envReport <- new.env() # parent = baseenv()
+#	assign("params", params, envir = envReport)
+#	
+#	outputRmd <- Rscript_call(
+#		fun = rmarkdown::render, 
+#		args = list(
+#			input = pathTemplateNew,
+#			output_dir = outputDir, # output dir for html file
+#			intermediates_dir = outputDir, # output dir for intermediate file (e.g. '.md')
+#			envir = envReport
+#		)
+#	)
+	
 	tmp <- rmarkdown::render(
 		input = pathTemplateNew,
 		output_dir = outputDir, # output dir for html file
 		intermediates_dir = outputDir, # output dir for intermediate file (e.g. '.md')
 		envir = new.env(),
-		params = list(
-			dataPath = dataPath,
-			outputFile = basename(outputFile),
-			study = study,
-			batch = batch,
-			author = author,
-			subsetDataset = subsetDataset,
-			subsetVar = subsetVar,
-			subsetValue = subsetValue,
-			subsetSample = subsetSample,
-			subjectSortDataset = subjectSortDataset,
-			subjectSortVar = subjectSortVar,
-			subjectSortDecreasing = subjectSortDecreasing,
-			exportBatchSize = exportBatchSize
-		)
+		params = params
 	)
 	
 }

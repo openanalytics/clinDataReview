@@ -13,7 +13,7 @@ tableMonitoring(
   pathVar = NULL,
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
   pathExpand = FALSE,
-  tableVars,
+  tableVars = colnames(data),
   tableLab = getLabelVar(tableVars, labelVars = labelVars),
   tableButton = TRUE,
   tablePars = list(),

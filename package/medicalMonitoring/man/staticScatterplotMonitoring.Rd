@@ -120,7 +120,7 @@ by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 
 \item{geomType}{String with type of the geom used, either:
 \itemize{
-\item{'point': }{scatterplot with \code[ggplot2]{geom_point} is created}
+\item{'point': }{scatterplot with \code{\link[ggplot2]{geom_point}} is created}
 \item{'col': }{barplot with \code[ggplot2]{geom_col} is created}
 }}
 }
