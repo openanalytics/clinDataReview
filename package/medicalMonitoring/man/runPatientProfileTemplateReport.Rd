@@ -39,7 +39,9 @@ output directory.}
 
 \item{subsetDataset, subsetVar, subsetValue, subsetSample}{Dataset, variable, corresponding value and random number of subjects
 to consider to subset subjects
-for which patient profiles should be created.}
+for which patient profiles should be created.
+Note that for \code{subsetSample}, a seed should
+be specified upfront to get reproducible results.}
 
 \item{subjectSortDataset, subjectSortVar, subjectSortDecreasing}{(optional) 
 String with dataset name, variable name by which the subjects should

@@ -11,7 +11,6 @@ scatterplotMonitoring(
   xLab = getLabelVar(xVar, labelVars = labelVars),
   yLab = getLabelVar(yVar, labelVars = labelVars),
   aesPointVar = list(),
-  pointInclude = length(aesPointVar) > 0,
   aesLineVar = list(),
   lineInclude = length(aesLineVar) > 0,
   aesLab = getLabelVar(unique(unlist(c(aesPointVar, aesLineVar))), labelVars =
@@ -62,9 +61,6 @@ scatterplotMonitoring(
 \item{aesPointVar}{List with specification of aesthetic variable(s),
 for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 e.g. \code{list(color = "TRTP")}.}
-
-\item{pointInclude}{Logical, if TRUE (by default if \code{aesPointVar} is specified)
-include a scatterplot.}
 
 \item{aesLineVar}{List with specification of aesthetic variable(s),
 for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},

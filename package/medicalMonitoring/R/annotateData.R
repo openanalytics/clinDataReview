@@ -335,9 +335,19 @@ annotateData <- function(
 			if(is.null(annotVar))	annotVar <- colnames(annotData)
 			isAnnotInData <- annotVar %in% colnames(data)
 			if(any(isAnnotInData) & is.null(varFct)){
+				varAnnotInDataText <- toString(paste0(
+					getLabelVar(
+						var = annotVar[isAnnotInData], 
+						data = annotData, 
+						labelVars = labelVarsAnnot
+					), 
+					" (", 
+					sQuote(annotVar[isAnnotInData]), 
+					")"
+				))
 				warning(
 					simpleCap(labelData), " is not annotated with variable(s): ", 
-					getLabelVar(var = annotVar[isAnnotInData], data = annotData, labelVars = labelVarsAnnot), " (", sQuote(annotVar[isAnnotInData]), ")",
+					varAnnotInDataText,
 					" from the ", sQuote(annotDataset), " dataset",
 					" because they are already available in data."
 				)
