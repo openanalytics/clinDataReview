@@ -233,7 +233,7 @@ timeProfileIntervalPlot <- function(data,
 		data[, timeStartVar] != data[, timeEndVar]
 	)
 	if(length(idxSegments) > 0){
-		dataPlotSharedDataSeg <- convertToSharedDataIntPlot(data[idxSegments, ])
+		dataPlotSharedDataSeg <- convertToSharedDataIntPlot(data = data[idxSegments, , drop = FALSE])
 		pl <- pl %>% add_segments(
 			data = dataPlotSharedDataSeg,
 			x = varToFm(timeStartVar), 
@@ -243,7 +243,6 @@ timeProfileIntervalPlot <- function(data,
 			color = if(!is.null(colorVar))	varToFm(colorVar)	else	I(colorPalette), 
 			colors = if(!is.null(colorVar))	colorPalette,
 			showlegend = FALSE,
-			hoverinfo = "none",
 			opacity = alpha
 		)
 	}
