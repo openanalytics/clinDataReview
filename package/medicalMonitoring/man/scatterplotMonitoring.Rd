@@ -137,8 +137,7 @@ of the diagonal line is displayed.
 }
 }}
 
-\item{labelVars}{Named character vector containing variable labels,
-used by default for all labels in the plot.}
+\item{labelVars}{Named character vector containing variable labels.}
 
 \item{width}{Numeric, width of the plot in pixels,
 700 by default.}

@@ -30,8 +30,7 @@ is returned.}
 containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
 }}
 
-\item{labelVars}{Named character vector containing variable labels,
-used by default for all labels in the plot.}
+\item{labelVars}{Named character vector containing variable labels.}
 
 \item{labelData}{(optional) String with label for input \code{data},
 that will be included in progress messages.}

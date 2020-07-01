@@ -77,8 +77,7 @@ of the diagonal line is displayed.
 }
 }}
 
-\item{labelVars}{Named character vector containing variable labels,
-used by default for all labels in the plot.}
+\item{labelVars}{Named character vector containing variable labels.}
 
 \item{id}{String with general id for the plot:
 \itemize{

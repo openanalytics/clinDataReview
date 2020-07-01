@@ -53,8 +53,7 @@
 #' of the diagonal line is displayed.
 #' }
 #' }
-#' @param labelVars Named character vector containing variable labels,
-#' used by default for all labels in the plot.
+#' @param labelVars Named character vector containing variable labels.
 #' @param id String with general id for the plot:
 #' \itemize{
 #' \item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}

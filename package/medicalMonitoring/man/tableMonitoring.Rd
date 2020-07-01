@@ -71,8 +71,7 @@ the table is included within an HTML button.}
 }
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
 
-\item{labelVars}{Named character vector containing variable labels,
-used by default for all labels in the plot.}
+\item{labelVars}{Named character vector containing variable labels.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.}
