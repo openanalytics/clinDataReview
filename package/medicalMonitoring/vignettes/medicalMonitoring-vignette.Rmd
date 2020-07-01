@@ -110,16 +110,44 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 
 # Data pre-processing
 
-## Add data annotation
+Utility functions to automate standard data pre-processing steps of the data
+are available in the package.
+Please note that these functions are mainly useful in combination
+with the specification of the parameters in 'config' file
+in the medical monitoring reports (see section \@ref(renderReport)).
+
+## Annotate data
 
 The `annotateData` enables to add metadata for a specific domain/dataset.
 
 ```{r annotateData, message = TRUE, warning = TRUE}
-dataLB <- annotateData(dataLB, annotations = list(data = dataDM), verbose = TRUE)
+dataLBAnnot <- annotateData(
+	data = dataLB, 
+	annotations = list(data = dataDM, vars = c("SEX", "RACE", "COUNTRY", "ACTARM")), 
+	verbose = TRUE
+)
 pander(
-	head(dataLB), 
+	head(dataLBAnnot), 
 	caption = paste("Laboratory parameters annotated with",
 		"demographics information with the `annotatedData` function"
+	)
+)
+```
+
+## Filter data
+
+The `filterData` enables to filter a dataset.
+
+```{r filterData, message = TRUE, warning = TRUE}
+dataLBAnnotTreatment <- filterData(
+	data = dataLBAnnot, 
+	filters = list(var = "ACTARM", value = "Screen Failure", rev = TRUE), 
+	verbose = TRUE
+)
+pander(
+	unique(dataLBAnnotTreatment[, c("USUBJID", "ACTARM")]), 
+	caption = paste("Subset of laboratory parameters filtered",
+		"with screening failure"
 	)
 )
 ```
@@ -147,6 +175,26 @@ one record per visit*subject, the endpoints being included in different columns.
 	)
 	pander(head(eDishData))
 
+```
+
+## Process data
+
+The `processData` function executes all the pre-processing steps described in the previous section
+at once.
+
+```{r processData}
+
+	dataLBAnnotTreatment2 <- processData(
+		data = dataLB,
+		processing = list(
+			list(annotate = list(data = dataDM, vars = c("SEX", "RACE", "COUNTRY", "ACTARM"))),
+			list(filter = list(var = "ACTARM", value = "Screen Failure", rev = TRUE))
+		),
+		verbose = TRUE
+	)
+	
+	identical(dataLBAnnotTreatment, dataLBAnnotTreatment2)
+	
 ```
 
 # Visualizations
@@ -209,6 +257,7 @@ patient profile is opened in a new window in the browser.
 
 labParam <- "ALT"
 dataPlot <- subset(dataLB, LBTESTCD == labParam)
+dataPlot <- annotateData(dataPlot, annotations = list(data = dataDM))
 visitLab <- with(dataPlot, tapply(LBDY, VISIT, median))
 names(visitLab) <- sub("-", "\n", names(visitLab))
 
@@ -244,6 +293,7 @@ scatterplotMonitoring(
 
 # format data long -> wide format (one column per lab param)
 dataPlot <- subset(dataLB, LBTESTCD %in% c("ALT", "ALB"))
+dataPlot <- annotateData(dataPlot, annotations = list(data = dataDM))
 library(reshape2)
 dataPlotWide <- dcast(
 	data = dataPlot,
@@ -273,13 +323,13 @@ scatterplotMonitoring(
 	verbose = TRUE
 )
 
-
 ```
 
 #### eDish plot
 
 ```{r eDishPlot}
 
+	dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
 	dataALT <- subset(dataLB, LBTESTCD == "ALT")
 	dataBILI <- subset(dataLB, LBTESTCD == "BILI")
 	byVar <- c("USUBJID", "VISIT")
@@ -610,7 +660,12 @@ package.
 
 ```
 
-# Render a medical monitoring report
+# Medical monitoring report {#renderReport}
+
+Utility functions are provided to run a standard medical monitoring report.
+Please note that the examples in this section are only informative,
+and not evaluated in the vignette itself (because currently
+no medical monitoring example report is included in the package).
 
 ## File structure
 
@@ -654,7 +709,9 @@ multiple HTML files
     + associated _rds_ file containing specification of the
     _Javascript_ libraries required for each report part (`knit_meta`)
 
-## Production mode
+## Render a medical monitoring report
+
+### Production mode
 
 The function **`render_medicalMonitoringReport` renders a medical monitoring report
 for production**.
@@ -663,11 +720,11 @@ for production**.
 medicalMonitoring::render_medicalMonitoringReport()
 ```
 
-## Development mode
+### Development mode
 
-### Modular framework
+#### Modular framework
 
-#### (Re-)run part(s) of the report
+##### (Re-)run part(s) of the report
 
 In case the creation of the entire report is time-consuming, and
 only part(s) of the report have been updated, it might be interesting to
@@ -682,7 +739,7 @@ medicalMonitoring::render_medicalMonitoringReport(configFiles = "config-AE_timep
 medicalMonitoring::render_medicalMonitoringReport(configFiles = list.files(pattern = "listing", "config"))
 ```
 
-#### Create the final medical monitoring report from the Markdown reports
+##### Create the final medical monitoring report from the Markdown reports
 
 To convert all created _Markdown_ files to HTML, the dedicated function `convertMdToHtml`
 can be used.
@@ -693,7 +750,7 @@ can be used.
 
 ```
 
-### Debug a sub-report
+#### Debug a sub-report
 
 To debug a sub-report, it might be interesting to run
 only one specific R report in the current R session, with
