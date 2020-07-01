@@ -10,7 +10,8 @@ render_medicalMonitoringReport(
   intermediateDir = "./interim",
   configDir = "./config",
   configFiles = NULL,
-  extraDirs = c("figures", "tables", "patientProfiles")
+  extraDirs = c("figures", "tables", "patientProfiles"),
+  quiet = FALSE
 )
 }
 \arguments{
@@ -49,6 +50,10 @@ the report, directory with external images  .
 By default, the directories: 'figures', 'tables' and 
 directory included in the 'patientProfilePath' parameter of the
 general config file are considered.}
+
+\item{quiet}{Logical, if TRUE (FALSE by default)
+progress messages during report execution are not displayed
+in the console (see \code{\link[rmarkdown]{render}}).}
 }
 \value{
 String with path to the front page of the 
