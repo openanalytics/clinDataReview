@@ -37,8 +37,7 @@ group for which the link between the table and the plot should be done.}
 }
 If not specified, a random id, as 'plotMonitoring[X]' is used.}
 
-\item{labelVars}{Named character vector containing variable labels,
-used by default for all labels in the plot.}
+\item{labelVars}{Named character vector containing variable labels.}
 }
 \value{
 Updated \code{\link[crosstalk]{SharedData}} with:

@@ -48,8 +48,7 @@ returns also a \code{datatable} containing the plot data.
     \item{\code{data}}{Data.frame with data.}
     \item{\code{titleExtra}}{String with extra title for the plot (appended after \code{title}).}
     \item{\code{title}}{String with title for the plot.}
-    \item{\code{labelVars}}{Named character vector containing variable labels,
-used by default for all labels in the plot.}
+    \item{\code{labelVars}}{Named character vector containing variable labels.}
     \item{\code{width}}{Numeric, width of the plot in pixels,
 700 by default.}
     \item{\code{height}}{Numeric, height of the plot in pixels,

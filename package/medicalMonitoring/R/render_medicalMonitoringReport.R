@@ -38,6 +38,9 @@
 #' should be already available in the \code{intermediateDir} folder.
 #' }
 #' }
+#' @param quiet Logical, if TRUE (FALSE by default)
+#' progress messages during report execution are not displayed
+#' in the console (see \code{\link[rmarkdown]{render}}).
 #' @inheritParams medicalMonitoring-common-args-report
 #' @inherit convertMdToHtml return
 #' @author Laure Cougnaud
@@ -50,7 +53,8 @@ render_medicalMonitoringReport <- function(
 	outputDir = "./MOMP", intermediateDir = "./interim",
 	configDir = "./config", 
 	configFiles = NULL, 
-	extraDirs = c("figures", "tables", "patientProfiles")){
+	extraDirs = c("figures", "tables", "patientProfiles"),
+	quiet = FALSE){
 	
 	if(!dir.exists(configDir))	stop("Config directory doesn't exist.")
 	
@@ -80,6 +84,7 @@ render_medicalMonitoringReport <- function(
 	knit_meta_reports <- c()
 	for(configFile in configFiles){
 		
+		isConfigImported <- TRUE
 		if(configFile == "config.yml"){
 			
 			params <- configGeneralParams
@@ -88,79 +93,99 @@ render_medicalMonitoringReport <- function(
 		}else{
 			
 			# extract chapter-specific parameters from config file
-			params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
+			resParams <- try(
+				params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
+			, silent = TRUE)
+	
+			if(inherits(resParams, "try-error")){
+				
+				warning(
+					paste0("Extraction of the parameters from config file: ", 
+						sQuote(configFile), " failed, ",
+						"this report is ignored."
+					), immediate. = TRUE, call. = FALSE
+				)
+				isConfigImported <- FALSE
+				
+			}else{
 			
-			inputRmdFile <- params$template
+				inputRmdFile <- params$template
 			
-			# extract path of the template from the R package:
-			# if(!params$templateCustom)
+				# extract path of the template from the R package:
+				# if(!params$templateCustom)
+			}
 			
 		}
 		
-		if(is.null(inputRmdFile))
-			stop("Template missing for config file: ", sQuote(configFile), ".")
+		if(isConfigImported){
 		
-		# path to output Md file
-		outputMdFile <- getMdFromConfig(
-			configFiles = configFile, 
-			indexPath = indexPath, 
-			intermediateDir = intermediateDir
-		)
-
-		# specify report-specific input parameters
-		# in a new environment ('params' doesn't work within 'Rscript_call'?)
-		# Note: new.env will inherit of parent environments
-		# so objects created in global environment also available there
-		envReport <- new.env() # parent = baseenv()
-		assign("params", params, envir = envReport)
-		
-		# run report
-		message("Run report for config file: ", sQuote(configFile), ".")
-		
-		# render report
-		# call each Rmd doc within a new R session
-		# to ensure that current R session doesn't pollute Rmd doc
-		resRender <- try(
-			outputRmd <- Rscript_call(
-				fun = rmarkdown::render, 
-				args = list(
-					input = inputRmdFile, 
-					output_file = basename(outputMdFile),
-					output_dir = dirname(outputMdFile),
-					run_pandoc = FALSE,
-					output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
-					env = envReport,
-					encoding = "UTF-8"
-				)
-			),
-			silent = TRUE
-		)
-
+			if(is.null(inputRmdFile))
+				stop("Template missing for config file: ", sQuote(configFile), ".")
 			
-		# save knit_meta parameters (contain required Js lib for each report)
-		knitMetaReportFile <- file.path(
-			intermediateDir,
-			paste0(file_path_sans_ext(basename(outputMdFile)), ".rds")
-		)
-			
-		if(inherits(resRender, "try-error")){
-			
-			warning(
-				paste0("Rendering of the ", sQuote(basename(inputRmdFile)),
-				" report for config file: ", sQuote(configFile), " failed, ",
-				"this report is ignored."
-				), immediate. = TRUE, call. = FALSE
+			# path to output Md file
+			outputMdFile <- getMdFromConfig(
+				configFiles = configFile, 
+				indexPath = indexPath, 
+				intermediateDir = intermediateDir
 			)
+	
+			# specify report-specific input parameters
+			# in a new environment ('params' doesn't work within 'Rscript_call'?)
+			# Note: new.env will inherit of parent environments
+			# so objects created in global environment also available there
+			envReport <- new.env() # parent = baseenv()
+			assign("params", params, envir = envReport)
 			
-			# remove results from previous execution
-			reportIntRes <- c(outputMdFile, knitMetaReportFile)
-			reportIntRes <- reportIntRes[file.exists(reportIntRes)]
-			if(length(reportIntRes) > 0)	file.remove(reportIntRes)
+			# run report
+			message("Run report for config file: ", sQuote(configFile), ".")
 			
-		}else{
-			
-			knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
-			saveRDS(knitMetaReport, file = knitMetaReportFile)
+			# render report
+			# call each Rmd doc within a new R session
+			# to ensure that current R session doesn't pollute Rmd doc
+			resRender <- try(
+				outputRmd <- Rscript_call(
+					fun = rmarkdown::render, 
+					args = list(
+						input = inputRmdFile, 
+						output_file = basename(outputMdFile),
+						output_dir = dirname(outputMdFile),
+						run_pandoc = FALSE,
+						output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
+						env = envReport,
+						encoding = "UTF-8",
+						quiet = quiet
+					)
+				),
+				silent = TRUE
+			)
+	
+				
+			# save knit_meta parameters (contain required Js lib for each report)
+			knitMetaReportFile <- file.path(
+				intermediateDir,
+				paste0(file_path_sans_ext(basename(outputMdFile)), ".rds")
+			)
+				
+			if(inherits(resRender, "try-error")){
+				
+				warning(
+					paste0("Rendering of the ", sQuote(basename(inputRmdFile)),
+					" report for config file: ", sQuote(configFile), " failed, ",
+					"this report is ignored."
+					), immediate. = TRUE, call. = FALSE
+				)
+				
+				# remove results from previous execution
+				reportIntRes <- c(outputMdFile, knitMetaReportFile)
+				reportIntRes <- reportIntRes[file.exists(reportIntRes)]
+				if(length(reportIntRes) > 0)	file.remove(reportIntRes)
+				
+			}else{
+				
+				knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
+				saveRDS(knitMetaReport, file = knitMetaReportFile)
+				
+			}
 			
 		}
 		

@@ -22,8 +22,7 @@ and associated label.}
 among others: 'total' (default, only if sum(child) <= to parent)
 or 'relative'.}
 
-\item{labelVars}{Named character vector containing variable labels,
-used by default for all labels in the plot.}
+\item{labelVars}{Named character vector containing variable labels.}
 }
 \value{
 If the condition is fullfilled:

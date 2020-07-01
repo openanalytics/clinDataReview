@@ -100,12 +100,12 @@ staticScatterplotMonitoring <- function(
 	
 	# line
 	if(lineInclude){
-		if(!"group" %in% names(aesLineVar)){
-			warning("'group' should be specified in the 'aesLineVar'; no line is created.")
-		}else{
+#		if(!"group" %in% names(aesLineVar)){
+#			warning("'group' should be specified in the 'aesLineVar'; no line is created.")
+#		}else{
 			argsGeomLine <- list(mapping = do.call(aes_string, aesLineVar))
 			gg <- gg + do.call(geom_line, argsGeomLine)
-		}
+#		}
 	}
 	
 	# scatter
