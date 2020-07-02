@@ -18,6 +18,7 @@
 #' @return Data.frame with processed \code{data},
 #' with extra attribute: \code{labelVars}.
 #' @author Laure Cougnaud
+#' @importFrom methods formalArgs
 #' @export
 processData <- function(data, processing, labelVars = NULL, ...){
 	
@@ -42,7 +43,7 @@ processData <- function(data, processing, labelVars = NULL, ...){
 			filter = medicalMonitoring::filterData,
 			annotate = medicalMonitoring::annotateData,
 			transform = medicalMonitoring::transformData,
-			stop("Processing step: '", step, "' not available in the package.")
+			stop("Processing step: '", iStep, "' not available in the package.")
 		)
 		
 		argsExtraProcessI <- argsExtra[intersect(names(argsExtra), formalArgs(processFctI))]

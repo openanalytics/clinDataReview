@@ -2,7 +2,7 @@ Package: medicalMonitoring
 Type: Package
 Title: Medical Monitoring Reporting Tool
 Version: 0.3.0
-Date: 2020-06-30
+Date: 2020-06-02
 Author: Arne De Roeck, Laure Cougnaud, Michela Pasetto
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring
@@ -12,7 +12,8 @@ Imports:
   ggplot2, plotly, 
   htmlwidgets, plyr, htmltools,
   knitr, xfun (>= 0.13),
-  pander, rmarkdown, RColorBrewer, yaml
+  pander, rmarkdown, RColorBrewer, yaml,
+  methods
 License: file LICENSE
 Suggests: 
     testthat,
