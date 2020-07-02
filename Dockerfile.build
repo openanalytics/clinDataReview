@@ -27,7 +27,6 @@ RUN apt-get update -y \
     libgtk-3-0 \
     libgtk-3-dev \
     libgconf-2-4 \
-    npm \
     xauth \
     libxtst6 \
     libxss1 \
