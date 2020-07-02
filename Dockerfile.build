@@ -32,7 +32,6 @@ RUN apt-get update -y \
     libxtst6 \
     libxss1 \
     libnss3 \
-    libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
 # Download orca AppImage, extract it, and make it executable under xvfb
