@@ -39,7 +39,7 @@ ADD https://github.com/plotly/orca/releases/download/v1.1.1/orca-1.1.1-x86_64.Ap
 RUN chmod 777 /opt/orca/orca.AppImage 
 
 # To avoid the need for FUSE, extract the AppImage into a directory (name squashfs-root by default)
-RUN cd /home && /opt/orca/orca.AppImage --appimage-extract
+RUN cd /opt/orca && /opt/orca/orca.AppImage --appimage-extract
 RUN printf '#!/bin/bash \nxvfb-run --auto-servernum --server-args "-screen 0 640x480x24" /opt/orca/squashfs-root/app/orca "$@"' > /usr/bin/orca
 RUN chmod 777 /usr/bin/orca && chmod -R 777 /opt/orca/squashfs-root/
 
