@@ -38,8 +38,8 @@ tableMonitoring <- function(
 
 	# add key/id in variables to display
 	# (used for linking plot <-> table and for the path)
-	tableVars <- unique(c(tableVars, idVar, keyVar))
-	tableLab <- c(tableLab, idLab[idVar], keyLab[keyVar])
+	tableVars <- unique(c(idVar, tableVars, keyVar))
+	tableLab <- c(idLab[idVar], tableLab, keyLab[keyVar])
 	tableLab <- tableLab[!duplicated(names(tableLab))]
 	
 	# add hyperlink in the table:
@@ -48,19 +48,10 @@ tableMonitoring <- function(
 		tableVars <- c(pathVar, tableVars) # add in variables for DT
 		
 		# create the hyperlink (if not already created)
-		if(!pathExpand){
-			
-			data[, pathVar] <- paste0(
-				'<a href="', data[, pathVar], 
-				'" target="_blank">', data[, idVar], '</a>'
-			)
-			
-			# include the label from ID var
-			tableLab[pathVar] <- idLab
-			
-		}else{
+		if(pathExpand){
 			tableLab[pathVar] <- pathLab
 		}
+		
 	}
 	
 	# retain only specified variables:
@@ -71,6 +62,8 @@ tableMonitoring <- function(
 		is.character(x) & !is.factor(x)
 	)
 	data[, colCharacter] <- lapply(data[, colCharacter, drop = FALSE], as.factor)
+	
+	## set DT options
 	
 	if(!is.null(pathVar)){
 		
@@ -84,9 +77,12 @@ tableMonitoring <- function(
 		
 		tablePars <- c(tablePars, 
 			# escape column with hyperlink
-			list(escape = -match(pathVar, colnames(data))),
-			# expand the variable
-			if(pathExpand)	list(expandVar = pathVar)
+			if(!is.null(pathVar) & pathExpand)
+				c(
+					list(escape = -match(pathVar, colnames(data))),
+					# expand the variable
+					list(expandVar = pathVar)
+				)
 		)
 	}
 
@@ -94,8 +90,8 @@ tableMonitoring <- function(
 	# if not specified in input columns
 	# or added in the pathVar column
 	colsNonVisibleExtra <- c(
-		# remove idVar if saved in pathVar column
-		if(!is.null(pathVar) & !pathExpand)	idVar,
+		# remove pathVar if saved in pathVar column
+		if(!is.null(pathVar) & !pathExpand)	pathVar,
 		# key-columns not displayed
 		if(!all(keyVar %in% tableVarsInit))	setdiff(keyVar, tableVarsInit)
 	)
@@ -104,6 +100,28 @@ tableMonitoring <- function(
 		tablePars$nonVisible <- unique(c(tablePars$nonVisible, jNonVisible))
 	}
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
+	
+	# use idVar column in DT (for filter/sortering), and display it with hyperlink
+	if(!is.null(pathVar) & !pathExpand){
+		
+		iPath <- match(pathVar, tableVars)-1
+	
+		filterHyperlinkJS <- JS("function(data, type, row){",
+			 "  if(type === 'display'){",
+			 paste0("var link = '<a href=\"' + row[", iPath, 
+				"] + '\" target=\"_blank\">' + data + '</a>';"),
+			 "    return link;",
+			 "  } else {",
+			 "    return data;",
+			 "  }",
+			 "}"
+		)
+		
+		tablePars$options$columnDefs <- c(tablePars$options$columnDefs,
+			list(list(targets = match(idVar, tableVars)-1, render = filterHyperlinkJS))
+		)
+		
+	}
 	
 	# build shared data
 	dataTableSharedData <- highlight_key(
