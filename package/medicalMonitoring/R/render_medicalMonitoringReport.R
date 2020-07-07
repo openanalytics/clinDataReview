@@ -1,5 +1,6 @@
 #' Render a medical monitoring report.
 #' 
+#' @section Framework: 
 #' This function is based on the \link[bookdown]{render_book}
 #' function, enabling specification of chapter-specific input parameters,
 #' specified in YAML configuration files.
@@ -9,8 +10,14 @@
 #' each report of interest ('config' tag)}
 #' \item{for each report of interest:
 #' \itemize{
-#' \item{loading the report specific parameter from the associated 'config' file
+#' \item{loading the report specific parameters from the associated 'config' file
 #' (see the \code{\link{getParamsFromConfig}} function)}
+#' \item{if the template should be extracted from a specified package
+#' (\code{templatePackage} tag), this template is copied to the
+#' current directory.
+#' Please note that if a file with same name is available in
+#' the working directory, this file will be overwritten.
+#' }
 #' \item{executing the report ('template' tag) with the associated
 #' parameters in a \strong{new R session for reproducibility}, 
 #' to obtain the associated Markdown file}
@@ -22,6 +29,9 @@
 #' If the execution of a specific report fails with error, this report
 #' is ignored and a warning message is triggered. Intermediary results
 #' from previous execution, if any, are deleted.
+#' @section Available template report:
+#' see `medicalMonitoring-templates` for list of 
+#' medical monitoring template report available in the package.
 #' @param extraDirs Character vector with extra directories required by
 #' the report, directory with external images  .
 #' By default, the directories: 'figures', 'tables' and 
@@ -84,7 +94,7 @@ render_medicalMonitoringReport <- function(
 	knit_meta_reports <- c()
 	for(configFile in configFiles){
 		
-		isConfigImported <- TRUE
+		runDocument <- TRUE
 		if(configFile == "config.yml"){
 			
 			params <- configGeneralParams
@@ -105,22 +115,89 @@ render_medicalMonitoringReport <- function(
 						"this report is ignored."
 					), immediate. = TRUE, call. = FALSE
 				)
-				isConfigImported <- FALSE
+				runDocument <- FALSE
 				
 			}else{
 			
 				inputRmdFile <- params$template
-			
-				# extract path of the template from the R package:
-				# if(!params$templateCustom)
+	
 			}
 			
 		}
 		
-		if(isConfigImported){
+		if(is.null(inputRmdFile)){
+			warning("Template missing for config file: ", sQuote(configFile), ".")
+			runDocument <- FALSE
+		}
 		
-			if(is.null(inputRmdFile))
-				stop("Template missing for config file: ", sQuote(configFile), ".")
+		# Extract template from package
+		if(runDocument){
+			
+			# Extract the template from the package if: 'templateFromPackage' is 'true'
+			if(!is.null(params$templatePackage)){
+				
+				if(file.exists(inputRmdFile)){
+					warning(paste("Document with similar name than",
+						"specified template from", sQuote(params$templatePackage),
+						"for config file: ", sQuote(configFile),
+						"is already available in the working directory,",
+						"this document will be overwritten."
+					), immediate. = TRUE, call. = FALSE)
+					
+				pathTemplate <- medicalMonitoring::getPathTemplate(
+					file = inputRmdFile, 
+					package = params$templatePackage
+				)
+				if(!file.exists(pathTemplate)){
+					
+					runDocument <- FALSE
+					
+				}else{
+					
+					# copy file to working directory
+					tmp <- file.copy(from = pathTemplate, to = ".")
+					
+					# Extract the config file
+					configSpecFile <- file_path_sans_ext(inputRmdFile)
+					configSpecFile <- paste0(configSpecFile, ".json")
+					pathConfigSpecFile <- medicalMonitoring::getPathTemplate(
+						file = configSpecFile, 
+						package = params$templatePackage
+					)
+					
+					# Check config parameters
+					if(file.exists(pathConfigSpecFile)){
+						resCheck <- try(
+							checkConfigFile(
+								configFile = file.path(configDir, configFile), 
+								configSpecFile = pathConfigSpecFile
+							), silent = TRUE
+						)
+						if(inherits(resCheck, "try-error")){
+							warning(
+								paste0("Check of the parameters for config file: ", 
+									sQuote(basename(configFile)), " failed with error: ",
+									attr(resCheck, "condition")$message,
+									", this report is ignored."
+								), immediate. = TRUE, call. = FALSE
+							)
+							runReport <- FALSE
+						}
+						
+					}else{
+						warning(
+							"No config parameter available,",
+							"input parameters for the report are not checked."
+						, immediate. = TRUE, call. = FALSE)
+					}
+				}
+			}
+			}
+			
+		}
+		
+		# execute the report
+		if(runDocument){
 			
 			# path to output Md file
 			outputMdFile <- getMdFromConfig(
@@ -241,7 +318,7 @@ getMdFromConfig <- function(
 
 #' Get parameters from a config file
 #' @param configFile String with filename of the config
-#' file of interest.
+#' file of interest in YAML format.
 #' @inheritParams medicalMonitoring-common-args-report
 #' @return List with parameters from the specified \code{configFile}
 #' and the general config file: \code{config.yml}.

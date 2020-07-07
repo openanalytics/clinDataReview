@@ -8,7 +8,7 @@ getParamsFromConfig(configFile, configDir = "./config")
 }
 \arguments{
 \item{configFile}{String with filename of the config
-file of interest.}
+file of interest in YAML format.}
 
 \item{configDir}{String with directory with config files,
 ('config' by default).
