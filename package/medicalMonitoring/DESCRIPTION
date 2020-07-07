@@ -1,7 +1,7 @@
 Package: medicalMonitoring
 Type: Package
 Title: Medical Monitoring Reporting Tool
-Version: 0.3.0
+Version: 0.4.0
 Date: 2020-06-02
 Author: Arne De Roeck, Laure Cougnaud, Michela Pasetto
 Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
@@ -13,7 +13,7 @@ Imports:
   htmlwidgets, plyr, htmltools,
   knitr, xfun (>= 0.13),
   pander, rmarkdown, RColorBrewer, yaml,
-  methods
+  methods, jsonvalidate, jsonlite
 License: file LICENSE
 Suggests: 
     testthat,
@@ -21,4 +21,4 @@ Suggests:
     inTextSummaryTable,
     reshape2
 VignetteBuilder: knitr
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
