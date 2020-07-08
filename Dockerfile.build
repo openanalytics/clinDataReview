@@ -186,14 +186,14 @@ RUN R -e "remotes::install_version('ggplot2', version = '3.3.2', upgrade = FALSE
 # install tar gz package(s)
 RUN mkdir -p /tmp
 WORKDIR /tmp
-COPY glpgStyle_1.0.0.tar.gz /tmp/glpgStyle_1.0.0.tar.gz
-RUN R -e "install.packages('/tmp/glpgStyle_1.0.0.tar.gz', repos = NULL, dependencies = FALSE)"
-COPY glpgUtilityFct_1.0.0.tar.gz /tmp/glpgUtilityFct_1.0.0.tar.gz
-RUN R -e "install.packages('/tmp/glpgUtilityFct_1.0.0.tar.gz', repos = NULL, dependencies = FALSE)"
-COPY inTextSummaryTable_2.16.0.tar.gz /tmp/inTextSummaryTable_2.16.0.tar.gz
-RUN R -e "install.packages('/tmp/inTextSummaryTable_2.16.0.tar.gz', repos = NULL, dependencies = FALSE)"
-COPY patientProfilesVis_1.3.0.tar.gz /tmp/patientProfilesVis_1.3.0.tar.gz
-RUN R -e "install.packages('/tmp/patientProfilesVis_1.3.0.tar.gz', repos = NULL, dependencies = FALSE)"
+COPY glpgStyle_*.tar.gz /tmp/glpgStyle.tar.gz
+RUN R -e "install.packages('/tmp/glpgStyle.tar.gz', repos = NULL, dependencies = FALSE)"
+COPY glpgUtilityFct_*.tar.gz /tmp/glpgUtilityFct.tar.gz
+RUN R -e "install.packages('/tmp/glpgUtilityFct.tar.gz', repos = NULL, dependencies = FALSE)"
+COPY inTextSummaryTable_*.tar.gz /tmp/inTextSummaryTable.tar.gz
+RUN R -e "install.packages('/tmp/inTextSummaryTable.tar.gz', repos = NULL, dependencies = FALSE)"
+COPY patientProfilesVis_*.tar.gz /tmp/patientProfilesVis.tar.gz
+RUN R -e "install.packages('/tmp/patientProfilesVis.tar.gz', repos = NULL, dependencies = FALSE)"
 
 RUN chmod -R a+wx /usr/local/lib/R/site-library
 
