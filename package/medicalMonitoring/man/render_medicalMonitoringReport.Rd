@@ -9,6 +9,7 @@ render_medicalMonitoringReport(
   outputDir = "./MOMP",
   intermediateDir = "./interim",
   configDir = "./config",
+  logFile = NULL,
   configFiles = NULL,
   extraDirs = c("figures", "tables", "patientProfiles"),
   quiet = FALSE
@@ -32,6 +33,10 @@ It should contain a general 'config.yml' file and dedicated
 'config-[X].yml' for each chapter.
 The order of each chapter is specified in the 'config' slot in the general 
 general 'config.yml'.}
+
+\item{logFile}{(optional) String with path to a log file,
+where output (also error/messages/warnings) should be stored.
+If specified, the entire output is re-directed to this file.}
 
 \item{configFiles}{(optional) Character vector with specific config files
 to be converted from Rmarkdown to Markdown. If
