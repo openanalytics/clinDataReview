@@ -41,6 +41,9 @@
 #' @param quiet Logical, if TRUE (FALSE by default)
 #' progress messages during report execution are not displayed
 #' in the console (see \code{\link[rmarkdown]{render}}).
+#' @param logFile (optional) String with path to a log file,
+#' where output (also error/messages/warnings) should be stored.
+#' If specified, the entire output is re-directed to this file.
 #' @inheritParams medicalMonitoring-common-args-report
 #' @inherit convertMdToHtml return
 #' @author Laure Cougnaud
@@ -51,10 +54,18 @@
 render_medicalMonitoringReport <- function(
 	indexPath = "index.Rmd", 
 	outputDir = "./MOMP", intermediateDir = "./interim",
-	configDir = "./config", 
+	configDir = "./config", logFile = NULL,
 	configFiles = NULL, 
 	extraDirs = c("figures", "tables", "patientProfiles"),
 	quiet = FALSE){
+
+	# log output
+	if(!is.null(logFile)){
+		logFileCon <- file(logFile, "w")
+		sink(file = logFileCon, split = FALSE, type = "message")
+		sink(file = logFileCon, split = FALSE, type = "output", append = TRUE)
+		on.exit({sink(type = "output");sink(type="message")})
+	}
 	
 	if(!dir.exists(configDir))	stop("Config directory doesn't exist.")
 	
@@ -63,7 +74,6 @@ render_medicalMonitoringReport <- function(
 	
 	if(!dir.exists(intermediateDir))	dir.create(intermediateDir, recursive = TRUE)
 	intermediateDir <- normalizePath(intermediateDir)
-	#unlink(outputDir, recursive = TRUE)
 	
 	# extract parameters from general config file
 	configGeneralParams <- getParamsFromConfig(configFile = "config.yml", configDir = configDir)
@@ -141,27 +151,20 @@ render_medicalMonitoringReport <- function(
 			
 			# render report
 			# call each Rmd doc within a new R session
-			# to ensure that current R session doesn't pollute Rmd doc
+			# to ensure that current R session doesn't pollute Rmd doc		
 			resRender <- try(
-				outputRmd <- Rscript_call(
-					fun = rmarkdown::render, 
-					args = list(
-						input = inputRmdFile, 
-						output_file = basename(outputMdFile),
-						output_dir = dirname(outputMdFile),
-						run_pandoc = FALSE,
-						output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
-						env = envReport,
-						encoding = "UTF-8",
-						quiet = quiet
-					)
+				outputRmd <- renderInNewSession(
+					input = inputRmdFile, 
+					output_file = basename(outputMdFile),
+					output_dir = dirname(outputMdFile),
+					env = envReport,
+					quiet = quiet
 				),
 				silent = TRUE
 			)
-	
 				
 			# save knit_meta parameters (contain required Js lib for each report)
-			knitMetaReportFile <- file.path(
+			interimResFile <- file.path(
 				intermediateDir,
 				paste0(file_path_sans_ext(basename(outputMdFile)), ".rds")
 			)
@@ -176,14 +179,16 @@ render_medicalMonitoringReport <- function(
 				)
 				
 				# remove results from previous execution
-				reportIntRes <- c(outputMdFile, knitMetaReportFile)
+				reportIntRes <- c(outputMdFile, interimResFile)
 				reportIntRes <- reportIntRes[file.exists(reportIntRes)]
 				if(length(reportIntRes) > 0)	file.remove(reportIntRes)
 				
 			}else{
 				
 				knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
-				saveRDS(knitMetaReport, file = knitMetaReportFile)
+				sessionInfoReport <- attr(outputRmd, "sessionInfo", exact = TRUE)
+				interimRes <- list(knitMeta = knitMetaReport, sessionInfo = sessionInfoReport)
+				saveRDS(interimRes, file = interimResFile)
 				
 			}
 			
@@ -193,6 +198,7 @@ render_medicalMonitoringReport <- function(
 	
 	## convert all Md files to the HTML report
 	message("Convert all Md files to HTML.")
+	# pandoc print text in console
 	outputFile <- convertMdToHtml(
 		outputDir = outputDir, 
 		configDir = configDir, 
@@ -201,8 +207,7 @@ render_medicalMonitoringReport <- function(
 	)
 	
 	if (length(extraDirs) > 0) 
-	  file.copy(from = extraDirs, to = outputDir, overwrite = TRUE, 
-	            recursive = TRUE)
+	  file.copy(from = extraDirs, to = outputDir, overwrite = TRUE, recursive = TRUE)
 	
 	return(outputFile)
 	
@@ -338,25 +343,32 @@ convertMdToHtml <- function(
 		mdFiles <- mdFiles[!mdFilesMissing]
 	}
 	
-	# Extract knit_meta params
-	interFiles <- file.path(
+	interimResFiles <- file.path(
 		intermediateDir,
 		paste0(file_path_sans_ext(basename(mdFiles)), ".rds")
 	)
-	interFilesMissing <- !file.exists(interFiles)
-	if(any(interFilesMissing)){
+	interimResFileMissing <- !file.exists(interimResFiles)
+	if(any(interimResFileMissing)){
 		warning(paste0(
 			"No intermediate file available for the reports: ", 
-			toString(sQuote(basename(interFiles[interFilesMissing]))), "."
+			toString(sQuote(basename(interimResFiles[interFilesMissing]))), "."
 		), call. = FALSE)
-		interFiles <- interFiles[interFilesMissing]
+		interimResFiles <- interimResFiles[interimResFileMissing]
 	}
-	knit_meta_reports <- c()
-	for(interFile in interFiles){
-		knitMetaReport <- readRDS(interFile)
-		knit_meta_reports <- c(knit_meta_reports, knitMetaReport)
+	knit_meta_reports <- c();sessionInfoReports <- list()
+	for(file in interimResFiles){
+		interimRes <- readRDS(file)
+		knit_meta_reports <- c(knit_meta_reports, interimRes$knit_meta)
+		sessionInfoReports <- c(sessionInfoReports, list(interimRes$sessionInfo))
 	}
 	
+	# include session information in the report
+	sessionInfoMd <- exportSessionInfoToMd(
+		sessionInfos = sessionInfoReports, 
+		mdFiles = mdFiles, 
+		intermediateDir = intermediateDir
+	)
+	mdFiles <- c(mdFiles, sessionInfoMd)
 	
 	# combine all Md documents into one single Md document
 	mdContentList <- lapply(mdFiles, readLines, encoding = 'UTF-8', warn = FALSE)
@@ -379,6 +391,140 @@ convertMdToHtml <- function(
 	res <- file.remove(mdMainFile)
 	
 	return(outputFile)
+	
+}
+
+#' Render a rmarkdown doc in a new session,
+#' with the possibility to save output in a log file,
+#' and saving also session information.
+#' 
+#' Note: this function is inspired from \code{xfun::Rscript_call}
+#' @param input Input file to be rendered.
+#' @param run_pandoc Logical, if TRUE (FALSE by default)
+#' convert Md to specified output with pandoc.
+#' @param output_options List of output options,
+#' by default 'keep_md = TRUE' (keep Markdown file)
+#' @param encoding String with encoding, 'UTF-8' by default.
+#' @param ... Any extra parameters passed to \code{\link[rmarkdown]{render}}
+#' @return Output of the function executed in the new R session 
+#' with additional attribute: 'sessionInfo' containing
+#' the details of the session information in the separated R session.
+#' NULL if the function failed.
+#' @author Laure Cougnaud
+renderInNewSession <- function(
+	input, 
+	run_pandoc = FALSE,
+	output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
+	encoding = "UTF-8",
+	...){
+	
+	argsRender <- c(
+		list(
+			input = input, 
+			run_pandoc = run_pandoc,
+			output_options = output_options,
+			encoding = encoding
+		),
+		list(...)
+	)
+
+	## Run job in a separated session with Rscript
+	
+	# which requires a R script:
+	RFile <- tempfile(fileext = '.R')
+	cat(
+		'local({
+		inputArgs <- commandArgs(trailingOnly = TRUE)
+
+		inputFile <- inputArgs[[1]]
+		input <- readRDS(inputFile)	
+		fct <- input$fct	
+		if(is.character(fct))
+			fct <- eval(parse(text = fct), envir = globalenv())
+		res <- do.call(fct, input$args, envir = globalenv())
+		attr(res, "sessionInfo") <- sessionInfo()
+
+		outputFile <- inputArgs[[2]]
+		saveRDS(object = res, file = outputFile)
+
+		})'
+	, file = RFile)
+	
+	# and input parameters:
+	inputFile <- tempfile(fileext = '.rds')
+	outputFile <- tempfile(fileext = '.rds')
+	on.exit(unlink(c(outputFile, inputFile, RFile)))
+	IOFiles <- list(input = inputFile, output = outputFile)
+	
+	# store fct and input parameters in a temporary file
+	saveRDS(object = list(fct = rmarkdown::render, args = argsRender), file = inputFile)
+	
+	# run in separated session
+	# capture output/messages/errors in output
+	# otherwise these are not included in the logFile (with sink)
+	RscriptPath <- file.path(R.home('bin'), 'Rscript')
+	stderrout <- system2(
+		command = RscriptPath, 
+		args = shQuote(c(RFile, IOFiles, "--verbose")),
+		stderr = TRUE, stdout = TRUE
+	)
+	cat(stderrout, sep = "\n")
+	
+	# load output
+	res <- if(file.exists(outputFile))	readRDS(outputFile)
+	
+	return(res)
+	
+}
+
+#' Merge multiple session information
+#' @param ... objects of type \code{\link{sessionInfo}}
+#' @return \code{\link{sessionInfo}} with combined information
+#' @author Laure Cougnaud
+merge.sessionInfo <- function(...){
+	
+	sessionInfoAll <- do.call(mapply, c(
+		list(FUN = function(...) unique(c(...)), SIMPLIFY = FALSE), 
+		list(...)
+	))
+	class(sessionInfoAll) <- c("sessionInfo", class(sessionInfoAll))
+	
+	return(sessionInfoAll)
+	
+}
+
+#' Combine all session informations across all medical monitoring reports
+#' and export them into a dedicated Markdown document
+#' @param sessionInfos List with \code{\link{sessionInfo}} objects
+#' @param mdFiles Character vector with Markdown files
+#' @inheritParams medicalMonitoring-common-args-report
+#' @return String with path to Markdown file containing the session information
+#' @author Laure Cougnaud
+exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "interim"){
+	
+	# combine session informations
+	sessionInfoAll <- do.call(merge, sessionInfos)
+	sessionInfoFile <- tempfile("sessionInfo", fileext = ".Rmd")
+	cat(
+		'\n\n# Appendix  \n\n## Session information  \n\n',
+		'```{r, echo = FALSE, results = "asis"}\nsessionInfoAll\n```', 
+		file = sessionInfoFile
+	)
+	envReport <- new.env()
+	assign("sessionInfoAll", sessionInfoAll, envir = envReport)
+	sessionInfoMd <- "sessionInfo.md"
+	outputRmd <- renderInNewSession(
+		input = sessionInfoFile, 
+		output_file = sessionInfoMd, 
+		output_dir = intermediateDir, 
+		env = envReport
+	)
+	
+	sessionInfoMdPath <- file.path(intermediateDir, sessionInfoMd)
+	return(sessionInfoMdPath)
+#	reportFirst <- readLines(mdFiles[1], encoding = 'UTF-8', warn = FALSE)
+#	sessionInfoMd <- readLines(file.path(intermediateDir, "sessionInfo.md"), encoding = 'UTF-8', warn = FALSE)
+#	writeLines(text = c(reportFirst, sessionInfoMd), con = mdFiles[1], useBytes = TRUE)
 	
 }
 

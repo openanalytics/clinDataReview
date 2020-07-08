@@ -1,3 +1,5 @@
+0.4.0
+    o render_medicalMonitoringReport: logFile, runFctInNewSession, export combined sessionInfo
 0.3.0
     o collapseHtmlContent: custom 'hideshow' button
     o alertData function
