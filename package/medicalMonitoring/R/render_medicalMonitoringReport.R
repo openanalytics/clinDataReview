@@ -358,7 +358,7 @@ convertMdToHtml <- function(
 	knit_meta_reports <- c();sessionInfoReports <- list()
 	for(file in interimResFiles){
 		interimRes <- readRDS(file)
-		knit_meta_reports <- c(knit_meta_reports, interimRes$knit_meta)
+		knit_meta_reports <- c(knit_meta_reports, interimRes$knitMeta)
 		sessionInfoReports <- c(sessionInfoReports, list(interimRes$sessionInfo))
 	}
 	
