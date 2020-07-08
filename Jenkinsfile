@@ -3,9 +3,6 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
-    triggers {
-        pollSCM('H/15 * * * *')
-    }
     environment {
         IMAGE = 'glpgmedicalmonitoring'
         NS = 'oa'
