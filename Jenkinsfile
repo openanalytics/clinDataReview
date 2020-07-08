@@ -27,7 +27,7 @@ pipeline {
                 }
             }
             steps {
-            	copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/glpgStyle/master', selector: lastSuccessful()
+            	  copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/glpgStyle/master', selector: lastSuccessful()
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGUtilityFct/master', selector: lastSuccessful()   
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGPatientProfiles/master', selector: lastSuccessful()
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGInTextSummaryTable/master', selector: lastSuccessful()   
@@ -69,7 +69,16 @@ pipeline {
                         }
                         stage('Check') {
                             steps {
-                                sh 'ls medicalMonitoring_*.tar.gz && R CMD check medicalMonitoring_*.tar.gz --no-manual'
+                                sh '''
+                                export TESTTHAT_DEFAULT_CHECK_REPORTER="junit"
+                                export TESTTHAT_OUTPUT_FILE="results.xml"
+                                ls medicalMonitoring_*.tar.gz && R CMD check medicalMonitoring_*.tar.gz --no-manual
+                                '''
+                            }
+                            post {
+                                always {
+                                    junit "*.Rcheck/tests/results.xml"
+                                }
                             }
                         }
                         stage('Install') {
