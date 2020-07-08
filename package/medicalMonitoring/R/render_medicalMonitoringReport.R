@@ -136,7 +136,7 @@ render_medicalMonitoringReport <- function(
 			# Extract the template from the package if: 'templateFromPackage' is 'true'
 			if(!is.null(params$templatePackage)){
 				
-				if(file.exists(inputRmdFile)){
+				if(file.exists(inputRmdFile))
 					warning(paste("Document with similar name than",
 						"specified template from", sQuote(params$templatePackage),
 						"for config file: ", sQuote(configFile),
@@ -175,13 +175,14 @@ render_medicalMonitoringReport <- function(
 						)
 						if(inherits(resCheck, "try-error")){
 							warning(
-								paste0("Check of the parameters for config file: ", 
-									sQuote(basename(configFile)), " failed with error: ",
-									attr(resCheck, "condition")$message,
-									", this report is ignored."
+								paste0("The report for the config file: ", 
+									sQuote(basename(configFile)), 
+									" is not created because the check of the parameters",
+									" failed with the error: ",
+									attr(resCheck, "condition")$message
 								), immediate. = TRUE, call. = FALSE
 							)
-							runReport <- FALSE
+							runDocument <- FALSE
 						}
 						
 					}else{
@@ -191,7 +192,6 @@ render_medicalMonitoringReport <- function(
 						, immediate. = TRUE, call. = FALSE)
 					}
 				}
-			}
 			}
 			
 		}
