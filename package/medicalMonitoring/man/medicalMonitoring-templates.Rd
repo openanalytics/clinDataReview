@@ -2,7 +2,11 @@
 % Please edit documentation in R/reporting-templates.R
 \name{medicalMonitoring-templates}
 \alias{medicalMonitoring-templates}
+\alias{renderTemplateDoc}
 \title{Rmarkdown templates for medical monitoring}
+\usage{
+renderTemplateDoc()
+}
 \description{
 Template reports with standard visualizations/tables
 available in the package are described here.

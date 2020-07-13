@@ -156,4 +156,8 @@ createTemplateDoc <- function(){
 #' @evalRd createTemplateDoc()
 #' 
 #' @name medicalMonitoring-templates
-NULL
+renderTemplateDoc <- function() {
+	
+	createTemplateDoc()
+	
+}
