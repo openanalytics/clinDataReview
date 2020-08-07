@@ -1,0 +1,277 @@
+
+<!--- 
+This report compute and visualize counts data for specified dataset and variable(s) of interest.
+
+Input parameters:
+ 
+* Report-specific
+- reportTitle: string with report title
+- reportTitleLevel: integer with level of the report title, 1 for chapter, 2 for section, ...
+- dataFileName: string with name of the file of interest
+- dataProcessing (optional): list with parameters for data processing, see ? medicalMonitoring::processData
+- dataTotalFileName (optional): string with name of the file containing the data total
+- dataTotalProcessing (optional): list with parameters for data processing of the total dataset, see ? medicalMonitoring::processData
+- countVar: character vector with variable to count on
+- parentVar: character vector with variable parent of countVar
+- colorVar (optional): list or character vector with variable to consider for coloring
+This list can be named with the variables in countVar/parentVar to specify different colorings for child/parent variable.
+- colorRange (optional): numeric vector of length 2 with range used for coloring
+- typePlot (optional): string with plot type: 'treemap' and/or 'sunburst' (both by default)
+
+* General:
+- pathDataFolder: string with path to the data folder
+- patientProfilePath: string with relative path where patient profiles are stored
+
+-->
+
+
+```{r countsVisualizationTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
+
+library(knitr)
+opts_chunk$set(
+	echo = FALSE, 
+	warning = FALSE, error = FALSE, message = FALSE, 
+	results = "asis"
+)
+
+knitr::knit_hooks$set(
+	message = function(x, options) {
+		paste('\n\n<div class="alert alert-info">',
+			gsub('##', '\n', x),
+			'</div>', sep = '\n')
+	}
+)
+
+# print warnings where they occur (warn = 0 by default)
+options(warn = 1)
+	
+```
+
+```{r countsVisualizationTemplate-attachParameters}
+
+# Note: find a way to specify defaults for variables
+attach(params)
+# TODO: find a way to specify named vector in YAML
+if(exists("colorVar"))	colorVar <- unlist(colorVar)	else	colorVar <- NULL
+if(!exists("typePlot")) typePlot <- c("treemap", "sunburst")
+if(!exists("patientProfilePath"))	patientProfilePath <- NULL
+
+```
+
+```{r countsVisualizationTemplate-loadPackages}
+
+library(medicalMonitoring)
+library(glpgUtilityFct)
+library(inTextSummaryTable)
+library(plyr)
+
+```
+
+```{r countsVisualizationTemplate-setTitle}
+
+if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
+
+# Create a header at the wanted depth
+cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
+
+```
+
+
+```{r countsVisualizationTemplate-getData}
+
+# Load data
+pathData <- file.path(pathDataFolder, dataFileName)
+
+dataAll <- loadDataADaMSDTM(pathData, verbose = FALSE)
+data <- dataAll[[1]]
+
+# Extract label information
+labelVars <- attr(dataAll, "labelVars")
+
+# Data processing 
+if(exists("dataProcessing")){
+	data <- processData(
+		data = data, 
+		dataPath = pathDataFolder,
+		processing = dataProcessing,
+		verbose = TRUE,
+		labelVars = labelVars
+	)
+	# Labels updated with extra annotation:
+	labelVars <- attr(data, "labelVars")
+}
+
+# Create URL to patient profiles
+if(!is.null(patientProfilePath))
+	data <- createPatientProfileVar(
+		data = data, 
+		patientProfilePath = patientProfilePath,
+		checkExist = FALSE
+	)
+
+## total
+
+if(exists("dataTotalFileName")){
+
+	# Load data
+	pathDataTotal <- file.path(pathDataFolder, dataTotalFileName)
+	
+	dataTotalAll <- loadDataADaMSDTM(pathDataTotal, verbose = FALSE)
+	dataTotal <- dataTotalAll[[1]]
+	
+	# Extract label information
+	labelVarsTotal <- attr(dataTotalAll, "labelVars")
+	
+	# Total data processing
+	if(exists("dataTotalProcessing")){
+		dataTotal <- processData(
+			data = dataTotal, 
+			dataPath = pathDataFolder, 
+			processing = dataTotalProcessing,
+			verbose = TRUE,
+			labelVars = labelVarsTotal,
+			labelData = "total data"
+		)
+	}
+}
+
+```
+
+```{r countsVisualizationTemplate-computeSummaryStatisticsTable}
+		
+	## compute counts
+
+	## extra 'statistics' per group:
+	# combine all paths across patients (should be collapsed with: ', ')
+	# + links
+	statsExtraPP <- if(!is.null(patientProfilePath)){
+		list(
+			statPatientProfilePath = function(data) 
+				toString(sort(unique(data$patientProfilePath))),
+			statPatientProfileLink = function(data)
+				toString(sort(unique(data$patientProfileLink)))
+		)
+	}
+	
+	## statistics of interest
+	# get default counts + stats with subjects profiles path + color variable
+	statsPP <- c(
+		getStats(c("n", "m", "%")),
+		if(!is.null(colorVar))	getStats(type = "Mean"),
+		if(!is.null(patientProfilePath))
+			list(
+				patientProfilePath = quote(statPatientProfilePath),
+				patientProfileLink = quote(statPatientProfileLink)
+			)
+	)
+	
+	# if 'color' is specified, for the computation of the data total across rows
+	# the corresponding specified colorVar of the PARENT variable should be used
+	vars <- c(parentVar, countVar)	
+	if(!is.null(colorVar)){
+		if(!is.null(names(colorVar))){
+			dataTotalRow <- sapply(tail(vars ,-1), function(var){
+				dataTotalRow <- ddply(data, c("USUBJID", parentVar), function(x){
+					parentVarI <- vars[match(var, vars)-1]
+					x[[colorVar[var]]] <- x[[colorVar[parentVarI]]]
+					x
+				})
+			}, simplify = FALSE)
+		}else	dataTotalRow <- NULL
+	}else	dataTotalRow <- NULL
+
+	var <- if(!is.null(colorVar)){
+		if(packageVersion("inTextSummaryTable") < "2.11.0")
+			stop("'inTextSummaryTable' version >= 2.11.0 is required.")
+		c("all", colorVar[countVar])
+	}
+	# compute adverse event table
+
+	tableStats <- computeSummaryStatisticsTable(
+			
+		data = data,
+		rowVar = vars,
+		var = var,
+		# total for column header
+		# contains all subjects (even the one haven't presented an AE)
+		dataTotal = if(exists("dataTotal"))	dataTotal, 
+		
+		# plotly treemap requires records (rows) for each group
+		rowVarTotalInclude = if(length(vars) > 1)	tail(vars, -1),
+		# data considered to computed the total per parent sector
+		dataTotalRow = dataTotalRow,
+		
+		rowOrder = "total",
+		labelVars = labelVars,
+		
+		# statistics of interest
+		# for DT output, include columns with patients
+		stats = statsPP, 
+		# add extra 'statistic': concatenate subject IDs
+		statsExtra = statsExtraPP
+	
+	)
+		
+	# combine counts of adverse events and stat of color variable in the same row
+	if(!is.null(colorVar)){
+		tableStatsCounts <- subset(tableStats, variable == "all" & !isTotal)[, 
+			c(vars, "statN", "statPercN", "statm", "n", "%", "m", if(!is.null(patientProfilePath))	"patientProfileLink")
+		]
+		tableStatsColorVar <- subset(tableStats, variable != "all" & !isTotal)[, c(vars, "statMean", "Mean")]
+		dataPlot <- merge(tableStatsCounts, tableStatsColorVar, all.x = TRUE, by = vars)
+	}else	dataPlot <- subset(tableStats, !isTotal)
+	
+	hoverVars <- c(parentVar, countVar, "n", "%", "m", if(!is.null(colorVar))	"Mean")
+	tableVars <- c(parentVar, countVar, "statN", "statPercN", "statm", if(!is.null(colorVar))	"statMean")
+	
+	labelVars[c("n", "statN")] <- "Number of patients"
+	labelVars[c("%", "statPercN")] <- "Percentage of patients"
+	labelVars[c("m", "statm")] <- "Number of events"
+	labelVars["Mean"] <- paste("Mean", getLabelVar(colorVar[countVar], labelVars = labelVars))
+
+```
+
+```{r countsVisualizationTemplate-createTreemap, eval = "treemap" %in% typePlot}
+
+	cat(getMdHeader(title = "Treemap visualization", level = reportTitleLevel + 1))
+	
+	treemapMonitoring(
+		data = dataPlot,
+		vars = c(parentVar, countVar),
+		valueVar = "statm", valueLab = "Number of events",
+		colorVar = if(!is.null(colorVar))	"statMean",
+		colorRange = if(exists("colorRange"))	colorRange,
+		colorLab = toString(getLabelVar(colorVar[countVar], data = data, labelVars = labelVars)), 
+		hoverVars = hoverVars, 
+		pathVar = if(!is.null(patientProfilePath))	"patientProfileLink", 
+		pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
+		table = TRUE, 
+		tableVars = tableVars,
+		labelVars = labelVars,
+		verbose = TRUE
+	)
+
+```
+
+
+```{r countsVisualizationTemplate-createSunburst, eval = "sunburst" %in% typePlot}
+
+	cat(getMdHeader(title = "Sunburst visualization", level = reportTitleLevel + 1))
+	
+	sunburstMonitoring(
+		data = dataPlot,
+		vars = c(parentVar, countVar),
+		valueVar = "statm", valueLab = "Number of events",
+		colorVar = if(!is.null(colorVar))	"statMean",
+		colorRange = if(exists(colorRange))	colorRange,
+		colorLab = toString(getLabelVar(colorVar[countVar], data = data, labelVars = labelVars)), 
+		hoverVars = hoverVars, 
+		pathVar = if(!is.null(patientProfilePath))	"patientProfileLink", 
+		pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
+		table = TRUE, 
+		tableVars = tableVars,
+		labelVars = labelVars,
+		verbose = TRUE
+	)
+
+```

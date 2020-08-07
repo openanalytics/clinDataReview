@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  
+  "title" : "Medical monitoring template to a visualization of count data",
+  
+  "description" : "This report includes a visualization, currently treemap or sunburst of count data.",
+  
+  "type": "object",
+  
+  "properties": {
+  
+    "template": {
+      "type": "string",
+      "pattern": "countsVisualizationTemplate.Rmd",
+      "doc": "name of the medical monitoring template"
+    },
+    "templatePackage": {
+      "type": "string",
+      "pattern": "medicalMonitoring",
+      "doc": "package from which the template should be extracted"
+     },
+    
+    "reportTitle": {
+      "type": "string",
+      "doc": "header title"
+    },
+    "reportTitleLevel": {
+      "type": "integer",
+      "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    },
+    "dataFileName" : {
+      "type": "string",
+      "doc": "name of the data file of interest"
+    },
+    "dataProcessing": {
+      "type": "array",
+      "doc": "data processing parameters, passed to medicalMonitoring::processData"
+    },
+    "dataTotalFileName": {
+      "type": "string",
+      "doc": "filename of the total dataset"
+    },
+    "dataTotalProcessing": {
+      "type": "array",
+      "doc": "data processing parameters for 'dataTotalFileName', passed to medicalMonitoring::processData"
+    },
+    "countVar": {
+      "type": "string",
+      "doc": "variable of data to count on"
+    },
+    "parentVar": {
+      "type": ["string", "array"],
+      "doc": "parent variable(s) of the counting variable, used for grouping"
+    },
+    "colorVar": {
+      "type": ["string", "object"],
+      "doc": "numeric variable(s) to consider for coloring, named by count/parent variable if different for each variable"
+    },
+    "colorRange": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "doc": "Color variable range for the visualization"
+    },
+    "typePlot": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(sunburst|treemap)$",
+      "doc": "Plot type"
+    }
+  },
+  
+  "required": ["template", "reportTitle", "dataFileName", "countVar"],
+  
+/*   doesn't allow extra parameters in the config files */
+  "additionalProperties": false 
+  
+}
