@@ -113,22 +113,26 @@ createTemplateDoc <- function(){
 				
 		fileSpecPath <- templateSpecFilePaths[template]
 		if(!is.na(fileSpecPath)){
+			
+			# template general parameters
 			templateSpec <- jsonlite::fromJSON(fileSpecPath)
 			title <- templateSpec$title
 			desc <- templateSpec$description
-			reqParams <- templateSpec$req
+			paramsReq <- templateSpec$req
+			
+			# build doc for each parameter
 			paramsDocList <- lapply(names(templateSpec$properties), function(param){
-				pDoc <- templateSpec$properties[[param]]
-				pDocVect <- c(
-					if(!param %in% reqParams)	"(optional)",
-					pDoc$type,
-					if(!is.null(pDoc$enum))	paste("with value:", sQuote(pDoc$enum)),
-					if(!is.null(pDoc$doc))	pDoc$doc
+				pDocText <- getRdDocFromJSONSch(
+					jsonSch = templateSpec$properties[[param]], 
+					required = (!param %in% paramsReq)
 				)
-				pDocText <- paste(pDocVect, collapse = " ")
 				getItem(pDocText, name = paste0("\\code{", param, "}"))
 			})
+	
+			# combine across params
 			paramsDoc <- getItemize(do.call(c, paramsDocList))
+			
+			# create dedicated section for the template:
 			c(
 				paste0("\\section{", ifelse(!is.null(title), title, template), "}{"),
 				desc,
@@ -142,9 +146,60 @@ createTemplateDoc <- function(){
 	})
 
 	docRox2All <- do.call(c, docRox2)
+	
+	docRoxParType <- paste0(
+		"\\section{Parameter type}{Please note that the type mentioned below ",
+		"corresponds to the type in the config file (YAML/JSON format).",
+		"The mapping to R data type is as followed:",
+		"\\itemize{",
+		"\\item{string: }{character vector of length 1}",
+		"\\item{integer: }{integer vector of length 1}",
+		"\\item{array: }{list without names}",
+		"\\item{object: }{list with names}",
+		"}}"
+	)
+	docRox2All <- c(docRoxParType, docRox2All)
 #	cat(docRox2All)
 	
 	return(docRox2All)
+	
+}
+
+#' Get Roxygen documentation from JSON schema specification
+#' for a specific parameter.
+#' @param jsonSch List with JSON Schema
+#' for a specific parameter
+#' @param required (optional) Logical, if TRUE (FALSE by default)
+#' this parameter is required.
+#' @return String with Roxygen documentation.
+#' @author Laure Cougnaud
+getRdDocFromJSONSch <- function(jsonSch, required = FALSE){
+	
+	pDocVect <- c()
+	# required/optional
+	if(required) 
+		pDocVect <- c("(optional)", pDocVect)
+	# type(s)
+	pDocVect <- c(pDocVect, paste(jsonSch$type, collapse = " or "))
+	# items:
+	if(!is.null(jsonSch$items))
+		pDocVect <- c(pDocVect, paste("of", jsonSch$items$type))
+	if(any(c("minItems", "maxItems") %in% names(jsonSch))){
+		itemSize <- paste(
+			"of length:", toString(c(
+				if(!is.null(jsonSch$minItems))	paste("at least", jsonSch$minItems),
+				if(!is.null(jsonSch$maxItems))	paste(jsonSch$maxItems, "at most")
+			))
+		)
+		pDocVect <- c(pDocVect, itemSize)
+	}
+	if(!is.null(jsonSch$pattern))
+		pDocVect <- c(pDocVect, paste("with value as:", sQuote(jsonSch$pattern)))
+	if(!is.null(jsonSch$doc))	
+		pDocVect <- c(pDocVect, paste("containing", jsonSch$doc))
+	pDocText <- paste(pDocVect, collapse = " ")
+	
+	return(pDocText)
 	
 }
 
@@ -156,8 +211,4 @@ createTemplateDoc <- function(){
 #' @evalRd createTemplateDoc()
 #' 
 #' @name medicalMonitoring-templates
-renderTemplateDoc <- function() {
-	
-	createTemplateDoc()
-	
-}
+NULL
