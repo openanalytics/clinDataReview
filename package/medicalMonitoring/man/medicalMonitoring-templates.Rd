@@ -2,22 +2,55 @@
 % Please edit documentation in R/reporting-templates.R
 \name{medicalMonitoring-templates}
 \alias{medicalMonitoring-templates}
-\alias{renderTemplateDoc}
 \title{Rmarkdown templates for medical monitoring}
-\usage{
-renderTemplateDoc()
-}
 \description{
 Template reports with standard visualizations/tables
 available in the package are described here.
+}
+\section{Parameter type}{Please note that the type mentioned below corresponds to the type in the config file (YAML/JSON format).The mapping to R data type is as followed:\itemize{\item{string: }{character vector of length 1}\item{integer: }{integer vector of length 1}\item{array: }{list without names}\item{object: }{list with names}}}
+\section{Medical monitoring template to a visualization of count data}{
+This report compute counts of variable(s) of interest and visualize them in a treemap and/or sunburst.
+The following parameters are available:
+\itemize{
+\item{\code{template}: }{string with value as: ‘countsVisualizationTemplate.Rmd’ containing name of the template report}
+\item{\code{templatePackage}: }{(optional) string with value as: ‘medicalMonitoring’ containing package from which the template should be extracted}
+\item{\code{reportTitle}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{dataFileName}: }{string containing name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string containing filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array containing data processing parameters for 'dataTotalFileName', passed to \link[medicalMonitoring]{processData}}
+\item{\code{countVar}: }{string containing variable of data to count on}
+\item{\code{parentVar}: }{(optional) string or array containing parent variable(s) of the counting variable, used for grouping}
+\item{\code{colorVar}: }{(optional) string or object containing numeric variable(s) to consider for coloring, named by count/parent variable if different for each variable}
+\item{\code{colorRange}: }{(optional) array of number of length: at least 2, 2 at most containing color variable range for the visualization}
+\item{\code{typePlot}: }{(optional) string with value as: ‘^(sunburst|treemap)$’ containing plot type}
+}
 }
 \section{Medical monitoring template to create a report division}{
 This report includes a division, i.e. extra chapter, section of subsection in the report.
 The following parameters are available:
 \itemize{
-\item{\code{template}: }{string name of the medical monitoring template}
-\item{\code{templatePackage}: }{(optional) string package from which the template should be extracted}
-\item{\code{reportTitle}: }{string header title}
-\item{\code{reportTitleLevel}: }{(optional) integer header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{template}: }{string with value as: ‘divisionTemplate.Rmd’ containing name of the template report}
+\item{\code{templatePackage}: }{(optional) string with value as: ‘medicalMonitoring’ containing package from which the template should be extracted}
+\item{\code{reportTitle}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+}
+}
+\section{Medical monitoring template to create a listing}{
+This report includes a list for the variables and data of interest, displayed in an interactive table.
+The following parameters are available:
+\itemize{
+\item{\code{template}: }{string with value as: ‘listingTemplate.Rmd’ containing name of the template report}
+\item{\code{templatePackage}: }{(optional) string with value as: ‘medicalMonitoring’ containing package from which the template should be extracted}
+\item{\code{reportTitle}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{dataFileName}: }{string containing name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string containing filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array containing data processing parameters for 'dataTotalFileName', passed to \link[medicalMonitoring]{processData}}
+\item{\code{tableParams}: }{(optional) object containing parameters to create the table, passed to \link[medicalMonitoring]{tableMonitoring}}
+\item{\code{comparisonTableType}: }{(optional) string with value as: ‘^(none|newData-diff|table-comparison-interactive)$’ containing output type of the comparison table}
+\item{\code{comparisonTableParams}: }{(optional) object containing parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}}
 }
 }

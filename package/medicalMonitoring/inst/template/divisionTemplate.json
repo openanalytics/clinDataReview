@@ -12,7 +12,7 @@
     "template": {
       "type": "string",
       "pattern": "divisionTemplate.Rmd",
-      "doc": "name of the medical monitoring template"
+      "doc": "name of the template report"
     },
     "templatePackage": {
       "type": "string",
@@ -30,7 +30,7 @@
     
   },
   
-  "required": ["template", "reportTitle"],
+  "required": ["template", "templatePackage", "reportTitle"],
   
 /*   doesn't allow extra parameters in the config files */
   "additionalProperties": false 

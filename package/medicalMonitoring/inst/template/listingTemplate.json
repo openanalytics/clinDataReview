@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/schema#",
   
-  "title" : "Medical monitoring template to a visualization of count data",
+  "title" : "Medical monitoring template to create a listing",
   
-  "description" : "This report compute counts of variable(s) of interest and visualize them in a treemap and/or sunburst.",
+  "description" : "This report includes a list for the variables and data of interest, displayed in an interactive table.",
   
   "type": "object",
   
@@ -11,7 +11,7 @@
   
     "template": {
       "type": "string",
-      "pattern": "countsVisualizationTemplate.Rmd",
+      "pattern": "listingTemplate.Rmd",
       "doc": "name of the template report"
     },
     "templatePackage": {
@@ -19,7 +19,6 @@
       "pattern": "medicalMonitoring",
       "doc": "package from which the template should be extracted"
      },
-    
     "reportTitle": {
       "type": "string",
       "doc": "header title"
@@ -44,36 +43,22 @@
       "type": "array",
       "doc": "data processing parameters for 'dataTotalFileName', passed to \\link[medicalMonitoring]{processData}"
     },
-    "countVar": {
+    "tableParams": {
+      "type": "object",
+      "doc": "parameters to create the table, passed to \\link[medicalMonitoring]{tableMonitoring}"
+    },
+    "comparisonTableType": {
       "type": "string",
-      "doc": "variable of data to count on"
+      "doc": "output type of the comparison table",
+      "pattern": "^(none|newData-diff|table-comparison-interactive)$"
     },
-    "parentVar": {
-      "type": ["string", "array"],
-      "doc": "parent variable(s) of the counting variable, used for grouping"
-    },
-    "colorVar": {
-      "type": ["string", "object"],
-      "doc": "numeric variable(s) to consider for coloring, named by count/parent variable if different for each variable"
-    },
-    "colorRange": {
-      "type": "array",
-      "items": {
-        "type": "number"
-      },
-      "minItems": 2,
-      "maxItems": 2,
-      "doc": "color variable range for the visualization"
-    },
-    "typePlot": {
-      "type": "string",
-      "minLength": 1,
-      "pattern": "^(sunburst|treemap)$",
-      "doc": "plot type"
+    "comparisonTableParams": {
+      "type": "object",
+      "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}"
     }
   },
   
-  "required": ["template", "templatePackage", "reportTitle", "dataFileName", "countVar"],
+  "required": ["template", "templatePackage", "reportTitle", "dataFileName"],
   
 /*   doesn't allow extra parameters in the config files */
   "additionalProperties": false 
