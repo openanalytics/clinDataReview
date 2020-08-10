@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  
+  "title" : "Medical monitoring generic template for visualization",
+  
+  "description" : "This report visualized input data with a function of the medical monitoring package.",
+  
+  "type": "object",
+  
+  "properties": {
+  
+    "template": {
+      "type": "string",
+      "pattern": "plotTemplate.Rmd",
+      "doc": "name of the template report"
+    },
+    "templatePackage": {
+      "type": "string",
+      "pattern": "medicalMonitoring",
+      "doc": "package from which the template should be extracted"
+     },
+    
+    "reportTitle": {
+      "type": "string",
+      "doc": "header title"
+    },
+    "reportTitleLevel": {
+      "type": "integer",
+      "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    },
+    
+    "dataFileName" : {
+      "type": "string",
+      "doc": "name of the data file of interest"
+    },
+    "dataProcessing": {
+      "type": "array",
+      "doc": "data processing parameters, passed to \\link[medicalMonitoring]{processData}"
+    },
+    
+    "plotFunction": {
+      "type": "string",
+      "pattern": "^(timeProfileIntervalPlot|scatterplotMonitoring)$",
+      "doc": "plotting function of the package to consider"
+    },
+    "plotParams": {
+      "type": "object",
+      "doc": "parameters for the plotting function"
+    },
+    
+    "comparisonTableType": {
+      "type": "string",
+      "doc": "output type of the comparison table",
+      "pattern": "^(none|newData-diff|table-comparison-interactive)$"
+    },
+    "comparisonTableParams": {
+      "type": "object",
+      "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}"
+    },
+    
+    "loopingVar": {
+      "type": ["array", "string"],
+      "doc": "data variable(s) to loop over, for which each output should be created"
+    },
+    "loopingNMax": {
+      "type": "integer",
+      "doc": "maximum number of elements of \\code{loopingVar} to include in the report"
+    }
+    
+  },
+  
+  "required": ["template", "templatePackage", "reportTitle", "dataFileName", "plotFunction", "plotParams"],
+  
+  /*   doesn't allow extra parameters in the config files */
+  "additionalProperties": false
+  
+}

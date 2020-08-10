@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/schema#",
   
-  "title" : "Medical monitoring template to a visualization of count data",
+  "title" : "Medical monitoring template for a visualization of count data",
   
-  "description" : "This report compute counts of variable(s) of interest and visualize them in a treemap and/or sunburst.",
+  "description" : "This report compute counts of variable(s) of interest and visualize them with a treemap and/or sunburst.",
   
   "type": "object",
   
