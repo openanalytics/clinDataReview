@@ -3,7 +3,7 @@
   
   "title" : "Medical monitoring generic template for visualization",
   
-  "description" : "This report visualized input data with a function of the medical monitoring package.",
+  "description" : "This report visualizes input data with a function of the medical monitoring package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).",
   
   "type": "object",
   

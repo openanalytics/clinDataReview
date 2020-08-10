@@ -112,11 +112,11 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 	
 	# Create URL to patient profiles
 	if(!is.null(patientProfilePath))
-	data <- createPatientProfileVar(
-		data = data, 
-		patientProfilePath = patientProfilePath,
-		checkExist = FALSE
-	)
+		data <- createPatientProfileVar(
+			data = data, 
+			patientProfilePath = patientProfilePath,
+			checkExist = FALSE
+		)
 	
 	data
 	
@@ -202,7 +202,7 @@ listPlots <- dlply(data, loopingVar, function(dataI){
 		list(
 			data = dataI, labelVars = labelVars, 
 			table = TRUE,
-			pathVar = "patientProfilePath",
+			pathVar = if(!is.null(patientProfilePath))	"patientProfilePath",
 			id = id,
 			verbose = TRUE
 		)
