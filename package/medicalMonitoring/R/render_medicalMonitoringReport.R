@@ -155,7 +155,7 @@ render_medicalMonitoringReport <- function(
 				}else{
 					
 					# copy file to working directory
-					tmp <- file.copy(from = pathTemplate, to = ".")
+					tmp <- file.copy(from = pathTemplate, to = ".", overwrite = TRUE)
 					
 					# Extract the config file
 					configSpecFile <- file_path_sans_ext(inputRmdFile)

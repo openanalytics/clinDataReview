@@ -83,41 +83,8 @@ if(length(pathFiles) == 0)
 dataAll <- loadDataADaMSDTM(files = pathFiles)
 labelVars <- attr(dataAll, "labelVars")
 
-cat(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."))
+message(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."))
 
-```
-
-```{r patientProfiles-subsetData}	
-	
-	# extract the subjects of interest for the visualization
-	subjectSubset <- NULL
-	if(!is.null(params$subsetDataset)){
-		
-		if(params$subsetDataset %in% names(dataAll)){
-			
-			dataSubset <- dataAll[[params$subsetDataset]]
-			if(!is.null(params$subsetVar) & !is.null(params$subsetValue) &&
-				params$subsetVar %in% colnames(dataSubset)){
-				dataSubset <- dataSubset[which(
-					dataSubset[, params$subsetVar] %in% params$subsetValue
-				), ]
-			}
-			
-			subjectSubset <- unique(dataSubset$USUBJID)
-			
-			if(!is.null(params$subsetSample) && length(params$subsetSample) < length(subjectSubset)){
-				subjectSubset <- sample(x = subjectSubset, size = params$subsetSample)
-			}
-			
-			if(length(subjectSubset) == 0)
-				stop("No subjects are retained after filtering.")
-			
-		}else{
-			warning(paste("The specified data subset is not used because the",
-				params$subsetDataset, "dataset not available."))
-		}
-	}
-	
 ```
 
 ```{r patientProfilesTemplate-utilityFct}
@@ -307,7 +274,7 @@ of the report
 ```{r patientProfilesTemplate-table, eval = exists("tableParams")}
 
 	cat("The table below summarizes the subject of interests for the study,",
-		"with their associated subject profile.")
+		"with their associated subject profile.\n")
 
 	tableParams <- getDataForParams(tableParams)
 

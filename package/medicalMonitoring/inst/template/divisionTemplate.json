@@ -10,13 +10,11 @@
   "properties": {
   
     "template": {
-      "type": "string",
-      "pattern": "divisionTemplate.Rmd",
+      "const": "divisionTemplate.Rmd",
       "doc": "name of the template report"
     },
     "templatePackage": {
-      "type": "string",
-      "pattern": "medicalMonitoring",
+      "const": "medicalMonitoring",
       "doc": "package from which the template should be extracted"
      },
     "reportTitle": {

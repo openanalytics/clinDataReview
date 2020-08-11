@@ -10,13 +10,11 @@
   "properties": {
   
     "template": {
-      "type": "string",
-      "pattern": "patientProfilesTemplate.Rmd",
+      "const": "patientProfilesTemplate.Rmd",
       "doc": "name of the template report"
     },
     "templatePackage": {
-      "type": "string",
-      "pattern": "medicalMonitoring",
+      "const": "medicalMonitoring",
       "doc": "package from which the template should be extracted"
      },
     
@@ -27,6 +25,11 @@
     "reportTitleLevel": {
       "type": "integer",
       "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    },
+    
+    "createPatientProfiles": {
+      "type": "boolean",
+      "doc": "Should the patient profiles be created or only loaded from a previous execution?"
     },
     
     "patientProfilesGeneralParams": {
@@ -42,7 +45,7 @@
         "properties": {
           "typePlot": {
             "type": "string",
-            "pattern": "text|line|interval|event",
+            "enum": ["text", "line", "interval", "event"],
             "doc": "plot type, used to get the appropriate plot module function: \\itemize{\\item{'text': }{\\link[patientProfilesVis]{subjectProfileTextPlot}}\\item{'line': }{\\link[patientProfilesVis]{subjectProfileLinePlot}}\\item{'interval': }{\\link[patientProfilesVis]{subjectProfileIntervalPlot}}\\item{'event': }{\\link[patientProfilesVis]{subjectProfileEventPlot}}}"
           },
           "dataFileName": {
@@ -69,28 +72,24 @@
     },
     
     "tableParams": {
-      "type": "array",
+      "type": "object",
       "doc": "parameters specifying a table containing data of interest and links to created patient profiles",
-      "items": {
-        "type": "object",
-        "properties": {
-         "dataFileName": {
-            "type": "string",
-            "doc": "name of the data file to display in the table"
-          },
-          "dataProcessing": {
-            "type": "array",
-            "doc": "data processing parameters, passed to \\link[medicalMonitoring]{processData}"
-          },
+      "properties": {
+        "dataFileName": {
+          "type": "string",
+          "doc": "name of the data file to display in the table"
+         },
+         "dataProcessing": {
+           "type": "array",
+           "doc": "data processing parameters, passed to \\link[medicalMonitoring]{processData}"
+         },
          "vars": {
             "type": "array",
             "doc": "variable(s) of data to display in the table"
-          }
-        },
-        "required": ["dataFileName"]
-      }
-    }
-    
+         }
+      },
+      "required": ["dataFileName"]   
+    } 
   },
   
   "required": ["template", "templatePackage", "reportTitle", "patientProfilesParams"],
