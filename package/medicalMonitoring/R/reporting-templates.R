@@ -55,29 +55,16 @@ getPathTemplate <- function(file, package = "medicalMonitoring"){
 #' available in the 'template' folder of the package.
 #' 
 #' If a JSON schema file available, the information relative
-#' to the template is extracted from this file:
-#' \itemize{
-#' \item{'title' is used as Rd section header}
-#' \item{'description' is included in the text}
-#' \item{parameters are extracted from the 'properties' tag: }{
-#' \itemize{
-#' \item{'type': }{object type}
-#' \item{'enum' (optional): }{required value for the parameter}
-#' \item{'doc' (optional): }{documentation for the parameter}
-#' }
-#' If a parameter is required, it should be listed in the 'required'
-#' tag of the schema (outside of the 'properties' tag).
-#' }
-#' }
+#' to the template is extracted from this file with the function
+#' \code{JSONSchToRd}.
 #' @return Character vector with Rd code containing description
 #' for all template documents.
-#' @importFrom tools file_path_sans_ext
 #' @references \href{JSON schema specification}{https://json-schema.org/understanding-json-schema/}
 #' @author Laure Cougnaud
 createTemplateDoc <- function(){
 		
 	getBaseName <- function(path, type){
-		bn <- file_path_sans_ext(basename(path))
+		bn <- basename(path)
 		if(any(duplicated(bn)))	stop(paste("Duplicated", type, "files."))
 		return(bn)
 	}
@@ -116,30 +103,8 @@ createTemplateDoc <- function(){
 			
 			# template general parameters
 			templateSpec <- jsonlite::fromJSON(fileSpecPath)
-			title <- templateSpec$title
-			desc <- templateSpec$description
-			paramsReq <- templateSpec$req
-			
-			# build doc for each parameter
-			paramsDocList <- lapply(names(templateSpec$properties), function(param){
-				pDocText <- getRdDocFromJSONSch(
-					jsonSch = templateSpec$properties[[param]], 
-					required = (!param %in% paramsReq)
-				)
-				getItem(pDocText, name = paste0("\\code{", param, "}"))
-			})
-	
-			# combine across params
-			paramsDoc <- getItemize(do.call(c, paramsDocList))
-			
-			# create dedicated section for the template:
-			c(
-				paste0("\\section{", ifelse(!is.null(title), title, template), "}{"),
-				desc,
-				"The following parameters are available:",
-				paramsDoc,
-				"}"
-			)
+			JSONSchToRd(jsonSch = templateSpec, title = template)
+
 		}else{
 			getItem(template)
 		}
@@ -149,12 +114,12 @@ createTemplateDoc <- function(){
 	
 	docRoxParType <- paste0(
 		"\\section{Parameter type}{Please note that the type mentioned below ",
-		"corresponds to the type in the config file (YAML/JSON format).",
+		"corresponds to the type in the config file (in YAML/JSON format).",
 		"The mapping to R data type is as followed:",
 		"\\itemize{",
 		"\\item{string: }{character vector of length 1}",
 		"\\item{integer: }{integer vector of length 1}",
-		"\\item{array: }{list without names}",
+		"\\item{array: }{vector/list without names}",
 		"\\item{object: }{list with names}",
 		"}}"
 	)
@@ -165,49 +130,122 @@ createTemplateDoc <- function(){
 	
 }
 
-#' Get Roxygen documentation from JSON schema specification
-#' for a specific parameter.
-#' @param jsonSch List with JSON Schema
-#' for a specific parameter
-#' @param required (optional) Logical, if TRUE (FALSE by default)
-#' this parameter is required.
-#' @return String with Roxygen documentation.
+
+#' Get R Documentation from a JSON schema.
+#' 
+#' Note: this function doesn't support the full JSON schema
+#' specification, currently only the functionalities
+#' required by the templates of the package are implemented.
+#' 
+#' @section Supported JSON schema tags: 
+#' \itemize{
+#' \item{'title' is used as Rd section header}
+#' \item{'description' is included in the text}
+#' \item{parameters are extracted from the following 'properties' tag: }{
+#' \itemize{
+#' \item{'type': }{object type}
+#' \item{'doc': }{documentation for the parameter (custom JSON schema tag).
+#' This can contain any Roxygen tags, e.g.: \code{\link[package]{function}}}.
+#' \item{'pattern' (optional): }{required value for the parameter}
+#' \item{'items' (optional): }{JSON schema for the different elements of an 'object'}
+#' \item{'minItems'/'maxItems' (optional): }{minimum/maximum number of elements in an 'array'}
+#' }
+#' If a parameter is required, it should be listed in the 'required'
+#' tag of the schema (outside of the 'properties' tag).
+#' }
+#' }
+#' @param jsonSch List with JSON schema, as returned by \code{\link[jsonlite]{fromJSON}}.
+#' @param title (optional) String with title, only used if the JSON schema 'title' tag
+#' is not available.
+#' @return Character vector with R documentation for the specified JSON schema.
 #' @author Laure Cougnaud
-getRdDocFromJSONSch <- function(jsonSch, required = FALSE){
+JSONSchToRd <- function(jsonSch, title = NULL){
 	
-	pDocVect <- c()
-	# required/optional
-	if(required) 
-		pDocVect <- c("(optional)", pDocVect)
-	# type(s)
-	pDocVect <- c(pDocVect, paste(jsonSch$type, collapse = " or "))
-	# items:
-	if(!is.null(jsonSch$items))
-		pDocVect <- c(pDocVect, paste("of", jsonSch$items$type))
-	if(any(c("minItems", "maxItems") %in% names(jsonSch))){
-		itemSize <- paste(
-			"of length:", toString(c(
-				if(!is.null(jsonSch$minItems))	paste("at least", jsonSch$minItems),
-				if(!is.null(jsonSch$maxItems))	paste(jsonSch$maxItems, "at most")
-			))
+	paramsReq <- jsonSch$req
+	
+	# build doc for each parameter
+	paramsDocList <- lapply(names(jsonSch$properties), function(param){
+				
+		jsonSchPropParam <- jsonSch$properties[[param]] 
+				
+		pDocVect <- c()
+		
+		# required/optional
+		isRequired <- (!param %in% paramsReq)
+		if(isRequired)	pDocVect <- c("(optional)", pDocVect)
+		
+		# type(s)
+		pDocVect <- c(pDocVect, paste(jsonSchPropParam$type, collapse = " or "))
+		
+		# for list ('object'): type of elements in the list
+		if(!is.null(jsonSchPropParam$items))
+			pDocVect <- c(pDocVect, paste("of", jsonSchPropParam$items$type))
+		
+		# for array of object, might be nested
+		if("items" %in% names(jsonSchPropParam)){
+			
+			items <- jsonSchPropParam[["items"]]
+			pDocItems <- JSONSchToRd(jsonSch = items)
+			pDocVect <- c(pDocVect, pDocItems)
+			
+		}
+		
+		# for array: min/max number of items
+		if(any(c("minItems", "maxItems") %in% names(jsonSchPropParam))){
+			itemSize <- paste(
+				"of length:", toString(c(
+					if(!is.null(jsonSchPropParam$minItems))	paste("at least", jsonSchPropParam$minItems),
+					if(!is.null(jsonSchPropParam$maxItems))	paste(jsonSchPropParam$maxItems, "at most")
+				))
+			)
+			pDocVect <- c(pDocVect, itemSize)
+		}
+		
+		# pattern (for fixed parameter)
+		if(!is.null(jsonSchPropParam$pattern))
+			pDocVect <- c(pDocVect, paste("with value as:\\emph{", sQuote(jsonSchPropParam$pattern), "}"))
+		
+		# Rd doc
+		if(!is.null(jsonSchPropParam$doc))	
+			pDocVect <- c(pDocVect, paste("containing", jsonSchPropParam$doc))
+		
+		# combine all elements to build the doc
+		pDocText <- paste(pDocVect, collapse = " ")
+				
+		pDocName <- paste0(
+			"\\code{", 
+			if(isRequired)	"\\strong{",
+			param, 
+			if(isRequired)	"}",
+			"}"
 		)
-		pDocVect <- c(pDocVect, itemSize)
-	}
-	if(!is.null(jsonSch$pattern))
-		pDocVect <- c(pDocVect, paste("with value as:", sQuote(jsonSch$pattern)))
-	if(!is.null(jsonSch$doc))	
-		pDocVect <- c(pDocVect, paste("containing", jsonSch$doc))
-	pDocText <- paste(pDocVect, collapse = " ")
+		getItem(pDocText, name = pDocName)
+		
+	})
 	
-	return(pDocText)
+	# combine across params
+	paramsDoc <- getItemize(do.call(c, paramsDocList))
+	
+	if(is.null(title))	title <- jsonSch$title
+	desc <- jsonSch$description
+	
+	res <- c(
+		if(!is.null(title))	paste0("\\section{", title, "}{"),
+		if(!is.null(desc))	desc,
+		"\\cr The following parameters are available:", paramsDoc, 
+		if(!is.null(title))	"}"
+	)
+	
+	return(res)
 	
 }
 
 #' Rmarkdown templates for medical monitoring
 #' 
 #' Template reports with standard visualizations/tables
-#' available in the package are described here. 
+#' available in the package are described here.
 #' 
+#' For each template, required parameters are indicated in \strong{bold}. 
 #' @evalRd createTemplateDoc()
 #' 
 #' @name medicalMonitoring-templates

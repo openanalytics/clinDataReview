@@ -187,7 +187,7 @@ render_medicalMonitoringReport <- function(
 						
 					}else{
 						warning(
-							"No config parameter available,",
+							"No config parameter available, ",
 							"input parameters for the report are not checked."
 						, immediate. = TRUE, call. = FALSE)
 					}
