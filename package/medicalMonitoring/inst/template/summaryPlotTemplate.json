@@ -10,13 +10,11 @@
   "properties": {
   
     "template": {
-      "type": "string",
-      "pattern": "summaryPlotTemplate.Rmd",
+      "const": "summaryPlotTemplate.Rmd",
       "doc": "name of the template report"
     },
     "templatePackage": {
-      "type": "string",
-      "pattern": "medicalMonitoring",
+      "const": "medicalMonitoring",
       "doc": "package from which the template should be extracted"
      },
     
@@ -57,7 +55,7 @@
     
     "plotFunction": {
       "type": "string",
-      "pattern": "^(timeProfileIntervalPlot|scatterplotMonitoring|sunburstMonitoring|treemapMonitoring|barplotMonitoring)$",
+      "enum": ["timeProfileIntervalPlot", "scatterplotMonitoring", "sunburstMonitoring", "treemapMonitoring", "barplotMonitoring"],
       "doc": "plotting function to visualize summary data"
     },
     "plotParams": {

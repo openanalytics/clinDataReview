@@ -10,13 +10,11 @@
   "properties": {
   
     "template": {
-      "type": "string",
-      "pattern": "summaryTableTemplate.Rmd",
+      "const": "summaryTableTemplate.Rmd",
       "doc": "name of the template report"
     },
     "templatePackage": {
-      "type": "string",
-      "pattern": "medicalMonitoring",
+      "const": "medicalMonitoring",
       "doc": "package from which the template should be extracted"
      },
     
@@ -62,7 +60,7 @@
     "comparisonTableType": {
       "type": "string",
       "doc": "output type of the comparison table",
-      "pattern": "^(none|newData-diff|table-comparison-interactive)$"
+      "enum": ["none", "newData-diff", "table-comparison-interactive"]
     },
     "comparisonTableParams": {
       "type": "object",

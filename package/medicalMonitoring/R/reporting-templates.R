@@ -136,6 +136,8 @@ createTemplateDoc <- function(){
 #' \item{'pattern' (optional): }{required value for the parameter}
 #' \item{'items' (optional): }{JSON schema for the different elements of an 'object'}
 #' \item{'minItems'/'maxItems' (optional): }{minimum/maximum number of elements in an 'array'}
+#' \item{'enum' (optional): }{set of possible values}
+#' \item{'const' (optional): }{fixed value for the parameter (a.k.a 'constant')}
 #' }
 #' If a parameter is required, it should be listed in the 'required'
 #' tag of the schema (outside of the 'properties' tag).
@@ -179,7 +181,15 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			if(!isRequired)	pDocVect <- c("(optional)", pDocVect)
 			
 			# type(s)
-			pDocVect <- c(pDocVect, paste(jsonSchPropParam$type, collapse = " or "))
+			type <- jsonSchPropParam$type
+			if(!is.null(type))
+				pDocVect <- c(pDocVect, paste(type, collapse = " or "))
+			
+			# constant
+			const <- jsonSchPropParam$const
+			if(!is.null(const)){
+				pDocVect <- c(pDocVect, paste("string set to:", sQuote(const)))
+			}
 			
 			# for list ('object'): type of elements in the list
 			items <- jsonSchPropParam[["items"]]
@@ -207,6 +217,9 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			# pattern (for fixed parameter)
 			if(!is.null(jsonSchPropParam$pattern))
 				pDocVect <- c(pDocVect, paste("with value as:\\emph{", sQuote(jsonSchPropParam$pattern), "}"))
+			
+			if(!is.null(jsonSchPropParam$enum))
+				pDocVect <- c(pDocVect, paste("among: \\emph{", toString(sQuote(jsonSchPropParam$enum)), "}"))
 			
 			# Rd doc
 			if(!is.null(jsonSchPropParam$doc))	

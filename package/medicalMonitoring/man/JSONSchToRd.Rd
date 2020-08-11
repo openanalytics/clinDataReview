@@ -34,6 +34,8 @@ This can contain any Roxygen tags, e.g.: \code{\link[package]{function}}}.
 \item{'pattern' (optional): }{required value for the parameter}
 \item{'items' (optional): }{JSON schema for the different elements of an 'object'}
 \item{'minItems'/'maxItems' (optional): }{minimum/maximum number of elements in an 'array'}
+\item{'enum' (optional): }{set of possible values}
+\item{'const' (optional): }{fixed value for the parameter (a.k.a 'constant')}
 }
 If a parameter is required, it should be listed in the 'required'
 tag of the schema (outside of the 'properties' tag).
