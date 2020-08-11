@@ -11,10 +11,120 @@ available in the package are described here.
 For each template, required parameters are indicated in \strong{bold}.
 }
 \section{Parameter type}{Please note that the type mentioned below corresponds to the type in the config file (in YAML/JSON format).The mapping to R data type is as followed:\itemize{\item{string: }{character vector of length 1}\item{integer: }{integer vector of length 1}\item{array: }{vector/list without names}\item{object: }{list with names}}}
-\item{countsVisualizationTemplate.Rmd}
-\item{divisionTemplate.Rmd}
-\item{listingTemplate.Rmd}
-\item{patientProfilesTemplate.Rmd}
-\item{plotTemplate.Rmd}
-\item{summaryPlotTemplate.Rmd}
-\item{summaryTableTemplate.Rmd}
+\section{Medical monitoring template for a visualization of count data : countsVisualizationTemplate}{
+This report compute counts of variable(s) of interest (with the \code{\link{inTextSummaryTable}} package) and visualize them with a treemap and/or sunburst.
+\cr The following parameters are available: \itemize{
+\item{\code{\strong{template}}: }{string with value as:\emph{ ‘countsVisualizationTemplate.Rmd’ } containing name of the template report}
+\item{\code{\strong{templatePackage}}: }{string with value as:\emph{ ‘medicalMonitoring’ } containing package from which the template should be extracted}
+\item{\code{\strong{reportTitle}}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{\strong{dataFileName}}: }{string containing name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string containing filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array containing data processing parameters for 'dataTotalFileName', passed to \link[medicalMonitoring]{processData}}
+\item{\code{\strong{countVar}}: }{string containing variable of data to count on}
+\item{\code{parentVar}: }{(optional) string or array containing parent variable(s) of the counting variable, used for grouping}
+\item{\code{colorVar}: }{(optional) string or object containing numeric variable(s) to consider for coloring, named by count/parent variable if different for each variable}
+\item{\code{colorRange}: }{(optional) array of number(s) of length: minimum 2, maximum 2 containing color variable range for the visualization}
+\item{\code{typePlot}: }{(optional) string with value as:\emph{ ‘^(sunburst|treemap)$’ } containing plot type}
+}
+}
+\section{Medical monitoring template to create a report division : divisionTemplate}{
+This report includes a division, i.e. extra chapter, section of subsection in the report.
+\cr The following parameters are available: \itemize{
+\item{\code{\strong{template}}: }{string with value as:\emph{ ‘divisionTemplate.Rmd’ } containing name of the template report}
+\item{\code{\strong{templatePackage}}: }{string with value as:\emph{ ‘medicalMonitoring’ } containing package from which the template should be extracted}
+\item{\code{\strong{reportTitle}}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+}
+}
+\section{Medical monitoring template to create a listing : listingTemplate}{
+This report displays a listing of the variables and data of interest, displayed in an interactive table. This table can contains comparison with a previous batch ('comparisonTable' parameters).
+\cr The following parameters are available: \itemize{
+\item{\code{\strong{template}}: }{string with value as:\emph{ ‘listingTemplate.Rmd’ } containing name of the template report}
+\item{\code{\strong{templatePackage}}: }{string with value as:\emph{ ‘medicalMonitoring’ } containing package from which the template should be extracted}
+\item{\code{\strong{reportTitle}}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{\strong{dataFileName}}: }{string containing name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string containing filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array containing data processing parameters for 'dataTotalFileName', passed to \link[medicalMonitoring]{processData}}
+\item{\code{tableParams}: }{(optional) object containing parameters to create the table, passed to \link[medicalMonitoring]{tableMonitoring}}
+\item{\code{comparisonTableType}: }{(optional) string with value as:\emph{ ‘^(none|newData-diff|table-comparison-interactive)$’ } containing output type of the comparison table}
+\item{\code{comparisonTableParams}: }{(optional) object containing parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}}
+}
+}
+\section{Medical monitoring template for the creation of patient profiles : patientProfilesTemplate}{
+This report creates the specified patient profiles (with the \code{\link{patientProfilesVis}} package) by subject, and export them to a specified directory.
+\cr The following parameters are available: \itemize{
+\item{\code{\strong{template}}: }{string with value as:\emph{ ‘patientProfilesTemplate.Rmd’ } containing name of the template report}
+\item{\code{\strong{templatePackage}}: }{string with value as:\emph{ ‘medicalMonitoring’ } containing package from which the template should be extracted}
+\item{\code{\strong{reportTitle}}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{patientProfilesGeneralParams}: }{(optional) object containing set of parameters used for all patient profiles modules. These parameters are passed to all \code{subjectProfile[]Plot} functions.}
+\item{\code{\strong{patientProfilesParams}}: }{array of object(s) \cr The following parameters are available: \itemize{
+\item{\code{\strong{typePlot}}: }{string with value as:\emph{ ‘text|line|interval|event’ } containing plot type, used to get the appropriate plot module function: \itemize{\item{'text': }{\link[patientProfilesVis]{subjectProfileTextPlot}}\item{'line': }{\link[patientProfilesVis]{subjectProfileLinePlot}}\item{'interval': }{\link[patientProfilesVis]{subjectProfileIntervalPlot}}\item{'event': }{\link[patientProfilesVis]{subjectProfileEventPlot}}}}
+\item{\code{\strong{dataFileName}}: }{string containing name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{\strong{plotParams}}: }{object containing parameters for the plotting function:}
+} containing parameters for each patient profile module}
+\item{\code{patientProfilesCreateReportParams}: }{(optional) object containing parameters for the creation of the patient profile report(s), passed to \link[patientProfilesVis]{createSubjectProfileReport}}
+\item{\code{tableParams}: }{(optional) array of object(s) \cr The following parameters are available: \itemize{
+\item{\code{\strong{dataFileName}}: }{string containing name of the data file to display in the table}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{vars}: }{(optional) array containing variable(s) of data to display in the table}
+} containing parameters specifying a table containing data of interest and links to created patient profiles}
+}
+}
+\section{Medical monitoring generic template for visualization : plotTemplate}{
+This report visualizes input data with a function of the medical monitoring package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).
+\cr The following parameters are available: \itemize{
+\item{\code{\strong{template}}: }{string with value as:\emph{ ‘plotTemplate.Rmd’ } containing name of the template report}
+\item{\code{\strong{templatePackage}}: }{string with value as:\emph{ ‘medicalMonitoring’ } containing package from which the template should be extracted}
+\item{\code{\strong{reportTitle}}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{\strong{dataFileName}}: }{string containing name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{\strong{plotFunction}}: }{string with value as:\emph{ ‘^(timeProfileIntervalPlot|scatterplotMonitoring)$’ } containing plotting function of the package to consider}
+\item{\code{\strong{plotParams}}: }{object containing parameters for the plotting function}
+\item{\code{comparisonTableType}: }{(optional) string with value as:\emph{ ‘^(none|newData-diff|table-comparison-interactive)$’ } containing output type of the comparison table}
+\item{\code{comparisonTableParams}: }{(optional) object containing parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}}
+\item{\code{loopingVar}: }{(optional) array or string containing data variable(s) to loop over, for which each output should be created}
+\item{\code{loopingNMax}: }{(optional) integer containing maximum number of elements of \code{loopingVar} to include in the report}
+}
+}
+\section{Medical monitoring template for visualization of summarized data : summaryPlotTemplate}{
+This report summarizes the data of interest (with the \code{\link{inTextSummaryTable}} package) and visualize it with any medical monitoring plot function.
+\cr The following parameters are available: \itemize{
+\item{\code{\strong{template}}: }{string with value as:\emph{ ‘summaryPlotTemplate.Rmd’ } containing name of the template report}
+\item{\code{\strong{templatePackage}}: }{string with value as:\emph{ ‘medicalMonitoring’ } containing package from which the template should be extracted}
+\item{\code{\strong{reportTitle}}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{\strong{dataFileName}}: }{string containing name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string containing filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array containing data processing parameters for 'dataTotalFileName', passed to \link[medicalMonitoring]{processData}}
+\item{\code{\strong{tableParams}}: }{object containing parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}}
+\item{\code{tableProcessing}: }{(optional) array containing data processing parameters for the summary table, passed to \link[medicalMonitoring]{processData}}
+\item{\code{\strong{plotFunction}}: }{string with value as:\emph{ ‘^(timeProfileIntervalPlot|scatterplotMonitoring|sunburstMonitoring|treemapMonitoring|barplotMonitoring)$’ } containing plotting function to visualize summary data}
+\item{\code{\strong{plotParams}}: }{object containing parameters for the plotting function}
+}
+}
+\section{Medical monitoring template for a summary table of the data : summaryTableTemplate}{
+This report summarizes the data of interest (with the \code{\link{inTextSummaryTable}} package). This table is displayed with an interactive table in the report, and exported to a docx file. This table can be compared to a summary table of a previous batch ('comparisonTable' parameters).
+\cr The following parameters are available: \itemize{
+\item{\code{\strong{template}}: }{string with value as:\emph{ ‘summaryTableTemplate.Rmd’ } containing name of the template report}
+\item{\code{\strong{templatePackage}}: }{string with value as:\emph{ ‘medicalMonitoring’ } containing package from which the template should be extracted}
+\item{\code{\strong{reportTitle}}: }{string containing header title}
+\item{\code{reportTitleLevel}: }{(optional) integer containing header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{\strong{dataFileName}}: }{string containing name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array containing data processing parameters, passed to \link[medicalMonitoring]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string containing filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array containing data processing parameters for 'dataTotalFileName', passed to \link[medicalMonitoring]{processData}}
+\item{\code{\strong{tableParams}}: }{object containing parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}}
+\item{\code{tableParamsDocx}: }{(optional) object containing parameters to format the table to the docx format, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
+\item{\code{tableParamsDT}: }{(optional) object containing parameters to format the table to the DT interactive table included in the report, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
+\item{\code{comparisonTableType}: }{(optional) string with value as:\emph{ ‘^(none|newData-diff|table-comparison-interactive)$’ } containing output type of the comparison table}
+\item{\code{comparisonTableParams}: }{(optional) object containing parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}. By default, statistics variables are compared across row and column elements.}
+}
+}

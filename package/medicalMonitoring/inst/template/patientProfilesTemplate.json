@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema#",
   
-  "title" : "Medical monitoring template for the creation of patient profiles.",
+  "title" : "Medical monitoring template for the creation of patient profiles",
   
   "description" : "This report creates the specified patient profiles (with the \\code{\\link{patientProfilesVis}} package) by subject, and export them to a specified directory.",
   
@@ -43,7 +43,7 @@
           "typePlot": {
             "type": "string",
             "pattern": "text|line|interval|event",
-            "doc": "plot type, for 'text': \\link[patientProfilesVis]{subjectProfileTextPlot}, 'line': \\link[patientProfilesVis]{subjectProfileLinePlot}, 'interval': \\link[patientProfilesVis]{subjectProfileIntervalPlot} and 'event': \\link[patientProfilesVis]{subjectProfileEventPlot}"
+            "doc": "plot type, used to get the appropriate plot module function: \\itemize{\\item{'text': }{\\link[patientProfilesVis]{subjectProfileTextPlot}}\\item{'line': }{\\link[patientProfilesVis]{subjectProfileLinePlot}}\\item{'interval': }{\\link[patientProfilesVis]{subjectProfileIntervalPlot}}\\item{'event': }{\\link[patientProfilesVis]{subjectProfileEventPlot}}}"
           },
           "dataFileName": {
             "type": "string",
