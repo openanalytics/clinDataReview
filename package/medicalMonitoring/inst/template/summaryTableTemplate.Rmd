@@ -1,0 +1,297 @@
+
+<!--- 
+This report create a summary statistics table for specified dataset and variable(s) of interest
+(with the 'inTextSummaryTable' package).
+
+Input parameters:
+ 
+* Report-specific:
+- reportTitle: string with report title
+- reportTitleLevel: integer with level of the report title, 1 for chapter, 2 for section, ...
+- dataFileName: string with name of the file of interest
+- dataProcessing (optional): list with parameters for data processing, see ? medicalMonitoring::processData
+- dataTotalFileName (optional): string with name of the file containing the data total
+- dataTotalProcessing (optional): list with parameters for data processing of the total dataset, see ? medicalMonitoring::processData
+- tableParams: list with parameters to create the table, passed to the ? inTextSummaryTable::computeSummaryStatisticsTable
+- tableParamsDocx (optional): list with parameters to create the exported docx table, passed to the ? inTextSummaryTable::exportSummaryStatisticsTable
+- tableParamsDT (optional): list with parameters to create the interactive DT table, displayed in the report, passed to the ? inTextSummaryTable::exportSummaryStatisticsTable
+- comparisonTableType (optional): string with type of comparison table, either: 'none' (by default) or 'detailed'
+- comparisonTableParams (optional): list with parameters for the comparison table, see ? glpgUtilityFct::compareTables
+* General:
+- pathDataFolder: string with path to the data folder
+- pathDataFolderOld (optional): string with path to the folder for old data
+- patientProfilePath: string with relative path where patient profiles are stored
+
+-->
+
+
+```{r summaryTableTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
+
+library(knitr)
+opts_chunk$set(
+	echo = FALSE, 
+	warning = FALSE, error = FALSE, message = FALSE, 
+	results = "asis"
+)
+
+knitr::knit_hooks$set(
+	message = function(x, options) {
+		paste('\n\n<div class="alert alert-info">',
+			gsub('##', '\n', x),
+			'</div>', sep = '\n')
+	}
+)
+
+# print warnings where they occur (warn = 0 by default)
+options(warn = 1)
+
+```
+
+```{r summaryTableTemplate-attachParameters}
+attach(params)
+if(!exists("comparisonTableType"))	comparisonTableType <- "none"
+if(!exists("patientProfilePath"))	patientProfilePath <- NULL
+```
+
+```{r summaryTableTemplate-loadPackages}
+
+library(medicalMonitoring)
+library(glpgUtilityFct)
+library(inTextSummaryTable)
+
+```
+
+```{r summaryTableTemplate-setTitle}
+
+if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
+
+# Create a header at the wanted depth
+cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
+
+```
+
+```{r summaryTableTemplate-getData}
+
+# Load data
+if(comparisonTableType != "none") {
+	
+	if(!exists("pathDataFolderOld"))	stop("'pathDataFolderOld' should be specified.")
+		
+	pathsData <- c(
+		"currentData" = pathDataFolder,
+		"previousData" = pathDataFolderOld
+	)	
+		
+} else pathsData <- c("currentData" = pathDataFolder)
+
+
+dataList <- sapply(names(pathsData), function(dataBatch) {
+			
+	pathData <- file.path(
+		pathsData[[dataBatch]],
+		dataFileName
+	)
+	
+	dataAll <- loadDataADaMSDTM(pathData, verbose = FALSE)
+	data <- dataAll[[1]]
+	
+	# Extract label information
+	labelVars <- attr(dataAll, "labelVars")
+	
+	if(exists("dataProcessing")){
+		data <- processData(
+			data = data, 
+			dataPath = pathDataFolder,
+			processing = dataProcessing,
+			verbose = TRUE,
+			labelVars = labelVars
+		)
+		# Labels updated with extra annotation:
+		labelVars <- attr(data, "labelVars")
+	}
+	
+	# Create URL to patient profiles
+	if(!is.null(patientProfilePath))
+		data <- createPatientProfileVar(
+			data = data, 
+			patientProfilePath = patientProfilePath,
+			checkExist = FALSE
+		)
+	
+	## total			
+	if(exists("dataTotalFileName")) {
+		
+		# Load data
+		pathDataTotal <- file.path(pathDataFolder, dataTotalFileName)
+		
+		dataTotalAll <- loadDataADaMSDTM(pathDataTotal, verbose = FALSE)
+		dataTotal <- dataTotalAll[[1]]
+		
+		# Extract label information
+		labelVarsTotal <- attr(dataTotalAll, "labelVars")
+		
+		# Total data processing
+		if(exists("dataTotalProcessing")){
+			dataTotal <- processData(
+				data = dataTotal, 
+				dataPath = pathDataFolder, 
+				processing = dataTotalProcessing,
+				verbose = TRUE,
+				labelVars = labelVarsTotal,
+				labelData = "total data"
+			)
+		}
+		
+	}else	dataTotal <- data
+	
+	list(
+		data = data,
+		dataTotal = dataTotal					
+	)
+	
+}, simplify = FALSE)
+
+labelVars <- attr(dataList$currentData$data, "labelVars")
+
+```
+
+```{r summaryTableTemplate-computeSummaryStatisticsTable}
+
+summaryTableList <- sapply(names(pathsData), function(dataBatch) {
+			
+	## Extract from list
+	data <- dataList[[dataBatch]][["data"]]			
+	dataTotal <- dataList[[dataBatch]][["dataTotal"]]
+	
+	## Params for the table
+	argsTable <- tableParams
+	
+	# combine all paths across patients
+	# the paths should be collapsed with: ', '
+	if(!is.null(patientProfilePath))
+		argsTable$statsExtra <- c(
+			argsTable$statsExtra,
+			list(
+				statPatientProfilePath = function(data) 
+					toString(sort(unique(data$patientProfilePath))),
+				statPatientProfileLink = function(data)
+					toString(sort(unique(data$patientProfileLink)))
+			)
+		)
+	
+	# get specific set of statistics + stats with subjects profiles path
+	statsPP <- if(!is.null(patientProfilePath))
+		setNames(list(quote(statPatientProfileLink)), labelVars["USUBJID"])
+	statsCustom <- eval(expr = parse(text = argsTable$stats))
+	# if statistics are specified for each variable separately:
+	if(any(names(statsCustom) %in% argsTable$var)){
+		argsTable$stats <- sapply(statsCustom, c, statsPP, simplify = FALSE)
+	}else{
+		argsTable$stats <- c(statsPP, statsCustom)
+	}
+	
+	## Create tables
+	
+	# create table with descriptive statistics (data.frame format)
+	argsTable <- c(
+		argsTable,
+		list(
+			data = data, 
+			labelVars = labelVars,
+			dataTotal = dataTotal
+		)
+	)
+	summaryTable <- do.call(computeSummaryStatisticsTable, argsTable)	
+	
+	list(
+		summaryTable = summaryTable,
+		statsPP = statsPP
+	)
+	
+}, simplify = FALSE)
+
+```
+
+```{r summaryTableTemplate-exportSummaryStatisticsTable, eval = (comparisonTableType == "none")}
+
+	summaryTable <- summaryTableList$currentData$summaryTable
+	
+	statsPP <- summaryTableList$currentData$statsPP
+	
+	# export to docx
+	if(!exists("tableParamsDocx"))	tableParamsDocx <- list()
+	
+	tableParamsDocx <- c(tableParamsDocx,
+		list(
+			summaryTable = summaryTable,
+			outputType = "flextable"
+		)
+	)
+	
+	if(is.null(tableParamsDocx$file))	
+		tableParamsDocx$file <- "table.docx"
+	tableParamsDocx$file <- file.path("tables", tableParamsDocx$file)
+	
+	if(is.null(tableParamsDocx$statsVar))
+		tableParamsDocx$statsVar <-  attr(summaryTable, "summaryTable")$statsVar
+	tableParamsDocx$statsVar <- setdiff(tableParamsDocx$statsVar, names(statsPP))
+	
+	ft <- do.call(exportSummaryStatisticsTable, tableParamsDocx)
+	
+	# export to data.table
+	if(!exists("tableParamsDT"))	tableParamsDT <- list()
+	
+	tableParamsDT <- c(tableParamsDT,
+		list(
+			summaryTable = summaryTable,
+			outputType = "DT",
+			expandVar = names(statsPP),
+			noEscapeVar = names(statsPP)
+		)
+	)
+	if(is.null(tableParamsDT$statsVar))
+		tableParamsDT$statsVar <- attr(summaryTable, "summaryTable")$statsVar
+	tableParamsDT$statsVar <- unique(c(tableParamsDT$statsVar, names(statsPP)))
+	
+	if(!is.null(tableParamsDT$footer)) footer <- tableParamsDT$footer else footer <- NULL
+	summaryTableDT <- do.call(exportSummaryStatisticsTable, tableParamsDT)
+	
+	cat(paste0("<a href=\"", tableParamsDocx$file, "\"target=\"_blank\">Formatted .docx table</a>"))
+	cat("\n\n")
+	cat(footer)
+	cat("\n\n")
+	summaryTableDT
+
+```	
+	
+```{r summaryTableTemplate-getComparisonTable, eval = (comparisonTableType != "none"), message = TRUE}
+
+summaryTableCurrent <- summaryTableList$currentData$summaryTable
+
+if(!exists("comparisonTableParams"))	comparisonTableParams <- NULL
+# By default, reference variables are all row/column variables of the table
+if(is.null(comparisonTableParams$referenceVars))
+	comparisonTableParams$referenceVars <- unname(unlist(attr(summaryTableCurrent, "summaryTable")[c("rowVar", "colVar")]))
+# By default: changeable variables are the statistics
+if(is.null(comparisonTableParams$changeableVars)){
+	comparisonTableParams$changeableVars <- unname(setdiff(
+		attr(summaryTableCurrent, "summaryTable")$statsVar,
+		names(summaryTableList$currentData$statsPP)
+	))
+}
+
+argsCompTable <- c(
+	list(
+		newData = summaryTableList$currentData$summaryTable,
+		oldData = summaryTableList$previousData$summaryTable,
+		outputType = comparisonTableType,
+		pageLength = Inf
+	),
+	comparisonTableParams
+)
+
+outputComparison <- do.call(compareTables, argsCompTable)
+	
+if(!is.null(outputComparison))	outputComparison
+
+```
