@@ -67,7 +67,6 @@
     },
     "typePlot": {
       "type": "string",
-      "minLength": 1,
       "pattern": "^(sunburst|treemap)$",
       "doc": "plot type"
     }

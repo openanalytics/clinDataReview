@@ -13,20 +13,8 @@ for all template documents.
 }
 \description{
 If a JSON schema file available, the information relative
-to the template is extracted from this file:
-\itemize{
-\item{'title' is used as Rd section header}
-\item{'description' is included in the text}
-\item{parameters are extracted from the 'properties' tag: }{
-\itemize{
-\item{'type': }{object type}
-\item{'enum' (optional): }{required value for the parameter}
-\item{'doc' (optional): }{documentation for the parameter}
-}
-If a parameter is required, it should be listed in the 'required'
-tag of the schema (outside of the 'properties' tag).
-}
-}
+to the template is extracted from this file with the function
+\code{JSONSchToRd}.
 }
 \references{
 \href{JSON schema specification}{https://json-schema.org/understanding-json-schema/}

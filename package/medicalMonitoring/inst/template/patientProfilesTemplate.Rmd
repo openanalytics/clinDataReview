@@ -15,10 +15,11 @@ Input parameters:
     - dataFileName: string with name of the file of interest
     - dataProcessing (optional): list with parameters for data processing, see ? medicalMonitoring::processData
     - plotParams: list with parameters passed to the corresponding 'subjectProfile[typePlot]Function'
+- patientProfilesCreateReportParams (optional): list with any parameters passed to the patientProfilesVis::createSubjectProfileReport function.
 - tableParams (optional): list with parameters to create the table containing link to subject profiles,
    - dataFileName: string with file name to the dataset of interest used for the table
    - dataProcessing (optional): list with parameters for data processing of the data used for the table, see ? medicalMonitoring::processData
-   - vars: character vector with variables of interest to display in the table
+   - vars (optional): character vector with variables of interest to display in the table
 
 * General:
 - pathDataFolder: string with path to the data folder
@@ -86,6 +87,39 @@ cat(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."
 
 ```
 
+```{r patientProfiles-subsetData}	
+	
+	# extract the subjects of interest for the visualization
+	subjectSubset <- NULL
+	if(!is.null(params$subsetDataset)){
+		
+		if(params$subsetDataset %in% names(dataAll)){
+			
+			dataSubset <- dataAll[[params$subsetDataset]]
+			if(!is.null(params$subsetVar) & !is.null(params$subsetValue) &&
+				params$subsetVar %in% colnames(dataSubset)){
+				dataSubset <- dataSubset[which(
+					dataSubset[, params$subsetVar] %in% params$subsetValue
+				), ]
+			}
+			
+			subjectSubset <- unique(dataSubset$USUBJID)
+			
+			if(!is.null(params$subsetSample) && length(params$subsetSample) < length(subjectSubset)){
+				subjectSubset <- sample(x = subjectSubset, size = params$subsetSample)
+			}
+			
+			if(length(subjectSubset) == 0)
+				stop("No subjects are retained after filtering.")
+			
+		}else{
+			warning(paste("The specified data subset is not used because the",
+				params$subsetDataset, "dataset not available."))
+		}
+	}
+	
+```
+
 ```{r patientProfilesTemplate-utilityFct}
 
 	# Extract correct dataset from file name in input parameters ('[X]DataFileName' -> '[X]Data') 
@@ -115,10 +149,27 @@ cat(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."
 
 ```
 
-```{r patientProfilesTemplate-getGeneralParameters, eval = createPatientProfiles}	
+```{r patientProfilesTemplate-getGeneralParameters, eval = createPatientProfiles & exists("patientProfilesGeneralParams")}	
+		
+	patientProfilesGeneralParams <- getDataForParams(patientProfilesGeneralParams)
 	
-	patientProfilesGeneralParams <- if(exists("patientProfilesGeneralParams")){
-		getDataForParams(patientProfilesGeneralParams)
+	# extract subset of subjects (if specified)
+	# (this ensures the same subset is used across modules)
+	if(!is.null(patientProfilesGeneralParams[["subsetData"]])){
+		
+		# extract parameters related to filtering
+		filterParams <- setdiff(formalArgs(patientProfilesVis::filterData), "data")
+		filterParamsSpec <- intersect(filterParams, names(patientProfilesGeneralParams))
+		
+		# run the filtering
+		filterArgs <- patientProfilesGeneralParams[filterParamsSpec]
+		names(filterArgs)[which(names(filterArgs) == "subsetData")] <- "data"
+		subsetData <- do.call(patientProfilesVis::filterData, filterArgs)
+				
+		# save selected subjects in the 'subjectSubset' param (and remove all filtering-related params)
+		patientProfilesGeneralParams <- patientProfilesGeneralParams[setdiff(names(patientProfilesGeneralParams), filterParamsSpec)]
+		patientProfilesGeneralParams[["subjectSubset"]] <- unique(subsetData[, "USUBJID"])
+		
 	}
 	
 ```
@@ -139,7 +190,8 @@ cat(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."
 		
 		# extract specified data
 		paramsPlotI <- getDataForParams(paramsPlotI)
-		if(is.null(paramsPlotI[["data"]])){
+		data <- paramsPlotI[["data"]]
+		if(is.null(data)){
 			warning("Patient profiles:", label, "not created, because", 
 				dataFileName, "is not specified or available.")
 			break
@@ -175,11 +227,11 @@ cat(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."
 		}
 		
 		## extract plotting parameters
-		plotParams <- list(
-			data = data,
-			labelVars = labelVars
+		plotParams <- c(
+			list(data = data, labelVars = labelVars), 
+			paramsPlotI[["plotParams"]], 
+			if(exists("patientProfilesGeneralParams"))	patientProfilesGeneralParams
 		)
-		plotParams <- c(plotParams, paramsPlotI[["plotParams"]], patientProfilesGeneralParams)
 		
 		# Extra formatting for parameters:
 		# ... passed as R code:
@@ -225,8 +277,10 @@ cat(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."
 if(!exists("patientProfilesPlots"))
 	stop("Some patient profiles of interest should be specified.")
 
-cReportParams <- params$patientProfilesCreateReportParams
-cReportParams <- getDataForParams(cReportParams)
+if(exists("patientProfilesCreateReportParams")){
+	cReportParams <- getDataForParams(patientProfilesCreateReportParams)
+}else	cReportParams <- list()
+
 cReportParams[["listPlots"]] <- patientProfilesPlots
 cReportParams[["reportPerSubject"]] <- TRUE
 cReportParams[["outputFile"]] <- file.path(patientProfilePath, "subjectProfile.pdf")
