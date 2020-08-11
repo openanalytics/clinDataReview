@@ -94,11 +94,15 @@ render_medicalMonitoringReport <- function(
 	extraDirs <- c(extraDirs, configGeneralParams$patientProfilePath)
 	extraDirs <- extraDirs[dir.exists(extraDirs)]
 	
+
+	
 	## run index file + each chapter
 	
 	# consider all config files
 	if(is.null(configFiles))
 		configFiles <- c("config.yml", configGeneralParams[["config"]])
+	
+	configFiles <- checkTemplatesName(configFiles = configFiles, configDir = configDir)
 	
 	mdFiles <- c()
 	knit_meta_reports <- c()
@@ -468,6 +472,65 @@ convertMdToHtml <- function(
 	res <- file.remove(mdMainFile)
 	
 	return(outputFile)
+	
+}
+
+#' Checks of config files template.
+#' 
+#' Check if the templates specified in the input config files
+#' don't originate from multiple sources (e.g. custom and R package
+#' via the parameter \code{templatePackage}).
+#' If so, the corresponding config files are not considered.
+#' @param configFiles Character vector with name or path of the config file(s).
+#' @inheritParams getParamsFromConfig
+#' @return Updated \code{configFiles}
+#' @author Laure Cougnaud
+checkTemplatesName <- function(configFiles, configDir = "./config"){
+	
+	configFilesWithTemplate <- setdiff(configFiles, "config.yml")
+	
+	# check report name
+	configTemplateInfoList <- sapply(configFilesWithTemplate, function(configFile){
+				
+		res <- try(
+			params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
+			, silent = TRUE)
+		
+		if(!inherits(res, "try-error") & "template" %in% names(params)){
+			
+			templatePackage <- params[["templatePackage"]]
+			if(is.null(templatePackage))	templatePackage <- ""
+			data.frame(
+				configFile = configFile, 
+				template = params$template, 
+				templatePackage = templatePackage,
+				stringsAsFactors = FALSE
+			)
+	
+		}
+	}, simplify = FALSE)
+
+	configTemplateInfo <- do.call(rbind.data.frame, configTemplateInfoList)
+	
+	nPkgByTemplate <- with(configTemplateInfo, 
+		tapply(templatePackage, template, function(x) length(unique(x)))
+	)
+	templateWithMultPkg <- names(which(nPkgByTemplate > 1))
+	
+	if(length(templateWithMultPkg) > 0){
+		
+		configFilesRemoved <- subset(configTemplateInfo, template %in% templateWithMultPkg)$configFile
+		warning(paste0(
+			"The following config file(s) are ignored, because the ",
+			"same template name is used for a custom template or a template ",
+			"within the package(s): ", toString(sQuote(configFilesRemoved)), "."
+		))
+		configFiles <- setdiff(configFiles, configFilesRemoved)
+		
+	}
+	
+	return(configFiles)
+	
 	
 }
 
