@@ -4,12 +4,13 @@
 \alias{JSONSchToRd}
 \title{Get R Documentation from a JSON schema.}
 \usage{
-JSONSchToRd(jsonSch, title = NULL)
+JSONSchToRd(JSONSch, title = NULL)
 }
 \arguments{
-\item{jsonSch}{List with JSON schema, as returned by \code{\link[jsonlite]{fromJSON}}.}
+\item{JSONSch}{List with JSON schema, as returned by \code{\link[jsonlite]{fromJSON}}.}
 
-\item{title}{(optional) String with title, only used if the JSON schema 'title' tag
+\item{title}{(optional) String with title.
+This will combined with the JSON schema 'title' tag if this is specified.
 is not available.}
 }
 \value{

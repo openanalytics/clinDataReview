@@ -63,7 +63,7 @@
       },
       "minItems": 2,
       "maxItems": 2,
-      "doc": "color variable range for the visualization"
+      "doc": "range of the color variable for the visualization"
     },
     "typePlot": {
       "type": "string",
