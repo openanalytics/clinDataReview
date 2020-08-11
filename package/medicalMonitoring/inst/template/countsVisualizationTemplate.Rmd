@@ -16,7 +16,7 @@ Input parameters:
 - colorVar (optional): list or character vector with variable to consider for coloring
 This list can be named with the variables in countVar/parentVar to specify different colorings for child/parent variable.
 - colorRange (optional): numeric vector of length 2 with range used for coloring
-- plotFunction (optional): string with plot type: 'treemap' and/or 'sunburst' (both by default)
+- typePlot (optional): string with plot type: 'treemap' and/or 'sunburst' (both by default)
 
 * General:
 - pathDataFolder: string with path to the data folder
@@ -53,7 +53,7 @@ options(warn = 1)
 attach(params)
 # TODO: find a way to specify named vector in YAML
 if(exists("colorVar"))	colorVar <- unlist(colorVar)	else	colorVar <- NULL
-if(!exists("plotFunction")) plotFunction <- c("treemap", "sunburst")
+if(!exists("typePlot")) typePlot <- c("treemap", "sunburst")
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 
 ```
@@ -231,7 +231,7 @@ if(exists("dataTotalFileName")){
 
 ```
 
-```{r countsVisualizationTemplate-createTreemap, eval = "treemap" %in% plotFunction}
+```{r countsVisualizationTemplate-createTreemap, eval = "treemap" %in% typePlot}
 
 	cat(getMdHeader(title = "Treemap visualization", level = reportTitleLevel + 1))
 	
@@ -254,7 +254,7 @@ if(exists("dataTotalFileName")){
 ```
 
 
-```{r countsVisualizationTemplate-createSunburst, eval = "sunburst" %in% plotFunction}
+```{r countsVisualizationTemplate-createSunburst, eval = "sunburst" %in% typePlot}
 
 	cat(getMdHeader(title = "Sunburst visualization", level = reportTitleLevel + 1))
 	
