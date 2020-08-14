@@ -63,7 +63,7 @@
 #' @export
 render_medicalMonitoringReport <- function(
 	indexPath = "index.Rmd", 
-	outputDir = "./MOMP", intermediateDir = "./interim",
+	outputDir = "./report", intermediateDir = "./interim",
 	configDir = "./config", logFile = NULL,
 	configFiles = NULL, 
 	extraDirs = c("figures", "tables", "patientProfiles"),
@@ -389,7 +389,7 @@ getParamsFromConfig <- function(
 #' @family medical monitoring reporting
 #' @export
 convertMdToHtml <- function(
-	outputDir = "./MOMP", intermediateDir = "./interim",
+	outputDir = "./report", intermediateDir = "./interim",
 	configDir = "./config", 
 	mdFiles = NULL,
 	indexPath = "index.Rmd"){
@@ -678,7 +678,7 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
 #' The order of each chapter is specified in the 'config' slot in the general 
 #' general 'config.yml'.
 #' @param outputDir String with output directory,
-#' ('MOMP', for: 'Medical Oversight and monitoring Plan' by default).
+#' ('report' by default).
 #' @param intermediateDir String with intermediate directory ('inter'
 #' by default), where
 #' markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
