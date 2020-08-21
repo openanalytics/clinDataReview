@@ -439,9 +439,13 @@ convertMdToHtml <- function(
 	}
 	knit_meta_reports <- c();sessionInfoReports <- list()
 	for(file in interimResFiles){
-		interimRes <- readRDS(file)
-		knit_meta_reports <- c(knit_meta_reports, interimRes$knitMeta)
-		sessionInfoReports <- c(sessionInfoReports, list(interimRes$sessionInfo))
+		interimFile <- readRDS(file)
+		interimKnitMeta <- interimFile$knitMeta
+		if(!is.null(interimKnitMeta))
+			knit_meta_reports <- c(knit_meta_reports, interimKnitMeta)
+		interimSessionInfo <- interimFile$sessionInfo
+		if(!is.null(interimSessionInfo))
+			sessionInfoReports <- c(sessionInfoReports, list(interimSessionInfo))
 	}
 	
 	# include session information in the report
@@ -639,29 +643,34 @@ merge.sessionInfo <- function(...){
 #' @param sessionInfos List with \code{\link{sessionInfo}} objects
 #' @param mdFiles Character vector with Markdown files
 #' @inheritParams medicalMonitoring-common-args-report
-#' @return String with path to Markdown file containing the session information
+#' @return String with path to Markdown file containing the session information,
+#' NULL if no session information(s) are provided.
 #' @author Laure Cougnaud
 exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "interim"){
 	
-	# combine session informations
-	sessionInfoAll <- do.call(merge, sessionInfos)
-	sessionInfoFile <- tempfile("sessionInfo", fileext = ".Rmd")
-	cat(
-		'\n\n# Appendix  \n\n## Session information  \n\n',
-		'```{r, echo = FALSE, results = "asis"}\nsessionInfoAll\n```', 
-		file = sessionInfoFile
-	)
-	envReport <- new.env()
-	assign("sessionInfoAll", sessionInfoAll, envir = envReport)
-	sessionInfoMd <- "sessionInfo.md"
-	outputRmd <- renderInNewSession(
-		input = sessionInfoFile, 
-		output_file = sessionInfoMd, 
-		output_dir = intermediateDir, 
-		env = envReport
-	)
+	if(length(sessionInfos) > 0){
 	
-	sessionInfoMdPath <- file.path(intermediateDir, sessionInfoMd)
+		# combine session informations
+		sessionInfoAll <- do.call(merge, sessionInfos)
+		sessionInfoFile <- tempfile("sessionInfo", fileext = ".Rmd")
+		cat(
+			'\n\n# Appendix  \n\n## Session information  \n\n',
+			'```{r, echo = FALSE, results = "asis"}\nsessionInfoAll\n```', 
+			file = sessionInfoFile
+		)
+		envReport <- new.env()
+		assign("sessionInfoAll", sessionInfoAll, envir = envReport)
+		sessionInfoMd <- "sessionInfo.md"
+		outputRmd <- renderInNewSession(
+			input = sessionInfoFile, 
+			output_file = sessionInfoMd, 
+			output_dir = intermediateDir, 
+			env = envReport
+		)
+		
+		sessionInfoMdPath <- file.path(intermediateDir, sessionInfoMd)
+		
+	}else	sessionInfoMdPath <- NULL
 	return(sessionInfoMdPath)
 #	reportFirst <- readLines(mdFiles[1], encoding = 'UTF-8', warn = FALSE)
 #	sessionInfoMd <- readLines(file.path(intermediateDir, "sessionInfo.md"), encoding = 'UTF-8', warn = FALSE)
