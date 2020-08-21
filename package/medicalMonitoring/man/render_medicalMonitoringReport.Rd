@@ -11,7 +11,7 @@ render_medicalMonitoringReport(
   configDir = "./config",
   logFile = NULL,
   configFiles = NULL,
-  extraDirs = c("figures", "tables", "patientProfiles"),
+  extraDirs = c("figures", "tables"),
   quiet = FALSE
 )
 }
