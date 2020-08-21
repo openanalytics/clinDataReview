@@ -6,7 +6,7 @@
 \usage{
 render_medicalMonitoringReport(
   indexPath = "index.Rmd",
-  outputDir = "./MOMP",
+  outputDir = "./report",
   intermediateDir = "./interim",
   configDir = "./config",
   logFile = NULL,
@@ -20,7 +20,7 @@ render_medicalMonitoringReport(
 ('index.Rmd' by default).}
 
 \item{outputDir}{String with output directory,
-('MOMP', for: 'Medical Oversight and monitoring Plan' by default).}
+('report' by default).}
 
 \item{intermediateDir}{String with intermediate directory ('inter'
 by default), where
