@@ -66,7 +66,7 @@ render_medicalMonitoringReport <- function(
 	outputDir = "./report", intermediateDir = "./interim",
 	configDir = "./config", logFile = NULL,
 	configFiles = NULL, 
-	extraDirs = c("figures", "tables", "patientProfiles"),
+	extraDirs = c("figures", "tables"),
 	quiet = FALSE){
 
 	# log output
@@ -91,10 +91,7 @@ render_medicalMonitoringReport <- function(
 	## copy created directory into output directory
 	
 	# add patient profiles dir to repos to copy
-	extraDirs <- c(extraDirs, configGeneralParams$patientProfilePath)
-	extraDirs <- extraDirs[dir.exists(extraDirs)]
-	
-
+	extraDirs <- unique(c(extraDirs, configGeneralParams$patientProfilePath))
 	
 	## run index file + each chapter
 	
@@ -287,8 +284,12 @@ render_medicalMonitoringReport <- function(
 		intermediateDir = intermediateDir
 	)
 	
-	if (length(extraDirs) > 0) 
-	  file.copy(from = extraDirs, to = outputDir, overwrite = TRUE, recursive = TRUE)
+	if (length(extraDirs) > 0){
+		tmp <- file.copy(
+			from = extraDirs, to = outputDir, 
+			overwrite = TRUE, recursive = TRUE
+		)
+  	}
 	
 	return(outputFile)
 	
