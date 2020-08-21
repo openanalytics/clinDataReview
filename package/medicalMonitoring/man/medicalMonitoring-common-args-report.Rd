@@ -15,7 +15,7 @@ The order of each chapter is specified in the 'config' slot in the general
 general 'config.yml'.}
 
 \item{outputDir}{String with output directory,
-('MOMP', for: 'Medical Oversight and monitoring Plan' by default).}
+('report' by default).}
 
 \item{intermediateDir}{String with intermediate directory ('inter'
 by default), where
