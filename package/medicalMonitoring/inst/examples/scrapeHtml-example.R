@@ -6,7 +6,7 @@ demographicsHtml <- "~/Documents/Projects/Galapagos/medicalMonitoring/demoReleas
 ## Listings
 aeListingHtml <- "~/Documents/Projects/Galapagos/medicalMonitoring/demoReleases/20200703/MOMP/5-6-adverse-events-listing.html"
 
-tableHtml <- scrapeHtml(htmlPath = aeListingHtml)
+tableHtml <- scrapeHtml(pathHtml = aeListingHtml)
 
 #' }
 
