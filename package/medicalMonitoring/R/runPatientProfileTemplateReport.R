@@ -54,7 +54,7 @@ runPatientProfileTemplateReport <- function(
 	if(!dir.exists(outputDir))	dir.create(outputDir, recursive = TRUE)
 	
 	pathTemplate <- system.file(
-		"template", "patientProfiles-medicalMonitoring.Rmd", 
+		"template", "patientProfiles", "patientProfiles-medicalMonitoring.Rmd", 
 		package = "medicalMonitoring"
 	)
 	

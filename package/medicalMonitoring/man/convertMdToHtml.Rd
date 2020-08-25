@@ -5,7 +5,7 @@
 \title{Convert medical monitoring Markdown files to HTML}
 \usage{
 convertMdToHtml(
-  outputDir = "./MOMP",
+  outputDir = "./report",
   intermediateDir = "./interim",
   configDir = "./config",
   mdFiles = NULL,
@@ -14,7 +14,7 @@ convertMdToHtml(
 }
 \arguments{
 \item{outputDir}{String with output directory,
-('MOMP', for: 'Medical Oversight and monitoring Plan' by default).}
+('report' by default).}
 
 \item{intermediateDir}{String with intermediate directory ('inter'
 by default), where

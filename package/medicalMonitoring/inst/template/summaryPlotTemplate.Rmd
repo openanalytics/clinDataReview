@@ -1,0 +1,211 @@
+<!--- 
+This report create a visualization of a summary table.
+
+Input parameters:
+ 
+* Report-specific
+- reportTitle: string with report title
+- reportTitleLevel: integer with level of the report title, 1 for chapter, 2 for section, ...
+- dataFileName: string with name of the file of interest
+- dataProcessing (optional): list with parameters for data processing, see ? medicalMonitoring::processData
+- dataTotalFileName (optional): string with name of the file containing the data total
+- dataTotalProcessing (optional): list with parameters for data processing of the total dataset, see ? medicalMonitoring::processData
+- tableParams: list with parameters to create the table, passed to the ? inTextSummaryTable::computeSummaryStatisticsTable
+- tableProcessing (optional): list with parameters for data processing of the summary table after its creation, see ? medicalMonitoring::processData
+- typePlot: string with name of a plotting function of interest, available in the medicalMonitoring package
+- plotParams: list with plotting parameters passed to the 'typePlot' function
+(excepted: 'data', 'labelVars', 'table', 'pathVar' and 'verbose')
+
+* General:
+- pathDataFolder: string with path to the data folder
+- patientProfilePath: string with relative path where patient profiles are stored
+
+-->
+```{r summaryPlot-options, echo = FALSE, warning = FALSE, message = FALSE}
+
+library(knitr)
+opts_chunk$set(
+	echo = FALSE, 
+	warning = FALSE, error = FALSE, message = FALSE, 
+	results = "asis"
+)
+
+knitr::knit_hooks$set(
+	message = function(x, options) {
+		paste('\n\n<div class="alert alert-info">',
+			gsub('##', '\n', x),
+			'</div>', sep = '\n')
+	}
+)
+
+# print warnings where they occur (warn = 0 by default)
+options(warn = 1)
+
+```
+
+```{r summaryPlot-attachParameters}
+attach(params)
+if(!exists("patientProfilePath"))	patientProfilePath <- NULL
+```
+
+```{r summaryPlot-loadPackages}
+
+library(medicalMonitoring)
+library(glpgUtilityFct)
+library(inTextSummaryTable)
+
+```
+
+```{r summaryPlot-setTitle}
+
+if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
+
+# Create a header at the wanted depth
+cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
+
+```
+
+```{r summaryPlot-getData}
+
+# Load data
+pathData <- file.path(pathDataFolder, dataFileName)
+
+dataAll <- loadDataADaMSDTM(pathData, verbose = FALSE)
+data <- dataAll[[1]]
+
+# Extract label information
+labelVars <- attr(dataAll, "labelVars")
+
+# Data processing 
+if(exists("dataProcessing")){
+	data <- processData(
+		data = data, 
+		dataPath = pathDataFolder,
+		processing = dataProcessing,
+		verbose = TRUE,
+		labelVars = labelVars
+	)
+	# Labels updated with extra annotation:
+	labelVars <- attr(data, "labelVars")
+}
+
+# Create URL to patient profiles
+if(!is.null(patientProfilePath))
+	data <- createPatientProfileVar(
+		data = data, 
+		patientProfilePath = patientProfilePath,
+		checkExist = FALSE
+	)
+
+## total
+
+if(exists("dataTotalFileName")){
+
+	# Load data
+	pathDataTotal <- file.path(pathDataFolder, dataTotalFileName)
+	
+	dataTotalAll <- loadDataADaMSDTM(pathDataTotal, verbose = FALSE)
+	dataTotal <- dataTotalAll[[1]]
+	
+	# Extract label information
+	labelVarsTotal <- attr(dataTotalAll, "labelVars")
+	
+	# Total data processing
+	if(exists("dataTotalProcessing")){
+		dataTotal <- processData(
+			data = dataTotal, 
+			dataPath = pathDataFolder, 
+			processing = dataTotalProcessing,
+			verbose = TRUE,
+			labelVars = labelVarsTotal,
+			labelData = "total data"
+		)
+	}
+	
+}else	dataTotal <- data
+
+```
+
+```{r summaryPlot-createTable}
+
+## Params for the table
+			
+# combine all paths across patients
+# the paths should be collapsed with: ', '
+if(!is.null(patientProfilePath))
+	tableParams$statsExtra <- c(
+		tableParams$statsExtra,
+		list(
+			statPatientProfilePath = function(data) 
+				toString(sort(unique(data$patientProfilePath))),
+			statPatientProfileLink = function(data)
+				toString(sort(unique(data$patientProfileLink)))
+		)
+	)
+			
+# get specific set of statistics + stats with subjects profiles path
+statsPP <- if(!is.null(patientProfilePath))
+	setNames(
+		list(quote(statPatientProfileLink)), 
+		labelVars["USUBJID"]
+	)
+statsCustom <- eval(expr = parse(text = tableParams$stats))
+# if statistics are specified for each variable separately:
+if(any(names(statsCustom) %in% tableParams$var)){
+	tableParams$stats <- sapply(statsCustom, c, statsPP, simplify = FALSE)
+}else{
+	tableParams$stats <- c(statsPP, statsCustom)
+}
+			
+## Create tables
+			
+# create table with descriptive statistics (data.frame format)
+argsTable <- c(
+	tableParams,
+	list(
+		data = data, 
+		labelVars = labelVars,
+		dataTotal = dataTotal
+	)
+)
+summaryTable <- do.call(computeSummaryStatisticsTable, argsTable)
+
+summaryTable <- subset(summaryTable, !isTotal)
+
+if(exists("tableProcessing")){
+	
+	summaryTable <- processData(
+		data = summaryTable, 
+		processing = tableProcessing,
+		verbose = FALSE,
+		labelVars = labelVars,
+		labelData = "summary table"
+	)
+	labelVars <- attr(summaryTable, "labelVars")
+	
+}
+
+summaryTable$plotID <- seq_len(nrow(summaryTable))
+
+```
+
+
+```{r summaryPlot-createPlot}
+
+argsPlot <- c(
+	plotParams, 
+	list(
+		data = summaryTable, 
+		labelVars = labelVars, 
+		idVar = "plotID",
+		table = TRUE,
+		# Summarized data: so patients profiles should be collapsed for each row of the table
+		pathExpand = TRUE,
+		pathVar = if(!is.null(patientProfilePath))	names(statsPP),
+		verbose = TRUE
+	)
+)
+
+do.call(plotFunction, argsPlot)
+	
+```

@@ -1,0 +1,178 @@
+
+<!--- 
+This report display a listing table for a dataset and variables of interest.
+
+Input parameters:
+ 
+* Report-specific:
+- reportTitle: string with report title
+- reportTitleLevel: integer with level of the report title, 1 for chapter, 2 for section, ...
+- dataFileName: string with name of the file of interest
+- dataProcessing (optional): list with parameters for data processing, see ? medicalMonitoring::processData
+- tableParams: list with any parameters for the table, see ? medicalMonitoring::tableMonitoring
+(besides data/labelVars/pathVar/pathLab)
+- comparisonTableType (optional): string with type of comparison table, either: 'none' (by default), 'newData-diff' or 'table-comparison-interactive'
+- comparisonTableParams (optional): list with parameters for the comparison table, see ? glpgUtilityFct::compareTables
+* General:
+- pathDataFolder: string with path to the data folder
+- pathDataFolderOld (optional): string with path to the folder for old data
+- patientProfilePath: string with relative path where patient profiles are stored
+
+-->
+
+
+```{r listingTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
+
+library(knitr)
+opts_chunk$set(
+	echo = FALSE, 
+	warning = FALSE, error = FALSE, message = FALSE, 
+	results = "asis"
+)
+
+knitr::knit_hooks$set(
+	message = function(x, options) {
+		paste('\n\n<div class="alert alert-info">',
+			gsub('##', '\n', x),
+			'</div>', sep = '\n')
+	}
+)
+
+# print warnings where they occur (warn = 0 by default)
+options(warn = 1)
+
+```
+
+```{r listingTemplate-attachParameters}
+
+attach(params)
+if(!exists("comparisonTableType"))	comparisonTableType <- "none"
+if(!exists("patientProfilePath"))	patientProfilePath <- NULL
+
+```
+
+```{r listingTemplate-loadPackages}
+
+library(glpgUtilityFct)
+library(inTextSummaryTable)
+library(medicalMonitoring)
+
+```
+
+```{r listingTemplate-setTitle}
+
+if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
+
+# Create a header at the wanted depth
+cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
+
+```
+
+```{r listingTemplate-getData}
+
+if(comparisonTableType != "none") {
+	
+	if(!exists("pathDataFolderOld"))	stop("'pathDataFolderOld' should be specified.")
+	
+	pathsData <- c(
+		"currentData" = pathDataFolder,
+		"previousData" = pathDataFolderOld
+	)	
+	
+} else pathsData <- c("currentData" = pathDataFolder)
+
+dataList <- sapply(names(pathsData), function(dataBatch) {
+			
+	# Load data
+	pathData <- file.path(pathsData[[dataBatch]], dataFileName)
+	
+	dataAll <- loadDataADaMSDTM(pathData, verbose = FALSE)
+	data <- dataAll[[1]]
+	
+	# Extract label information
+	labelVars <- attr(dataAll, "labelVars")
+	
+	# Data processing 
+	if(exists("dataProcessing")){
+		data <- processData(
+			data = data, 
+			dataPath = pathDataFolder,
+			processing = dataProcessing,
+			verbose = TRUE,
+			labelVars = labelVars
+		)
+		# Labels updated with extra annotation:
+		labelVars <- attr(data, "labelVars")
+	}
+	
+	# Create URL to patient profiles
+	if(!is.null(patientProfilePath))
+		data <- createPatientProfileVar(
+			data = data, 
+			patientProfilePath = patientProfilePath,
+			checkExist = FALSE
+		)
+	
+	data
+	
+}, simplify = FALSE)
+		
+data <- dataList$currentData
+labelVars <- attr(dataList$currentData, "labelVars")
+
+```
+
+```{r listingTemplate-getListingComparisonTable-diff, eval = (comparisonTableType  == "newData-diff"), message = TRUE}	
+	
+argsCompTable <- c(
+	list(
+		newData = dataList$currentData,
+		oldData = dataList$previousData,
+		labelVars = labelVars,
+		patientProfilePath = patientProfilePath,
+		outputType = comparisonTableType
+	),
+	comparisonTableParams
+)
+
+outputComparison <- do.call(compareTables, argsCompTable)
+if(!is.null(outputComparison)){
+	data <- outputComparison
+	tableParams$tableVars <- c(tableParams$tableVars, "Comparison type")
+}
+
+```
+
+```{r listingTemplate-getListingTable, eval = (comparisonTableType %in% c("none", "newData-diff"))}
+	
+	argsTable <- c(
+		list(
+			data = data, 
+			labelVars = labelVars,
+			pathVar = if(!is.null(patientProfilePath))	"patientProfilePath",
+			pathLab = labelVars["USUBJID"]
+		),
+		tableParams
+	)
+	do.call("tableMonitoring", argsTable)
+	
+```
+
+```{r listingTemplate-getListingComparisonTable, eval = (comparisonTableType == "table-comparison-interactive")}	
+	
+argsCompTable <- c(
+	list(
+		newData = dataList$currentData,
+		oldData = dataList$previousData,
+		labelVars = labelVars,
+		patientProfilePath = patientProfilePath,
+		outputType = comparisonTableType,
+		checkExistPatientProfilePath = FALSE
+	),
+	comparisonTableParams
+)
+
+outputComparison <- do.call(compareTables, argsCompTable)
+if(!is.null(outputComparison))	outputComparison
+
+```

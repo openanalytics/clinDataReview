@@ -512,7 +512,7 @@ for each subgroup are extracted and combined.
 		rowVarTotalInclude = "AEDECOD",
 		
 		## DT-output specific:
-		outputType = "data.frame",
+		outputType = "data.frame-base",
 		# statistics of interest
 		# for DT output, include columns with patients
 		stats = statsPP, 
@@ -664,8 +664,7 @@ package.
 
 Utility functions are provided to run a standard medical monitoring report.
 Please note that the examples in this section are only informative,
-and not evaluated in the vignette itself (because currently
-no medical monitoring example report is included in the package).
+and not evaluated in the vignette itself.
 
 ## File structure
 
@@ -708,6 +707,29 @@ multiple HTML files
     + _Markdown_ file for each report part (one per config file)
     + associated _rds_ file containing specification of the
     _Javascript_ libraries required for each report part (`knit_meta`)
+    
+## Template reports
+
+A set of template reports are available in the `medicalMonitoring` package
+itself.
+
+**The full list of the reports and the corresponding input parameters is available
+at: `? `medicalMonitoring-templates` `**.
+
+To use a template available in the package for one of your report,
+your config file should contain the corresponding name of the template via
+the `template` tag and the `templatePackage` set to 'medicalMonitoring'.
+
+For example, to include a division in the report, your YAML config file should be formatted
+as:
+
+```{yaml, eval = FALSE}
+template: divisionTemplate.Rmd
+templatePackage: medicalMonitoring
+reportTitle: "Title for a chapter"
+reportTitleLevel: 1
+```
+
 
 ## Render a medical monitoring report
 
@@ -761,6 +783,12 @@ This can be achieved as followed:
 
 # get parameters from the general 'config.yml' and the specified config file
 params <- getParamsFromConfig(configFile = "config-AE_timeprofile.yml")
+
+# extract template from package if specified
+if(params$templatePackage == "medicalMonitoring"){
+	pathTemplate <- medicalMonitoring::getPathTemplate(file = params$template)
+	file.copy(from = pathTemplate, to = ".")
+}
 
 # run a current chapter (without medical monitoring Js libraries and GLPG style)
 # Note that Js library to have the functionality to download patient profiles is not imported
