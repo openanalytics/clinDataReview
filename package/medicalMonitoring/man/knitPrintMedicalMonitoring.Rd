@@ -3,7 +3,7 @@
 \name{knitPrintMedicalMonitoring}
 \alias{knitPrintMedicalMonitoring}
 \title{Include output from medical monitoring, or list 
-of such outputs in a Rmarkdown report.}
+of such outputs in a Rmarkdown report, with an appropriate title.}
 \usage{
 knitPrintMedicalMonitoring(
   list,
@@ -13,13 +13,17 @@ knitPrintMedicalMonitoring(
 )
 }
 \arguments{
-\item{list}{List of medical monitoring plots,
+\item{list}{Named list of medical monitoring plots,
 the names are used for the section header.
-If multiple group variables are considered, the list
-should be named by the different group elements,
+If several section header should be created, either:
+\itemize{
+\item{a list of level 1 named by the different group elements,
 separated by \code{sep}, e.g. 
 \code{list('group1.param1' = .., 'group1.param2' = ...)}.
 Such list is e.g. created with \code{\link[plyr]{dlply}}.}
+\item{a nested list, named with the different groups,
+e.g. created with \code{lapply}}
+}}
 
 \item{sep}{String with separator used to distinguish 
 different levels in the labels of the list.
@@ -41,7 +45,7 @@ report.
 }
 \description{
 Include output from medical monitoring, or list 
-of such outputs in a Rmarkdown report.
+of such outputs in a Rmarkdown report, with an appropriate title.
 }
 \seealso{
 Other medical monitoring reporting: 

@@ -223,7 +223,7 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			
 			# Rd doc
 			if(!is.null(jsonSchPropParam$doc))	
-				pDocVect <- c(pDocVect, paste("containing", jsonSchPropParam$doc))
+				pDocVect <- c(pDocVect, paste(",", jsonSchPropParam$doc))
 			
 			# combine all elements to build the doc
 			pDocText <- paste(pDocVect, collapse = " ")

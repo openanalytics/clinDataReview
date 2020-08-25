@@ -130,7 +130,8 @@ argsCompTable <- c(
 		oldData = dataList$previousData,
 		labelVars = labelVars,
 		patientProfilePath = patientProfilePath,
-		outputType = comparisonTableType
+		outputType = comparisonTableType,
+		checkExistPatientProfilePath = FALSE
 	),
 	comparisonTableParams
 )

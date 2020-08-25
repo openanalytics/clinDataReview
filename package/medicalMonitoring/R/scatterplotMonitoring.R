@@ -17,11 +17,13 @@
 #' @inheritParams staticScatterplotMonitoring
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
-#' @return If a \code{table} is requested:
+#' @return Either:
 #' \itemize{
-#' \item{a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
-#' (\code{\link[DT]{datatable}} object) with extra class: \code{medicalMonitoringTable})}
-#' \item{\code{\link[plotly]{plotly}} object}
+#' \item{if \code{table} is requested}{
+#' a \code{medicalMonitoring} object, a.k.a a list with the 
+#' 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
+#' (\code{\link[DT]{datatable}} object)}
+#' \item{otherwise: }{\code{\link[plotly]{plotly}} object}
 #' }
 #' @example inst/examples/scatterplotMonitoring-example.R
 #' @importFrom glpgUtilityFct getLabelVar
