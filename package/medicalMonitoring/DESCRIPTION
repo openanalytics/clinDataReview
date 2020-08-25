@@ -14,7 +14,7 @@ Imports:
   knitr, 
   pander, rmarkdown, RColorBrewer, yaml,
   methods,
-  rvest, jsonlite, magrittr, jsonvalidate, utils
+  rvest, jsonlite, magrittr, jsonvalidate, utils, xml2, xfun
 License: file LICENSE
 Suggests: 
     testthat,
