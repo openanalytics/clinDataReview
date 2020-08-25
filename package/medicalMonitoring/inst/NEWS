@@ -1,5 +1,6 @@
 0.4.0
     o render_medicalMonitoringReport: logFile, runFctInNewSession, export combined sessionInfo
+    o scrape html files
     o include template reports in the package
     o document templates with JSON schema + utility functions to convert to Rd
 0.3.0
