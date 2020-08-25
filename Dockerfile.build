@@ -181,9 +181,12 @@ RUN R -e "remotes::install_version('ggplot2', version = '3.3.2', upgrade = FALSE
 	R -e "remotes::install_version('cowplot', version = '1.0.0', upgrade = FALSE)" && \
 	R -e "remotes::install_version('ggrepel', version = '0.8.2', upgrade = FALSE)" && \
 	R -e "remotes::install_version('plotly', version = '4.9.2.1', upgrade = FALSE)" && \
-	R -e "remotes::install_version('vdiffr', version = '0.3.2', upgrade = FALSE)" && \
+	R -e "remotes::install_version('vdiffr', version = '0.3.2', upgrade = FALSE)"
+# Packages for rvest and jsonvalidate	
+RUN	R -e "remotes::install_version('selectr', version = '0.4.2', upgrade = FALSE)" && \
 	R -e "remotes::install_version('rvest', version = '0.3.6', upgrade = FALSE)" && \
-	R -e "remotes::install_version('jsonvalidate', version = '1.1.0', upgrade = FALSE)"
+	R -e "remotes::install_version('jsonvalidate', version = '1.1.0', upgrade = FALSE)" && \
+	R -e "remotes::install_version('V8', version = '3.2.0', upgrade = FALSE)"
 
 # install tar gz package(s)
 RUN mkdir -p /tmp
