@@ -127,11 +127,13 @@ of subject-specific report are displayed in the browser console.}
 \item{typePlot}{String with plot type, 'treemap' or 'sunburst'.}
 }
 \value{
-If a \code{table} is requested:
+Either:
 \itemize{
-\item{a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
-(\code{\link[DT]{datatable}} object) with extra class: \code{medicalMonitoringTable})}
-\item{\code{\link[plotly]{plotly}} object}
+\item{if \code{table} is requested}{
+a \code{medicalMonitoring} object, a.k.a a list with the 
+'plot' (\code{\link[plotly]{plotly}} object) and 'table'
+(\code{\link[DT]{datatable}} object)}
+\item{otherwise: }{\code{\link[plotly]{plotly}} object}
 }
 }
 \description{

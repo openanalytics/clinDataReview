@@ -18,7 +18,8 @@ markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 each sub report are stored.}
 }
 \value{
-String with path to Markdown file containing the session information
+String with path to Markdown file containing the session information,
+NULL if no session information(s) are provided.
 }
 \description{
 Combine all session informations across all medical monitoring reports

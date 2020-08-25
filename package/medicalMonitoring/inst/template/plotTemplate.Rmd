@@ -148,7 +148,8 @@ argsCompTable <- c(
 	list(
 		newData = dataList$currentData,
 		oldData = dataList$previousData,
-		outputType = comparisonTableType
+		outputType = comparisonTableType,
+		checkExistPatientProfilePath = FALSE
 	),
 	comparisonTableParams
 )
@@ -188,7 +189,7 @@ if(!is.null(loopingVar)){
 
 listPlots <- dlply(data, loopingVar, function(dataI){
 			
-	# Create chunk label
+	# Create plot unique ID
 	argsFormatLabelChunk <- c(
 		list("medicalMonitoringPlotTemplate-createPlot"),
 		if(!is.null(loopingVar))	unique(dataI[, loopingVar, drop = FALSE])

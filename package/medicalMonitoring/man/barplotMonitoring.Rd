@@ -107,11 +107,13 @@ For the visualizations, progress messages during download
 of subject-specific report are displayed in the browser console.}
 }
 \value{
-If a \code{table} is requested:
+Either:
 \itemize{
-\item{a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
-(\code{\link[DT]{datatable}} object) with extra class: \code{medicalMonitoringTable})}
-\item{\code{\link[plotly]{plotly}} object}
+\item{if \code{table} is requested}{
+a \code{medicalMonitoring} object, a.k.a a list with the 
+'plot' (\code{\link[plotly]{plotly}} object) and 'table'
+(\code{\link[DT]{datatable}} object)}
+\item{otherwise: }{\code{\link[plotly]{plotly}} object}
 }
 }
 \description{

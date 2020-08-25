@@ -19,6 +19,7 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom glpgStyle getGLPGColorPalette
 #' @author Laure Cougnaud
+#' @export
 plotCountMonitoring <- function(
 	data, 
 	# plot variables:

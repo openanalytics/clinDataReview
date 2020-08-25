@@ -13,7 +13,7 @@ Imports:
   htmlwidgets, plyr, htmltools,
   knitr, 
   pander, rmarkdown, RColorBrewer, yaml,
-  methods, jsonvalidate, jsonlite
+  methods, jsonvalidate, jsonlite, stringr
 License: file LICENSE
 Suggests: 
     testthat,
