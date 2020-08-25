@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install --no-install-recommends -y libgit2-dev \
 	libpng-dev \
 	git-core \
 	pandoc \
-	pandoc-citeproc
+	pandoc-citeproc \
+	libv8-dev
 RUN rm -rf /var/lib/apt/lists/*
 
 # System libraries for installing orca
