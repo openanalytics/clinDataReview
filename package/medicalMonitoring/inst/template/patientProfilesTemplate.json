@@ -1,0 +1,100 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  
+  "title" : "Medical monitoring template for the creation of patient profiles",
+  
+  "description" : "This report creates the specified patient profiles (with the \\code{\\link{patientProfilesVis}} package) by subject, and export them to a specified directory.",
+  
+  "type": "object",
+  
+  "properties": {
+  
+    "template": {
+      "const": "patientProfilesTemplate.Rmd",
+      "doc": "name of the template report"
+    },
+    "templatePackage": {
+      "const": "medicalMonitoring",
+      "doc": "package from which the template should be extracted"
+     },
+    
+    "reportTitle": {
+      "type": "string",
+      "doc": "header title"
+    },
+    "reportTitleLevel": {
+      "type": "integer",
+      "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    },
+    
+    "createPatientProfiles": {
+      "type": "boolean",
+      "doc": "Should the patient profiles be created or only loaded from a previous execution?"
+    },
+    
+    "patientProfilesGeneralParams": {
+      "type": "object",
+      "doc": "set of parameters used for all patient profiles modules. These parameters are passed to all \\code{subjectProfile[]Plot} functions."
+    },
+    
+    "patientProfilesParams" : {
+      "type": "array",
+      "doc": "parameters for each patient profile module",
+      "items": {
+        "type": "object",
+        "properties": {
+          "typePlot": {
+            "type": "string",
+            "enum": ["text", "line", "interval", "event"],
+            "doc": "plot type, used to get the appropriate plot module function: \\itemize{\\item{'text': }{\\link[patientProfilesVis]{subjectProfileTextPlot}}\\item{'line': }{\\link[patientProfilesVis]{subjectProfileLinePlot}}\\item{'interval': }{\\link[patientProfilesVis]{subjectProfileIntervalPlot}}\\item{'event': }{\\link[patientProfilesVis]{subjectProfileEventPlot}}}"
+          },
+          "dataFileName": {
+            "type": "string",
+            "doc": "name of the data file of interest"
+          },
+          "dataProcessing": {
+            "type": "array",
+            "doc": "data processing parameters, passed to \\link[medicalMonitoring]{processData}"
+          },
+          "plotParams": {
+            "type": "object",
+            "doc": "parameters for the plotting function:"
+          }
+        },
+	      "required": ["typePlot", "dataFileName", "plotParams"]
+      }
+
+    },
+    
+    "patientProfilesCreateReportParams" : {
+      "type": "object",
+      "doc": "parameters for the creation of the patient profile report(s), passed to \\link[patientProfilesVis]{createSubjectProfileReport}"
+    },
+    
+    "tableParams": {
+      "type": "object",
+      "doc": "parameters specifying a table containing data of interest and links to created patient profiles",
+      "properties": {
+        "dataFileName": {
+          "type": "string",
+          "doc": "name of the data file to display in the table"
+         },
+         "dataProcessing": {
+           "type": "array",
+           "doc": "data processing parameters, passed to \\link[medicalMonitoring]{processData}"
+         },
+         "vars": {
+            "type": "array",
+            "doc": "variable(s) of data to display in the table"
+         }
+      },
+      "required": ["dataFileName"]   
+    } 
+  },
+  
+  "required": ["template", "templatePackage", "reportTitle", "patientProfilesParams"],
+  
+/*   doesn't allow extra parameters in the config files */
+  "additionalProperties": false 
+  
+}

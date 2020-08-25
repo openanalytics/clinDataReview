@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  
+  "title" : "Medical monitoring template to create a report division",
+  
+  "description" : "This report includes a division, i.e. extra chapter, section of subsection in the report.",
+  
+  "type": "object",
+  
+  "properties": {
+  
+    "template": {
+      "const": "divisionTemplate.Rmd",
+      "doc": "name of the template report"
+    },
+    "templatePackage": {
+      "const": "medicalMonitoring",
+      "doc": "package from which the template should be extracted"
+     },
+    "reportTitle": {
+      "type": "string",
+      "doc": "header title"
+    },
+    "reportTitleLevel": {
+      "type": "integer",
+      "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    }
+    
+  },
+  
+  "required": ["template", "templatePackage", "reportTitle"],
+  
+/*   doesn't allow extra parameters in the config files */
+  "additionalProperties": false 
+  
+}

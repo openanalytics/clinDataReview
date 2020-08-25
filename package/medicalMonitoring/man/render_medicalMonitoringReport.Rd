@@ -6,12 +6,12 @@
 \usage{
 render_medicalMonitoringReport(
   indexPath = "index.Rmd",
-  outputDir = "./MOMP",
+  outputDir = "./report",
   intermediateDir = "./interim",
   configDir = "./config",
   logFile = NULL,
   configFiles = NULL,
-  extraDirs = c("figures", "tables", "patientProfiles"),
+  extraDirs = c("figures", "tables"),
   quiet = FALSE
 )
 }
@@ -20,7 +20,7 @@ render_medicalMonitoringReport(
 ('index.Rmd' by default).}
 
 \item{outputDir}{String with output directory,
-('MOMP', for: 'Medical Oversight and monitoring Plan' by default).}
+('report' by default).}
 
 \item{intermediateDir}{String with intermediate directory ('inter'
 by default), where
@@ -65,6 +65,10 @@ String with path to the front page of the
 medical monitoring report.
 }
 \description{
+Render a medical monitoring report.
+}
+\section{Framework}{
+ 
 This function is based on the \link[bookdown]{render_book}
 function, enabling specification of chapter-specific input parameters,
 specified in YAML configuration files.
@@ -74,8 +78,14 @@ This consists of:
 each report of interest ('config' tag)}
 \item{for each report of interest:
 \itemize{
-\item{loading the report specific parameter from the associated 'config' file
+\item{loading the report specific parameters from the associated 'config' file
 (see the \code{\link{getParamsFromConfig}} function)}
+\item{if the template should be extracted from a specified package
+(\code{templatePackage} tag), this template is copied to the
+current directory.
+Please note that if a file with same name is available in
+the working directory, this file will be overwritten.
+}
 \item{executing the report ('template' tag) with the associated
 parameters in a \strong{new R session for reproducibility}, 
 to obtain the associated Markdown file}
@@ -88,6 +98,13 @@ If the execution of a specific report fails with error, this report
 is ignored and a warning message is triggered. Intermediary results
 from previous execution, if any, are deleted.
 }
+
+\section{Available template report}{
+
+see `medicalMonitoring-templates` for list of 
+medical monitoring template report available in the package.
+}
+
 \seealso{
 Other medical monitoring reporting: 
 \code{\link{convertMdToHtml}()},

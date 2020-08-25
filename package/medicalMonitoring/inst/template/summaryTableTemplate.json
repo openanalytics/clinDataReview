@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  
+  "title" : "Medical monitoring template for a summary table of the data",
+  
+  "description" : "This report summarizes the data of interest (with the \\code{\\link{inTextSummaryTable}} package). This table is displayed with an interactive table in the report, and exported to a docx file. This table can be compared to a summary table of a previous batch ('comparisonTable' parameters).",
+  
+  "type": "object",
+  
+  "properties": {
+  
+    "template": {
+      "const": "summaryTableTemplate.Rmd",
+      "doc": "name of the template report"
+    },
+    "templatePackage": {
+      "const": "medicalMonitoring",
+      "doc": "package from which the template should be extracted"
+     },
+    
+    "reportTitle": {
+      "type": "string",
+      "doc": "header title"
+    },
+    "reportTitleLevel": {
+      "type": "integer",
+      "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    },
+    
+    "dataFileName" : {
+      "type": "string",
+      "doc": "name of the data file of interest"
+    },
+    "dataProcessing": {
+      "type": "array",
+      "doc": "data processing parameters, passed to \\link[medicalMonitoring]{processData}"
+    },
+    "dataTotalFileName": {
+      "type": "string",
+      "doc": "filename of the total dataset"
+    },
+    "dataTotalProcessing": {
+      "type": "array",
+      "doc": "data processing parameters for 'dataTotalFileName', passed to \\link[medicalMonitoring]{processData}"
+    },
+    
+    "tableParams": {
+      "type": "object",
+      "doc": "parameters to summarize the data in a table, passed to \\link[inTextSummaryTable]{computeSummaryStatisticsTable}"
+    },
+    "tableParamsDocx": {
+      "type": "object",
+      "doc": "parameters to format the table to the docx format, passed to \\link[inTextSummaryTable]{exportSummaryStatisticsTable}"
+    },
+    "tableParamsDT": {
+      "type": "object",
+      "doc": "parameters to format the table to the DT interactive table included in the report, passed to \\link[inTextSummaryTable]{exportSummaryStatisticsTable}"
+    },
+    
+    "comparisonTableType": {
+      "type": "string",
+      "doc": "output type of the comparison table",
+      "enum": ["none", "newData-diff", "table-comparison-interactive"]
+    },
+    "comparisonTableParams": {
+      "type": "object",
+      "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}. By default, statistics variables are compared across row and column elements."
+    }
+    
+  },
+  
+  "required": ["template", "templatePackage", "reportTitle", "dataFileName", "tableParams"],
+  
+  /*   doesn't allow extra parameters in the config files */
+  "additionalProperties": false
+  
+}
