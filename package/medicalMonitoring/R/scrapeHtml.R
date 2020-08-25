@@ -7,7 +7,8 @@
 #' @return The data
 #' @example inst/examples/scrapeHtml-example.R
 #' @import magrittr
-#' @importFrom rvest read_html html_nodes html_text
+#' @importFrom xml2 read_html
+#' @importFrom rvest html_nodes html_text
 #' @importFrom jsonlite fromJSON
 #' @author Michela Pasetto
 #' @export 
