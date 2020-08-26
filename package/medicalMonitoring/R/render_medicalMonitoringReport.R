@@ -274,7 +274,6 @@ render_medicalMonitoringReport <- function(
 				
 			}
 				
-			file.rename(from = outputRmd, to = outputMdFile)
 			knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
 			sessionInfoReport <- attr(outputRmd, "sessionInfo", exact = TRUE)
 			interimRes <- list(knitMeta = knitMetaReport, sessionInfo = sessionInfoReport)

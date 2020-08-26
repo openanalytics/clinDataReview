@@ -94,14 +94,16 @@ to obtain the associated Markdown file}
 (see the \code{\link{convertMdToHtml}} function)
 }
 }
-If the execution of a specific report fails with error, this report
-is ignored and a warning message is triggered. Intermediary results
-from previous execution, if any, are deleted.
+If the execution of a specific report fails with error, 
+a warning message is triggered. A report containing
+only the specified title is created, to ensure
+output consistency (especially html file numbering)
+in case the report succeeds.
 }
 
 \section{Available template report}{
 
-see `medicalMonitoring-templates` for list of 
+see \strong{\link{`medicalMonitoring-templates`}} for list of 
 medical monitoring template report available in the package.
 }
 
