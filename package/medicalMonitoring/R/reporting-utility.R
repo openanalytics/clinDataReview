@@ -91,12 +91,6 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' e.g. '.' by default.
 #' @param level Integer with base level for section,
 #' 1 by default.
-#' @param generalLabel String with general label for the
-#' chunk(s) including the plots in the Rmarkdown document. 
-#' Note: as chunks should have unique labels in a Rmd document,
-#' this label should be unique within the same Rmarkdown document 
-#' (in case \code{listPlots} with same names are included multiple times
-#' in the document).
 #' @return No returned value, the plots are included in the
 #' report.
 #' @author Laure Cougnaud
@@ -105,8 +99,7 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' @family medical monitoring reporting
 #' @export
 knitPrintMedicalMonitoring <- function(
-	list, sep = ".", level = 1,
-	generalLabel = "medicalMonitoring"){
+	list, sep = ".", level = 1){
 	
 	classes <- c("medicalMonitoring", "datatables", "plotly")
 	if(inherits(list, what = classes)){
@@ -136,9 +129,9 @@ knitPrintMedicalMonitoring <- function(
 				titles <- if(!noName)	names(list)
 				
 				# print list of objects
+				# Note for static plot, we will need the 'generalLabel' option
 				knitPrintListObjects(
 					xList = list, 
-					generalLabel = generalLabel,
 					titles = titles, 
 					titleLevel = level
 				)
@@ -150,7 +143,6 @@ knitPrintMedicalMonitoring <- function(
 				knitPrintMedicalMonitoring(
 					list = list, 
 					level = level, 
-					generalLabel = generalLabel,
 					sep = "."
 				)
 				
@@ -179,8 +171,7 @@ knitPrintMedicalMonitoring <- function(
 				knitPrintMedicalMonitoring(
 					list = listEl, 
 					sep = sep, 
-					level = level+1,
-					generalLabel = label
+					level = level+1
 				)
 				
 			}

@@ -5,12 +5,7 @@
 \title{Include output from medical monitoring, or list 
 of such outputs in a Rmarkdown report, with an appropriate title.}
 \usage{
-knitPrintMedicalMonitoring(
-  list,
-  sep = ".",
-  level = 1,
-  generalLabel = "medicalMonitoring"
-)
+knitPrintMedicalMonitoring(list, sep = ".", level = 1)
 }
 \arguments{
 \item{list}{Named list of medical monitoring plots,
@@ -31,13 +26,6 @@ e.g. '.' by default.}
 
 \item{level}{Integer with base level for section,
 1 by default.}
-
-\item{generalLabel}{String with general label for the
-chunk(s) including the plots in the Rmarkdown document. 
-Note: as chunks should have unique labels in a Rmd document,
-this label should be unique within the same Rmarkdown document 
-(in case \code{listPlots} with same names are included multiple times
-in the document).}
 }
 \value{
 No returned value, the plots are included in the

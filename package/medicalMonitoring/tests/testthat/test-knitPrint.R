@@ -160,24 +160,6 @@ test_that("Custom separator", {
 			
 })
 
-test_that("General label", {
-		
-	knitr::opts_knit$set("rmarkdown.pandoc.to" = "pdf")
-			
-	pl <- plot_ly(data = iris, x = ~`Sepal.Length`, y = ~`Petal.Length`, 
-			type = "scatter", mode = "markers")
-	listPlots <- list(A = pl, B = pl)
-	label <- "testLabel"
-	expect_error(
-		res <- capture.output(
-			knitPrintMedicalMonitoring(list = listPlots, generalLabel = label)
-		),
-		NA
-	)
-	expect_length(grep(label, res), length(listPlots))
-			
-})
-
 test_that("Wrong input", {
 	
 	expect_error(
