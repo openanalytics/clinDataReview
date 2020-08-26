@@ -17,6 +17,10 @@ Input parameters:
 - tableParamsDT (optional): list with parameters to create the interactive DT table, displayed in the report, passed to the ? inTextSummaryTable::exportSummaryStatisticsTable
 - comparisonTableType (optional): string with type of comparison table, either: 'none' (by default) or 'detailed'
 - comparisonTableParams (optional): list with parameters for the comparison table, see ? glpgUtilityFct::compareTables
+- loopingVar (optional): character vector with variables to loop over, a plot will be created for each combination of groups of this variable
+- loopingNMax (optional): integer with maximal number of groups to consider (all by default)
+- loopingTotal (optional): logical, should we loop in the total dataset (TRUE by default)?
+
 * General:
 - pathDataFolder: string with path to the data folder
 - pathDataFolderOld (optional): string with path to the folder for old data
@@ -51,6 +55,8 @@ options(warn = 1)
 attach(params)
 if(!exists("comparisonTableType"))	comparisonTableType <- "none"
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
+if(!exists("loopingVar")) loopingVar <- NULL
+if(!exists("loopingTotal"))	loopingTotal <- TRUE
 ```
 
 ```{r summaryTableTemplate-loadPackages}
@@ -58,6 +64,9 @@ if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 library(medicalMonitoring)
 library(glpgUtilityFct)
 library(inTextSummaryTable)
+library(plyr)
+library(tools)
+library(htmltools)
 
 ```
 
@@ -117,6 +126,17 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 			patientProfilePath = patientProfilePath,
 			checkExist = FALSE
 		)
+	
+	# only subset of the data if requested
+	if(!is.null(loopingVar) && exists("loopingNMax") &&	is.integer(loopingNMax)){
+			
+		data <- merge(
+			x = data,
+			y = unique(data[, loopingVar, drop = FALSE])[seq_len(loopingNMax), , drop = FALSE],
+			all = FALSE
+		)
+		
+	}
 	
 	## total			
 	if(exists("dataTotalFileName")) {
@@ -191,18 +211,34 @@ summaryTableList <- sapply(names(pathsData), function(dataBatch) {
 	}
 	
 	## Create tables
+	summaryTable <- dlply(data, loopingVar, function(dataI){
+				
+		dataTotalI <- dataTotal
+		if(!is.null(loopingVar) && loopingTotal){
+			if(any(!loopingVar %in% colnames(dataTotalI)))
+				stop("Looping variable(s) are not available in the total dataset. ",
+					"Are you sure you want to compute the total by 'loopingVar'? (see 'loopingTotal').")
+			dataTotalI <- merge(
+				x = unique(dataI[, loopingVar, drop = FALSE]), 
+				y = dataTotal, 
+				by = loopingVar, 
+				all = FALSE # only include data if present in y
+			)
+		}
 	
-	# create table with descriptive statistics (data.frame format)
-	argsTable <- c(
-		argsTable,
-		list(
-			data = data, 
-			labelVars = labelVars,
-			dataTotal = dataTotal
+		# create table with descriptive statistics (data.frame format)
+		argsTable <- c(
+			argsTable,
+			list(
+				data = dataI, 
+				labelVars = labelVars,
+				dataTotal = dataTotalI
+			)
 		)
-	)
-	summaryTable <- do.call(computeSummaryStatisticsTable, argsTable)	
-	
+		summaryTable <- do.call(computeSummaryStatisticsTable, argsTable)
+		
+	})
+		
 	list(
 		summaryTable = summaryTable,
 		statsPP = statsPP
@@ -215,83 +251,115 @@ summaryTableList <- sapply(names(pathsData), function(dataBatch) {
 ```{r summaryTableTemplate-exportSummaryStatisticsTable, eval = (comparisonTableType == "none")}
 
 	summaryTable <- summaryTableList$currentData$summaryTable
-	
 	statsPP <- summaryTableList$currentData$statsPP
 	
-	# export to docx
 	if(!exists("tableParamsDocx"))	tableParamsDocx <- list()
+	tableParamsDocx$outputType <- "flextable"
 	
-	tableParamsDocx <- c(tableParamsDocx,
-		list(
-			summaryTable = summaryTable,
-			outputType = "flextable"
-		)
-	)
-	
-	if(is.null(tableParamsDocx$file))	
-		tableParamsDocx$file <- "table.docx"
-	tableParamsDocx$file <- file.path("tables", tableParamsDocx$file)
-	
-	if(is.null(tableParamsDocx$statsVar))
-		tableParamsDocx$statsVar <-  attr(summaryTable, "summaryTable")$statsVar
-	tableParamsDocx$statsVar <- setdiff(tableParamsDocx$statsVar, names(statsPP))
-	
-	ft <- do.call(exportSummaryStatisticsTable, tableParamsDocx)
-	
-	# export to data.table
 	if(!exists("tableParamsDT"))	tableParamsDT <- list()
+	tableParamsDT$outputType <- "DT"
+	tableParamsDT$expandVar <- tableParamsDT$noEscapeVar <- names(statsPP)
 	
-	tableParamsDT <- c(tableParamsDT,
-		list(
-			summaryTable = summaryTable,
-			outputType = "DT",
-			expandVar = names(statsPP),
-			noEscapeVar = names(statsPP)
+	summaryTableDT <- sapply(names(summaryTable), function(group){
+		
+		sumTable <- summaryTable[[group]]
+		# export to docx		
+		tableParamsDocxI <-tableParamsDocx
+		tableParamsDocxI$summaryTable <- sumTable
+		
+		if(is.null(tableParamsDocxI$file))	
+			tableParamsDocxI$file <- "table.docx"
+		tableParamsDocxI$file <- paste0(
+			tools::file_path_sans_ext(tableParamsDocxI$file), 
+			"_", formatLabel(group), ".",
+			tools::file_ext(tableParamsDocxI$file)
 		)
+		tableParamsDocxI$file <- file.path("tables", tableParamsDocxI$file)
+		
+		if(is.null(tableParamsDocxI$statsVar))
+			tableParamsDocxI$statsVar <-  attr(sumTable, "summaryTable")$statsVar
+		tableParamsDocxI$statsVar <- setdiff(tableParamsDocxI$statsVar, names(statsPP))		
+		ft <- do.call(exportSummaryStatisticsTable, tableParamsDocxI)
+		
+		# export to data.table
+		tableParamsDTI <- tableParamsDT
+		tableParamsDTI$summaryTable <- sumTable
+		if(is.null(tableParamsDTI$statsVar))
+			tableParamsDTI$statsVar <- attr(sumTable, "summaryTable")$statsVar
+		tableParamsDTI$statsVar <- unique(c(tableParamsDTI$statsVar, names(statsPP)))
+		tableParamsDTI$title <- htmltools::tags$caption(
+			htmltools::a("Formatted .docx table", target="_blank", href = tableParamsDocxI$file),
+			br(),
+			tableParamsDTI$footer,
+			if(!is.null(loopingVar) && loopingTotal)	
+				tagList(
+					br(),
+					paste0("Totals (percentages) are considered by ", 
+						toString(getLabelVar(loopingVar, labelVars = labelVars)), 
+						"."
+					)
+				)
+		)
+		
+		summaryTableDT <- do.call(exportSummaryStatisticsTable, tableParamsDTI)
+		
+	}, simplify = FALSE)
+
+	knitPrintMedicalMonitoring(
+		list = summaryTableDT,
+		level = reportTitleLevel + 1
 	)
-	if(is.null(tableParamsDT$statsVar))
-		tableParamsDT$statsVar <- attr(summaryTable, "summaryTable")$statsVar
-	tableParamsDT$statsVar <- unique(c(tableParamsDT$statsVar, names(statsPP)))
-	
-	if(!is.null(tableParamsDT$footer)) footer <- tableParamsDT$footer else footer <- NULL
-	summaryTableDT <- do.call(exportSummaryStatisticsTable, tableParamsDT)
-	
-	cat(paste0("<a href=\"", tableParamsDocx$file, "\"target=\"_blank\">Formatted .docx table</a>"))
-	cat("\n\n")
-	cat(footer)
-	cat("\n\n")
-	summaryTableDT
 
 ```	
 	
 ```{r summaryTableTemplate-getComparisonTable, eval = (comparisonTableType != "none"), message = TRUE}
 
-summaryTableCurrent <- summaryTableList$currentData$summaryTable
-
 if(!exists("comparisonTableParams"))	comparisonTableParams <- NULL
-# By default, reference variables are all row/column variables of the table
-if(is.null(comparisonTableParams$referenceVars))
-	comparisonTableParams$referenceVars <- unname(unlist(attr(summaryTableCurrent, "summaryTable")[c("rowVar", "colVar")]))
-# By default: changeable variables are the statistics
-if(is.null(comparisonTableParams$changeableVars)){
-	comparisonTableParams$changeableVars <- unname(setdiff(
-		attr(summaryTableCurrent, "summaryTable")$statsVar,
-		names(summaryTableList$currentData$statsPP)
-	))
-}
 
-argsCompTable <- c(
-	list(
-		newData = summaryTableList$currentData$summaryTable,
-		oldData = summaryTableList$previousData$summaryTable,
-		outputType = comparisonTableType,
-		pageLength = Inf
-	),
-	comparisonTableParams
-)
+summaryTableDT <- sapply(names(summaryTableList$currentData$summaryTable), function(group){
+			
+	sumTableCurrent <- summaryTableList$currentData$summaryTable[[group]]
+	sumTableOld <- summaryTableList$previousData$summaryTable[[group]]
 
-outputComparison <- do.call(compareTables, argsCompTable)
+	# By default, reference variables are all row/column variables of the table
+	argsCompTable <- comparisonTableParams
+	if(is.null(argsCompTable$referenceVars))
+		argsCompTable$referenceVars <- unname(unlist(attr(sumTableCurrent, "summaryTable")[c("rowVar", "colVar")]))
 	
-if(!is.null(outputComparison))	outputComparison
+	# By default: changeable variables are the statistics
+	if(is.null(argsCompTable$changeableVars)){
+		argsCompTable$changeableVars <- unname(setdiff(
+			attr(sumTableCurrent, "summaryTable")$statsVar,
+			names(summaryTableList$currentData$statsPP)
+		))
+	}
+
+	argsCompTable$newData <- sumTableCurrent
+	argsCompTable$oldData <- sumTableOld
+	argsCompTable$outputType <- comparisonTableType
+	argsCompTable$pageLength <- Inf
+	
+	argsCompTable$caption <- if(!is.null(loopingVar) && loopingTotal){
+		htmltools::tags$caption(
+			paste0("Totals (percentages) are considered by ", 
+				toString(getLabelVar(loopingVar, labelVars = labelVars)),
+				".")
+			)
+		}
+
+	outputComparison <- do.call(compareTables, argsCompTable)
+	
+}, simplify = FALSE)
+
+summaryTableDT <- summaryTableDT[!sapply(summaryTableDT, is.null)]
+
+if(length(summaryTableDT) > 0){
+	
+	knitPrintMedicalMonitoring(
+		list = summaryTableDT,
+		level = reportTitleLevel + 1
+	)
+	
+}
 
 ```

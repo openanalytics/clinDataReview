@@ -70,6 +70,7 @@ library(medicalMonitoring)
 library(glpgUtilityFct)
 library(inTextSummaryTable)
 library(plyr) # for dlply
+library(htmltools)
 
 ```
 
