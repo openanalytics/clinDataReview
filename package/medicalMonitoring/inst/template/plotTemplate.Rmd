@@ -186,7 +186,6 @@ if(!is.null(loopingVar)){
 	}
 	
 }
-
 listPlots <- dlply(data, loopingVar, function(dataI){
 			
 	# Create plot unique ID
@@ -197,18 +196,15 @@ listPlots <- dlply(data, loopingVar, function(dataI){
 	id <- do.call(formatLabelChunk, argsFormatLabelChunk)
 	
 	# Create the plot
-	message("Create plot: ", id)
-	inputParamsI <- c(
-		plotParams, 
-		list(
-			data = dataI, labelVars = labelVars, 
-			table = TRUE,
-			pathVar = if(!is.null(patientProfilePath))	"patientProfilePath",
-			id = id,
-			verbose = TRUE
-		)
-	)
-	do.call(plotFunction, inputParamsI)		
+	argsPlot <- plotParams
+	argsPlot$data <- dataI
+	argsPlot$labelVars <- labelVars
+	argsPlot$table <- TRUE
+	argsPlot$pathVar = if(!is.null(patientProfilePath))	"patientProfilePath"
+	argsPlot$id <- id
+	
+	do.call(plotFunction, argsPlot)	
+	
 })
 
 knitPrintMedicalMonitoring(

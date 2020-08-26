@@ -15,6 +15,9 @@ Input parameters:
 - typePlot: string with name of a plotting function of interest, available in the medicalMonitoring package
 - plotParams: list with plotting parameters passed to the 'typePlot' function
 (excepted: 'data', 'labelVars', 'table', 'pathVar' and 'verbose')
+- loopingVar (optional): character vector with variables to loop over, a plot will be created for each combination of groups of this variable
+- loopingNMax (optional): integer with maximal number of groups to consider (all by default)
+- loopingTotal (optional): logical, should we loop in the total dataset (TRUE by default)?
 
 * General:
 - pathDataFolder: string with path to the data folder
@@ -46,6 +49,8 @@ options(warn = 1)
 ```{r summaryPlot-attachParameters}
 attach(params)
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
+if(!exists("loopingVar")) loopingVar <- NULL
+if(!exists("loopingTotal"))	loopingTotal <- TRUE
 ```
 
 ```{r summaryPlot-loadPackages}
@@ -53,6 +58,7 @@ if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 library(medicalMonitoring)
 library(glpgUtilityFct)
 library(inTextSummaryTable)
+library(plyr)
 
 ```
 
@@ -124,6 +130,17 @@ if(exists("dataTotalFileName")){
 	
 }else	dataTotal <- data
 
+# only subset of the data if requested
+if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
+	
+	data <- merge(
+		x = data,
+		y = unique(data[, loopingVar, drop = FALSE])[seq_len(loopingNMax), , drop = FALSE],
+		all = FALSE
+	)
+	
+}
+
 ```
 
 ```{r summaryPlot-createTable}
@@ -160,52 +177,76 @@ if(any(names(statsCustom) %in% tableParams$var)){
 ## Create tables
 			
 # create table with descriptive statistics (data.frame format)
-argsTable <- c(
-	tableParams,
-	list(
-		data = data, 
-		labelVars = labelVars,
-		dataTotal = dataTotal
+summaryTable <- dlply(data, loopingVar, function(dataI){
+			
+	# extract total dataset
+	dataTotalI <- dataTotal
+	if(!is.null(loopingVar) && loopingTotal){
+		if(any(!loopingVar %in% colnames(dataTotalI)))
+			stop("Looping variable(s) are not available in the total dataset. ",
+				"Are you sure you want to compute the total by 'loopingVar'? (see 'loopingTotal').")
+		dataTotalI <- merge(
+			x = unique(dataI[, loopingVar, drop = FALSE]), 
+			y = dataTotalI, 
+			by = loopingVar, 
+			all = FALSE # only include data if present in y
+		)
+	}
+			
+	argsTable <- c(
+		tableParams,
+		list(
+			data = dataI, 
+			labelVars = labelVars,
+			dataTotal = dataTotalI
+		)
 	)
-)
-summaryTable <- do.call(computeSummaryStatisticsTable, argsTable)
+	summaryTable <- do.call(computeSummaryStatisticsTable, argsTable)
+	summaryTable <- subset(summaryTable, !isTotal)
 
-summaryTable <- subset(summaryTable, !isTotal)
-
-if(exists("tableProcessing")){
+	if(exists("tableProcessing")){
+		
+		summaryTable <- processData(
+			data = summaryTable, 
+			processing = tableProcessing,
+			verbose = FALSE,
+			labelVars = labelVars,
+			labelData = "summary table"
+		)
+		
+	}
+	summaryTable$plotID <- seq_len(nrow(summaryTable))
 	
-	summaryTable <- processData(
-		data = summaryTable, 
-		processing = tableProcessing,
-		verbose = FALSE,
-		labelVars = labelVars,
-		labelData = "summary table"
-	)
-	labelVars <- attr(summaryTable, "labelVars")
+	summaryTable
 	
-}
+})
 
-summaryTable$plotID <- seq_len(nrow(summaryTable))
+labelVars <- attr(summaryTable[[1]], "labelVars")
 
 ```
 
 
 ```{r summaryPlot-createPlot}
 
-argsPlot <- c(
-	plotParams, 
-	list(
-		data = summaryTable, 
-		labelVars = labelVars, 
-		idVar = "plotID",
-		table = TRUE,
-		# Summarized data: so patients profiles should be collapsed for each row of the table
-		pathExpand = TRUE,
-		pathVar = if(!is.null(patientProfilePath))	names(statsPP),
-		verbose = TRUE
-	)
-)
+listPlots <- sapply(summaryTable, function(summaryTableI){
+			
+	argsPlot <- plotParams
+	argsPlot$data <- summaryTableI
+	argsPlot$labelVars <- labelVars
+	argsPlot$table <- TRUE
+	# Summarized data: so patients profiles should be collapsed for each row of the table
+	argsPlot$pathExpand <- TRUE
+	argsPlot$pathVar <- if(!is.null(patientProfilePath))	names(statsPP)
+	if("idVar" %in% formalArgs(plotFunction) & !idVar %in% names(argsPlot))
+		argsPlot$idVar <- "plotID"
+	
+	do.call(plotFunction, argsPlot)
+	
+}, simplify = FALSE)
 
-do.call(plotFunction, argsPlot)
+knitPrintMedicalMonitoring(
+	list = listPlots,
+	level = reportTitleLevel + 1
+)
 	
 ```
