@@ -24,6 +24,10 @@
     "reportTitleLevel": {
       "type": "integer",
       "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    },
+    "content": {
+      "type": "string",
+      "doc": "any content that should be included after the title"
     }
     
   },

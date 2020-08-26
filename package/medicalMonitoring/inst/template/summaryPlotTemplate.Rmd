@@ -27,7 +27,7 @@ Input parameters:
 ```{r summaryPlot-options, echo = FALSE, warning = FALSE, message = FALSE}
 
 library(knitr)
-opts_chunk$set(
+knitr::opts_chunk$set(
 	echo = FALSE, 
 	warning = FALSE, error = FALSE, message = FALSE, 
 	results = "asis"
@@ -237,7 +237,7 @@ listPlots <- sapply(summaryTable, function(summaryTableI){
 	# Summarized data: so patients profiles should be collapsed for each row of the table
 	argsPlot$pathExpand <- TRUE
 	argsPlot$pathVar <- if(!is.null(patientProfilePath))	names(statsPP)
-	if("idVar" %in% formalArgs(plotFunction) & !idVar %in% names(argsPlot))
+	if("idVar" %in% formalArgs(plotFunction) & !"idVar" %in% names(argsPlot))
 		argsPlot$idVar <- "plotID"
 	
 	do.call(plotFunction, argsPlot)

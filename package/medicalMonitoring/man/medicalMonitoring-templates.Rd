@@ -39,6 +39,7 @@ This report includes a division, i.e. extra chapter, section of subsection in th
 \item{\code{\strong{templatePackage}}: }{string set to: ‘medicalMonitoring’ , package from which the template should be extracted}
 \item{\code{\strong{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{content}: }{(optional) string , any content that should be included after the title}
 }
 }
 \section{Medical monitoring template to create a listing : listingTemplate}{

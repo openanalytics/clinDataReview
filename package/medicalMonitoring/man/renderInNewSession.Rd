@@ -31,7 +31,7 @@ by default 'keep_md = TRUE' (keep Markdown file)}
 Output of the function executed in the new R session 
 with additional attribute: 'sessionInfo' containing
 the details of the session information in the separated R session.
-NULL if the function failed.
+If the report fails, an error message is returned.
 }
 \description{
 Note: this function is inspired from \code{xfun::Rscript_call}
