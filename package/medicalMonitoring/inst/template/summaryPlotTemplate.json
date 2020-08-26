@@ -61,6 +61,18 @@
     "plotParams": {
       "type": "object",
       "doc": "parameters for the plotting function"
+    },
+    "loopingVar": {
+      "type": ["array", "string"],
+      "doc": "data variable(s) to loop over, for which each output should be created"
+    },
+    "loopingNMax": {
+      "type": "integer",
+      "doc": "maximum number of elements of \\code{loopingVar} to include in the report"
+    },
+    "loopingTotal": {
+      "type": "boolean",
+      "doc": "should the total also be computed by \\code{loopingVar} (TRUE by default)?"
     }
     
   },

@@ -55,6 +55,8 @@ This report displays a listing of the variables and data of interest, displayed 
 \item{\code{tableParams}: }{(optional) object , parameters to create the table, passed to \link[medicalMonitoring]{tableMonitoring}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ ‘none’, ‘newData-diff’, ‘table-comparison-interactive’ } , output type of the comparison table}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}}
+\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
+\item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 }
 }
 \section{Medical monitoring template for the creation of patient profiles : patientProfilesTemplate}{
@@ -108,6 +110,9 @@ This report summarizes the data of interest (with the \code{\link{inTextSummaryT
 \item{\code{tableProcessing}: }{(optional) array , data processing parameters for the summary table, passed to \link[medicalMonitoring]{processData}}
 \item{\code{\strong{plotFunction}}: }{string among: \emph{ ‘timeProfileIntervalPlot’, ‘scatterplotMonitoring’, ‘sunburstMonitoring’, ‘treemapMonitoring’, ‘barplotMonitoring’ } , plotting function to visualize summary data}
 \item{\code{\strong{plotParams}}: }{object , parameters for the plotting function}
+\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
+\item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
+\item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
 }
 }
 \section{Medical monitoring template for a summary table of the data : summaryTableTemplate}{

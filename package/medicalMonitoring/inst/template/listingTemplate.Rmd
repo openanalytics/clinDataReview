@@ -61,7 +61,7 @@ if(!exists("loopingTotal"))	loopingTotal <- TRUE
 library(glpgUtilityFct)
 library(inTextSummaryTable)
 library(medicalMonitoring)
-#library(plyr)
+library(plyr)
 
 ```
 
