@@ -31,7 +31,7 @@ This list can be named with the variables in countVar/parentVar to specify diffe
 ```{r countsVisualizationTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
 
 library(knitr)
-opts_chunk$set(
+knitr::opts_chunk$set(
 	echo = FALSE, 
 	warning = FALSE, error = FALSE, message = FALSE, 
 	results = "asis"

@@ -26,11 +26,13 @@
 #' (see the \code{\link{convertMdToHtml}} function)
 #' }
 #' }
-#' If the execution of a specific report fails with error, this report
-#' is ignored and a warning message is triggered. Intermediary results
-#' from previous execution, if any, are deleted.
+#' If the execution of a specific report fails with error, 
+#' a warning message is triggered. A report containing
+#' only the specified title is created, to ensure
+#' output consistency (especially html file numbering)
+#' in case the report succeeds.
 #' @section Available template report:
-#' see `medicalMonitoring-templates` for list of 
+#' see \strong{\link{`medicalMonitoring-templates`}} for list of 
 #' medical monitoring template report available in the package.
 #' @param extraDirs Character vector with extra directories required by
 #' the report, directory with external images  .
@@ -221,7 +223,7 @@ render_medicalMonitoringReport <- function(
 			# in a new environment ('params' doesn't work within 'Rscript_call'?)
 			# Note: new.env will inherit of parent environments
 			# so objects created in global environment also available there
-			envReport <- new.env() # parent = baseenv()
+			envReport <- new.env(parent = globalenv()) 
 			assign("params", params, envir = envReport)
 			
 			# run report
@@ -251,24 +253,32 @@ render_medicalMonitoringReport <- function(
 				
 				warning(
 					paste0("Rendering of the ", sQuote(basename(inputRmdFile)),
-					" report for config file: ", sQuote(configFile), " failed, ",
-					"this report is ignored."
+					" report for config file: ", sQuote(configFile), " failed, a report",
+					" with only the section title is created."
 					), immediate. = TRUE, call. = FALSE
 				)
 				
-				# remove results from previous execution
-				reportIntRes <- c(outputMdFile, interimResFile)
-				reportIntRes <- reportIntRes[file.exists(reportIntRes)]
-				if(length(reportIntRes) > 0)	file.remove(reportIntRes)
-				
-			}else{
-				
-				knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
-				sessionInfoReport <- attr(outputRmd, "sessionInfo", exact = TRUE)
-				interimRes <- list(knitMeta = knitMetaReport, sessionInfo = sessionInfoReport)
-				saveRDS(interimRes, file = interimResFile)
+				# create a report only with a section title
+				pathTemplate <- medicalMonitoring::getPathTemplate("divisionTemplate.Rmd")
+				tmp <- file.copy(from = pathTemplate, to = ".", overwrite = TRUE)
+				envReport <- new.env(parent = globalenv()) 
+				params$content <- "**This part of the report could not be created.**"
+				assign("params", params, envir = envReport)
+				outputRmd <- renderInNewSession(
+					input = basename(pathTemplate), 
+					output_file = basename(outputMdFile),
+					output_dir = dirname(outputMdFile),
+					env = envReport,
+					quiet = quiet
+				)
 				
 			}
+				
+			file.rename(from = outputRmd, to = outputMdFile)
+			knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
+			sessionInfoReport <- attr(outputRmd, "sessionInfo", exact = TRUE)
+			interimRes <- list(knitMeta = knitMetaReport, sessionInfo = sessionInfoReport)
+			saveRDS(interimRes, file = interimResFile)
 			
 		}
 		
@@ -554,12 +564,13 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
 #' @return Output of the function executed in the new R session 
 #' with additional attribute: 'sessionInfo' containing
 #' the details of the session information in the separated R session.
-#' NULL if the function failed.
+#' If the report fails, an error message is returned.
+#' @importFrom tools file_path_sans_ext
 #' @author Laure Cougnaud
 renderInNewSession <- function(
 	input, 
 	run_pandoc = FALSE,
-	output_options = list(keep_md = TRUE), # default in rmarkdown >= 2.2
+	output_options = list(keep_md = TRUE),
 	encoding = "UTF-8",
 	...){
 	
@@ -611,12 +622,22 @@ renderInNewSession <- function(
 	stderrout <- system2(
 		command = RscriptPath, 
 		args = shQuote(c(RFile, IOFiles, "--verbose")),
+		# to store output (including error) in an object
 		stderr = TRUE, stdout = TRUE
 	)
 	cat(stderrout, sep = "\n")
 	
+	resStatus <- attr(stderrout, "status")
+	if(!is.null(resStatus) && resStatus != 0)
+		stop("Creation of the report failed.")
+	
 	# load output
 	res <- if(file.exists(outputFile))	readRDS(outputFile)
+	
+	# clean intermediary file
+	resFile <- as.character(res)
+	if(grepl(".knit.md", resFile) && file.exists(resFile))
+		file.remove(resFile)
 	
 	return(res)
 	
