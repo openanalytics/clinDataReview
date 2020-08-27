@@ -556,10 +556,12 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
 #' Check uniqueness of report titles across the config files.
 #' If not unique titles are provided, an error is returned.
 #' @param configFiles Character vector with config file names
+#' @param configDir String with directory with config files,
+#' ('config' by default)
 #' @return A named vector with the report titles and the corresponding config file
 #' @author Michela Pasetto
 #' @export 
-checkReportTitles <- function(configFiles) {
+checkReportTitles <- function(configFiles, configDir = "./config") {
   
   reportTitles <- sapply(configFiles[! configFiles == "config.yml"], function(configFileI) {
         
