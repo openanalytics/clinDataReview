@@ -3,7 +3,7 @@
   
   "title" : "Medical monitoring template for visualization of summarized data",
   
-  "description" : "This report summarizes the data of interest (with the \\code{\\link{inTextSummaryTable}} package) and visualize it with any medical monitoring plot function.",
+  "description" : "This report summarizes the data of interest (with the \\code{inTextSummaryTable} package) and visualize it with any medical monitoring plot function.",
   
   "type": "object",
   

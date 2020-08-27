@@ -114,10 +114,12 @@ test_that("plotting function", {
 		outputType = "data.frame-base"
 	)
 	tableDM$statN <- as.numeric(tableDM$statN)
+	tableDM <- subset(tableDM, !isTotal)
 	expect_silent({
 		treemapMonitoring(
 			data = tableDM,
-			vars = c("COUNTRY", "SITEID"), valueVar = "statN"
+			vars = c("COUNTRY", "SITEID"), 
+			valueVar = "statN"
 		)
 	})
 	

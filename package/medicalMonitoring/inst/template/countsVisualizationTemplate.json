@@ -3,7 +3,7 @@
   
   "title" : "Medical monitoring template for a visualization of count data",
   
-  "description" : "This report compute counts of variable(s) of interest (with the \\code{\\link{inTextSummaryTable}} package) and visualize them with a treemap and/or sunburst.",
+  "description" : "This report compute counts of variable(s) of interest (with the \\code{inTextSummaryTable} package) and visualize them with a treemap and/or sunburst.",
   
   "type": "object",
   

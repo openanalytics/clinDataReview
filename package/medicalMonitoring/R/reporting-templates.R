@@ -132,7 +132,7 @@ createTemplateDoc <- function(){
 #' \itemize{
 #' \item{'type': }{object type}
 #' \item{'doc': }{documentation for the parameter (custom JSON schema tag).
-#' This can contain any Roxygen tags, e.g.: \code{\link[package]{function}}}.
+#' This can contain any Roxygen tags, e.g.: \verb{\link[package]{function}}}.
 #' \item{'pattern' (optional): }{required value for the parameter}
 #' \item{'items' (optional): }{JSON schema for the different elements of an 'object'}
 #' \item{'minItems'/'maxItems' (optional): }{minimum/maximum number of elements in an 'array'}
@@ -188,7 +188,7 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			# constant
 			const <- jsonSchPropParam$const
 			if(!is.null(const)){
-				pDocVect <- c(pDocVect, paste("string set to:", sQuote(const)))
+				pDocVect <- c(pDocVect, paste("string set to:", shQuote(const)))
 			}
 			
 			# for list ('object'): type of elements in the list
@@ -216,10 +216,10 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			
 			# pattern (for fixed parameter)
 			if(!is.null(jsonSchPropParam$pattern))
-				pDocVect <- c(pDocVect, paste("with value as:\\emph{", sQuote(jsonSchPropParam$pattern), "}"))
+				pDocVect <- c(pDocVect, paste("with value as:\\emph{", shQuote(jsonSchPropParam$pattern), "}"))
 			
 			if(!is.null(jsonSchPropParam$enum))
-				pDocVect <- c(pDocVect, paste("among: \\emph{", toString(sQuote(jsonSchPropParam$enum)), "}"))
+				pDocVect <- c(pDocVect, paste("among: \\emph{", toString(shQuote(jsonSchPropParam$enum)), "}"))
 			
 			# Rd doc
 			if(!is.null(jsonSchPropParam$doc))	
@@ -229,11 +229,11 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			pDocText <- paste(pDocVect, collapse = " ")
 					
 			pDocName <- paste0(
-				"\\code{", 
 				if(isRequired)	"\\strong{",
+				"\\code{", 
 				param, 
-				if(isRequired)	"}",
-				"}"
+				"}",
+				if(isRequired)	"}"
 			)
 			getItem(pDocText, name = pDocName)
 			

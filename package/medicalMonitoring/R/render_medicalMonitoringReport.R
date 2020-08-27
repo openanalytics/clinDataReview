@@ -60,7 +60,6 @@
 #' @inherit convertMdToHtml return
 #' @author Laure Cougnaud
 #' @importFrom rmarkdown render
-#' @importFrom xfun Rscript_call
 #' @family medical monitoring reporting
 #' @export
 render_medicalMonitoringReport <- function(
@@ -445,7 +444,7 @@ convertMdToHtml <- function(
 	if(any(interimResFileMissing)){
 		warning(paste0(
 			"No intermediate file available for the reports: ", 
-			toString(sQuote(basename(interimResFiles[interFilesMissing]))), "."
+			toString(sQuote(basename(interimResFiles[interimResFileMissing]))), "."
 		), call. = FALSE)
 		interimResFiles <- interimResFiles[interimResFileMissing]
 	}
@@ -536,7 +535,7 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
 	
 	if(length(templateWithMultPkg) > 0){
 		
-		configFilesRemoved <- subset(configTemplateInfo, template %in% templateWithMultPkg)$configFile
+		configFilesRemoved <- configTemplateInfo[which(configTemplateInfo$template %in% templateWithMultPkg), "configFile"]
 		warning(paste0(
 			"The following config file(s) are ignored, because the ",
 			"same template name is used for a custom template or a template ",
