@@ -3,7 +3,7 @@
   
   "title" : "Medical monitoring template for the creation of patient profiles",
   
-  "description" : "This report creates the specified patient profiles (with the \\code{\\link{patientProfilesVis}} package) by subject, and export them to a specified directory.",
+  "description" : "This report creates the specified patient profiles (with the \\code{patientProfilesVis} package) by subject, and export them to a specified directory.",
   
   "type": "object",
   

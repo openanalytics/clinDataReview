@@ -97,7 +97,7 @@ test_that("plotting function runs properly", {
 	)
 	
 	dataPlot <- dataPlot[, c("AEDECOD", "n")]
-	
+	dataPlot <- dataPlot[match(plDataBarDf$AEDECOD, dataPlot$AEDECOD), ]
 	expect_equivalent(object = plDataBarDf, expected = dataPlot)
 	
 	## check if created plot == reference

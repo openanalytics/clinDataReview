@@ -120,6 +120,7 @@ test_that("plotting function - total", {
 		rowTotalInclude = TRUE,
 		outputType = "data.frame-base"
 	)
+	tableDM <- subset(tableDM, !isTotal)
 	
 	tableDM$statN <- as.numeric(tableDM$statN)
 	expect_silent({
