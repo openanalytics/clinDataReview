@@ -326,7 +326,7 @@ render_medicalMonitoringReport <- function(
 #' @author Laure Cougnaud
 getMdFromConfig <- function(
 	configFiles, indexPath = "index.Rmd", 
-	intermediateDir = "./inter"){
+	intermediateDir = "./interim"){
 
 	# For general config file, use specified index path
 	# For each chapter, file name are derived from the config file name
@@ -741,7 +741,7 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
 #' general 'config.yml'.
 #' @param outputDir String with output directory,
 #' ('report' by default).
-#' @param intermediateDir String with intermediate directory ('inter'
+#' @param intermediateDir String with intermediate directory ('interim'
 #' by default), where
 #' markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 #' each sub report are stored.
