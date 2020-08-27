@@ -262,18 +262,21 @@ summaryTableList <- sapply(names(pathsData), function(dataBatch) {
 	
 	summaryTableDT <- sapply(names(summaryTable), function(group){
 		
-		sumTable <- summaryTable[[group]]
+		idx <- ifelse(!is.null(loopingVar), group, 1)
+		sumTable <- summaryTable[[idx]]
+
 		# export to docx		
 		tableParamsDocxI <-tableParamsDocx
 		tableParamsDocxI$summaryTable <- sumTable
 		
 		if(is.null(tableParamsDocxI$file))	
 			tableParamsDocxI$file <- "table.docx"
-		tableParamsDocxI$file <- paste0(
-			tools::file_path_sans_ext(tableParamsDocxI$file), 
-			"_", formatLabel(group), ".",
-			tools::file_ext(tableParamsDocxI$file)
-		)
+		if(!is.null(loopingVar))
+			tableParamsDocxI$file <- paste0(
+				tools::file_path_sans_ext(tableParamsDocxI$file), 
+				"_", formatLabel(group), ".",
+				tools::file_ext(tableParamsDocxI$file)
+			)
 		tableParamsDocxI$file <- file.path("tables", tableParamsDocxI$file)
 		
 		if(is.null(tableParamsDocxI$statsVar))
@@ -318,8 +321,9 @@ if(!exists("comparisonTableParams"))	comparisonTableParams <- NULL
 
 summaryTableDT <- sapply(names(summaryTableList$currentData$summaryTable), function(group){
 			
-	sumTableCurrent <- summaryTableList$currentData$summaryTable[[group]]
-	sumTableOld <- summaryTableList$previousData$summaryTable[[group]]
+	idx <- ifelse(!is.null(loopingVar), group, 1)
+	sumTableCurrent <- summaryTableList$currentData$summaryTable[[idx]]
+	sumTableOld <- summaryTableList$previousData$summaryTable[[idx]]
 
 	# By default, reference variables are all row/column variables of the table
 	argsCompTable <- comparisonTableParams

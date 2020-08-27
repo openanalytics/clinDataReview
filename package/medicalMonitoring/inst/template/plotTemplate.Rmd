@@ -189,11 +189,11 @@ if(!is.null(loopingVar)){
 listPlots <- dlply(data, loopingVar, function(dataI){
 			
 	# Create plot unique ID
-	argsFormatLabelChunk <- c(
-		list("medicalMonitoringPlotTemplate-createPlot"),
+	argsLabel <- c(
+		list("medicalMonitoringPlotTemplate"),
 		if(!is.null(loopingVar))	unique(dataI[, loopingVar, drop = FALSE])
 	)		
-	id <- do.call(formatLabelChunk, argsFormatLabelChunk)
+	id <- do.call(formatLabel, argsLabel)
 	
 	# Create the plot
 	argsPlot <- plotParams

@@ -30,6 +30,8 @@ e.g. '.' by default.}
 \value{
 No returned value, the plots are included in the
 report.
+If a element in the list are empty (NULL), these elements
+(and the associated sections) are not included in the report.
 }
 \description{
 Include output from medical monitoring, or list 
