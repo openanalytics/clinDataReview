@@ -93,6 +93,8 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' 1 by default.
 #' @return No returned value, the plots are included in the
 #' report.
+#' If a element in the list are empty (NULL), these elements
+#' (and the associated sections) are not included in the report.
 #' @author Laure Cougnaud
 #' @importFrom glpgUtilityFct knitPrintListObjects
 #' @importFrom stringr str_split fixed
@@ -102,7 +104,11 @@ knitPrintMedicalMonitoring <- function(
 	list, sep = ".", level = 1){
 	
 	classes <- c("medicalMonitoring", "datatables", "plotly")
-	if(inherits(list, what = classes)){
+	if(is.null(list) || length(list) == 0){
+		
+		return(invisible())
+		
+	}else	if(inherits(list, what = classes)){
 		
 		knit_print(list)
 		
@@ -128,13 +134,21 @@ knitPrintMedicalMonitoring <- function(
 				noName <- length(list) == 1 && (is.na(names(list)) || names(list) == "NA")
 				titles <- if(!noName)	names(list)
 				
-				# print list of objects
-				# Note for static plot, we will need the 'generalLabel' option
-				knitPrintListObjects(
-					xList = list, 
-					titles = titles, 
-					titleLevel = level
-				)
+				# filter empty elements
+				isEmpty <- sapply(list, is.null)
+				list <- list[!isEmpty]
+				
+				if(length(list) == 0){
+					return(invisible())
+				}else{
+					# print list of objects
+					# Note for static plot, we would need the 'generalLabel' option
+					knitPrintListObjects(
+						xList = list, 
+						titles = titles, 
+						titleLevel = level
+					)
+				}
 				
 			# nested list
 			}else	if(any(sapply(list, inherits, what = "list"))){
@@ -157,9 +171,6 @@ knitPrintMedicalMonitoring <- function(
 			
 			for(label in unique(labelLevelCur)){
 				
-				# section header
-				cat(getMdHeader(title = label, level = level))
-				
 				# extract elements for current section
 				idxEl <- which(labelLevelCur == label)
 				listEl <- list[idxEl]
@@ -168,11 +179,26 @@ knitPrintMedicalMonitoring <- function(
 				labelLevelOther <- sapply(labelLevelOther, paste, collapse = sep)
 				names(listEl) <- labelLevelOther
 				
-				knitPrintMedicalMonitoring(
-					list = listEl, 
-					sep = sep, 
-					level = level+1
-				)
+				# filter empty elements
+				isEmpty <- sapply(listEl, is.null)
+				listEl <- listEl[!isEmpty]
+				
+				if(length(listEl) == 0){
+					
+					break
+					
+				}else{
+					
+					# section header
+					cat(getMdHeader(title = label, level = level))
+					
+					knitPrintMedicalMonitoring(
+						list = listEl, 
+						sep = sep, 
+						level = level+1
+					)
+					
+				}
 				
 			}
 			
