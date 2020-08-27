@@ -102,6 +102,9 @@ render_medicalMonitoringReport <- function(
 		configFiles <- c("config.yml", configGeneralParams[["config"]])
 	
 	configFiles <- checkTemplatesName(configFiles = configFiles, configDir = configDir)
+    
+    # check uniqueness of report titles
+    reportTitles <- checkReportTitles(configFiles)
 	
 	mdFiles <- c()
 	knit_meta_reports <- c()
@@ -548,6 +551,35 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
 	
 }
 
+#' Check report titles
+#'
+#' Check uniqueness of report titles across the config files.
+#' If not unique titles are provided, an error is returned.
+#' @param configFiles Character vector with config file names
+#' @return A named vector with the report titles and the corresponding config file
+#' @author Michela Pasetto
+#' @export 
+checkReportTitles <- function(configFiles) {
+  
+  reportTitles <- sapply(configFiles[! configFiles == "config.yml"], function(configFileI) {
+        
+        configParams <- getParamsFromConfig(configFile = configFileI, configDir = configDir)
+        configParams$reportTitle
+        
+      })
+  isTitleDuplicated <- any(duplicated(reportTitles))
+  
+  if(isTitleDuplicated) {
+    
+    idxDuplicatedTitle <- which(duplicated(reportTitles))
+    nameDuplicatedTitle <- reportTitles[idxDuplicatedTitle]
+    
+    stop("The title in ", toString(nameDuplicatedTitle), " is duplicated.")
+    
+  }
+  return(reportTitles)
+}
+
 #' Render a rmarkdown doc in a new session,
 #' with the possibility to save output in a log file,
 #' and saving also session information.
@@ -715,4 +747,3 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
 #' each sub report are stored.
 #' @name medicalMonitoring-common-args-report
 NULL
-
