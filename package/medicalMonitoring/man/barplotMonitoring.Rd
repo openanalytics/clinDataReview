@@ -144,7 +144,7 @@ tableAE <- getSummaryStatisticsTable(
 	dataTotal = dataTotal,
 	labelVars = labelVars,
 	stats = getStats("count"),
-	outputType = "data.frame"
+	outputType = "data.frame-base"
 )
 
 dataPlot <- subset(tableAE, AEDECOD != "Total")

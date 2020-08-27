@@ -12,7 +12,7 @@ exportSessionInfoToMd(sessionInfos, mdFiles, intermediateDir = "interim")
 
 \item{mdFiles}{Character vector with Markdown files}
 
-\item{intermediateDir}{String with intermediate directory ('inter'
+\item{intermediateDir}{String with intermediate directory ('interim'
 by default), where
 markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 each sub report are stored.}

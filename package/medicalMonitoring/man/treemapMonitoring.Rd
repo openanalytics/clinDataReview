@@ -121,7 +121,7 @@ tableAE <- getSummaryStatisticsTable(
 	
 	# plotly treemap requires records (rows) for each group
 	rowVarTotalInclude = "AEDECOD",
-	outputType = "data.frame"
+	outputType = "data.frame-base"
 
 )
 
@@ -166,7 +166,7 @@ tableAE <- getSummaryStatisticsTable(
 	# plotly treemap requires records (rows) for each group
 	rowVarTotalInclude = "AEDECOD",
 	dataTotalRow = dataTotalRow,
-	outputType = "data.frame"
+	outputType = "data.frame-base"
 
 )
 
