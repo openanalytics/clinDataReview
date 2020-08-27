@@ -58,7 +58,7 @@ tableAE <- getSummaryStatisticsTable(
 	rowVarTotalInclude = "AEDECOD",
 	
 	## DT-output specific:
-	outputType = "data.frame",
+	outputType = "data.frame-base",
 	# statistics of interest
 	# for DT output, include columns with patients
 	stats = statsPP, 

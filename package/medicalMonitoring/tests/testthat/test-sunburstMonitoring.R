@@ -58,7 +58,7 @@ tableAE <- getSummaryStatisticsTable(
 	rowVarTotalInclude = "AEDECOD",
 	
 	## DT-output specific:
-	outputType = "data.frame",
+	outputType = "data.frame-base",
 	# statistics of interest
 	# for DT output, include columns with patients
 	stats = statsPP, 
@@ -118,7 +118,7 @@ test_that("plotting function - total", {
 		# plotly treemap requires records (rows) for each group
 		rowVarTotalInclude = "SITEID",
 		rowTotalInclude = TRUE,
-		outputType = "data.frame"
+		outputType = "data.frame-base"
 	)
 	
 	tableDM$statN <- as.numeric(tableDM$statN)

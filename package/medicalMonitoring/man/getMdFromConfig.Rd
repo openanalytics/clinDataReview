@@ -8,7 +8,7 @@ to a specific config file.}
 getMdFromConfig(
   configFiles,
   indexPath = "index.Rmd",
-  intermediateDir = "./inter"
+  intermediateDir = "./interim"
 )
 }
 \arguments{
@@ -17,7 +17,7 @@ getMdFromConfig(
 \item{indexPath}{String with path to the index file,
 ('index.Rmd' by default).}
 
-\item{intermediateDir}{String with intermediate directory ('inter'
+\item{intermediateDir}{String with intermediate directory ('interim'
 by default), where
 markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 each sub report are stored.}

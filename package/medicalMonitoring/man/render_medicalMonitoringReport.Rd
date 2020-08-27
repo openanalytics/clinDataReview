@@ -22,7 +22,7 @@ render_medicalMonitoringReport(
 \item{outputDir}{String with output directory,
 ('report' by default).}
 
-\item{intermediateDir}{String with intermediate directory ('inter'
+\item{intermediateDir}{String with intermediate directory ('interim'
 by default), where
 markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 each sub report are stored.}
@@ -103,7 +103,7 @@ in case the report succeeds.
 
 \section{Available template report}{
 
-see \strong{\link{`medicalMonitoring-templates`}} for list of 
+see \strong{\code{? `medicalMonitoring-templates`}} for list of 
 medical monitoring template report available in the package.
 }
 

@@ -32,7 +32,7 @@
 #' output consistency (especially html file numbering)
 #' in case the report succeeds.
 #' @section Available template report:
-#' see \strong{\link{`medicalMonitoring-templates`}} for list of 
+#' see \strong{\code{? `medicalMonitoring-templates`}} for list of 
 #' medical monitoring template report available in the package.
 #' @param extraDirs Character vector with extra directories required by
 #' the report, directory with external images  .
