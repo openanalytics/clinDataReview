@@ -132,11 +132,11 @@ knitPrintMedicalMonitoring <- function(
 				# if the list has missing name (e.g. created from plyr::dlply without grouping variable)
 				# don't include section header
 				noName <- length(list) == 1 && (is.na(names(list)) || names(list) == "NA")
-				titles <- if(!noName)	names(list)
 				
 				# filter empty elements
 				isEmpty <- sapply(list, is.null)
 				list <- list[!isEmpty]
+				titles <- if(!noName)	names(list)
 				
 				if(length(list) == 0){
 					return(invisible())

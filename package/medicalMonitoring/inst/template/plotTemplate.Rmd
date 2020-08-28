@@ -20,7 +20,7 @@ Input parameters:
 
 -->
 
-```{r medicalMonitoringPlotTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
+```{r plotTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
 
 library(knitr)
 knitr::opts_chunk$set(
@@ -42,7 +42,7 @@ options(warn = 1)
 
 ```
 
-```{r medicalMonitoringPlotTemplate-attachParameters}
+```{r plotTemplate-attachParameters}
 
 # Note: find a way to specify defaults for variables
 attach(params)
@@ -52,7 +52,7 @@ if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 
 ```
 
-```{r medicalMonitoringPlotTemplate-loadPackages}
+```{r plotTemplate-loadPackages}
 
 library(medicalMonitoring)
 library(glpgUtilityFct)
@@ -60,7 +60,7 @@ library(plyr)
 
 ```
 
-```{r medicalMonitoringPlotTemplate-setTitle}
+```{r plotTemplate-setTitle}
 
 if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
 
@@ -70,7 +70,7 @@ cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
 ```
 
 
-```{r medicalMonitoringPlotTemplate-getData}
+```{r plotTemplate-getData}
 
 # Load data
 if(comparisonTableType != "none") {
@@ -127,7 +127,7 @@ labelVars <- attr(dataList$currentData, "labelVars")
 
 ```
 
-```{r medicalMonitoringPlotTemplate-createTable, eval = (FALSE & comparisonTableType != "none")}
+```{r plotTemplate-createTable, eval = (FALSE & comparisonTableType != "none")}
 
 previousData <- dataList$previousData
 if(!exists("comparisonTableParams"))	comparisonTableParams <- NULL
@@ -168,7 +168,7 @@ if(!is.null(outputComparison)){
 
 ```
 
-```{r medicalMonitoringPlotTemplate-createPlot}
+```{r plotTemplate-createPlot}
 
 if(!is.null(loopingVar)){
 	
@@ -190,7 +190,7 @@ listPlots <- dlply(data, loopingVar, function(dataI){
 			
 	# Create plot unique ID
 	argsLabel <- c(
-		list("medicalMonitoringPlotTemplate"),
+		list("plotTemplate"),
 		if(!is.null(loopingVar))	unique(dataI[, loopingVar, drop = FALSE])
 	)		
 	id <- do.call(formatLabel, argsLabel)
