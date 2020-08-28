@@ -156,9 +156,9 @@ plotCountMonitoring <- function(
 			
 			if(!valueVar %in% tableVars){
 				tableVars <- c(tableVars, valueVar)
-				tablePars$nonVisible <- c(
-					tablePars$nonVisible,
-					which(colnames(dataPlot) == valueVar)-1
+				tablePars$nonVisibleVar <- c(
+					tablePars$nonVisibleVar,
+					valueVar
 				)
 				tableLab[valueVar] <- valueLab
 			}

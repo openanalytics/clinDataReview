@@ -96,8 +96,7 @@ tableMonitoring <- function(
 		if(!all(keyVar %in% tableVarsInit))	setdiff(keyVar, tableVarsInit)
 	)
 	if(length(colsNonVisibleExtra) > 0){
-		jNonVisible <- which(colnames(data) %in% colsNonVisibleExtra)-1
-		tablePars$nonVisible <- unique(c(tablePars$nonVisible, jNonVisible))
+		tablePars$nonVisibleVar <- unique(c(tablePars$nonVisibleVar, colsNonVisibleExtra))
 	}
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
 	

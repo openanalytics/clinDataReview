@@ -24,7 +24,7 @@ Input parameters:
 - patientProfilePath: string with relative path where patient profiles are stored
 
 -->
-```{r summaryPlot-options, echo = FALSE, warning = FALSE, message = FALSE}
+```{r summaryPlotTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
 
 library(knitr)
 knitr::opts_chunk$set(
@@ -46,14 +46,14 @@ options(warn = 1)
 
 ```
 
-```{r summaryPlot-attachParameters}
+```{r summaryPlotTemplate-attachParameters}
 attach(params)
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 if(!exists("loopingVar")) loopingVar <- NULL
 if(!exists("loopingTotal"))	loopingTotal <- TRUE
 ```
 
-```{r summaryPlot-loadPackages}
+```{r summaryPlotTemplate-loadPackages}
 
 library(medicalMonitoring)
 library(glpgUtilityFct)
@@ -62,7 +62,7 @@ library(plyr)
 
 ```
 
-```{r summaryPlot-setTitle}
+```{r summaryPlotTemplate-setTitle}
 
 if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
 
@@ -71,7 +71,7 @@ cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
 
 ```
 
-```{r summaryPlot-getData}
+```{r summaryPlotTemplate-getData}
 
 # Load data
 pathData <- file.path(pathDataFolder, dataFileName)
@@ -143,7 +143,7 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 
 ```
 
-```{r summaryPlot-createTable}
+```{r summaryPlotTemplate-createTable}
 
 ## Params for the table
 			
@@ -226,7 +226,7 @@ labelVars <- attr(summaryTable[[1]], "labelVars")
 ```
 
 
-```{r summaryPlot-createPlot}
+```{r summaryPlotTemplate-createPlot}
 
 listPlots <- sapply(summaryTable, function(summaryTableI){
 			
