@@ -2,6 +2,7 @@
     o knitPrintListMedicalMonitoring: fix inclusion list with empty element
     o tableMonitoring: keep order idVar in tableVars if specified
     o listingTemplate: fix when loopingVar and comparisonType are specified, comparison type as first col table
+    o if comparisonTableType and no previous dataset available: warning + no comparison
 0.4.0
     o render_medicalMonitoringReport: logFile, runFctInNewSession, export combined sessionInfo
     o scrape html files

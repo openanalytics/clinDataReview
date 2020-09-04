@@ -27,6 +27,10 @@
       "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
     },
     
+    "pathDataFolder": {
+      "type": "string",
+      "doc": "path to folder where the SAS input datasets are stored"
+    },
     "createPatientProfiles": {
       "type": "boolean",
       "doc": "Should the patient profiles be created or only loaded from a previous execution?"
@@ -92,7 +96,7 @@
     } 
   },
   
-  "required": ["template", "templatePackage", "reportTitle", "patientProfilesParams"],
+  "required": ["template", "templatePackage", "reportTitle", "pathDataFolder", "patientProfilesParams"],
   
 /*   doesn't allow extra parameters in the config files */
   "additionalProperties": false 

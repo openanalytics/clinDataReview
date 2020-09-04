@@ -49,7 +49,15 @@ options(warn = 1)
 ```{r listingTemplate-attachParameters}
 
 attach(params)
+
 if(!exists("comparisonTableType"))	comparisonTableType <- "none"
+if(comparisonTableType != "none" & 
+	(!exists("pathDataFolderOld") || !file.exists(file.path(pathDataFolderOld, dataFileName)))
+){
+	warning("No comparison table is included because data from previous batch is not available.")
+	comparisonTableType <- "none"
+}
+
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 if(!exists("loopingVar")) loopingVar <- NULL
 if(!exists("loopingTotal"))	loopingTotal <- TRUE
@@ -77,8 +85,6 @@ cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
 ```{r listingTemplate-getData}
 
 if(comparisonTableType != "none") {
-	
-	if(!exists("pathDataFolderOld"))	stop("'pathDataFolderOld' should be specified.")
 	
 	pathsData <- c(
 		"currentData" = pathDataFolder,
