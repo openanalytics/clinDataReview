@@ -595,12 +595,13 @@ A barplot visualizes the counts for one single variable in a specific order.
 	# create plot
 	barplotMonitoring(
 		data = dataPlot,
-		xVar = "AEDECOD", colorVar = "AESOC",
+		xVar = "AESOC", colorVar = "AEDECOD",
 		yVar = "n", yLab = "Number of patients with adverse events",
 		labelVars = labelVars,
 		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE,
-		verbose = TRUE
+		verbose = TRUE,
+		barmode = "stack"
 	)
 	
 ```

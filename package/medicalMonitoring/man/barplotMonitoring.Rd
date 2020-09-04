@@ -12,6 +12,8 @@ barplotMonitoring(
   yLab = getLabelVar(yVar, labelVars = labelVars),
   colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
+  colorPalette = NULL,
+  barmode = "group",
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
   labelVars = NULL,
@@ -44,6 +46,12 @@ barplotMonitoring(
 \item{colorVar}{(optional) String with color variable.}
 
 \item{colorLab}{String with label for \code{colorVar}.}
+
+\item{colorPalette}{(optional) Named character vector with color palette.
+If not specified, the GLPG color palette is used.}
+
+\item{barmode}{String with type of barplot, either:
+'group' or 'stack' (see parameter in \code{\link[plotly]{layout}}).}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
@@ -140,7 +148,7 @@ dataTotal <- subset(dataDM, RFXSTDTC != "")
 # compute adverse event table
 tableAE <- getSummaryStatisticsTable(
 	data = dataAE,
-	rowVar = "AEDECOD",
+	rowVar = c("AEBODSYS", "AEDECOD"),
 	dataTotal = dataTotal,
 	labelVars = labelVars,
 	stats = getStats("count"),
@@ -157,6 +165,15 @@ barplotMonitoring(
 	xVar = "AEDECOD", 
 	yVar = "n", yLab = "Number of patients with adverse events",
 	labelVars = labelVars
+)
+
+# stacked barplot
+barplotMonitoring(
+	data = dataPlot,
+	xVar = "AEBODSYS", 
+	yVar = "n", yLab = "Number of patients with adverse events",
+	labelVars = labelVars,
+	colorVar = "AEDECOD", barmode = "stack"
 )
 }
 \seealso{
