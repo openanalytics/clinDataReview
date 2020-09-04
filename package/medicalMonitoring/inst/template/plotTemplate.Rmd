@@ -54,6 +54,11 @@ if(comparisonTableType != "none" &
 	warning("No comparison table is included because data from previous batch is not available.")
 	comparisonTableType <- "none"
 }
+if(!comparisonTableType %in% c("none", "newData-diff")){
+	warning("Option:", comparisonTableType, "is not available for the plot template",
+		"no comparison is included.")
+	comparisonTableType <- "none"
+}
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 
 ```
@@ -131,27 +136,32 @@ labelVars <- attr(dataList$currentData, "labelVars")
 
 ```
 
-```{r plotTemplate-createTable, eval = (FALSE & comparisonTableType != "none")}
+```{r plotTemplate-createTable, eval = (comparisonTableType == "newData-diff")}
 
-previousData <- dataList$previousData
+dataPrevious <- dataList$previousData
+dataCurrent <- dataList$currentData
 if(!exists("comparisonTableParams"))	comparisonTableParams <- NULL
-## By default, reference variables is the USUBJID
-if(is.null(comparisonTableParams$referenceVars))
-	comparisonTableParams$referenceVars <- "USUBJID"
-## By default: changeable variables are the variables of the plot
-if(is.null(comparisonTableParams$changeableVars)){
-	comparisonTableParams$changeableVars <- c(
-		plotParams$xVar,
-		plotParams$yVar,
-		plotParams$aesPointVar$colour
-	)
-}
 
+# By default, reference variables are the variables displayed by default 
+# in the table attached to the plot
+if(is.null(comparisonTableParams$referenceVars)){
+	
+	argsPlot <- plotParams
+	argsPlot$labelVars <- labelVars
+	referenceVars <- getPlotTableVars(plotFunction, plotArgs = argsPlot)
+	
+	# add looping var (in case e.g. replicated records across looping vars)
+	referenceVars <- c(referenceVars, loopingVar)
+	
+	comparisonTableParams$referenceVars <- referenceVars
+	comparisonTableParams$changeableVars <- NULL
+	
+}
 
 argsCompTable <- c(
 	list(
-		newData = dataList$currentData,
-		oldData = dataList$previousData,
+		newData = dataCurrent,
+		oldData = dataPrevious,
 		outputType = comparisonTableType,
 		checkExistPatientProfilePath = FALSE
 	),
@@ -162,10 +172,14 @@ outputComparison <- do.call(compareTables, argsCompTable)
 if(!is.null(outputComparison)){
 	
 	data <- outputComparison
+	
+	tableVars <- plotParams$tableVars
+	if(is.null(tableVars)){
+		tableVars <- c(argsCompTable$referenceVars, argsCompTable$changeableVars)
+		tableVars <- setdiff(tableVars, loopingVar)
+	}
 
-	tableVars <- c(argsCompTable$referenceVars, argsCompTable$changeableVars, "Type")
-	labelVars["Type"] <- "Type of change from previous data"
-	# What to do if tableVars is already specified?
+	tableVars <- c("Comparison type", tableVars)
 	plotParams$tableVars <- tableVars
 	
 }

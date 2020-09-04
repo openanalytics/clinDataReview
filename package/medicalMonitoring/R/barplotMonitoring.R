@@ -40,6 +40,9 @@ barplotMonitoring <- function(
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
+	# store input parameter values for further use
+	plotArgs <- c(as.list(environment()))
+
 	idVars <- c(xVar, colorVar)
 	data$idEl <- interaction(data[, idVars, drop = FALSE])
 	
@@ -108,13 +111,11 @@ barplotMonitoring <- function(
 	# create associated table
 	if(table){
 		
-		if(missing(tableVars)){
-			tableVars <- c(xVar, colorVar, yVar)
-			tableLab <- setNames(c(xLab, colorLab, yLab), tableVars)
-		}else	if(missing(tableLab)){
-			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
-		}
-		tableVars <- unique(tableVars)
+		tableVars <- getPlotTableVars(
+			plotFunction = "barplotMonitoring", 
+			plotArgs = plotArgs
+		)
+		tableLab <- attr(tableVars, "tableLab")
 		
 		table <- tableMonitoring(
 			data = data, 
