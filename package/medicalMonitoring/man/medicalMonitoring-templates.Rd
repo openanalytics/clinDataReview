@@ -18,6 +18,7 @@ This report compute counts of variable(s) of interest (with the \code{inTextSumm
 \item{\strong{\code{templatePackage}}: }{string set to: 'medicalMonitoring' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\strong{\code{pathDataFolder}}: }{string , path to folder where the SAS input dataset is stored}
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[medicalMonitoring]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
@@ -49,6 +50,7 @@ This report displays a listing of the variables and data of interest, displayed 
 \item{\strong{\code{templatePackage}}: }{string set to: 'medicalMonitoring' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\strong{\code{pathDataFolder}}: }{string , path to folder where the SAS input dataset is stored}
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[medicalMonitoring]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
@@ -56,6 +58,7 @@ This report displays a listing of the variables and data of interest, displayed 
 \item{\code{tableParams}: }{(optional) object , parameters to create the table, passed to \link[medicalMonitoring]{tableMonitoring}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff', 'table-comparison-interactive' } , output type of the comparison table}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}}
+\item{\code{pathDataFolderOld}: }{(optional) string , path to folder where the SAS input dataset of the previous batch is stored}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 }
@@ -67,6 +70,7 @@ This report creates the specified patient profiles (with the \code{patientProfil
 \item{\strong{\code{templatePackage}}: }{string set to: 'medicalMonitoring' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\strong{\code{pathDataFolder}}: }{string , path to folder where the SAS input datasets are stored}
 \item{\code{createPatientProfiles}: }{(optional) boolean , Should the patient profiles be created or only loaded from a previous execution?}
 \item{\code{patientProfilesGeneralParams}: }{(optional) object , set of parameters used for all patient profiles modules. These parameters are passed to all \code{subjectProfile[]Plot} functions.}
 \item{\strong{\code{patientProfilesParams}}: }{array of object(s) \cr The following parameters are available: \itemize{
@@ -86,6 +90,7 @@ This report visualizes input data with a function of the medical monitoring pack
 \item{\strong{\code{templatePackage}}: }{string set to: 'medicalMonitoring' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\strong{\code{pathDataFolder}}: }{string , path to folder where the SAS input dataset is stored}
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[medicalMonitoring]{processData}}
 \item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotMonitoring' } , plotting function of the package to consider}
@@ -103,6 +108,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\strong{\code{templatePackage}}: }{string set to: 'medicalMonitoring' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\strong{\code{pathDataFolder}}: }{string , path to folder where the SAS input dataset is stored}
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[medicalMonitoring]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
@@ -123,6 +129,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\strong{\code{templatePackage}}: }{string set to: 'medicalMonitoring' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\strong{\code{pathDataFolder}}: }{string , path to folder where the SAS input dataset is stored}
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[medicalMonitoring]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
@@ -132,6 +139,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\code{tableParamsDT}: }{(optional) object , parameters to format the table to the DT interactive table included in the report, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff', 'table-comparison-interactive' } , output type of the comparison table}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}. By default, statistics variables are compared across row and column elements.}
+\item{\code{pathDataFolderOld}: }{(optional) string , path to folder where the SAS input dataset of the previous batch is stored}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}

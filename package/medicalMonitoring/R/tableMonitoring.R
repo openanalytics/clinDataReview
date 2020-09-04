@@ -78,9 +78,10 @@ tableMonitoring <- function(
 		tablePars <- c(tablePars, 
 			# escape column with hyperlink
 			if(!is.null(pathVar) & pathExpand)
-				list(
-					escapeVar = pathVar,
-					expandVar = pathVar# expand the variable
+				c(
+					list(escape = -match(pathVar, colnames(data))),
+					# expand the variable
+					list(expandVar = pathVar)
 				)
 		)
 	}

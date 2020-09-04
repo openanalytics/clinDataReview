@@ -83,7 +83,8 @@ of the end of the time interval.}
 
 \item{colorLab}{(optional) String with label for \code{colorVar}.}
 
-\item{colorPalette}{(optional) Named character vector with color palette.}
+\item{colorPalette}{(optional) Named character vector with color palette.
+If not specified, the GLPG color palette is used.}
 
 \item{alpha}{(optional) Numeric with transparency, 1 by default.}
 
