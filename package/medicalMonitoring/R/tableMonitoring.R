@@ -38,7 +38,7 @@ tableMonitoring <- function(
 
 	# add key/id in variables to display
 	# (used for linking plot <-> table and for the path)
-	tableVars <- unique(c(idVar, tableVars, keyVar))
+	tableVars <- unique(c(setdiff(idVar, tableVars), tableVars, keyVar))
 	tableLab <- c(idLab[idVar], tableLab, keyLab[keyVar])
 	tableLab <- tableLab[!duplicated(names(tableLab))]
 	
@@ -78,10 +78,9 @@ tableMonitoring <- function(
 		tablePars <- c(tablePars, 
 			# escape column with hyperlink
 			if(!is.null(pathVar) & pathExpand)
-				c(
-					list(escape = -match(pathVar, colnames(data))),
-					# expand the variable
-					list(expandVar = pathVar)
+				list(
+					escapeVar = pathVar,
+					expandVar = pathVar# expand the variable
 				)
 		)
 	}
