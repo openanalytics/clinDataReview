@@ -25,6 +25,10 @@
       "type": "integer",
       "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
     },
+    "pathDataFolder": {
+      "type": "string",
+      "doc": "path to folder where the SAS input dataset is stored"
+    },
     "dataFileName" : {
       "type": "string",
       "doc": "name of the data file of interest"
@@ -54,6 +58,10 @@
       "type": "object",
       "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}"
     },
+    "pathDataFolderOld": {
+       "type": "string",
+       "doc": "path to folder where the SAS input dataset of the previous batch is stored"
+    },
     "loopingVar": {
       "type": ["array", "string"],
       "doc": "data variable(s) to loop over, for which each output should be created"
@@ -64,7 +72,7 @@
     }
   },
   
-  "required": ["template", "templatePackage", "reportTitle", "dataFileName"],
+  "required": ["template", "templatePackage", "reportTitle", "pathDataFolder", "dataFileName"],
   
 /*   doesn't allow extra parameters in the config files */
   "additionalProperties": false 
