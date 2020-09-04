@@ -47,6 +47,9 @@ plotCountMonitoring <- function(
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE,
 	typePlot = c("sunburst", "treemap")){
+
+	# store input parameter values for further use
+	plotArgs <- c(as.list(environment()))
 	
 	typePlot <- match.arg(typePlot)
 	
@@ -141,31 +144,12 @@ plotCountMonitoring <- function(
 	# create associated table
 	if(table){
 		
-		if(missing(tableVars)){
-			
-			tableVars <- c(vars, valueVar)
-			tableLab <- c(
-				getLabelVar(var = vars, label = varsLab, labelVars = labelVars),
-				getLabelVar(var = valueVar, label = valueLab, labelVars = labelVars)
-			)
-			
-		}else{
-			
-			if(missing(tableLab))
-				tableLab <- getLabelVar(tableVars, labelVars = labelVars)
-			
-			if(!valueVar %in% tableVars){
-				tableVars <- c(tableVars, valueVar)
-				tablePars$nonVisibleVar <- c(
-					tablePars$nonVisibleVar,
-					valueVar
-				)
-				tableLab[valueVar] <- valueLab
-			}
-						
-		}
-		
-		tablePars <- c(tablePars, list(barVar = valueVar))
+		tableVars <- getPlotTableVars(
+			plotFunction = "plotCountMonitoring", 
+			plotArgs = plotArgs
+		)
+		tableLab <- attr(tableVars, "tableLab")
+		tablePars <- attr(tableVars, "tablePars")
 		
 		table <- tableMonitoring(
 			data = dataPlot, 

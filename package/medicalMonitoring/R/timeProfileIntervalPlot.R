@@ -65,6 +65,9 @@ timeProfileIntervalPlot <- function(data,
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
+	# store input parameter values for further use
+	plotArgs <- c(as.list(environment()))
+
 	## Format data
 	
 	# fill missing time:
@@ -292,19 +295,11 @@ timeProfileIntervalPlot <- function(data,
 	# create associated table
 	if(table){
 		
-		if(missing(tableVars)){
-			
-			tableVars <- c(paramVar, timeStartVar, timeEndVar)
-			tableLab <- c(
-				getLabelVar(var = paramVar, label = paramLab, labelVars = labelVars),
-				getLabelVar(var = timeStartVar, label = timeStartLab, labelVars = labelVars),
-				getLabelVar(var = timeEndVar, label = timeEndLab, labelVars = labelVars)
-			)
-
-		}else	if(missing(tableLab)){
-			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
-		}
-		tableVars <- unique(tableVars);tableLab <- tableLab[tableVars]
+		tableVars <- getPlotTableVars(
+			plotFunction = "timeProfileIntervalPlot", 
+			plotArgs = plotArgs
+		)
+		tableLab <- attr(tableVars, "tableLab")
 		
 		table <- tableMonitoring(
 			data = data, 

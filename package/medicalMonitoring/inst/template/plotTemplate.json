@@ -26,11 +26,6 @@
       "type": "integer",
       "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
     },
-    
-    "pathDataFolder": {
-      "type": "string",
-      "doc": "path to folder where the SAS input dataset is stored"
-    },
     "dataFileName" : {
       "type": "string",
       "doc": "name of the data file of interest"
@@ -52,12 +47,12 @@
     
     "comparisonTableType": {
       "type": "string",
-      "doc": "output type of the comparison table",
-      "enum": ["none", "newData-diff", "table-comparison-interactive"]
+      "doc": "output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.",
+      "enum": ["none", "newData-diff"]
     },
     "comparisonTableParams": {
       "type": "object",
-      "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}"
+      "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used."
     },
     
     "loopingVar": {
@@ -71,7 +66,7 @@
     
   },
   
-  "required": ["template", "templatePackage", "reportTitle", "pathDataFolder", "dataFileName", "plotFunction", "plotParams"],
+  "required": ["template", "templatePackage", "reportTitle", "dataFileName", "plotFunction", "plotParams"],
   
   /*   doesn't allow extra parameters in the config files */
   "additionalProperties": false

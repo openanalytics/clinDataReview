@@ -65,6 +65,9 @@ scatterplotMonitoring <- function(
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 	
+	# store input parameter values for further use
+	plotArgs <- c(as.list(environment()))
+
 	facetType <- match.arg(facetType)
 	
 	# extract variables that defines uniquely one point in the plot:
@@ -186,20 +189,11 @@ scatterplotMonitoring <- function(
 	# create associated table
 	if(table){
 		
-		if(missing(tableVars)){
-			aesVar <- unlist(c(aesPointVar, aesLineVar))
-			tableVars <- unique(c(idVar, xVar, yVar, aesVar))
-			tableLab <- c(
-				getLabelVar(var = idVar, label = xLab, labelVars = labelVars),
-				getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
-				getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
-				getLabelVar(var = aesVar, label = aesLab, labelVars = labelVars)
-			)
-		}else	if(missing(tableLab)){
-			tableLab <- getLabelVar(tableVars, labelVars = labelVars)
-		}
-		tableVars <- unique(tableVars);tableLab <- tableLab[tableVars]
-		
+		tableVars <- getPlotTableVars(
+			plotFunction = "scatterplotMonitoring", 
+			plotArgs = plotArgs
+		)
+		tableLab <- attr(tableVars, "tableLab")
 		table <- tableMonitoring(
 			data = data, 
 			idVar = idVar, idLab = idLab,
