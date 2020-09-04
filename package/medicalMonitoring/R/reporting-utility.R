@@ -183,11 +183,7 @@ knitPrintMedicalMonitoring <- function(
 				isEmpty <- sapply(listEl, is.null)
 				listEl <- listEl[!isEmpty]
 				
-				if(length(listEl) == 0){
-					
-					break
-					
-				}else{
+				if(length(listEl) != 0){
 					
 					# section header
 					cat(getMdHeader(title = label, level = level))
