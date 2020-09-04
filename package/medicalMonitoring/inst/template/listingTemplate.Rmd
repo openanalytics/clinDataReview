@@ -166,12 +166,14 @@ knitPrintMedicalMonitoring(data, level = reportTitleLevel + 1)
 data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 
 	# get comparison table
-	dataPreviousI <- merge(
-		x = unique(dataCurrentI[, loopingVar, drop = FALSE]),
-		y = dataPrevious,
-		by = loopingVar,
-		all = FALSE
-	)
+	if(!is.null(loopingVar)){
+		dataPreviousI <- merge(
+			x = unique(dataCurrentI[, loopingVar, drop = FALSE]),
+			y = dataPrevious,
+			by = loopingVar,
+			all = FALSE
+		)
+	}else	dataPreviousI <- dataPrevious
 	argsCompTable <- c(
 		list(
 			newData = dataCurrentI,
@@ -188,7 +190,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 	# print listing
 	if(comparisonTableType == "newData-diff"){
 		
-		tableParams$tableVars <- c(tableParams$tableVars, "Comparison type")		
+		tableParams$tableVars <- c("Comparison type", tableParams$tableVars)		
 		argsTable <- c(
 			list(
 				data = tableComparison, 
