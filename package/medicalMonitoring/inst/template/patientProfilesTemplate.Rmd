@@ -82,7 +82,7 @@ if(length(pathFiles) == 0)
 	stop(paste0("No data is available in:", params$dataPath, "."))
 
 dataAll <- loadDataADaMSDTM(files = pathFiles)
-labelVars <- attr(dataAll, "labelVars")
+labelVarsAll <- attr(dataAll, "labelVars")
 
 message(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."))
 
@@ -159,6 +159,7 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 		# extract specified data
 		paramsPlotI <- getDataForParams(paramsPlotI)
 		data <- paramsPlotI[["data"]]
+		labelVars <- labelVarsAll
 		if(is.null(data)){
 			warning("Patient profiles:", label, "not created, because", 
 				dataFileName, "is not specified or available.")
@@ -282,6 +283,7 @@ of the report
 	dataTable <- tableParams[["data"]]
 	if(is.null(dataTable))
 		stop("'data' should be specified for 'tableParams'.")
+	labelVarsTable <- labelVarsAll
 	
 	# Data processing 
 	if(!is.null(tableParams$dataProcessing)){
@@ -290,10 +292,10 @@ of the report
 			dataPath = pathDataFolder,
 			processing = tableParams$dataProcessing,
 			verbose = TRUE,
-			labelVars = labelVars
+			labelVars = labelVarsTable
 		)
 		# Labels updated with extra annotation:
-		labelVars <- attr(data, "labelVars")
+		labelVarsTable <- attr(dataTable, "labelVars")
 	}
 	
 	# Create URL to subject profiles
@@ -308,7 +310,7 @@ of the report
 		data = dataTable,
 		tableVars = tableParams$vars,
 		pathVar = "patientProfilePath", pathExpand = FALSE,
-		labelVars = labelVars
+		labelVars = labelVarsTable
 	)
 
 ```

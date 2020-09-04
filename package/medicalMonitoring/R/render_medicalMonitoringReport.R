@@ -512,7 +512,7 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
 			params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
 			, silent = TRUE)
 		
-		if(!inherits(res, "try-error") & "template" %in% names(params)){
+		if(!inherits(res, "try-error") && "template" %in% names(params)){
 			
 			templatePackage <- params[["templatePackage"]]
 			if(is.null(templatePackage))	templatePackage <- ""
