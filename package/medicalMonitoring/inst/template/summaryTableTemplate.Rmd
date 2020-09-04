@@ -269,11 +269,11 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
       tableParamsDocxI <-tableParamsDocx
       tableParamsDocxI$summaryTable <- sumTable
       
-      tableParamsDocxI$file <- strtrim(
-          sprintf("table_%s.docx",
-              gsub(" ", "_", gsub("[[:punct:]]", "", reportTitle))
-          ), 30
-      )
+      tableParamsDocxI$file <- 
+        sprintf("table_%s.docx",
+                strtrim(
+                  gsub(" ", "_", gsub("[[:punct:]]", "", reportTitle)
+        ), 30))
       if(!is.null(loopingVar))
         tableParamsDocxI$file <- paste0(
             tools::file_path_sans_ext(tableParamsDocxI$file), 
