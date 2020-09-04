@@ -178,3 +178,29 @@ test_that("Wrong input", {
 	)
 		
 })
+
+test_that("Inclusion of a list with empty element", {
+			
+	dataWithEmptyEl <- data
+	idxEmpty <- which(dataWithEmptyEl$VISIT == dataWithEmptyEl[1, "VISIT"])
+	dataWithEmptyEl[idxEmpty , "LBSTRESN"] <- NA
+	medMonRes <- dlply(dataWithEmptyEl, "VISIT", function(dataI)
+		scatterplotMonitoring(
+			data = dataI, 
+			xVar = "LBDY", yVar = "LBSTRESN",
+			table = TRUE
+		)
+	)
+	idxEmptyPlot <- which(sapply(medMonRes, is.null))
+	expect_length(idxEmptyPlot, 1)
+			
+	code <- c("knitPrintMedicalMonitoring(list = medMonRes, level = 2)")
+	saveRDS(medMonRes, file = fileInput)
+	htmlReport <- includeCodeInRmdDoc(code, fileRmd, fileInput)
+			
+	# check that output contains some datatables and plotly objects
+	nEl <- length(medMonRes)-length(idxEmptyPlot)
+	expect_length(xml_find_all(htmlReport, '//body//div[contains(@class, "plotly")]'), nEl)
+	expect_length(xml_find_all(htmlReport, '//body//div[contains(@class, "datatables")]'), nEl)
+			
+})

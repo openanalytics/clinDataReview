@@ -1,3 +1,5 @@
+0.5.0
+    o knitPrintListMedicalMonitoring: fix inclusion list with empty element
 0.4.0
     o render_medicalMonitoringReport: logFile, runFctInNewSession, export combined sessionInfo
     o scrape html files
