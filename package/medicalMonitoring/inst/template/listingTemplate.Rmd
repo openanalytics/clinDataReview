@@ -136,6 +136,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 		
 	}
 	
+    attr(data, "labelVars") <- labelVars
 	data
 	
 }, simplify = FALSE)
