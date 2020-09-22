@@ -63,247 +63,247 @@
 #' @family medical monitoring reporting
 #' @export
 render_medicalMonitoringReport <- function(
-	indexPath = "index.Rmd", 
-	outputDir = "./report", intermediateDir = "./interim",
-	configDir = "./config", logFile = NULL,
-	configFiles = NULL, 
-	extraDirs = c("figures", "tables"),
-	quiet = FALSE){
-
-	# log output
-	if(!is.null(logFile)){
-		logFileCon <- file(logFile, "w")
-		sink(file = logFileCon, split = FALSE, type = "message")
-		sink(file = logFileCon, split = FALSE, type = "output", append = TRUE)
-		on.exit({sink(type = "output");sink(type="message")})
-	}
-	
-	if(!dir.exists(configDir))	stop("Config directory doesn't exist.")
-	
-	if(!dir.exists(outputDir))	dir.create(outputDir, recursive = TRUE)
-	outputDir <- normalizePath(outputDir)
-	
-	if(!dir.exists(intermediateDir))	dir.create(intermediateDir, recursive = TRUE)
-	intermediateDir <- normalizePath(intermediateDir)
-	
-	# extract parameters from general config file
-	configGeneralParams <- getParamsFromConfig(configFile = "config.yml", configDir = configDir)
-	
-	## copy created directory into output directory
-	
-	# add patient profiles dir to repos to copy
-	extraDirs <- unique(c(extraDirs, configGeneralParams$patientProfilePath))
-	
-	## run index file + each chapter
-	
-	# consider all config files
-	if(is.null(configFiles))
-		configFiles <- c("config.yml", configGeneralParams[["config"]])
-	
-	configFiles <- checkTemplatesName(configFiles = configFiles, configDir = configDir)
+    indexPath = "index.Rmd", 
+    outputDir = "./report", intermediateDir = "./interim",
+    configDir = "./config", logFile = NULL,
+    configFiles = NULL, 
+    extraDirs = c("figures", "tables"),
+    quiet = FALSE){
+  
+  # log output
+  if(!is.null(logFile)){
+    logFileCon <- file(logFile, "w")
+    sink(file = logFileCon, split = FALSE, type = "message")
+    sink(file = logFileCon, split = FALSE, type = "output", append = TRUE)
+    on.exit({sink(type = "output");sink(type="message")})
+  }
+  
+  if(!dir.exists(configDir))	stop("Config directory doesn't exist.")
+  
+  if(!dir.exists(outputDir))	dir.create(outputDir, recursive = TRUE)
+  outputDir <- normalizePath(outputDir)
+  
+  if(!dir.exists(intermediateDir))	dir.create(intermediateDir, recursive = TRUE)
+  intermediateDir <- normalizePath(intermediateDir)
+  
+  # extract parameters from general config file
+  configGeneralParams <- getParamsFromConfig(configFile = "config.yml", configDir = configDir)
+  
+  ## copy created directory into output directory
+  
+  # add patient profiles dir to repos to copy
+  extraDirs <- unique(c(extraDirs, configGeneralParams$patientProfilePath))
+  
+  ## run index file + each chapter
+  
+  # consider all config files
+  if(is.null(configFiles))
+    configFiles <- c("config.yml", configGeneralParams[["config"]])
+  
+  configFiles <- checkTemplatesName(configFiles = configFiles, configDir = configDir)
+  
+  # check uniqueness of report titles
+  reportTitles <- checkReportTitles(configFiles)
+  
+  mdFiles <- c()
+  knit_meta_reports <- c()
+  for(configFile in configFiles){
     
-    # check uniqueness of report titles
-    reportTitles <- checkReportTitles(configFiles)
-	
-	mdFiles <- c()
-	knit_meta_reports <- c()
-	for(configFile in configFiles){
-		
-		runDocument <- TRUE
-		if(configFile == "config.yml"){
-			
-			params <- configGeneralParams
-			inputRmdFile <- indexPath
-			
-		}else{
-			
-			# extract chapter-specific parameters from config file
-			resParams <- try(
-				params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
-			, silent = TRUE)
-	
-			if(inherits(resParams, "try-error")){
-				
-				warning(
-					paste0("Extraction of the parameters from config file: ", 
-						sQuote(configFile), " failed, ",
-						"this report is ignored."
-					), immediate. = TRUE, call. = FALSE
-				)
-				runDocument <- FALSE
-				
-			}else{
-			
-				inputRmdFile <- params$template
-	
-			}
-			
-		}
-		
-		if(is.null(inputRmdFile)){
-			warning("Template missing for config file: ", sQuote(configFile), ".")
-			runDocument <- FALSE
-		}
-		
-		# Extract template from package
-		if(runDocument){
-			
-			# Extract the template from the package if: 'templateFromPackage' is 'true'
-			if(!is.null(params$templatePackage)){
-				
-				if(file.exists(inputRmdFile))
-					warning(paste("Document with similar name than",
-						"specified template from", sQuote(params$templatePackage),
-						"for config file: ", sQuote(configFile),
-						"is already available in the working directory,",
-						"this document will be overwritten."
-					), immediate. = TRUE, call. = FALSE)
-					
-				pathTemplate <- medicalMonitoring::getPathTemplate(
-					file = inputRmdFile, 
-					package = params$templatePackage
-				)
-				if(!file.exists(pathTemplate)){
-					
-					runDocument <- FALSE
-					
-				}else{
-					
-					# copy file to working directory
-					tmp <- file.copy(from = pathTemplate, to = ".", overwrite = TRUE)
-					
-					# Extract the config file
-					configSpecFile <- file_path_sans_ext(inputRmdFile)
-					configSpecFile <- paste0(configSpecFile, ".json")
-					pathConfigSpecFile <- medicalMonitoring::getPathTemplate(
-						file = configSpecFile, 
-						package = params$templatePackage
-					)
-					
-					# Check config parameters
-					if(file.exists(pathConfigSpecFile)){
-						resCheck <- try(
-							checkConfigFile(
-								configFile = file.path(configDir, configFile), 
-								configSpecFile = pathConfigSpecFile
-							), silent = TRUE
-						)
-						if(inherits(resCheck, "try-error")){
-							warning(
-								paste0("The report for the config file: ", 
-									sQuote(basename(configFile)), 
-									" is not created because the check of the parameters",
-									" failed with the error: ",
-									attr(resCheck, "condition")$message
-								), immediate. = TRUE, call. = FALSE
-							)
-							runDocument <- FALSE
-						}
-						
-					}else{
-						warning(
-							"No config parameter available, ",
-							"input parameters for the report are not checked."
-						, immediate. = TRUE, call. = FALSE)
-					}
-				}
-			}
-			
-		}
-		
-		# execute the report
-		if(runDocument){
-			
-			# path to output Md file
-			outputMdFile <- getMdFromConfig(
-				configFiles = configFile, 
-				indexPath = indexPath, 
-				intermediateDir = intermediateDir
-			)
-	
-			# specify report-specific input parameters
-			# in a new environment ('params' doesn't work within 'Rscript_call'?)
-			# Note: new.env will inherit of parent environments
-			# so objects created in global environment also available there
-			envReport <- new.env(parent = globalenv()) 
-			assign("params", params, envir = envReport)
-			
-			# run report
-			message("Run report for config file: ", sQuote(configFile), ".")
-			
-			# render report
-			# call each Rmd doc within a new R session
-			# to ensure that current R session doesn't pollute Rmd doc		
-			resRender <- try(
-				outputRmd <- renderInNewSession(
-					input = inputRmdFile, 
-					output_file = basename(outputMdFile),
-					output_dir = dirname(outputMdFile),
-					env = envReport,
-					quiet = quiet
-				),
-				silent = TRUE
-			)
-				
-			# save knit_meta parameters (contain required Js lib for each report)
-			interimResFile <- file.path(
-				intermediateDir,
-				paste0(file_path_sans_ext(basename(outputMdFile)), ".rds")
-			)
-				
-			if(inherits(resRender, "try-error")){
-				
-				warning(
-					paste0("Rendering of the ", sQuote(basename(inputRmdFile)),
-					" report for config file: ", sQuote(configFile), " failed, a report",
-					" with only the section title is created."
-					), immediate. = TRUE, call. = FALSE
-				)
-				
-				# create a report only with a section title
-				pathTemplate <- medicalMonitoring::getPathTemplate("divisionTemplate.Rmd")
-				tmp <- file.copy(from = pathTemplate, to = ".", overwrite = TRUE)
-				envReport <- new.env(parent = globalenv()) 
-				params$content <- "**This part of the report could not be created.**"
-				assign("params", params, envir = envReport)
-				outputRmd <- renderInNewSession(
-					input = basename(pathTemplate), 
-					output_file = basename(outputMdFile),
-					output_dir = dirname(outputMdFile),
-					env = envReport,
-					quiet = quiet
-				)
-				
-			}
-				
-			knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
-			sessionInfoReport <- attr(outputRmd, "sessionInfo", exact = TRUE)
-			interimRes <- list(knitMeta = knitMetaReport, sessionInfo = sessionInfoReport)
-			saveRDS(interimRes, file = interimResFile)
-			
-		}
-		
-	}
-	
-	## convert all Md files to the HTML report
-	message("Convert all Md files to HTML.")
-	# pandoc print text in console
-	outputFile <- convertMdToHtml(
-		outputDir = outputDir, 
-		configDir = configDir, 
-		indexPath = indexPath,
-		intermediateDir = intermediateDir
-	)
-	
-	if (length(extraDirs) > 0){
-		tmp <- file.copy(
-			from = extraDirs, to = outputDir, 
-			overwrite = TRUE, recursive = TRUE
-		)
-  	}
-	
-	return(outputFile)
-	
+    runDocument <- TRUE
+    if(configFile == "config.yml"){
+      
+      params <- configGeneralParams
+      inputRmdFile <- indexPath
+      
+    }else{
+      
+      # extract chapter-specific parameters from config file
+      resParams <- try(
+          params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
+          , silent = TRUE)
+      
+      if(inherits(resParams, "try-error")){
+        
+        warning(
+            paste0("Extraction of the parameters from config file: ", 
+                sQuote(configFile), " failed, ",
+                "this report is ignored."
+            ), immediate. = TRUE, call. = FALSE
+        )
+        runDocument <- FALSE
+        
+      }else{
+        
+        inputRmdFile <- params$template
+        
+      }
+      
+    }
+    
+    if(is.null(inputRmdFile)){
+      warning("Template missing for config file: ", sQuote(configFile), ".")
+      runDocument <- FALSE
+    }
+    
+    # Extract template from package
+    if(runDocument){
+      
+      # Extract the template from the package if: 'templateFromPackage' is 'true'
+      if(!is.null(params$templatePackage)){
+        
+        if(file.exists(inputRmdFile))
+          warning(paste("Document with similar name than",
+                  "specified template from", sQuote(params$templatePackage),
+                  "for config file: ", sQuote(configFile),
+                  "is already available in the working directory,",
+                  "this document will be overwritten."
+              ), immediate. = TRUE, call. = FALSE)
+        
+        pathTemplate <- medicalMonitoring::getPathTemplate(
+            file = inputRmdFile, 
+            package = params$templatePackage
+        )
+        if(!file.exists(pathTemplate)){
+          
+          runDocument <- FALSE
+          
+        }else{
+          
+          # copy file to working directory
+          tmp <- file.copy(from = pathTemplate, to = ".", overwrite = TRUE)
+          
+          # Extract the config file
+          configSpecFile <- file_path_sans_ext(inputRmdFile)
+          configSpecFile <- paste0(configSpecFile, ".json")
+          pathConfigSpecFile <- medicalMonitoring::getPathTemplate(
+              file = configSpecFile, 
+              package = params$templatePackage
+          )
+          
+          # Check config parameters
+          if(file.exists(pathConfigSpecFile)){
+            resCheck <- try(
+                checkConfigFile(
+                    configFile = file.path(configDir, configFile), 
+                    configSpecFile = pathConfigSpecFile
+                ), silent = TRUE
+            )
+            if(inherits(resCheck, "try-error")){
+              warning(
+                  paste0("The report for the config file: ", 
+                      sQuote(basename(configFile)), 
+                      " is not created because the check of the parameters",
+                      " failed with the error: ",
+                      attr(resCheck, "condition")$message
+                  ), immediate. = TRUE, call. = FALSE
+              )
+              runDocument <- FALSE
+            }
+            
+          }else{
+            warning(
+                "No config parameter available, ",
+                "input parameters for the report are not checked."
+                , immediate. = TRUE, call. = FALSE)
+          }
+        }
+      }
+      
+    }
+    
+    # execute the report
+    if(runDocument){
+      
+      # path to output Md file
+      outputMdFile <- getMdFromConfig(
+          configFiles = configFile, 
+          indexPath = indexPath, 
+          intermediateDir = intermediateDir
+      )
+      
+      # specify report-specific input parameters
+      # in a new environment ('params' doesn't work within 'Rscript_call'?)
+      # Note: new.env will inherit of parent environments
+      # so objects created in global environment also available there
+      envReport <- new.env(parent = globalenv()) 
+      assign("params", params, envir = envReport)
+      
+      # run report
+      message("Run report for config file: ", sQuote(configFile), ".")
+      
+      # render report
+      # call each Rmd doc within a new R session
+      # to ensure that current R session doesn't pollute Rmd doc		
+      resRender <- try(
+          outputRmd <- renderInNewSession(
+              input = inputRmdFile, 
+              output_file = basename(outputMdFile),
+              output_dir = dirname(outputMdFile),
+              env = envReport,
+              quiet = quiet
+          ),
+          silent = TRUE
+      )
+      
+      # save knit_meta parameters (contain required Js lib for each report)
+      interimResFile <- file.path(
+          intermediateDir,
+          paste0(file_path_sans_ext(basename(outputMdFile)), ".rds")
+      )
+      
+      if(inherits(resRender, "try-error")){
+        
+        warning(
+            paste0("Rendering of the ", sQuote(basename(inputRmdFile)),
+                " report for config file: ", sQuote(configFile), " failed, a report",
+                " with only the section title is created."
+            ), immediate. = TRUE, call. = FALSE
+        )
+        
+        # create a report only with a section title
+        pathTemplate <- medicalMonitoring::getPathTemplate("divisionTemplate.Rmd")
+        tmp <- file.copy(from = pathTemplate, to = ".", overwrite = TRUE)
+        envReport <- new.env(parent = globalenv()) 
+        params$content <- "**This part of the report could not be created.**"
+        assign("params", params, envir = envReport)
+        outputRmd <- renderInNewSession(
+            input = basename(pathTemplate), 
+            output_file = basename(outputMdFile),
+            output_dir = dirname(outputMdFile),
+            env = envReport,
+            quiet = quiet
+        )
+        
+      }
+      
+      knitMetaReport <- attr(outputRmd, "knit_meta", exact = TRUE)
+      sessionInfoReport <- attr(outputRmd, "sessionInfo", exact = TRUE)
+      interimRes <- list(knitMeta = knitMetaReport, sessionInfo = sessionInfoReport)
+      saveRDS(interimRes, file = interimResFile)
+      
+    }
+    
+  }
+  
+  ## convert all Md files to the HTML report
+  message("Convert all Md files to HTML.")
+  # pandoc print text in console
+  outputFile <- convertMdToHtml(
+      outputDir = outputDir, 
+      configDir = configDir, 
+      indexPath = indexPath,
+      intermediateDir = intermediateDir
+  )
+  
+  if (length(extraDirs) > 0){
+    tmp <- file.copy(
+        from = extraDirs, to = outputDir, 
+        overwrite = TRUE, recursive = TRUE
+    )
+  }
+  
+  return(outputFile)
+  
 }
 
 #' Get path of the \code{Markdown} file corresponding
@@ -324,17 +324,17 @@ render_medicalMonitoringReport <- function(
 #' @family medical monitoring reporting
 #' @author Laure Cougnaud
 getMdFromConfig <- function(
-	configFiles, indexPath = "index.Rmd", 
-	intermediateDir = "./interim"){
-
-	# For general config file, use specified index path
-	# For each chapter, file name are derived from the config file name
-	files <- ifelse(configFiles == "config.yml", indexPath, sub("^config-", "", configFiles))
-	
-	paths <- paste0(tools::file_path_sans_ext(basename(files)), ".md")
-	paths <- file.path(intermediateDir, paths)
-	return(paths)
-	
+    configFiles, indexPath = "index.Rmd", 
+    intermediateDir = "./interim"){
+  
+  # For general config file, use specified index path
+  # For each chapter, file name are derived from the config file name
+  files <- ifelse(configFiles == "config.yml", indexPath, sub("^config-", "", configFiles))
+  
+  paths <- paste0(tools::file_path_sans_ext(basename(files)), ".md")
+  paths <- file.path(intermediateDir, paths)
+  return(paths)
+  
 }
 
 #' Get parameters from a config file
@@ -348,34 +348,34 @@ getMdFromConfig <- function(
 #' @family medical monitoring reporting
 #' @export
 getParamsFromConfig <- function(
-	configFile, configDir = "./config"){
-
-	if(!dir.exists(configDir))
-		stop("Config directory:", sQuote(configDir), "doesn't exist.")
-	
-	# load general config file
-	configGeneralPath <- file.path(configDir, "config.yml")
-	if(file.exists(configGeneralPath)){
-		
-		configGeneralParams <- yaml::read_yaml(configGeneralPath)
-		
-	}else	warning("General config file: 'config.yml' not available in:", 
-				configDir, ".", call. = FALSE)
-
-	if(configFile != "config.yml"){
-
-		configFilePath <- file.path(configDir, configFile)
-		configParams <- yaml::read_yaml(configFilePath)
-		params <- c(configGeneralParams, configParams)
-	
-	}else{
-		
-		params <- configGeneralParams
-		
-	}
-	
-	return(params)
-	
+    configFile, configDir = "./config"){
+  
+  if(!dir.exists(configDir))
+    stop("Config directory:", sQuote(configDir), "doesn't exist.")
+  
+  # load general config file
+  configGeneralPath <- file.path(configDir, "config.yml")
+  if(file.exists(configGeneralPath)){
+    
+    configGeneralParams <- yaml::read_yaml(configGeneralPath)
+    
+  }else	warning("General config file: 'config.yml' not available in:", 
+        configDir, ".", call. = FALSE)
+  
+  if(configFile != "config.yml"){
+    
+    configFilePath <- file.path(configDir, configFile)
+    configParams <- yaml::read_yaml(configFilePath)
+    params <- c(configGeneralParams, configParams)
+    
+  }else{
+    
+    params <- configGeneralParams
+    
+  }
+  
+  return(params)
+  
 }
 
 #' Convert medical monitoring Markdown files to HTML
@@ -401,94 +401,94 @@ getParamsFromConfig <- function(
 #' @family medical monitoring reporting
 #' @export
 convertMdToHtml <- function(
-	outputDir = "./report", intermediateDir = "./interim",
-	configDir = "./config", 
-	mdFiles = NULL,
-	indexPath = "index.Rmd"){
-	
-	outputDir <- normalizePath(outputDir)
-	if(!dir.exists(outputDir))	dir.create(outputDir)
-	
-	intermediateDir <- normalizePath(intermediateDir)
-	if(!dir.exists(intermediateDir))	dir.create(intermediateDir)
-	
-	# Extract md files from general config file
-	if(is.null(mdFiles)){
-		
-		configGeneralParams <- getParamsFromConfig(configFile = "config.yml", configDir = configDir)
-		configFiles <- c("config.yml", configGeneralParams$config)
-		
-		mdFiles <- getMdFromConfig(
-			configFiles = configFiles, 
-			indexPath = indexPath, 
-			intermediateDir = intermediateDir
-		)
-		
-	}
-	
-	# Check if some Md files are missing
-	mdFilesMissing <- !file.exists(mdFiles)
-	if(any(mdFilesMissing)){
-		warning(paste(
-			"Markdown file(s):", toString(sQuote(basename(mdFiles[mdFilesMissing]))),
-			"are missing, these files are ignored."
-		), call. = FALSE, immediate. = TRUE)
-		mdFiles <- mdFiles[!mdFilesMissing]
-	}
-	
-	interimResFiles <- file.path(
-		intermediateDir,
-		paste0(file_path_sans_ext(basename(mdFiles)), ".rds")
-	)
-	interimResFileMissing <- !file.exists(interimResFiles)
-	if(any(interimResFileMissing)){
-		warning(paste0(
-			"No intermediate file available for the reports: ", 
-			toString(sQuote(basename(interimResFiles[interimResFileMissing]))), "."
-		), call. = FALSE)
-		interimResFiles <- interimResFiles[interimResFileMissing]
-	}
-	knit_meta_reports <- c();sessionInfoReports <- list()
-	for(file in interimResFiles){
-		interimFile <- readRDS(file)
-		interimKnitMeta <- interimFile$knitMeta
-		if(!is.null(interimKnitMeta))
-			knit_meta_reports <- c(knit_meta_reports, interimKnitMeta)
-		interimSessionInfo <- interimFile$sessionInfo
-		if(!is.null(interimSessionInfo))
-			sessionInfoReports <- c(sessionInfoReports, list(interimSessionInfo))
-	}
-	
-	# include session information in the report
-	sessionInfoMd <- exportSessionInfoToMd(
-		sessionInfos = sessionInfoReports, 
-		mdFiles = mdFiles, 
-		intermediateDir = intermediateDir
-	)
-	mdFiles <- c(mdFiles, sessionInfoMd)
-	
-	# combine all Md documents into one single Md document
-	mdContentList <- lapply(mdFiles, readLines, encoding = 'UTF-8', warn = FALSE)
-	mdContent <- do.call(c, mdContentList)
-	# Save Md file in output directory to avoid the:
-	# rmarkdown::render error: 
-	# The path [intermediateDir]/libs/X does not appear to be a descendant of [outputDir]
-	mdMainFile <- file.path(outputDir, "main.md")
-	writeLines(text = mdContent, con = mdMainFile, useBytes = TRUE)
-	
-	# convert Markdown -> html 
-	outputFile <- rmarkdown::render(
-		input = mdMainFile, 
-		output_file = "index.html",
-		output_dir = outputDir,
-		run_pandoc = TRUE, 
-		knit_meta = knit_meta_reports,
-		encoding = "UTF-8"
-	)
-	res <- file.remove(mdMainFile)
-	
-	return(outputFile)
-	
+    outputDir = "./report", intermediateDir = "./interim",
+    configDir = "./config", 
+    mdFiles = NULL,
+    indexPath = "index.Rmd"){
+  
+  outputDir <- normalizePath(outputDir)
+  if(!dir.exists(outputDir))	dir.create(outputDir)
+  
+  intermediateDir <- normalizePath(intermediateDir)
+  if(!dir.exists(intermediateDir))	dir.create(intermediateDir)
+  
+  # Extract md files from general config file
+  if(is.null(mdFiles)){
+    
+    configGeneralParams <- getParamsFromConfig(configFile = "config.yml", configDir = configDir)
+    configFiles <- c("config.yml", configGeneralParams$config)
+    
+    mdFiles <- getMdFromConfig(
+        configFiles = configFiles, 
+        indexPath = indexPath, 
+        intermediateDir = intermediateDir
+    )
+    
+  }
+  
+  # Check if some Md files are missing
+  mdFilesMissing <- !file.exists(mdFiles)
+  if(any(mdFilesMissing)){
+    warning(paste(
+            "Markdown file(s):", toString(sQuote(basename(mdFiles[mdFilesMissing]))),
+            "are missing, these files are ignored."
+        ), call. = FALSE, immediate. = TRUE)
+    mdFiles <- mdFiles[!mdFilesMissing]
+  }
+  
+  interimResFiles <- file.path(
+      intermediateDir,
+      paste0(file_path_sans_ext(basename(mdFiles)), ".rds")
+  )
+  interimResFileMissing <- !file.exists(interimResFiles)
+  if(any(interimResFileMissing)){
+    warning(paste0(
+            "No intermediate file available for the reports: ", 
+            toString(sQuote(basename(interimResFiles[interimResFileMissing]))), "."
+        ), call. = FALSE)
+    interimResFiles <- interimResFiles[interimResFileMissing]
+  }
+  knit_meta_reports <- c();sessionInfoReports <- list()
+  for(file in interimResFiles){
+    interimFile <- readRDS(file)
+    interimKnitMeta <- interimFile$knitMeta
+    if(!is.null(interimKnitMeta))
+      knit_meta_reports <- c(knit_meta_reports, interimKnitMeta)
+    interimSessionInfo <- interimFile$sessionInfo
+    if(!is.null(interimSessionInfo))
+      sessionInfoReports <- c(sessionInfoReports, list(interimSessionInfo))
+  }
+  
+  # include session information in the report
+  sessionInfoMd <- exportSessionInfoToMd(
+      sessionInfos = sessionInfoReports, 
+      mdFiles = mdFiles, 
+      intermediateDir = intermediateDir
+  )
+  mdFiles <- c(mdFiles, sessionInfoMd)
+  
+  # combine all Md documents into one single Md document
+  mdContentList <- lapply(mdFiles, readLines, encoding = 'UTF-8', warn = FALSE)
+  mdContent <- do.call(c, mdContentList)
+  # Save Md file in output directory to avoid the:
+  # rmarkdown::render error: 
+  # The path [intermediateDir]/libs/X does not appear to be a descendant of [outputDir]
+  mdMainFile <- file.path(outputDir, "main.md")
+  writeLines(text = mdContent, con = mdMainFile, useBytes = TRUE)
+  
+  # convert Markdown -> html 
+  outputFile <- rmarkdown::render(
+      input = mdMainFile, 
+      output_file = "index.html",
+      output_dir = outputDir,
+      run_pandoc = TRUE, 
+      knit_meta = knit_meta_reports,
+      encoding = "UTF-8"
+  )
+  res <- file.remove(mdMainFile)
+  
+  return(outputFile)
+  
 }
 
 #' Checks of config files template.
@@ -502,52 +502,53 @@ convertMdToHtml <- function(
 #' @return Updated \code{configFiles}
 #' @author Laure Cougnaud
 checkTemplatesName <- function(configFiles, configDir = "./config"){
-	
-	configFilesWithTemplate <- setdiff(configFiles, "config.yml")
-	
-	# check report name
-	configTemplateInfoList <- sapply(configFilesWithTemplate, function(configFile){
-				
-		res <- try(
-			params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
-			, silent = TRUE)
-		
-		if(!inherits(res, "try-error") && "template" %in% names(params)){
-			
-			templatePackage <- params[["templatePackage"]]
-			if(is.null(templatePackage))	templatePackage <- ""
-			data.frame(
-				configFile = configFile, 
-				template = params$template, 
-				templatePackage = templatePackage,
-				stringsAsFactors = FALSE
-			)
-	
-		}
-	}, simplify = FALSE)
-
-	configTemplateInfo <- do.call(rbind.data.frame, configTemplateInfoList)
-	
-	nPkgByTemplate <- with(configTemplateInfo, 
-		tapply(templatePackage, template, function(x) length(unique(x)))
-	)
-	templateWithMultPkg <- names(which(nPkgByTemplate > 1))
-	
-	if(length(templateWithMultPkg) > 0){
-		
-		configFilesRemoved <- configTemplateInfo[which(configTemplateInfo$template %in% templateWithMultPkg), "configFile"]
-		warning(paste0(
-			"The following config file(s) are ignored, because the ",
-			"same template name is used for a custom template or a template ",
-			"within the package(s): ", toString(sQuote(configFilesRemoved)), "."
-		))
-		configFiles <- setdiff(configFiles, configFilesRemoved)
-		
-	}
-	
-	return(configFiles)
-	
-	
+  
+  configFilesWithTemplate <- setdiff(configFiles, "config.yml")
+  
+  # check report name
+  configTemplateInfoList <- sapply(configFilesWithTemplate, function(configFile){
+        
+        res <- try(
+            params <- getParamsFromConfig(configFile = configFile, configDir = configDir),
+            silent = TRUE
+        )
+        
+        if(!inherits(res, "try-error") && "template" %in% names(params)) {
+          
+          templatePackage <- params[["templatePackage"]]
+          if(is.null(templatePackage))	templatePackage <- ""
+          data.frame(
+              configFile = configFile, 
+              template = params$template, 
+              templatePackage = templatePackage,
+              stringsAsFactors = FALSE
+          )
+          
+        }
+      }, simplify = FALSE)
+  
+  configTemplateInfo <- do.call(rbind.data.frame, configTemplateInfoList)
+  
+  nPkgByTemplate <- with(configTemplateInfo, 
+      tapply(templatePackage, template, function(x) length(unique(x)))
+  )
+  templateWithMultPkg <- names(which(nPkgByTemplate > 1))
+  
+  if(length(templateWithMultPkg) > 0){
+    
+    configFilesRemoved <- configTemplateInfo[which(configTemplateInfo$template %in% templateWithMultPkg), "configFile"]
+    warning(paste0(
+            "The following config file(s) are ignored, because the ",
+            "same template name is used for a custom template or a template ",
+            "within the package(s): ", toString(sQuote(configFilesRemoved)), "."
+        ))
+    configFiles <- setdiff(configFiles, configFilesRemoved)
+    
+  }
+  
+  return(configFiles)
+  
+  
 }
 
 #' Check report titles
@@ -562,11 +563,16 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
 #' @export 
 checkReportTitles <- function(configFiles, configDir = "./config") {
   
-  reportTitles <- sapply(configFiles[! configFiles == "config.yml"], function(configFileI) {
+  configFileNames <- setdiff(configFiles, "config.yml")
+  
+  reportTitles <- sapply(configFileNames, function(configFileI) {
         
-        configParams <- getParamsFromConfig(configFile = configFileI, configDir = configDir)
-        configParams$reportTitle
+        res <- try(            
+             configParams <-getParamsFromConfig(configFile = configFileI, configDir = configDir),
+            silent = TRUE)
         
+        if(!inherits(res, "try-error")) configParams$reportTitle
+
       })
   isTitleDuplicated <- any(duplicated(reportTitles))
   
@@ -600,79 +606,79 @@ checkReportTitles <- function(configFiles, configDir = "./config") {
 #' @importFrom tools file_path_sans_ext
 #' @author Laure Cougnaud
 renderInNewSession <- function(
-	input, 
-	run_pandoc = FALSE,
-	output_options = list(keep_md = TRUE),
-	encoding = "UTF-8",
-	...){
-	
-	argsRender <- c(
-		list(
-			input = input, 
-			run_pandoc = run_pandoc,
-			output_options = output_options,
-			encoding = encoding
-		),
-		list(...)
-	)
-
-	## Run job in a separated session with Rscript
-	
-	# which requires a R script:
-	RFile <- tempfile(fileext = '.R')
-	cat(
-		'local({
-		inputArgs <- commandArgs(trailingOnly = TRUE)
-
-		inputFile <- inputArgs[[1]]
-		input <- readRDS(inputFile)	
-		fct <- input$fct	
-		if(is.character(fct))
-			fct <- eval(parse(text = fct), envir = globalenv())
-		res <- do.call(fct, input$args, envir = globalenv())
-		attr(res, "sessionInfo") <- sessionInfo()
-
-		outputFile <- inputArgs[[2]]
-		saveRDS(object = res, file = outputFile)
-
-		})'
-	, file = RFile)
-	
-	# and input parameters:
-	inputFile <- tempfile(fileext = '.rds')
-	outputFile <- tempfile(fileext = '.rds')
-	on.exit(unlink(c(outputFile, inputFile, RFile)))
-	IOFiles <- list(input = inputFile, output = outputFile)
-	
-	# store fct and input parameters in a temporary file
-	saveRDS(object = list(fct = rmarkdown::render, args = argsRender), file = inputFile)
-	
-	# run in separated session
-	# capture output/messages/errors in output
-	# otherwise these are not included in the logFile (with sink)
-	RscriptPath <- file.path(R.home('bin'), 'Rscript')
-	stderrout <- system2(
-		command = RscriptPath, 
-		args = shQuote(c(RFile, IOFiles, "--verbose")),
-		# to store output (including error) in an object
-		stderr = TRUE, stdout = TRUE
-	)
-	cat(stderrout, sep = "\n")
-	
-	resStatus <- attr(stderrout, "status")
-	if(!is.null(resStatus) && resStatus != 0)
-		stop("Creation of the report failed.")
-	
-	# load output
-	res <- if(file.exists(outputFile))	readRDS(outputFile)
-	
-	# clean intermediary file
-	resFile <- as.character(res)
-	if(grepl(".knit.md", resFile) && file.exists(resFile))
-		file.remove(resFile)
-	
-	return(res)
-	
+    input, 
+    run_pandoc = FALSE,
+    output_options = list(keep_md = TRUE),
+    encoding = "UTF-8",
+    ...){
+  
+  argsRender <- c(
+      list(
+          input = input, 
+          run_pandoc = run_pandoc,
+          output_options = output_options,
+          encoding = encoding
+      ),
+      list(...)
+  )
+  
+  ## Run job in a separated session with Rscript
+  
+  # which requires a R script:
+  RFile <- tempfile(fileext = '.R')
+  cat(
+      'local({
+          inputArgs <- commandArgs(trailingOnly = TRUE)
+          
+          inputFile <- inputArgs[[1]]
+          input <- readRDS(inputFile)	
+          fct <- input$fct	
+          if(is.character(fct))
+          fct <- eval(parse(text = fct), envir = globalenv())
+          res <- do.call(fct, input$args, envir = globalenv())
+          attr(res, "sessionInfo") <- sessionInfo()
+          
+          outputFile <- inputArgs[[2]]
+          saveRDS(object = res, file = outputFile)
+          
+          })'
+      , file = RFile)
+  
+  # and input parameters:
+  inputFile <- tempfile(fileext = '.rds')
+  outputFile <- tempfile(fileext = '.rds')
+  on.exit(unlink(c(outputFile, inputFile, RFile)))
+  IOFiles <- list(input = inputFile, output = outputFile)
+  
+  # store fct and input parameters in a temporary file
+  saveRDS(object = list(fct = rmarkdown::render, args = argsRender), file = inputFile)
+  
+  # run in separated session
+  # capture output/messages/errors in output
+  # otherwise these are not included in the logFile (with sink)
+  RscriptPath <- file.path(R.home('bin'), 'Rscript')
+  stderrout <- system2(
+      command = RscriptPath, 
+      args = shQuote(c(RFile, IOFiles, "--verbose")),
+      # to store output (including error) in an object
+      stderr = TRUE, stdout = TRUE
+  )
+  cat(stderrout, sep = "\n")
+  
+  resStatus <- attr(stderrout, "status")
+  if(!is.null(resStatus) && resStatus != 0)
+    stop("Creation of the report failed.")
+  
+  # load output
+  res <- if(file.exists(outputFile))	readRDS(outputFile)
+  
+  # clean intermediary file
+  resFile <- as.character(res)
+  if(grepl(".knit.md", resFile) && file.exists(resFile))
+    file.remove(resFile)
+  
+  return(res)
+  
 }
 
 #' Merge multiple session information
@@ -680,15 +686,15 @@ renderInNewSession <- function(
 #' @return \code{\link{sessionInfo}} with combined information
 #' @author Laure Cougnaud
 merge.sessionInfo <- function(...){
-	
-	sessionInfoAll <- do.call(mapply, c(
-		list(FUN = function(...) unique(c(...)), SIMPLIFY = FALSE), 
-		list(...)
-	))
-	class(sessionInfoAll) <- c("sessionInfo", class(sessionInfoAll))
-	
-	return(sessionInfoAll)
-	
+  
+  sessionInfoAll <- do.call(mapply, c(
+          list(FUN = function(...) unique(c(...)), SIMPLIFY = FALSE), 
+          list(...)
+      ))
+  class(sessionInfoAll) <- c("sessionInfo", class(sessionInfoAll))
+  
+  return(sessionInfoAll)
+  
 }
 
 #' Combine all session informations across all medical monitoring reports
@@ -700,35 +706,35 @@ merge.sessionInfo <- function(...){
 #' NULL if no session information(s) are provided.
 #' @author Laure Cougnaud
 exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "interim"){
-	
-	if(length(sessionInfos) > 0){
-	
-		# combine session informations
-		sessionInfoAll <- do.call(merge, sessionInfos)
-		sessionInfoFile <- tempfile("sessionInfo", fileext = ".Rmd")
-		cat(
-			'\n\n# Appendix  \n\n## Session information  \n\n',
-			'```{r, echo = FALSE, results = "asis"}\nsessionInfoAll\n```', 
-			file = sessionInfoFile
-		)
-		envReport <- new.env()
-		assign("sessionInfoAll", sessionInfoAll, envir = envReport)
-		sessionInfoMd <- "sessionInfo.md"
-		outputRmd <- renderInNewSession(
-			input = sessionInfoFile, 
-			output_file = sessionInfoMd, 
-			output_dir = intermediateDir, 
-			env = envReport
-		)
-		
-		sessionInfoMdPath <- file.path(intermediateDir, sessionInfoMd)
-		
-	}else	sessionInfoMdPath <- NULL
-	return(sessionInfoMdPath)
+  
+  if(length(sessionInfos) > 0){
+    
+    # combine session informations
+    sessionInfoAll <- do.call(merge, sessionInfos)
+    sessionInfoFile <- tempfile("sessionInfo", fileext = ".Rmd")
+    cat(
+        '\n\n# Appendix  \n\n## Session information  \n\n',
+        '```{r, echo = FALSE, results = "asis"}\nsessionInfoAll\n```', 
+        file = sessionInfoFile
+    )
+    envReport <- new.env()
+    assign("sessionInfoAll", sessionInfoAll, envir = envReport)
+    sessionInfoMd <- "sessionInfo.md"
+    outputRmd <- renderInNewSession(
+        input = sessionInfoFile, 
+        output_file = sessionInfoMd, 
+        output_dir = intermediateDir, 
+        env = envReport
+    )
+    
+    sessionInfoMdPath <- file.path(intermediateDir, sessionInfoMd)
+    
+  }else	sessionInfoMdPath <- NULL
+  return(sessionInfoMdPath)
 #	reportFirst <- readLines(mdFiles[1], encoding = 'UTF-8', warn = FALSE)
 #	sessionInfoMd <- readLines(file.path(intermediateDir, "sessionInfo.md"), encoding = 'UTF-8', warn = FALSE)
 #	writeLines(text = c(reportFirst, sessionInfoMd), con = mdFiles[1], useBytes = TRUE)
-	
+  
 }
 
 #' Common parameters for the medical monitoring reporting function
