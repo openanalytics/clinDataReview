@@ -235,7 +235,9 @@ listPlots <- sapply(summaryTable, function(summaryTableI){
 	argsPlot$labelVars <- labelVars
 	argsPlot$table <- TRUE
 	# Summarized data: so patients profiles should be collapsed for each row of the table
-	argsPlot$pathExpand <- TRUE
+	if(plotFunction != 'barplotMonitoring'){
+	  argsPlot$pathExpand <- TRUE
+	}
 	argsPlot$pathVar <- if(!is.null(patientProfilePath))	names(statsPP)
 	if("idVar" %in% formalArgs(plotFunction) & !"idVar" %in% names(argsPlot))
 		argsPlot$idVar <- "plotID"
