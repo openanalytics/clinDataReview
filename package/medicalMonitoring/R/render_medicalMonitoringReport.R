@@ -563,12 +563,12 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
 #' @export 
 checkReportTitles <- function(configFiles, configDir = "./config") {
   
-  configFileNames <- setdiff(configFiles, "config.yml")
+  configFileNames <- configFiles[configFiles != "config.yml"]
   
   reportTitles <- sapply(configFileNames, function(configFileI) {
         
         res <- try(            
-             configParams <-getParamsFromConfig(configFile = configFileI, configDir = configDir),
+             configParams <- getParamsFromConfig(configFile = configFileI, configDir = configDir),
             silent = TRUE)
         
         if(!inherits(res, "try-error")) configParams$reportTitle
