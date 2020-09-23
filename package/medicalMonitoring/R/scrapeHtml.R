@@ -52,7 +52,7 @@ scrapeHtml <- function(pathHtml) {
 #' @importFrom utils write.table
 saveScrapeTable <- function(table, pathHtml) {
   
-  fileName <- basename(file_path_sans_ext(pathHtml))
+  fileName <- basename(pathHtml)
   
   dirScrape <- sprintf("%s/scrapedTables", dirname(pathHtml))
   
