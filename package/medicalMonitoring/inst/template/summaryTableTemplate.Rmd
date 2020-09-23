@@ -56,10 +56,10 @@ attach(params)
 
 if(!exists("comparisonTableType"))	comparisonTableType <- "none"
 if(comparisonTableType != "none" & 
-	(!exists("pathDataFolderOld") || !file.exists(file.path(pathDataFolderOld, dataFileName)))
-	){
-	warning("No comparison table is included because data from previous batch is not available.")
-	comparisonTableType <- "none"
+    (!exists("pathDataFolderOld") || !file.exists(file.path(pathDataFolderOld, dataFileName)))
+    ){
+  warning("No comparison table is included because data from previous batch is not available.")
+  comparisonTableType <- "none"
 }
 
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
@@ -114,13 +114,14 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
       labelVars <- attr(dataAll, "labelVars")
       
       if(exists("dataProcessing")){
-        data <- processData(
-            data = data, 
-            dataPath = pathDataFolder,
-            processing = dataProcessing,
-            verbose = TRUE,
-            labelVars = labelVars
-        )
+        msg <- capture.output(data <- processData(
+                data = data, 
+                dataPath = pathDataFolder,
+                processing = dataProcessing,
+                verbose = TRUE,
+                labelVars = labelVars
+            ), type = "message")
+        message(paste(collapse = "\n", msg))
         # Labels updated with extra annotation:
         labelVars <- attr(data, "labelVars")
       }
@@ -170,6 +171,8 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
         
       }else	dataTotal <- data
       
+      attr(data, "message") <- msg
+      
       list(
           data = data,
           dataTotal = dataTotal					
@@ -178,6 +181,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
     }, simplify = FALSE)
 
 labelVars <- attr(dataList$currentData$data, "labelVars")
+messages <- attr(dataList$currentData$data, "message")
 
 ```
 
@@ -256,6 +260,9 @@ summaryTableList <- sapply(names(pathsData), function(dataBatch) {
 
 ```{r summaryTableTemplate-exportSummaryStatisticsTable, eval = (comparisonTableType == "none")}
 
+## Format messages
+messages <- gsub(" (based on).*", ".", messages)
+
 summaryTable <- summaryTableList$currentData$summaryTable
 statsPP <- summaryTableList$currentData$statsPP
 
@@ -276,10 +283,10 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
       tableParamsDocxI$summaryTable <- sumTable
       
       tableParamsDocxI$file <- 
-        sprintf("table_%s.docx",
-                strtrim(
+          sprintf("table_%s.docx",
+              strtrim(
                   gsub(" ", "_", gsub("[[:punct:]]", "", reportTitle)
-        ), 30))
+                  ), 30))
       if(!is.null(loopingVar))
         tableParamsDocxI$file <- paste0(
             tools::file_path_sans_ext(tableParamsDocxI$file), 
@@ -303,6 +310,10 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
           htmltools::a("Formatted .docx table", target="_blank", href = tableParamsDocxI$file),
           br(),
           tableParamsDTI$footer,
+          tagList(
+              br(),
+              paste(collapse = "\n", messages)
+          ),
           if(!is.null(loopingVar) && loopingTotal)	
             tagList(
                 br(),
@@ -311,12 +322,25 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
                     "."
                 )
             )
-      )
-      
+      )          
       summaryTableDT <- do.call(exportSummaryStatisticsTable, tableParamsDTI)
       
-    }, simplify = FALSE)
+#      collapsedText <- toDTGLPG(matrix(messages))
+#      attributes(collapsedText)$metadata <- list(
+#          button = TRUE, 
+#          buttonTitle = "Click to show or hide the data associated to the plot"
+#      )
+      collapsedText <- collapseHtmlContent(
+          do.call(tags$ul, lapply(messages, tags$li))
+      )
 
+      res <- list(summaryTable = summaryTableDT, table = collapsedText)
+      class(res) <- c("medicalMonitoring", class(res))
+      res
+      
+    }, simplify = FALSE)
+summaryTableDT <- do.call(c, summaryTableDT)
+    
 knitPrintMedicalMonitoring(
     list = summaryTableDT,
     level = reportTitleLevel + 1
