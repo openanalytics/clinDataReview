@@ -22,3 +22,16 @@ test_that("Formatting of hover text", {
       
     })
 
+test_that("Getting formula for variable", {
+      
+      # One variable
+      varFormula <- varToFm("CHG")
+      expect_is(varFormula, "formula")
+      expect_equal(as.formula("~CHG"), varFormula)
+      
+      # Two variables
+      varsFormula <- varToFm(c("AVAL", "CHG"))
+      expect_is(varsFormula, "formula")
+      expect_equal(as.formula("~AVAL + CHG"), varsFormula)
+      
+    })
