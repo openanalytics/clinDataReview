@@ -52,17 +52,10 @@ scrapeHtml <- function(pathHtml) {
 #' @importFrom utils write.table
 saveScrapeTable <- function(table, pathHtml) {
   
-  fileName <- gsub(
-      ".+[/]MOMP[/](.+)[.]html",
-      "\\1",
-      pathHtml
-  )
+  fileName <- basename(file_path_sans_ext(pathHtml))
   
-  dirScrape <- gsub(
-      "(.+)[/]MOMP[/](.+)[.]html",
-      "\\1/MOMP/scrapedTables",
-      pathHtml
-  )
+  dirScrape <- sprintf("%s/scrapedTables", dirname(pathHtml))
+  
   if(! dir.exists(dirScrape)) dir.create(dirScrape)
   
   pathScrapeTableTxt <- sprintf("%s/%s.txt", dirScrape, fileName)
