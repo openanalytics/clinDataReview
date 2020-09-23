@@ -310,10 +310,6 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
           htmltools::a("Formatted .docx table", target="_blank", href = tableParamsDocxI$file),
           br(),
           tableParamsDTI$footer,
-          tagList(
-              br(),
-              paste(collapse = "\n", messages)
-          ),
           if(!is.null(loopingVar) && loopingTotal)	
             tagList(
                 br(),
