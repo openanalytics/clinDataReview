@@ -5,7 +5,7 @@
 #' \item{from the \code{settings} if a
 #' specified depth is provided in the 'rmd_file_depth' for the
 #' current knitted file}
-#' \item{\code{depth} parameter otherwise}
+#' \item{\code{level} parameter otherwise}
 #' }
 #' @param title String with header title.
 #' @param level Integer of length 1 with header depth/level,
