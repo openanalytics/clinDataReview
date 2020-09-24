@@ -1,4 +1,5 @@
 context("Test miscellaneous functions")
+library(datatable)
 
 test_that("Formatting of hover text", {
       
@@ -47,5 +48,23 @@ test_that("Get JS dependencies", {
       expect_is(dependencyOne, "list")
       expect_length(dependencyOne[[1]], 10)
       expect_is(dependencyOne[[1]], "html_dependency")
+      
+    })
+
+test_that("Collapse Html content", {
+      
+      x <- matrix(LETTERS[1 : 10])
+      button <- collapseHtmlContent(datatable(x))
+      expect_is(button, "shiny.tag.list")
+      expect_is(button, "list")
+      names <- sapply(button, function(x) x$name)
+      names(names) <- NULL
+      expect_identical(
+          names,
+          c("input", "div", "br", "br")
+      )
+      
+      outputConsole <- capture.output(button)
+      expect_is(outputConsole, "character")
       
     })
