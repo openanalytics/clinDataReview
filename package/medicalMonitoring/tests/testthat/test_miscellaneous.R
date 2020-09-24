@@ -1,5 +1,5 @@
 context("Test miscellaneous functions")
-library(datatable)
+library(DT)
 
 test_that("Formatting of hover text", {
       
