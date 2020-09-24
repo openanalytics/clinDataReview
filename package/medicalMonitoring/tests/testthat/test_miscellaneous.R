@@ -35,3 +35,17 @@ test_that("Getting formula for variable", {
       expect_equal(as.formula("~AVAL + CHG"), varsFormula)
       
     })
+
+test_that("Get JS dependencies", {
+      
+      dependencies <- getJsDepMedicalMonitoring()
+      expect_is(dependencies, "list")
+      expect_length(dependencies, 5)
+      matrixRes <- sapply(dependencies, expect_length, 10)
+      
+      dependencyOne <- getJsDepMedicalMonitoring("FileSaver")
+      expect_is(dependencyOne, "list")
+      expect_length(dependencyOne[[1]], 10)
+      expect_is(dependencyOne[[1]], "html_dependency")
+      
+    })
