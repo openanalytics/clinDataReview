@@ -24,10 +24,10 @@ formatHoverText <- function(x, label, width = 50){
 }
 
 #' Get Javascript custom scripts required for specific
-#' the medical monitoring functionalities.
+#' medical monitoring functionalities.
 #' @param dep (optional) Character vector with names of Javascript dependencies 
 #' By default, all dependencies are included.
-#' @return list of \code{\link[htmltools]{htmlDependency}}.
+#' @return List of \code{\link[htmltools]{htmlDependency}}.
 #' To include this dependency in a report e.g. generated with rmarkdown,
 #' these should be passed to the: \code{extra_dependencies} parameter
 #' of the \code{output_format} specific function, e.g.:
@@ -38,9 +38,9 @@ formatHoverText <- function(x, label, width = 50){
 #' @importFrom utils packageVersion
 #' @author Laure Cougnaud
 #' @export
-getJsDepMedicalMonitoring <- function(dep = NULL){
+getJsDepMedicalMonitoring <- function(dep = NULL) {
 	
-	getPackageJSDep <- function(name, version){
+	getPackageJSDep <- function(name, version) {
 		srcDep <- system.file("js", package = "medicalMonitoring", name)
 		htmltools::htmlDependency(
 			name = name,
@@ -66,7 +66,7 @@ getJsDepMedicalMonitoring <- function(dep = NULL){
 		getPackageJSDep(name = "collapsibleButton", version = packageVersion("medicalMonitoring"))
 	)
 	
-	if(!is.null(dep)){
+	if(!is.null(dep)) {
 		selectedDep <- which(sapply(htmlDep, '[[', "name") %in% dep)
 		htmlDep <- htmlDep[selectedDep]
 	}
