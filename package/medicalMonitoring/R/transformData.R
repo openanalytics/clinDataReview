@@ -1,4 +1,8 @@
 #' Transform data.
+#' 
+#' Transform data from long to wide format.
+#' This function converts formats with the \code{stats::reshape} function.
+#' 
 #' @param data Data.frame with input data to transform.
 #' @param transformations Transformations (or list of those) as a list with:
 #' \itemize{
@@ -9,26 +13,30 @@
 #' \item{'pivot_wider': }{
 #' \itemize{
 #' \item{'varsID': }{Character vector with variable(s) of \code{data}
-#' defining unique records in the wide format}
+#' defining unique records in the wide format.
+#' Corresponds to the \code{idvar} parameter of the \code{reshape} function.}
 #' \item{'varPivot': }{String with unique variable of \code{data}
 #' containing elements to pivot in different columns in the wide format
-#' (used for column names)}
+#' (used for column names).
+#' Corresponds to the \code{timevar} parameter of the \code{reshape} function.}
 #' \item{'varsValue': }{Character vector with variable(s) of \code{data}
-#' used to fill the columns in the wide format}
+#' used to fill the columns in the wide format.
+#' Corresponds to the \code{v.names} parameter of the \code{reshape} function.}
 #' }
 #' }
 #' }
 #' }
 #' }
+#' @return A data.frame in wide format.
 #' @inheritParams medicalMonitoring-common-args
 #' @author Laure Cougnaud
 #' @importFrom stats reshape
 #' @export
 transformData <- function(
 	data, transformations,
-	verbose = FALSE, labelVars = NULL){
+	verbose = FALSE, labelVars = NULL) {
 	
-	if(!is.null(transformations)){
+	if(!is.null(transformations)) {
 	
 		isNest <- ifelse(is.list(transformations), is.null(names(transformations)), length(transformations) > 1)
 		if(isNest){
@@ -45,13 +53,13 @@ transformData <- function(
 			}
 			return(data)
 			
-		}else{
+		} else {
 			
 			transType <- transformations$type
 			if(is.null(transType))
 				stop("'type' of transformation should be specified.")
 			
-			if(transType == "pivot_wider"){
+			if(transType == "pivot_wider") {
 				
 				## extract input parameters
 				varsID <- transformations$varsID
@@ -105,7 +113,7 @@ transformData <- function(
 						"pivoted to different columns."
 					))
 				
-			}else{
+			} else {
 				stop(paste("Transformation of type", sQuote(transType), "not defined."))
 			}
 			
