@@ -26,7 +26,7 @@ test_that("Test 'transformData' function", {
           PARAM = rep(c("param1", "param2"), length.out = 20),
           VALUE = seq(1, 10, length.out = 20)
       )
-            
+      
       transformation <- list(
           type = "pivot_wider",
           varsID = "USUBJID",
@@ -61,5 +61,34 @@ test_that("Test 'transformData' function", {
       attribDataTransf <- attr(dataTransform, "labelVars")
       expect_is(attribDataTransf, "character")
       expect_length(attribDataTransf, 5)
-            
+      
+    })
+
+test_that("Test nested list for 'transformData'", {
+      
+      testData <- data.frame(
+          USUBJID = rep(1 : 10, each = 4),
+          PARAMGR1 = rep(c("param1", "param2"), length.out = 20),
+          PARAMGR2 = rep(c("param3", "param4"), length.out = 20),
+          VALUEGR1 = seq(1, 10, length.out = 20)
+      )
+      
+      transformation <- list(
+          list(
+              type = "pivot_wider",
+              varsID = "USUBJID",
+              varPivot = "PARAMGR1",
+              varsValue = "VALUEGR1"
+          ),
+          list(
+              type = "pivot_wider",
+              varsID = "USUBJID",
+              varPivot = "PARAMGR2",
+              varsValue = "VALUEGR1"
+          )
+      )
+      expect_warning(transformData(data = testData, transformations = transformation))
+      dataTransform <- transformData(data = testData, transformations = transformation)
+      expect_is(dataTransform, "data.frame")
+      
     })
