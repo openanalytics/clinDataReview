@@ -321,22 +321,18 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
       )          
       summaryTableDT <- do.call(exportSummaryStatisticsTable, tableParamsDTI)
       
-#      collapsedText <- toDTGLPG(matrix(messages))
-#      attributes(collapsedText)$metadata <- list(
-#          button = TRUE, 
-#          buttonTitle = "Click to show or hide the data associated to the plot"
+#      collapsedText <- collapseHtmlContent(
+#          do.call(tags$ul, lapply(messages, tags$li))
 #      )
-      collapsedText <- collapseHtmlContent(
-          do.call(tags$ul, lapply(messages, tags$li))
-      )
-
-      res <- list(summaryTable = summaryTableDT, table = collapsedText)
-      class(res) <- c("medicalMonitoring", class(res))
-      res
+      
+#      res <- list(summaryTable = summaryTableDT, table = collapsedText)
+#      class(res) <- c("medicalMonitoring", class(res))
+#      res
+      summaryTableDT
       
     }, simplify = FALSE)
-summaryTableDT <- do.call(c, summaryTableDT)
-    
+#summaryTableDT <- do.call(c, summaryTableDT)
+
 knitPrintMedicalMonitoring(
     list = summaryTableDT,
     level = reportTitleLevel + 1
