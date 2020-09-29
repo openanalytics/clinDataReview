@@ -46,7 +46,7 @@ test_that("Check uniqueness of report titles", {
           checkReportTitles(configFilesError, configDir = tmpdir)
       )
       configFilesWarning <- c(configFiles, "config-ciao")
-      expect_warning(
+      expect_error(
           checkReportTitles(configFilesWarning, configDir = tmpdir)
       )
       
