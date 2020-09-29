@@ -1,5 +1,5 @@
 0.6.0
-    o checkReportTitles: fix when config file does not exist
+    o checkReportTitles: write error when config file does not exist
     o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists 
 0.5.0
     o knitPrintListMedicalMonitoring: fix inclusion list with empty element

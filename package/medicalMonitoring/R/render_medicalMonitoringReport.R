@@ -568,12 +568,20 @@ checkReportTitles <- function(configFiles, configDir = "./config") {
   reportTitles <- sapply(configFileNames, function(configFileI) {
         
         res <- try(            
-             configParams <- getParamsFromConfig(configFile = configFileI, configDir = configDir),
+            configParams <- getParamsFromConfig(configFile = configFileI, configDir = configDir),
             silent = TRUE)
         
-        if(!inherits(res, "try-error")) configParams$reportTitle
-
+        if(!inherits(res, "try-error")) {
+          configParams$reportTitle
+        } else {
+          stop("File ", sQuote(configFileI), "cannot be found. \n",
+              "Please check the spelling is correct ",
+              "or the file is saved in the directory with the other config files."
+          )
+        }
+        
       })
+  
   isTitleDuplicated <- any(duplicated(reportTitles))
   
   if(isTitleDuplicated) {
