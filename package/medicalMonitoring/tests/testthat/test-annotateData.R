@@ -111,3 +111,13 @@ test_that("Annotation based on functional_groups_lab", {
       )
       
     })
+
+test_that("Annotation based on exposed_subject", {
+      
+      expect_warning(
+          annotateData(dataLB, annotations = "exposed_subjects")
+      )
+      # Add ex.sas7bdat ?
+      
+    })
+
