@@ -121,3 +121,45 @@ test_that("Annotation based on exposed_subject", {
       
     })
 
+test_that("Annotation with 'dataset' custom annotation", {
+      
+      expect_warning(
+          annotateData(
+              dataLB,
+              dataPath = system.file("extdata", package = "glpgUtilityFct"),
+              annotations = list(dataset = "adsl")
+          )
+      )
+      dataAnnot <- annotateData(
+          dataLB,
+          dataPath = system.file("extdata", package = "glpgUtilityFct"),
+          annotations = list(dataset = "adsl")
+      )
+      expect_is(dataAnnot, "data.frame")
+      
+      dataAnnotVars <- annotateData(
+          dataLB,
+          dataPath = system.file("extdata", package = "glpgUtilityFct"),
+          annotations = list(
+              dataset = "adsl",
+              vars = "AGE"
+              )
+      )
+      expect_identical(
+          colnames(dataAnnotVars),
+          c(colnames(dataLB), "AGE")
+      )
+      expect_is(dataAnnotVars$AGE, "numeric")
+      
+      # Variable already present should not be added
+      dataAnnotVars <- annotateData(
+          dataLB,
+          dataPath = system.file("extdata", package = "glpgUtilityFct"),
+          annotations = list(
+              dataset = "adsl",
+              vars = "USUBJID"
+          )
+      )
+      expect_identical(dataAnnotVars, dataLB)
+       
+    })
