@@ -52,12 +52,21 @@ If not specified, all variables of the dataset are considered.}
 \item{string containing manipulations from column names of \code{data} (e.g. 'col1 + col2')}
 }
  used to create a new variable specified in \code{vars}.}
-\item{'filters': }{(optional) Filters for the annotation dataset, 
-see \code{filters} parameter of \code{\link{filterData}}}
+\item{'filters': }{(optional) Filters for the \strong{annotation dataset}, 
+see \code{filters} parameter of \code{\link{filterData}}.\cr
+The annotation dataset is first filtered, before being combined to the 
+input \code{data}, such as only the records retained in the annotation dataset
+will be annotated in the output \code{data}. Other records will 
+have missing values in the annotated variables.
+}
 \item{'varLabel': }{(optional) label for new variable in case \code{varFct} is specified.}
 \item{'varsBy': }{(optional) Character vector with variables used to merge input data and
-the annotation dataset. If not specified, \code{subjectVar} is used if
-an external annotation dataset, or the datasets are merged by rows otherwise.
+the annotation dataset. If not specified:
+\itemize{
+\item{if an external dataset (\code{dataset}/\code{data}) is specified:}{
+\code{subjectVar} is used}
+\item{otherwise: }{annotation dataset and input data are merged by rows IDs}
+}
 }
 }
 }
@@ -118,8 +127,9 @@ dataAnnotated <- annotateData(dataLB,
 	annotations = list(
 		data = dataDM, 
 		vars = c("ARMCD", "COUNTRY", "SEX"), 
-		filters = list(var = "SEX", value = "F"))
+		filters = list(var = "SEX", value = "F")
 	)
+)
 head(subset(dataAnnotated, SEX == "F"), 1)
 head(subset(dataAnnotated, is.na(SEX)), 1)
 
