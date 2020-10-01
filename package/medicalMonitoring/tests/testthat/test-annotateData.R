@@ -232,9 +232,12 @@ test_that("Filtering of data", {
 test_that("Nested annotations", {
       
       dataAnnot <- annotateData(
-          dataLB,
+          dataDM,
           annotations = list(
-              list(data = dataDM),
+              list(
+                  vars = "SEXFCT",
+                  varFct = 'as.factor(SEX)'
+                  ),
               list(
                   vars = "AGESTRING",
                   varFct = 'sprintf("%s %s", AGE, AGEU)',
