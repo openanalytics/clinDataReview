@@ -106,7 +106,7 @@ plotCountMonitoring <- function(
 	pl <- plot_ly(
 		data = dataSharedData, 
 		ids = varToFm(varID),
-		parents = varToFm(varParent), 
+		parents = if(!is.null(varParent))	varToFm(varParent), 
 		labels = varToFm(varLabel), 
 		values = varToFm(valueVar), 
 		marker = if(!is.null(colorVar))	list(colors = colors),

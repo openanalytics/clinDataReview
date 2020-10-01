@@ -61,6 +61,7 @@ if(!exists("typePlot")) typePlot <- c("treemap", "sunburst")
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 if(!exists("loopingVar")) loopingVar <- NULL
 if(!exists("loopingTotal"))	loopingTotal <- TRUE
+if(!exists("parentVar"))	parentVar <- NULL
 
 ```
 

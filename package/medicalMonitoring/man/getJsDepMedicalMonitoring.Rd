@@ -3,7 +3,7 @@
 \name{getJsDepMedicalMonitoring}
 \alias{getJsDepMedicalMonitoring}
 \title{Get Javascript custom scripts required for specific
-the medical monitoring functionalities.}
+medical monitoring functionalities.}
 \usage{
 getJsDepMedicalMonitoring(dep = NULL)
 }
@@ -12,7 +12,7 @@ getJsDepMedicalMonitoring(dep = NULL)
 By default, all dependencies are included.}
 }
 \value{
-list of \code{\link[htmltools]{htmlDependency}}.
+List of \code{\link[htmltools]{htmlDependency}}.
 To include this dependency in a report e.g. generated with rmarkdown,
 these should be passed to the: \code{extra_dependencies} parameter
 of the \code{output_format} specific function, e.g.:
@@ -22,7 +22,7 @@ output_format = rmarkdown::html_document(extra_dependencies = dep))
 }
 \description{
 Get Javascript custom scripts required for specific
-the medical monitoring functionalities.
+medical monitoring functionalities.
 }
 \author{
 Laure Cougnaud
