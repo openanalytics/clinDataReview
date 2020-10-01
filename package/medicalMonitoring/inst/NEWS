@@ -1,6 +1,7 @@
 0.6.0
     o checkReportTitles: write error when config file does not exist
-    o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists 
+    o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists
+    o countsVisualizationTemplate/plotCountMonitoring: fix in case no parent variable
 0.5.0
     o knitPrintListMedicalMonitoring: fix inclusion list with empty element
     o tableMonitoring: keep order idVar in tableVars if specified

@@ -18,12 +18,15 @@ Currently, only: 'pivot_wider' is available}
 \item{'pivot_wider': }{
 \itemize{
 \item{'varsID': }{Character vector with variable(s) of \code{data}
-defining unique records in the wide format}
+defining unique records in the wide format.
+Corresponds to the \code{idvar} parameter of the \code{reshape} function.}
 \item{'varPivot': }{String with unique variable of \code{data}
 containing elements to pivot in different columns in the wide format
-(used for column names)}
+(used for column names).
+Corresponds to the \code{timevar} parameter of the \code{reshape} function.}
 \item{'varsValue': }{Character vector with variable(s) of \code{data}
-used to fill the columns in the wide format}
+used to fill the columns in the wide format.
+Corresponds to the \code{v.names} parameter of the \code{reshape} function.}
 }
 }
 }
@@ -37,8 +40,12 @@ of subject-specific report are displayed in the browser console.}
 
 \item{labelVars}{Named character vector containing variable labels.}
 }
+\value{
+A data.frame in wide format.
+}
 \description{
-Transform data.
+Transform data from long to wide format.
+This function converts formats with the \code{stats::reshape} function.
 }
 \author{
 Laure Cougnaud
