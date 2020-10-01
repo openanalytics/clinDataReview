@@ -229,3 +229,21 @@ test_that("Filtering of data", {
       
     })
 
+test_that("Nested annotations", {
+      
+      dataAnnot <- annotateData(
+          dataLB,
+          annotations = list(
+              list(data = dataDM),
+              list(
+                  vars = "AGESTRING",
+                  varFct = 'sprintf("%s %s", AGE, AGEU)',
+                  varLabel = "Age and year"
+              )
+          )
+      )
+      expect_is(dataAnnot, "data.frame")
+      extraVar <- with(dataDM, sprintf("%s %s", AGE, AGEU))
+      expect_identical(dataAnnot$AGESTRING, extraVar)
+      
+    })
