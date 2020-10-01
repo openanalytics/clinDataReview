@@ -144,6 +144,8 @@ dataAEWC <- annotateData(
 		# (if multiple, they are all retained)
 		filters = list(
 			var = "AESEV", 
+			# max will take latest level in a factor 
+			# (so 'MODERATE' if 'MILD'/'MODERATE' are available)
 			valueFct = function(x) x[which.max(as.numeric(x))],
 			varsBy = c("USUBJID", "AEDECOD"),
 			keepNA = FALSE,
