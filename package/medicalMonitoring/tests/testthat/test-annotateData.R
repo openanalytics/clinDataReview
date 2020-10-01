@@ -145,7 +145,7 @@ test_that("Annotation with 'dataset' custom annotation", {
           annotations = list(
               dataset = "adsl",
               vars = "AGE"
-              )
+          )
       )
       expect_identical(
           colnames(dataAnnotVars),
@@ -163,5 +163,20 @@ test_that("Annotation with 'dataset' custom annotation", {
           )
       )
       expect_identical(dataAnnotVars, dataLB)
-       
+      
     })
+
+test_that("Filtering of data", {
+      
+      dataAnnotFilter <- annotateData(
+          dataLB,
+          annotations = list(
+              data = dataDM,
+              filters = list(var = "SEX", value = "M")
+          )
+      )
+      expect_is(dataAnnotFilter, "data.frame")
+      # Test on length...?
+      
+    })
+
