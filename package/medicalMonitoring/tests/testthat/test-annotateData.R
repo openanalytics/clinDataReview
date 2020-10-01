@@ -30,7 +30,7 @@ test_that("Correct computation of new variable based on combination of multiple 
       
     })
 
-test_that("Annotation based on text extraction with 'sub'", {
+test_that("Annotation based on varFct'", {
       
       varFct <- "sub('Day .* - (.+)', '\\\\1', VISIT)"
       dataLB <- annotateData(dataLB, 
@@ -44,6 +44,55 @@ test_that("Annotation based on text extraction with 'sub'", {
           object = dataLB$PERIOD,
           expected = eval(expr = parse(text = varFct), envir = dataLB)
       )
+      
+      expect_error(
+          annotateData(
+              dataDM,
+              annotations = list(
+                  varFct = 'sprintf("%s %s", AGE, AGEU)',
+                  varLabel = "Age and year"
+              )
+          )
+      )
+      dataAnnot <- annotateData(
+          dataDM,
+          annotations = list(
+              vars = "AGESTRING",
+              varFct = 'sprintf("%s %s", AGE, AGEU)',
+              varLabel = "Age and year"
+          )
+      )
+      expect_message(
+          annotateData(
+              dataDM,
+              annotations = list(
+                  vars = "AGESTRING",
+                  varFct = 'sprintf("%s %s", AGE, AGEU)',
+                  varLabel = "Age and year"
+              ),
+              verbose = TRUE
+          )
+      )
+      # Annotation based on 'function(data)' as a string
+      dataAnnotBis <- annotateData(
+          dataDM,
+          annotations = list(
+              vars = "AGESTRING",
+              varFct = 'function(data) with(data, sprintf("%s %s", data$AGE, data$AGEU))',
+              varLabel = "Age and year"
+          )
+      )
+      expect_identical(dataAnnot, dataAnnotBis)
+      # Annotation based on function(data)
+      dataAnnotTris <- annotateData(
+          dataDM,
+          annotations = list(
+              vars = "AGESTRING",
+              varFct = function(data) with(data, sprintf("%s %s", data$AGE, data$AGEU)),
+              varLabel = "Age and year"
+          )
+      )
+      expect_identical(dataAnnot, dataAnnotTris)
       
     })
 
