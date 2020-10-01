@@ -195,15 +195,15 @@ annotateData <- function(
 				'functional_groups_lab' = {
 					
 					varParam <- c("PARAMCD", "LBTESTCD")
-					varParam <- intersect(varParam, colnames(data))[1]
+					varParam <- intersect(varParam, colnames(data))
 					
-					if(length(varParam) == 0){
+					if(length(varParam) == 0) {
 						
 						warning(paste(simpleCap(labelData), "is not annotated with functional groups,",
 							"because no variable with laboratory parameter code is available in the data.")
 					)
 					
-					}else{
+					} else {
 					
 						labGroups <- list(
 							"Renal function" = c("UREA","CREAT","CA","URATE","GFR"),
