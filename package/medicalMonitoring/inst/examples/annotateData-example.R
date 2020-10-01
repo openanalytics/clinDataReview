@@ -27,8 +27,9 @@ dataAnnotated <- annotateData(dataLB,
 	annotations = list(
 		data = dataDM, 
 		vars = c("ARMCD", "COUNTRY", "SEX"), 
-		filters = list(var = "SEX", value = "F"))
+		filters = list(var = "SEX", value = "F")
 	)
+)
 head(subset(dataAnnotated, SEX == "F"), 1)
 head(subset(dataAnnotated, is.na(SEX)), 1)
 
