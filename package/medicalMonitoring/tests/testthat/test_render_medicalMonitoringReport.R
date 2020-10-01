@@ -139,12 +139,9 @@ test_that("Export of session infos", {
       
       sessionInfos <- list(sessionInfo(), sessionInfo())
       
-      expect_message(
-          exportSessionInfoToMd(sessionInfos)
-      )
-      mdFile <- exportSessionInfoToMd(sessionInfos)
+      mdFile <- exportSessionInfoToMd(sessionInfos, intermediateDir = tmpdir)
       expect_is(mdFile, "character")
-      expect_identical(mdFile, "interim/sessionInfo.md")
+      expect_identical(mdFile, sprintf("%s/sessionInfo.md", tmpdir))
       
     })
 
