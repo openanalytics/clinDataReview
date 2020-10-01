@@ -28,7 +28,7 @@ The depth is extracted:
 \item{from the \code{settings} if a
 specified depth is provided in the 'rmd_file_depth' for the
 current knitted file}
-\item{\code{depth} parameter otherwise}
+\item{\code{level} parameter otherwise}
 }
 }
 \seealso{
