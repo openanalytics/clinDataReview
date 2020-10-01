@@ -1,4 +1,4 @@
-context("data annotation")
+context("Data annotation")
 
 library(glpgUtilityFct)
 
@@ -82,9 +82,11 @@ test_that("Annotation based on functional_groups_lab", {
       
       dataLB_warning <- dataLB
       dataLB_warning$PARAMCD <- dataLB_warning$LBTESTCD <- NULL
-#      expect_warning(
-#          annotateData(dataLB_warning, annotations = "functional_groups_lab")
-#      )
+      expect_warning(
+          annotateData(dataLB_warning, annotations = "functional_groups_lab")
+      )
+      dataNoAnnot <- annotateData(dataLB_warning, annotations = "functional_groups_lab")
+      expect_identical(dataNoAnnot, dataLB_warning)
       
       dataLB_annot <- annotateData(
           dataLB,
