@@ -117,10 +117,34 @@ test_that("Check template name in config", {
           configFileTemplate 
       )
       configFileTemplate <- basename(configFileTemplate)     
-           
+      
       checkedConfig <- checkTemplatesName(configFileTemplate, configDir = tmpdir)
       expect_is(checkedConfig, "character")
       expect_identical(configFileTemplate, checkedConfig)
+      
+    })
+
+test_that("Merge of session infos", {
+      
+      sessionInfos <- list(sessionInfo(), sessionInfo())
+      sessionInfo <- do.call(merge.sessionInfo, sessionInfos)
+      expect_is(sessionInfo, "sessionInfo")
+      expect_is(sessionInfo, "list")
+      
+    })
+
+test_that("Export of session infos", {
+      
+      expect_null(exportSessionInfoToMd(sessionInfos = NULL))
+      
+      sessionInfos <- list(sessionInfo(), sessionInfo())
+      
+      expect_message(
+          exportSessionInfoToMd(sessionInfos)
+      )
+      mdFile <- exportSessionInfoToMd(sessionInfos)
+      expect_is(mdFile, "character")
+      expect_identical(mdFile, "interim/sessionInfo.md")
       
     })
 
