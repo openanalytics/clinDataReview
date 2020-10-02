@@ -355,12 +355,15 @@ getParamsFromConfig <- function(
   
   # load general config file
   configGeneralPath <- file.path(configDir, "config.yml")
-  if(file.exists(configGeneralPath)){
+  if(file.exists(configGeneralPath)) {
     
     configGeneralParams <- yaml::read_yaml(configGeneralPath)
     
-  }else	warning("General config file: 'config.yml' not available in:", 
+  } else {
+    warning("General config file: 'config.yml' not available in:", 
         configDir, ".", call. = FALSE)
+    configGeneralParams <- NULL
+  }
   
   if(configFile != "config.yml"){
     

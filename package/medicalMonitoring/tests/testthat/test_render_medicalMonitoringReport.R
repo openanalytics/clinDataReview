@@ -99,10 +99,6 @@ test_that("Get parameters from config file", {
       expect_length(listConfig, n)
       expect_identical(listConfig, c(read_yaml(filePath[1]), read_yaml(filePath[2])))
       
-      # Remove general config file
-      file.remove(filePath[1])
-      expect_error(getParamsFromConfig(configFiles[2], configDir = tmpdir))
-      
     })
 
 
@@ -169,5 +165,16 @@ test_that("Export of session infos", {
       expect_identical(mdFile, sprintf("%s/sessionInfo.md", tmpdir))
       
     })
+
+test_that("Test error of not available config.yml in 'getParamsFromConfig'", {
+      
+      filePath <- sprintf("%s/%s", tmpdir, configFiles) 
+      # Remove general config file
+      file.remove(filePath[1])
+      expect_warning(getParamsFromConfig(configFiles[2], configDir = tmpdir))
+      
+      
+    })
+
 
 #file.remove(configFiles)
