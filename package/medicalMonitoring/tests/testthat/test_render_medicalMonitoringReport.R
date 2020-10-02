@@ -168,6 +168,7 @@ test_that("Export of session infos", {
 
 test_that("Test error of not available config.yml in 'getParamsFromConfig'", {
       
+      filePath <- sprintf("%s/%s", tmpdir, configFiles) 
       # Remove general config file
       file.remove(filePath[1])
       expect_error(getParamsFromConfig(configFiles[2], configDir = tmpdir))
