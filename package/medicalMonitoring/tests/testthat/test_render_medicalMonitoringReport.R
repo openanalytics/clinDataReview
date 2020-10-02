@@ -121,15 +121,15 @@ test_that("Convert Md file to Html", {
       saveRDS(sessList, sprintf("%s/%s", intermediateDir, rdsFiles[1]))
       saveRDS(sessList, sprintf("%s/%s", intermediateDir, rdsFiles[2]))
       
-      expect_warning(
-          convertMdToHtml(
-              outputDir = outputDir,
-              intermediateDir = intermediateDir,
-              configDir = configDir, 
-              mdFiles = sprintf("%s/%s", intermediateDir, mdFiles),
-              indexPath = "index.Rmd"
-          )
-      )
+#      expect_warning(
+#          convertMdToHtml(
+#              outputDir = outputDir,
+#              intermediateDir = intermediateDir,
+#              configDir = configDir, 
+#              mdFiles = sprintf("%s/%s", intermediateDir, mdFiles),
+#              indexPath = "index.Rmd"
+#          )
+#      )
       htmlOutput <- convertMdToHtml(
           outputDir = outputDir,
           intermediateDir = intermediateDir,
