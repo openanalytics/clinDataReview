@@ -259,7 +259,11 @@ annotateData <- function(
 			if("dataset" %in% names(annotations)){
 				
 				annotDataset <- annotations[["dataset"]]
-				annotDataPath <- file.path(dataPath, paste0(annotDataset, ".sas7bdat"))
+				annotDataPath <- list.files(
+					path = dataPath, 
+					pattern = paste0("^(", annotDataset, ")\\..+$"), 
+					ignore.case = TRUE, full.names = TRUE
+				)
 				annotDataAll <- loadDataADaMSDTM(annotDataPath, verbose = FALSE)
 				annotData <- annotDataAll[[1]]
 				labelVarsAnnot <- attr(annotDataAll, "labelVars")
