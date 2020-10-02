@@ -99,11 +99,16 @@ test_that("Get parameters from config file", {
       expect_length(listConfig, n)
       expect_identical(listConfig, c(read_yaml(filePath[1]), read_yaml(filePath[2])))
       
+      # Remove general config file
+      file.remove(filePath[1])
+      expect_error(getParamsFromConfig(configFiles[2], configDir = tmpdir))
+      
     })
 
 
 test_that("Check template name in config", {
       
+      # No template available
       expect_error(checkTemplatesName(configFiles, tmpdir))
       
       configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
@@ -116,11 +121,31 @@ test_that("Check template name in config", {
           ),
           configFileTemplate 
       )
-      configFileTemplate <- basename(configFileTemplate)     
+      configFileTemplate <- basename(configFileTemplate)  
       
       checkedConfig <- checkTemplatesName(configFileTemplate, configDir = tmpdir)
       expect_is(checkedConfig, "character")
       expect_identical(configFileTemplate, checkedConfig)
+      
+      # Mispecification of template
+      configFileTemplate2 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(
+          list(
+              reportTitle = "Title",
+              reportTitleLevel = 2,
+              template = "divisionTemplate",
+              templatePackage = "medicalMonitoring"
+          ),
+          configFileTemplate2
+      )
+      configFileTemplate2 <- basename(configFileTemplate2)     
+      
+      configFileTemplates <- c(configFileTemplate, configFileTemplate2)
+      expect_warning(
+          checkTemplatesName(configFileTemplates, configDir = tmpdir)
+      )
+      output <- checkTemplatesName(configFileTemplates, configDir = tmpdir)
+      expect_length(output, 0)
       
     })
 
