@@ -106,14 +106,16 @@ test_that("Convert Md file to Html", {
       outputDir <- sprintf("%s/report", tmpdir)
       intermediateDir <- sprintf("%s/interim", tmpdir)
       configDir <- tmpdir
+      dir.create(outputDir)
+      dir.create(intermediateDir)
       
       # Create md files
-      mdFiles <- gsub("config-(.+)", "\\1.md", basename(file_path_sans_ext(configFiles)))
+      mdFiles <- gsub("config-(.+)", "\\1.md", basename(tools::file_path_sans_ext(configFiles)))
       mdFiles <- mdFiles[-1]      
       file.create(sprintf("%s/%s", intermediateDir, mdFiles))
       
       # Create rds files
-      rdsFiles <- sprintf("%s.rds", file_path_sans_ext(mdFiles))
+      rdsFiles <- sprintf("%s.rds", tools::file_path_sans_ext(mdFiles))
       file.create(sprintf("%s/%s", intermediateDir, rdsFiles))
       sessList <- list(knitMeta = sessionInfo())
       saveRDS(sessList, sprintf("%s/%s", intermediateDir, rdsFiles[1]))
