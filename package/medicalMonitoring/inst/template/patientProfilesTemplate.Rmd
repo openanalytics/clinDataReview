@@ -76,7 +76,7 @@ cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
 ```{r patientProfilesTemplate-getData}
 
 # Load data
-pathFiles <- list.files(path = pathDataFolder, pattern = "*.sas7bdat$", full.names = TRUE)
+pathFiles <- list.files(path = pathDataFolder, pattern = "*.(sas7bdat|xpt)$", full.names = TRUE)
 
 if(length(pathFiles) == 0)
 	stop(paste0("No data is available in:", params$dataPath, "."))
