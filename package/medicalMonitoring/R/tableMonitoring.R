@@ -35,15 +35,34 @@ tableMonitoring <- function(
 	verbose = FALSE){
 	
 	tableVarsInit <- tableVars
+	
+	if(!idVar %in% colnames(data))
+		warning(paste(
+			"Subject ID variable:", idVar,
+			"is not available in the data, so it is ignored."
+		))
 
 	# add key/id in variables to display
 	# (used for linking plot <-> table and for the path)
-	tableVars <- unique(c(setdiff(idVar, tableVars), tableVars, keyVar))
+	tableVars <- unique(c(
+		if(idVar %in% colnames(data))	setdiff(idVar, tableVars), 
+		tableVars, 
+		keyVar
+	))
 	tableLab <- c(idLab[idVar], tableLab, keyLab[keyVar])
 	tableLab <- tableLab[!duplicated(names(tableLab))]
 	
+	usePathVar <- !is.null(pathVar)
+	if(usePathVar && !pathVar %in% colnames(data)){
+		warning(paste(
+			"Variable with path to subject profile:", pathVar,
+			"is not available in the data, so it is ignored."
+		))
+		usePathVar <- FALSE
+	}
+	
 	# add hyperlink in the table:
-	if(!is.null(pathVar)){
+	if(usePathVar){
 		
 		tableVars <- c(pathVar, tableVars) # add in variables for DT
 		
@@ -65,7 +84,7 @@ tableMonitoring <- function(
 	
 	## set DT options
 	
-	if(!is.null(pathVar)){
+	if(usePathVar){
 		
 #		downloadButton <- paste0(
 #			'<a title="Download all patient profiles"',
@@ -91,7 +110,7 @@ tableMonitoring <- function(
 	# or added in the pathVar column
 	colsNonVisibleExtra <- c(
 		# remove pathVar if saved in pathVar column
-		if(!is.null(pathVar) & !pathExpand)	pathVar,
+		if(usePathVar & !pathExpand)	pathVar,
 		# key-columns not displayed
 		if(!all(keyVar %in% tableVarsInit))	setdiff(keyVar, tableVarsInit)
 	)
@@ -101,7 +120,7 @@ tableMonitoring <- function(
 	tablePars$colnames <- setNames(names(tableLab), tableLab)
 	
 	# use idVar column in DT (for filter/sortering), and display it with hyperlink
-	if(!is.null(pathVar) & !pathExpand){
+	if(usePathVar & !pathExpand){
 		
 		iPath <- match(pathVar, tableVars)-1
 	
