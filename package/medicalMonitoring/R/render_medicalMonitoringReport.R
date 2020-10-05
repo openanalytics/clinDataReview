@@ -365,13 +365,21 @@ getParamsFromConfig <- function(
     configGeneralParams <- NULL
   }
   
-  if(configFile != "config.yml"){
+  if(configFile != "config.yml") {
     
     configFilePath <- file.path(configDir, configFile)
-    configParams <- yaml::read_yaml(configFilePath)
+    
+    if(file.exists(configFilePath)) {
+      configParams <- yaml::read_yaml(configFilePath)
+    } else {
+      stop("File ", sQuote(configFilePath), "cannot be found. \n",
+          "Please check the spelling is correct ",
+          "or the file is saved in the directory with the other config files."
+      )
+    }
     params <- c(configGeneralParams, configParams)
     
-  }else{
+  } else {
     
     params <- configGeneralParams
     
