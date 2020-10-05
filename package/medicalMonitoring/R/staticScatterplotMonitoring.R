@@ -89,8 +89,10 @@ staticScatterplotMonitoring <- function(
 	}
 	
 	if(missing(aesLab)){
-		aesVar <- unique(unlist(c(aesPointVar, aesLineVar)))
-		aesLab <- setNames(getLabelVar(aesVar, labelVars = labelVars), names(aesVar))
+		aesVar <- unlist(c(aesPointVar, aesLineVar))
+		aesLab <- getLabelVar(aesVar, labelVars = labelVars)
+		names(aesLab) <- names(aesVar)
+		aesLab <- aesLab[!duplicated(names(aesLab))]
 	}
 
 	# base plot

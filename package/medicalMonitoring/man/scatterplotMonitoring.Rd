@@ -13,8 +13,7 @@ scatterplotMonitoring(
   aesPointVar = list(),
   aesLineVar = list(),
   lineInclude = length(aesLineVar) > 0,
-  aesLab = getLabelVar(unique(unlist(c(aesPointVar, aesLineVar))), labelVars =
-    labelVars),
+  aesLab,
   xTrans = "identity",
   yTrans = "identity",
   xPars = list(),

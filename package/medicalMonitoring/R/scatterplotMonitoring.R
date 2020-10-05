@@ -40,7 +40,7 @@ scatterplotMonitoring <- function(
 	# aesthetics specifications
 	aesPointVar = list(), 
 	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
-	aesLab = getLabelVar(unique(unlist(c(aesPointVar, aesLineVar))), labelVars = labelVars),
+	aesLab,
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
@@ -64,6 +64,15 @@ scatterplotMonitoring <- function(
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
+
+	if(missing(aesLab)){
+		
+		aesVar <- unlist(c(aesPointVar, aesLineVar))
+		aesLab <- getLabelVar(aesVar, labelVars = labelVars)
+		names(aesLab) <- names(aesVar)
+		aesLab <- aesLab[!duplicated(names(aesLab))]
+		
+	}
 	
 	# store input parameter values for further use
 	plotArgs <- c(as.list(environment()))
