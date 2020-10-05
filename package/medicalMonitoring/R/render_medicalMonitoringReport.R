@@ -126,8 +126,9 @@ render_medicalMonitoringReport <- function(
         
         warning(
             paste0("Extraction of the parameters from config file: ", 
-                sQuote(configFile), " failed, ",
-                "this report is ignored."
+                sQuote(configFile), " failed (see error below), ",
+                "this report is ignored\n",
+				attr(resParams, "condition")$message
             ), immediate. = TRUE, call. = FALSE
         )
         runDocument <- FALSE
@@ -140,7 +141,7 @@ render_medicalMonitoringReport <- function(
       
     }
     
-    if(is.null(inputRmdFile)){
+    if(runDocument && is.null(inputRmdFile)){
       warning("Template missing for config file: ", sQuote(configFile), ".")
       runDocument <- FALSE
     }
@@ -535,26 +536,36 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
               stringsAsFactors = FALSE
           )
           
-        }
+        } else {
+			warning("Import of parameters from config file ", sQuote(configFile), 
+				" failed with error:\n",
+				attr(res, "condition")$message
+			)
+			data.frame()
+		}
       }, simplify = FALSE)
   
   configTemplateInfo <- do.call(rbind.data.frame, configTemplateInfoList)
   
-  nPkgByTemplate <- with(configTemplateInfo, 
-      tapply(templatePackage, template, function(x) length(unique(x)))
-  )
-  templateWithMultPkg <- names(which(nPkgByTemplate > 1))
-  
-  if(length(templateWithMultPkg) > 0){
-    
-    configFilesRemoved <- configTemplateInfo[which(configTemplateInfo$template %in% templateWithMultPkg), "configFile"]
-    warning(paste0(
-            "The following config file(s) are ignored, because the ",
-            "same template name is used for a custom template or a template ",
-            "within the package(s): ", toString(sQuote(configFilesRemoved)), "."
-        ))
-    configFiles <- setdiff(configFiles, configFilesRemoved)
-    
+  if(nrow(configTemplateInfo) > 0){
+	  
+	  nPkgByTemplate <- with(configTemplateInfo, 
+	      tapply(templatePackage, template, function(x) length(unique(x)))
+	  )
+	  templateWithMultPkg <- names(which(nPkgByTemplate > 1))
+	  
+	  if(length(templateWithMultPkg) > 0){
+	    
+	    configFilesRemoved <- configTemplateInfo[which(configTemplateInfo$template %in% templateWithMultPkg), "configFile"]
+	    warning(paste0(
+	            "The following config file(s) are ignored, because the ",
+	            "same template name is used for a custom template or a template ",
+	            "within the package(s): ", toString(sQuote(configFilesRemoved)), "."
+	        ))
+	    configFiles <- setdiff(configFiles, configFilesRemoved)
+	    
+	  }
+	  
   }
   
   return(configFiles)
@@ -585,10 +596,11 @@ checkReportTitles <- function(configFiles, configDir = "./config") {
         if(!inherits(res, "try-error")) {
           configParams$reportTitle
         } else {
-          stop("File ", sQuote(configFileI), "cannot be found. \n",
-              "Please check the spelling is correct ",
-              "or the file is saved in the directory with the other config files."
+          warning("Import of parameters from config file ", sQuote(configFileI), 
+		 	" failed with error:\n",
+			attr(res, "condition")$message
           )
+		  NULL
         }
         
       })
