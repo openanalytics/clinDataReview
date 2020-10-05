@@ -4,6 +4,7 @@
     o countsVisualizationTemplate/plotCountMonitoring: fix in case no parent variable
     o annotateData: export filter dataset in xpt format
     o tableMonitoring: pathVar/idVar optional + warning
+    o countsVisualization json: allow multiple typePlot
 0.5.0
     o knitPrintListMedicalMonitoring: fix inclusion list with empty element
     o tableMonitoring: keep order idVar in tableVars if specified
