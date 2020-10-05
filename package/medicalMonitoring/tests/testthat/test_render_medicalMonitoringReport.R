@@ -2,16 +2,6 @@ library(yaml)
 
 tmpdir <- tempdir()
 
-## General config file
-file.create("config.yaml")
-configFileGeneral <- paste0(tmpdir, "/config.yml") 
-write_yaml(
-    list(
-        study = "Study name"
-    ),
-    configFileGeneral
-)
-
 ## File 1
 configFile1 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
 write_yaml(
@@ -31,8 +21,20 @@ write_yaml(
     ),
     configFile2 
 )
+
+## General config file
+file.create("config.yaml")
+configFileGeneral <- paste0(tmpdir, "/config.yml") 
+write_yaml(
+    list(
+        study = "Study name",
+        config = list(basename(configFile1), basename(configFile2))
+    ),
+    configFileGeneral
+)
 configFiles <- c(configFileGeneral, configFile1, configFile2)
 configFiles <- basename(configFiles)
+filePath <- sprintf("%s/%s", tmpdir, configFiles)
 
 test_that("Check uniqueness of report titles", {
       
@@ -81,8 +83,6 @@ test_that("Get path of Md from config file", {
 
 test_that("Get parameters from config file", {
       
-      filePath <- sprintf("%s/%s", tmpdir, configFiles) 
-      
       expect_error(getParamsFromConfig(configFiles[1]))
       
       # General config file
@@ -90,7 +90,7 @@ test_that("Get parameters from config file", {
       n <- length(read_yaml(filePath[1]))
       expect_is(listConfig, "list")
       expect_length(listConfig, n)
-      expect_true(names(listConfig) == "study")
+      expect_identical(names(listConfig), c("study", "config"))
       
       # Other config file
       listConfig <- getParamsFromConfig(configFiles[2], configDir = tmpdir)
@@ -99,6 +99,47 @@ test_that("Get parameters from config file", {
       expect_length(listConfig, n)
       expect_identical(listConfig, c(read_yaml(filePath[1]), read_yaml(filePath[2])))
       
+    })
+
+test_that("Convert Md file to Html", {
+      
+      outputDir <- sprintf("%s/report", tmpdir)
+      intermediateDir <- sprintf("%s/interim", tmpdir)
+      configDir <- tmpdir
+      dir.create(outputDir)
+      dir.create(intermediateDir)
+      
+      # Create md files
+      mdFiles <- gsub("config-(.+)", "\\1.md", basename(tools::file_path_sans_ext(configFiles)))
+      mdFiles <- mdFiles[-1]      
+      file.create(sprintf("%s/%s", intermediateDir, mdFiles))
+      
+      # Create rds files
+      rdsFiles <- sprintf("%s.rds", tools::file_path_sans_ext(mdFiles))
+      file.create(sprintf("%s/%s", intermediateDir, rdsFiles))
+      sessList <- list(knitMeta = sessionInfo())
+      saveRDS(sessList, sprintf("%s/%s", intermediateDir, rdsFiles[1]))
+      saveRDS(sessList, sprintf("%s/%s", intermediateDir, rdsFiles[2]))
+      
+#      expect_warning(
+#          convertMdToHtml(
+#              outputDir = outputDir,
+#              intermediateDir = intermediateDir,
+#              configDir = configDir, 
+#              mdFiles = sprintf("%s/%s", intermediateDir, mdFiles),
+#              indexPath = "index.Rmd"
+#          )
+#      )
+      htmlOutput <- convertMdToHtml(
+          outputDir = outputDir,
+          intermediateDir = intermediateDir,
+          configDir = configDir, 
+          mdFiles = sprintf("%s/%s", intermediateDir, mdFiles),
+          indexPath = "index.Rmd"
+      )
+      expect_is(htmlOutput, "character")
+      expect_true(grepl(outputDir, htmlOutput))
+            
     })
 
 
@@ -168,7 +209,6 @@ test_that("Export of session infos", {
 
 test_that("Test error of not available config.yml in 'getParamsFromConfig'", {
       
-      filePath <- sprintf("%s/%s", tmpdir, configFiles) 
       # Remove general config file
       file.remove(filePath[1])
       expect_warning(getParamsFromConfig(configFiles[2], configDir = tmpdir))
