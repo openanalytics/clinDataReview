@@ -175,7 +175,6 @@ filterDataSingle <- function(data,
 		varsBy <- filters$varsBy
 		
 		dataList <- dlply(data, varsBy, function(dataBy){
-			print(unique(unique(dataBy[, varsBy, drop = FALSE])))
 			inputArgsBy <- inputArgs
 			inputArgsBy$filters$varsBy <- NULL # remove varsBy
 			inputArgsBy$data <- dataBy # consider data for specific group
