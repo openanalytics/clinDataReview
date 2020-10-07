@@ -76,11 +76,12 @@
       "doc": "should the total also be computed by \\code{loopingVar} (TRUE by default)?"
     },
     "typePlot": {
-      "type": ["array"],
+      "type": ["array", "string"],
       "items": {
         "type": "string",
         "enum": ["sunburst", "treemap"]
       },
+      "enum": ["sunburst", "treemap"],
       "doc": "plot type"
     }
   },
