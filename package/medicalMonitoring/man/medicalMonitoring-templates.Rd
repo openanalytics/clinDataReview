@@ -29,7 +29,7 @@ This report compute counts of variable(s) of interest (with the \code{inTextSumm
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
-\item{\code{typePlot}: }{(optional) array of string(s) , plot type}
+\item{\code{typePlot}: }{(optional) array or string of string(s) among: \emph{ 'sunburst', 'treemap' } , plot type}
 }
 }
 \section{Medical monitoring template to create a report division : divisionTemplate}{
