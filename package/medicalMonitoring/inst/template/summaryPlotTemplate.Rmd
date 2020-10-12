@@ -213,9 +213,12 @@ summaryTable <- dlply(data, loopingVar, function(dataI){
 			labelVars = labelVars,
 			labelData = "summary table"
 		)
+		labelVars <- attr(summaryTable, "labelVars")
 		
 	}
 	summaryTable$plotID <- seq_len(nrow(summaryTable))
+	
+	attr(summaryTable, "labelVars") <- labelVars
 	
 	summaryTable
 	
