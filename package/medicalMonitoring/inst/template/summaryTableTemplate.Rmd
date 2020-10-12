@@ -112,16 +112,18 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
       
       # Extract label information
       labelVars <- attr(dataAll, "labelVars")
-      
-      if(exists("dataProcessing")){
-        msg <- capture.output(data <- processData(
+	  
+	  if(exists("dataProcessing")){
+#        msg <- capture.output(
+		data <- processData(
                 data = data, 
                 dataPath = pathDataFolder,
                 processing = dataProcessing,
                 verbose = TRUE,
                 labelVars = labelVars
-            ), type = "message")
-        message(paste(collapse = "\n", msg))
+            )
+#		, type = "message")
+#        message(paste(collapse = "\n", msg))
         # Labels updated with extra annotation:
         labelVars <- attr(data, "labelVars")
       }
@@ -171,7 +173,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
         
       }else	dataTotal <- data
       
-      attr(data, "message") <- msg
+#      attr(data, "message") <- msg
       
       list(
           data = data,
@@ -181,7 +183,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
     }, simplify = FALSE)
 
 labelVars <- attr(dataList$currentData$data, "labelVars")
-messages <- attr(dataList$currentData$data, "message")
+#messages <- attr(dataList$currentData$data, "message")
 
 ```
 
@@ -261,7 +263,7 @@ summaryTableList <- sapply(names(pathsData), function(dataBatch) {
 ```{r summaryTableTemplate-exportSummaryStatisticsTable, eval = (comparisonTableType == "none")}
 
 ## Format messages
-messages <- gsub(" (based on).*", ".", messages)
+#messages <- gsub(" (based on).*", ".", messages)
 
 summaryTable <- summaryTableList$currentData$summaryTable
 statsPP <- summaryTableList$currentData$statsPP
@@ -279,7 +281,7 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
       sumTable <- summaryTable[[idx]]
       
       # export to docx		
-      tableParamsDocxI <-tableParamsDocx
+      tableParamsDocxI <- tableParamsDocx
       tableParamsDocxI$summaryTable <- sumTable
       
       tableParamsDocxI$file <- 
