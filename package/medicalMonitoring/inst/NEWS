@@ -9,7 +9,7 @@
     o checkTemplateNames/checkReportTitles/render_medicalMonitoringReport: include warning if import failed
     o patientProfilesTemplate: extend to xpt
     o countsVisualizationTemplate JSON sch: fix for typePlot of length 1
-    o plotTemplate/summaryTableTemplate: use labels in comparison table
+    o plotTemplate/summaryTableTemplate/summaryPlotTemplate: use labels in comparison table
 0.5.0
     o knitPrintListMedicalMonitoring: fix inclusion list with empty element
     o tableMonitoring: keep order idVar in tableVars if specified
