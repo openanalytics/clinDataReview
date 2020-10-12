@@ -10,6 +10,7 @@
     o patientProfilesTemplate: extend to xpt
     o countsVisualizationTemplate JSON sch: fix for typePlot of length 1
     o plotTemplate/summaryTableTemplate/summaryPlotTemplate: use labels in comparison table
+    p render_medicalMonitoringReport: copy extraDirs before report rendering
 0.5.0
     o knitPrintListMedicalMonitoring: fix inclusion list with empty element
     o tableMonitoring: keep order idVar in tableVars if specified

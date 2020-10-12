@@ -63,10 +63,10 @@
 #' @family medical monitoring reporting
 #' @export
 render_medicalMonitoringReport <- function(
+	configFiles = NULL,  configDir = "./config", 
+	logFile = NULL,
     indexPath = "index.Rmd", 
     outputDir = "./report", intermediateDir = "./interim",
-    configDir = "./config", logFile = NULL,
-    configFiles = NULL, 
     extraDirs = c("figures", "tables"),
     quiet = FALSE){
   
@@ -286,6 +286,15 @@ render_medicalMonitoringReport <- function(
     
   }
   
+  # copy output directories before rendering the full report
+  # e.g. if output dir contain logo required for full report
+  if (length(extraDirs) > 0){
+	  tmp <- file.copy(
+		from = extraDirs, to = outputDir, 
+		overwrite = TRUE, recursive = TRUE
+	  )
+  }
+  
   ## convert all Md files to the HTML report
   message("Convert all Md files to HTML.")
   # pandoc print text in console
@@ -295,13 +304,6 @@ render_medicalMonitoringReport <- function(
       indexPath = indexPath,
       intermediateDir = intermediateDir
   )
-  
-  if (length(extraDirs) > 0){
-    tmp <- file.copy(
-        from = extraDirs, to = outputDir, 
-        overwrite = TRUE, recursive = TRUE
-    )
-  }
   
   return(outputFile)
   
