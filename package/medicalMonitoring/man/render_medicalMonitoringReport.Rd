@@ -5,27 +5,28 @@
 \title{Render a medical monitoring report.}
 \usage{
 render_medicalMonitoringReport(
+  configFiles = NULL,
+  configDir = "./config",
+  logFile = NULL,
   indexPath = "index.Rmd",
   outputDir = "./report",
   intermediateDir = "./interim",
-  configDir = "./config",
-  logFile = NULL,
-  configFiles = NULL,
   extraDirs = c("figures", "tables"),
   quiet = FALSE
 )
 }
 \arguments{
-\item{indexPath}{String with path to the index file,
-('index.Rmd' by default).}
-
-\item{outputDir}{String with output directory,
-('report' by default).}
-
-\item{intermediateDir}{String with intermediate directory ('interim'
-by default), where
-markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
-each sub report are stored.}
+\item{configFiles}{(optional) Character vector with specific config files
+to be converted from Rmarkdown to Markdown. If
+\itemize{
+\item{not specified (by default): }{all config files
+specified in the general 'config.yml' will be run (Rmd -> md)}
+\item{specified (\strong{expert use only}): }{only the specified files will be run (Rmd -> md).
+Other config files mentioned in the general 
+'config.yml' file won't be rerun, so the associated 'md' file
+should be already available in the \code{intermediateDir} folder.
+}
+}}
 
 \item{configDir}{String with directory with config files,
 ('config' by default).
@@ -38,17 +39,16 @@ general 'config.yml'.}
 where output (also error/messages/warnings) should be stored.
 If specified, the entire output is re-directed to this file.}
 
-\item{configFiles}{(optional) Character vector with specific config files
-to be converted from Rmarkdown to Markdown. If
-\itemize{
-\item{not specified (by default): }{all config files
-specified in the general 'config.yml' will be run (Rmd -> md)}
-\item{specified (\strong{expert use only}): }{only the specified files will be run (Rmd -> md).
-Other config files mentioned in the general 
-'config.yml' file won't be rerun, so the associated 'md' file
-should be already available in the \code{intermediateDir} folder.
-}
-}}
+\item{indexPath}{String with path to the index file,
+('index.Rmd' by default).}
+
+\item{outputDir}{String with output directory,
+('report' by default).}
+
+\item{intermediateDir}{String with intermediate directory ('interim'
+by default), where
+markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
+each sub report are stored.}
 
 \item{extraDirs}{Character vector with extra directories required by
 the report, directory with external images  .
