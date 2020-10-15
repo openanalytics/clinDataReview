@@ -71,7 +71,7 @@ createTemplateDoc <- function(){
 	}
 	
 	# get template names
-	dirTemplatePackage <- system.file("inst", "template", package = "medicalMonitoring")
+	dirTemplatePackage <- system.file("template", package = "medicalMonitoring")
 	if(length(dirTemplatePackage) == 1 && dirTemplatePackage == ""){
 		return("")	
 	}
