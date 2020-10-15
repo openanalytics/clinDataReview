@@ -1,6 +1,7 @@
 context("Test reporting template functions")
 
 library(yaml)
+library(jsonlite)
 
 test_that("Test check of config file", {
       
@@ -45,5 +46,21 @@ test_that("Get the path to Rmd templates", {
       
       pathEmpty <- getPathTemplate(file = "divisionTempl.Rmd")
       expect_is(pathEmpty, "character")
+      
+    })
+
+test_that("Get documentation from a JSON schema", {
+      
+      path <- system.file("template", package = "medicalMonitoring")
+      
+      jsonFileNames <- list.files(
+          pattern = ".json",
+          path
+      )
+      fileSpecPath <- sprintf("%s/%s", path, jsonFileNames[1])      
+      templateSpec <- jsonlite::fromJSON(fileSpecPath)
+      
+      jsonSchemaDoc <- JSONSchToRd(JSONSch = templateSpec)
+      expect_is(jsonSchemaDoc, "character")
       
     })
