@@ -146,7 +146,7 @@ test_that("Convert Md file to Html", {
 test_that("Check template name in config", {
       
       # No template available
-      expect_error(checkTemplatesName(configFiles, tmpdir))
+      expect_warning(checkTemplatesName(configFiles, tmpdir))
       
       configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
       write_yaml(
