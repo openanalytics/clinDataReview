@@ -33,4 +33,4 @@ package/Meta
 figures_vignette
 *.css
 
-report/CDISC/comparisonData/*
+report/CDISC01/comparisonData
