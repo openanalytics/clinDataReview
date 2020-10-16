@@ -34,7 +34,7 @@ write_yaml(
 )
 configFiles <- c(configFileGeneral, configFile1, configFile2)
 configFiles <- basename(configFiles)
-filePath <- sprintf("%s/%s", tmpdir, configFiles)
+filePath <- file.path(tmpdir, configFiles)
 
 test_that("Check uniqueness of report titles", {
       
@@ -61,21 +61,27 @@ test_that("Get path of Md from config file", {
       expect_length(mdFiles, length(configFiles))
       
       configFilesShortName <- gsub("config-", "", tools::file_path_sans_ext(configFiles))
-      referenceNames <- sprintf("./interim/%s.md", c("index", configFilesShortName[configFilesShortName != "config"]))
+      mdFilesNames <- sprintf("%s.md",
+          c("index", configFilesShortName[configFilesShortName != "config"])
+      )
+      referenceNames <- file.path(".", "interim", mdFilesNames)
       expect_identical(referenceNames, mdFiles)
       
       # Different name for indexPath
       mdFilesIndex <- getMdFromConfig(configFiles, indexPath = "myIndex.Rmd")
       expect_is(mdFilesIndex, "character")
       expect_length(mdFilesIndex, length(configFiles))
-      referenceNames <- sprintf("./interim/%s.md", c("myIndex", configFilesShortName[configFilesShortName != "config"]))
+      mdFilesMyNames <- sprintf("%s.md",
+          c("myIndex", configFilesShortName[configFilesShortName != "config"])
+      )
+      referenceNames <- file.path(".", "interim", mdFilesMyNames)
       expect_identical(referenceNames, mdFilesIndex)
       
       # Different intermediateDir
       mdFilesInterim <-getMdFromConfig(configFiles, intermediateDir = "myDir")
       expect_is(mdFilesInterim, "character")
       expect_length(mdFilesInterim, length(configFiles))
-      referenceNames <- sprintf("myDir/%s.md", c("index", configFilesShortName[configFilesShortName != "config"]))
+      referenceNames <- file.path("myDir", mdFilesNames)
       expect_identical(referenceNames, mdFilesInterim)
       
     })
@@ -103,8 +109,8 @@ test_that("Get parameters from config file", {
 
 test_that("Convert Md file to Html", {
       
-      outputDir <- sprintf("%s/report", tmpdir)
-      intermediateDir <- sprintf("%s/interim", tmpdir)
+      outputDir <- file.path(tmpdir, "report")
+      intermediateDir <- file.path(tmpdir, "interim")
       configDir <- tmpdir
       dir.create(outputDir)
       dir.create(intermediateDir)
@@ -112,14 +118,14 @@ test_that("Convert Md file to Html", {
       # Create md files
       mdFiles <- gsub("config-(.+)", "\\1.md", basename(tools::file_path_sans_ext(configFiles)))
       mdFiles <- mdFiles[-1]      
-      file.create(sprintf("%s/%s", intermediateDir, mdFiles))
+      file.create(file.path(intermediateDir, mdFiles))
       
       # Create rds files
       rdsFiles <- sprintf("%s.rds", tools::file_path_sans_ext(mdFiles))
-      file.create(sprintf("%s/%s", intermediateDir, rdsFiles))
+      file.create(file.path(intermediateDir, rdsFiles))
       sessList <- list(knitMeta = sessionInfo())
-      saveRDS(sessList, sprintf("%s/%s", intermediateDir, rdsFiles[1]))
-      saveRDS(sessList, sprintf("%s/%s", intermediateDir, rdsFiles[2]))
+      saveRDS(sessList, file.path(intermediateDir, rdsFiles[1]))
+      saveRDS(sessList, file.path(intermediateDir, rdsFiles[2]))
       
 #      expect_warning(
 #          convertMdToHtml(
@@ -134,12 +140,12 @@ test_that("Convert Md file to Html", {
           outputDir = outputDir,
           intermediateDir = intermediateDir,
           configDir = configDir, 
-          mdFiles = sprintf("%s/%s", intermediateDir, mdFiles),
+          mdFiles = file.path(intermediateDir, mdFiles),
           indexPath = "index.Rmd"
       )
       expect_is(htmlOutput, "character")
       expect_true(grepl(outputDir, htmlOutput))
-            
+      
     })
 
 
@@ -203,7 +209,7 @@ test_that("Export of session infos", {
       
       mdFile <- exportSessionInfoToMd(sessionInfos, intermediateDir = tmpdir)
       expect_is(mdFile, "character")
-      expect_identical(mdFile, sprintf("%s/sessionInfo.md", tmpdir))
+      expect_identical(mdFile, file.path(tmpdir, "sessionInfo.md"))
       
     })
 
