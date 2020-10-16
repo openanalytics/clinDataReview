@@ -9,7 +9,7 @@ test_that("Test check of config file", {
       
       ## Division config file
       file.create("configDivision.yaml")
-      configFileDivision <- paste0(tmpdir, "/configDivision.yml") 
+      configFileDivision <- file.path(tmpdir, "configDivision.yml") 
       write_yaml(
           list(
               reportTitle = "Study name"
@@ -57,7 +57,7 @@ test_that("Get documentation from a JSON schema", {
           pattern = ".json",
           path
       )
-      fileSpecPath <- sprintf("%s/%s", path, jsonFileNames[1])      
+      fileSpecPath <- file.path(path, jsonFileNames[1])      
       templateSpec <- jsonlite::fromJSON(fileSpecPath)
       
       jsonSchemaDoc <- JSONSchToRd(JSONSch = templateSpec)
