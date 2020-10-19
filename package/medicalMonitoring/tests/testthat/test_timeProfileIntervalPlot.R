@@ -1,0 +1,1 @@
+context("Test the 'timeProfileIntervalPlot' function")
