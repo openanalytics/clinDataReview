@@ -1,0 +1,2 @@
+context("Test reporting formats")
+
