@@ -13,3 +13,15 @@ test_that("Format of gitbook for medical monitoring", {
       
       # Further testing in glpgStyle::gitbook_report
     })
+
+test_that("Format html report", {
+      
+      res <- html_medicalMonitoring_report()
+      expect_is(res, "rmarkdown_output_format")
+      expect_identical(
+          res$bookdown_output_format,
+          "html"
+      )
+      # Further testing in glpgStyle::html_report
+      
+    })
