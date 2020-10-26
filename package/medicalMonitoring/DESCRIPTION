@@ -20,6 +20,7 @@ Suggests:
     testthat,
     vdiffr,
     inTextSummaryTable,
-    reshape2
+    reshape2,
+    countrycode
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
