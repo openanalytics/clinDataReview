@@ -49,25 +49,19 @@ test_that("Get the path to Rmd templates", {
       
     })
 
-test_that("Create template documentation", {
+test_that("Template documentation has been properly created", {
       
-      doc <- createTemplateDoc()
-      expect_is(doc, "character")
+	  helpTemplate <- help("medicalMonitoring-templates", package = "medicalMonitoring", help_type = "text")
+	  helpTemplateText <- capture.output(print(helpTemplate))
+	  
+	  expect_true(
+		any(grepl(
+			".*This report includes a division, i.e. extra chapter, section of.*",
+			helpTemplateText
+		)) 
+	 )
       
-      docRoxParType <- paste0(
-          "\\section{Parameter type}{Please note that the type mentioned below ",
-          "corresponds to the type in the config file (in YAML/JSON format).",
-          "The mapping to R data type is as followed:",
-          "\\itemize{",
-          "\\item{string: }{character vector of length 1}",
-          "\\item{integer: }{integer vector of length 1}",
-          "\\item{array: }{vector/list without names}",
-          "\\item{object: }{list with names}",
-          "}}"
-      )
-      expect_identical(docRoxParType, doc[1])
-      
-    })
+})
 
 test_that("Get documentation from a JSON schema", {
       
@@ -83,4 +77,4 @@ test_that("Get documentation from a JSON schema", {
       jsonSchemaDoc <- JSONSchToRd(JSONSch = templateSpec)
       expect_is(jsonSchemaDoc, "character")
       
-    })
+})
