@@ -28,7 +28,7 @@ output:
 ```{r patientProfiles-runDocument-example, eval = FALSE, echo = FALSE}
 
 	dataPath <- "/home/lcougnaud/git/GLPGSAPCysticFibrosis/data/GLPG1972/GLPG1972-CL-201/DM010 SDTM locked DB/DSMB Snapshots/20191023_transfer12/SAS_Datasets"
-	outputFile <- file.path("../MOMP", "patientProfiles", "subjectProfile.pdf")
+	outputFile <- file.path("../report", "patientProfiles", "subjectProfile.pdf")
 	
 	# run report:
 	rm(params)
