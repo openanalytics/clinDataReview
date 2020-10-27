@@ -49,11 +49,33 @@ test_that("Get the path to Rmd templates", {
       
     })
 
+test_that("Create template documentation", {
+			
+	doc <- medicalMonitoring:::createTemplateDoc(
+		templatePath = system.file("template", package = "medicalMonitoring")
+	)
+	expect_is(doc, "character")
+	
+	docRoxParType <- paste0(
+			"\\section{Parameter type}{Please note that the type mentioned below ",
+			"corresponds to the type in the config file (in YAML/JSON format).",
+			"The mapping to R data type is as followed:",
+			"\\itemize{",
+			"\\item{string: }{character vector of length 1}",
+			"\\item{integer: }{integer vector of length 1}",
+			"\\item{array: }{vector/list without names}",
+			"\\item{object: }{list with names}",
+			"}}"
+	)
+	expect_identical(docRoxParType, doc[1])
+	
+})
+
 test_that("Template documentation has been properly created", {
       
 	  helpTemplate <- help("medicalMonitoring-templates", package = "medicalMonitoring", help_type = "text")
 	  helpTemplateText <- capture.output(print(helpTemplate))
-	  
+	  stop(helpTemplateText)
 	  expect_true(
 		any(grepl(
 			".*This report includes a division, i.e. extra chapter, section of.*",
