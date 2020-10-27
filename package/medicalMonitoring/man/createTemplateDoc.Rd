@@ -5,7 +5,15 @@
 \title{Create documentation for medical monitoring template reports
 available in the 'template' folder of the package.}
 \usage{
-createTemplateDoc()
+createTemplateDoc(
+  templatePath = system.file("inst", "template", package = "medicalMonitoring")
+)
+}
+\arguments{
+\item{templatePath}{string with path where the template Rmd reports
+and associated JSON schema files are stored,
+by default path of the installed version of the package.
+This parameter is only for expert use of the package.}
 }
 \value{
 Character vector with Rd code containing description
