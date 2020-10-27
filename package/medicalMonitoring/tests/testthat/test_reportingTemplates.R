@@ -17,6 +17,7 @@ test_that("Test check of config file", {
           configFileDivision
       )
       
+	  # R CMD check runs on package binary, so without 'inst' folder:
       refConfig <- system.file(package = "medicalMonitoring", "template", "divisionTemplate.json")
       
       expect_error(
@@ -51,6 +52,7 @@ test_that("Get the path to Rmd templates", {
 
 test_that("Create template documentation", {
 			
+	# R CMD check runs on package binary, so without 'inst' folder:
 	doc <- medicalMonitoring:::createTemplateDoc(
 		templatePath = system.file("template", package = "medicalMonitoring")
 	)
@@ -71,22 +73,9 @@ test_that("Create template documentation", {
 	
 })
 
-test_that("Template documentation has been properly created", {
-      
-	  helpTemplate <- help("medicalMonitoring-templates", package = "medicalMonitoring", help_type = "text")
-	  helpTemplateText <- capture.output(print(helpTemplate))
-	  stop(helpTemplateText)
-	  expect_true(
-		any(grepl(
-			".*This report includes a division, i.e. extra chapter, section of.*",
-			helpTemplateText
-		)) 
-	 )
-      
-})
-
 test_that("Get documentation from a JSON schema", {
       
+		# R CMD check runs on package binary, so without 'inst' folder:
       path <- system.file("template", package = "medicalMonitoring")
       
       jsonFileNames <- list.files(
