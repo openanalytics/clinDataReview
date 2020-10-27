@@ -57,12 +57,17 @@ getPathTemplate <- function(file, package = "medicalMonitoring"){
 #' If a JSON schema file available, the information relative
 #' to the template is extracted from this file with the function
 #' \code{JSONSchToRd}.
+#' @param templatePath string with path where the template Rmd reports
+#' and associated JSON schema files are stored,
+#' by default path of the installed version of the package.
+#' This parameter is only for expert use of the package.
 #' @return Character vector with Rd code containing description
 #' for all template documents.
 #' @importFrom tools file_path_sans_ext
 #' @references \href{JSON schema specification}{https://json-schema.org/understanding-json-schema/}
 #' @author Laure Cougnaud
-createTemplateDoc <- function(){
+createTemplateDoc <- function(
+	templatePath = system.file("inst", "template", package = "medicalMonitoring")){
 		
 	getBaseName <- function(path, type){
 		bn <- file_path_sans_ext(basename(path))
@@ -71,16 +76,15 @@ createTemplateDoc <- function(){
 	}
 	
 	# get template names
-	dirTemplatePackage <- system.file("inst", "template", package = "medicalMonitoring")
-	if(length(dirTemplatePackage) == 1 && dirTemplatePackage == ""){
+	if(length(templatePath) == 1 && templatePath== ""){
 		return("")	
 	}
 	
-	templateFiles <- list.files(pattern = "*.Rmd$", path = dirTemplatePackage)
+	templateFiles <- list.files(pattern = "*.Rmd$", path = templatePath)
 	names(templateFiles) <- getBaseName(templateFiles, type = "template")
 	
 	# and param specification file
-	templateSpecFilePaths <- list.files(pattern = "*.json$", path = dirTemplatePackage, full.names = TRUE)
+	templateSpecFilePaths <- list.files(pattern = "*.json$", path = templatePath, full.names = TRUE)
 	names(templateSpecFilePaths) <- getBaseName(templateSpecFilePaths, type = "spec file")
 	
 	docRox2 <- lapply(names(templateFiles), function(template){
