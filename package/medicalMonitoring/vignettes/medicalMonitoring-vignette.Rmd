@@ -696,7 +696,7 @@ with `output` set to: `medicalMonitoring::gitbook_medicalMonitoring_report`
 
 The medical monitoring report output consists of:
 
-* a final output folder ('MOMP' by default) containing the:
+* a final output folder ('report' by default) containing the:
     + final medical monitoring report, in a set of
 multiple HTML files
     + required _Javascript_ libraries in the subfolder: _'libs'_
