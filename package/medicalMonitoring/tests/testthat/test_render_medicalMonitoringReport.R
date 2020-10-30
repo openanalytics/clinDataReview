@@ -41,7 +41,7 @@ tmpdir <- tempdir()
 #    "medicalMonitoring",
 #    "tests", "files"
 #)
-testPathBase <- file.path(getwd(), "subfolderInTests")
+testPathBase <- file.path(getwd(), "files")
 testPathConfig <- file.path(testPathBase, "config")
 testPathInterim <- file.path(testPathBase, "interim")
 configFiles <- list.files(testPathConfig)
