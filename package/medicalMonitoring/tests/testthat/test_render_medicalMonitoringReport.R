@@ -41,7 +41,7 @@ tmpdir <- tempdir()
 #    "medicalMonitoring",
 #    "tests", "files"
 #)
-testPathBase <- normalizePath(path = "./files") #"../files" #file.path(getwd(), "files")
+testPathBase <- "files" #normalizePath(path = "./files") #"../files" #file.path(getwd(), "files")
 #system.file("tests", "files", package = "medicalMonitoring")
 # #
 #stop("sono qui: ", toString(list.files(getwd())))
