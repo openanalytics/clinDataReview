@@ -129,7 +129,7 @@ test_that("Get parameters from general config file", {
 
 test_that("Get parameters from chapter-specific config file", {
       
-      listConfig <- getParamsFromConfig(otherConfig, configDir = testPathConfig)
+      listConfig <- getParamsFromConfig(otherConfigs, configDir = testPathConfig)
       configFromYamlGeneral <- read_yaml(filePathConfig[2])
       configFromYaml <- read_yaml(filePathConfig[1])
       n <- length(configFromYamlGeneral) + length(configFromYaml)
