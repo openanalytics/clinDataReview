@@ -151,14 +151,14 @@ test_that("Convert Md file to Html", {
       # Create rds files
       rdsFiles <- list.files(pattern = "rds", file.path(testPathInterim))
       
-      htmlOutput <- convertMdToHtml(
-          outputDir = outputDir,
-          intermediateDir = testPathInterim,
-          configDir = testPathConfig, 
-          mdFiles = filePathMd,
-          indexPath = "index.Rmd"
-      )
-      expect_is(htmlOutput, "character")
+#      htmlOutput <- convertMdToHtml(
+#          outputDir = outputDir,
+#          intermediateDir = testPathInterim,
+#          configDir = testPathConfig, 
+#          mdFiles = filePathMd,
+#          indexPath = "index.Rmd"
+#      )
+      #expect_is(htmlOutput, "character")
       #expect_true(grepl(outputDir, htmlOutput))
       
     })
