@@ -41,7 +41,10 @@ tmpdir <- tempdir()
 #    "medicalMonitoring",
 #    "tests", "files"
 #)
-testPathBase <- file.path(getwd(), "files")
+testPathBase <- normalizePath(path = "./files") #"../files" #file.path(getwd(), "files")
+#system.file("tests", "files", package = "medicalMonitoring")
+# #
+#stop("sono qui: ", toString(list.files(getwd())))
 testPathConfig <- file.path(testPathBase, "config")
 testPathInterim <- file.path(testPathBase, "interim")
 configFiles <- list.files(testPathConfig)
