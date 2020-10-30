@@ -1,0 +1,5 @@
+# Report-specific parameters
+template: divisionTemplate.Rmd
+templatePackage: medicalMonitoring
+reportTitle: "Adverse events"
+reportTitleLevel: 1
