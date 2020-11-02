@@ -34,7 +34,7 @@ tmpdir <- tempdir()
 #)
 #configFiles <- c(configFileGeneral, configFile1, configFile2)
 #configFiles <- basename(configFiles)
-testPathBase <- normalizePath(path = "./files")
+testPathBase <- normalizePath(path = "../files")
 # "./files"
 testPathConfig <- file.path(testPathBase, "config")
 testPathInterim <- file.path(testPathBase, "interim")
