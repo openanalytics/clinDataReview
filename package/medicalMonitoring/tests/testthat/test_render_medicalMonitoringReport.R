@@ -34,17 +34,8 @@ tmpdir <- tempdir()
 #)
 #configFiles <- c(configFileGeneral, configFile1, configFile2)
 #configFiles <- basename(configFiles)
-#testPathBase <- file.path(
-#    "~", "git",
-#    "GLPGMedicalMonitoring",
-#    "package",
-#    "medicalMonitoring",
-#    "tests", "files"
-#)
-testPathBase <- "files" #normalizePath(path = "./files") #"../files" #file.path(getwd(), "files")
-#system.file("tests", "files", package = "medicalMonitoring")
-# #
-#stop("sono qui: ", toString(list.files(getwd())))
+testPathBase <- normalizePath(path = "./files")
+# "./files"
 testPathConfig <- file.path(testPathBase, "config")
 testPathInterim <- file.path(testPathBase, "interim")
 configFiles <- list.files(testPathConfig)
