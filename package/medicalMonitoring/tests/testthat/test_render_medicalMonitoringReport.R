@@ -242,9 +242,10 @@ test_that("Export of session infos", {
       
       sessionInfos <- list(sessionInfo(), sessionInfo())
       
-      mdFile <- exportSessionInfoToMd(sessionInfos, intermediateDir = testPathInterim)
+      mdFile <-exportSessionInfoToMd(sessionInfos, intermediateDir = testPathInterim)
       expect_is(mdFile, "character")
       expect_identical(mdFile, file.path(testPathInterim, "sessionInfo.md"))
+      file.remove(file.path(testPathInterim, "sessionInfo.md"))
       
     })
 
