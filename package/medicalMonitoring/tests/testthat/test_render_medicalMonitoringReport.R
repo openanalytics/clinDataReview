@@ -150,27 +150,39 @@ test_that("Get parameters from chapter-specific config file", {
 
 test_that("Convert Md file to Html", {
       
-      outputDir <- file.path(testPathBase, "report")
+      filePathSessionInfo <- file.path(testPathInterim, "sessionInfo.md")
+      if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
       
-      # Create md files
+      outputDir <- file.path(testPathBase, "report")      
+      htmlOutput <- convertMdToHtml(
+          outputDir = outputDir,
+          intermediateDir = testPathInterim,
+          configDir = testPathConfig, 
+          mdFiles = NULL,
+          indexPath = "index.Rmd"
+      )
+      expect_is(htmlOutput, "character")
+      expect_true(grepl(outputDir, htmlOutput))
+      
+      if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
+            
+      # Md files
       mdFiles <- list.files(pattern = "md", file.path(testPathInterim))
       filePathMd <- file.path(testPathInterim, mdFiles)
       
-      # Create rds files
-      rdsFiles <- list.files(pattern = "rds", file.path(testPathInterim))
+      htmlOutput <- convertMdToHtml(
+          outputDir = outputDir,
+          intermediateDir = testPathInterim,
+          configDir = testPathConfig, 
+          mdFiles = filePathMd,
+          indexPath = "index.Rmd"
+      )
+      expect_is(htmlOutput, "character")
+      expect_true(grepl(outputDir, htmlOutput))
       
-#      htmlOutput <- convertMdToHtml(
-#          outputDir = outputDir,
-#          intermediateDir = testPathInterim,
-#          configDir = testPathConfig, 
-#          mdFiles = filePathMd,
-#          indexPath = "index.Rmd"
-#      )
-      #expect_is(htmlOutput, "character")
-      #expect_true(grepl(outputDir, htmlOutput))
+      if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
       
     })
-
 
 test_that("Check template name in config", {
       
