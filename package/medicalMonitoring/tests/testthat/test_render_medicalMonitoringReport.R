@@ -1,7 +1,6 @@
 library(yaml)
 
-tmpdir <- tempdir()
-
+#tmpdir <- tempdir()
 ## File 1
 #configFile1 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
 #write_yaml(
@@ -41,6 +40,8 @@ configFiles <- list.files(testPathConfig)
 filePathConfig <- file.path(testPathConfig, configFiles)
 # Other config file
 otherConfigs <- configFiles[! grepl("config.yml", configFiles)]
+filePathOtherConfigs <- file.path(testPathConfig, otherConfigs)
+filePathGeneralConfig <- setdiff(filePathConfig, filePathOtherConfigs)
 
 test_that("Check extraction of report titles", {
       
@@ -116,12 +117,12 @@ test_that("Get path of Md from config file - not default settings", {
 test_that("Get parameters from general config file", {
       
       expect_error(
-          getParamsFromConfig("config.yml") #,
-      #"Config directory:‘./config’doesn't exist."
+          getParamsFromConfig("config.yml"),
+          "Config directory: .+ doesn't exist."
       )
       
       listConfig <- getParamsFromConfig("config.yml", configDir = testPathConfig)
-      configFromYaml <- read_yaml(filePathConfig[2])
+      configFromYaml <- read_yaml(filePathGeneralConfig)
       n <- length(configFromYaml)
       expect_is(listConfig, "list")
       expect_length(listConfig, n)
@@ -135,13 +136,15 @@ test_that("Get parameters from general config file", {
 test_that("Get parameters from chapter-specific config file", {
       
       listConfig <- getParamsFromConfig(otherConfigs, configDir = testPathConfig)
-      configFromYamlGeneral <- read_yaml(filePathConfig[2])
-      configFromYaml <- read_yaml(filePathConfig[1])
+      configFromYamlGeneral <- read_yaml(filePathGeneralConfig)
+      configFromYaml <- read_yaml(filePathOtherConfigs)
       n <- length(configFromYamlGeneral) + length(configFromYaml)
       expect_is(listConfig, "list")
       expect_length(listConfig, n)
-      #expect_identical(listConfig, c(names(configFromYamlGeneral), names(configFromYaml)))
-      
+      expect_identical(
+          names(listConfig),
+          c(names(configFromYamlGeneral), names(configFromYaml))
+      )
       
     })
 
