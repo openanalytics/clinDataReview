@@ -35,7 +35,6 @@ tmpdir <- tempdir()
 #configFiles <- c(configFileGeneral, configFile1, configFile2)
 #configFiles <- basename(configFiles)
 testPathBase <- normalizePath(path = "../files")
-# "./files"
 testPathConfig <- file.path(testPathBase, "config")
 testPathInterim <- file.path(testPathBase, "interim")
 configFiles <- list.files(testPathConfig)
@@ -43,20 +42,26 @@ filePathConfig <- file.path(testPathConfig, configFiles)
 # Other config file
 otherConfigs <- configFiles[! grepl("config.yml", configFiles)]
 
-test_that("Check uniqueness of report titles", {
+test_that("Check extraction of report titles", {
       
       reportTitles <- checkReportTitles(configFiles, configDir = testPathConfig)
       expect_is(reportTitles, "character")
-      expect_length(reportTitles, 1) #2
-      expect_named(reportTitles, configFiles[1]) # [2 : 3]
+      expect_length(reportTitles, length(otherConfigs))
+      expect_named(reportTitles, otherConfigs)
+      
+    })
+
+test_that("Check uniqueness of report titles", {
       
       configFilesError <- c(configFiles[1], configFiles[1])
       expect_error(
-          checkReportTitles(configFilesError, configDir = testPathConfig)
+          checkReportTitles(configFilesError, configDir = testPathConfig),
+          "The title .+ is duplicated."
       )
       configFilesWarning <- c(configFiles, "config-ciao")
       expect_warning(
-          checkReportTitles(configFilesWarning, configDir = testPathConfig)
+          checkReportTitles(configFilesWarning, configDir = testPathConfig),
+          "Please check the spelling is correct"
       )
       
     })
