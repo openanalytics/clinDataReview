@@ -66,19 +66,23 @@ test_that("Check uniqueness of report titles", {
       
     })
 
-test_that("Get path of Md from config file", {
+test_that("Get path of Md from config file - default settings", {
       
-      # ????
       mdFiles <- getMdFromConfig(configFiles, intermediateDir = testPathInterim)
       expect_is(mdFiles, "character")
       expect_length(mdFiles, length(configFiles))
       
-      configFilesShortName <- gsub("config-", "", tools::file_path_sans_ext(configFiles))
-      mdFilesNames <- sprintf("%s.md",
-          c("index", configFilesShortName[configFilesShortName != "config"])
-      )
-      referenceNames <- file.path(testPathInterim, mdFilesNames)
-      #expect_identical(referenceNames, mdFiles)
+      mdNames <- file.path(
+          testPathInterim,
+          c(
+              gsub("config-(.+).yml", "\\1.md", otherConfigs),
+              "index.md"
+          ))
+      expect_identical(mdNames, mdFiles)
+      
+    })
+
+test_that("Get path of Md from config file - not default settings", {
       
       # Different name for indexPath
       mdFilesIndex <- getMdFromConfig(
@@ -88,18 +92,23 @@ test_that("Get path of Md from config file", {
       )
       expect_is(mdFilesIndex, "character")
       expect_length(mdFilesIndex, length(configFiles))
-      mdFilesMyNames <- sprintf("%s.md",
-          c("myIndex", configFilesShortName[configFilesShortName != "config"])
-      )
-      referenceNames <- file.path(testPathInterim, mdFilesMyNames)
-      #expect_identical(referenceNames, mdFilesIndex)
+      mdNames <- file.path(
+          testPathInterim,
+          c(
+              gsub("config-(.+).yml", "\\1.md", otherConfigs),
+              "myIndex.md"
+          ))
+      expect_identical(mdNames, mdFilesIndex)
       
       # Different intermediateDir
       mdFilesInterim <- getMdFromConfig(configFiles, intermediateDir = "myDir")
       expect_is(mdFilesInterim, "character")
       expect_length(mdFilesInterim, length(configFiles))
-      referenceNames <- file.path("myDir", mdFilesNames)
-      #expect_identical(referenceNames, mdFilesInterim)
+      mdNames <- file.path("myDir", c(
+              gsub("config-(.+).yml", "\\1.md", otherConfigs),
+              "index.md"
+          ))
+      expect_identical(mdNames, mdFilesInterim)
       
     })
 
@@ -108,7 +117,7 @@ test_that("Get parameters from general config file", {
       
       expect_error(
           getParamsFromConfig("config.yml") #,
-          #"Config directory:‘./config’doesn't exist."
+      #"Config directory:‘./config’doesn't exist."
       )
       
       listConfig <- getParamsFromConfig("config.yml", configDir = testPathConfig)
@@ -120,7 +129,7 @@ test_that("Get parameters from general config file", {
           names(listConfig),
           names(configFromYaml)
       ) 
-     
+      
     })
 
 test_that("Get parameters from chapter-specific config file", {
