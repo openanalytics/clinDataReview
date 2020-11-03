@@ -354,7 +354,7 @@ getParamsFromConfig <- function(
     configFile, configDir = "./config"){
   
   if(!dir.exists(configDir))
-    stop("Config directory:", sQuote(configDir), "doesn't exist.")
+    stop("Config directory: ", sQuote(configDir), " doesn't exist.")
   
   # load general config file
   configGeneralPath <- file.path(configDir, "config.yml")

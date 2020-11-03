@@ -1,6 +1,7 @@
 0.7.0
     o fix MOMP -> report in vignette
     o fix createTemplateDoc
+    o add space in 'getParamsFromConfig' in error message
 0.6.0
     o checkReportTitles: write error when config file does not exist
     o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists
