@@ -2,6 +2,7 @@
     o fix MOMP -> report in vignette
     o fix createTemplateDoc
     o add space in 'getParamsFromConfig' in two error messages
+    o fix in 'render_medicalMonitoringReport' when calling 'checkReportTitles': add configDir as argument
 0.6.0
     o checkReportTitles: write error when config file does not exist
     o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists
