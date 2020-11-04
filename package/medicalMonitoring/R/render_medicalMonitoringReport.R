@@ -103,7 +103,7 @@ render_medicalMonitoringReport <- function(
   configFiles <- checkTemplatesName(configFiles = configFiles, configDir = configDir)
   
   # check uniqueness of report titles
-  reportTitles <- checkReportTitles(configFiles)
+  reportTitles <- checkReportTitles(configFiles, configDir = configDir)
   
   mdFiles <- c()
   knit_meta_reports <- c()
