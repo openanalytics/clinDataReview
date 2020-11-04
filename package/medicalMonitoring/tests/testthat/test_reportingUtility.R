@@ -14,7 +14,7 @@ test_that("Test extraction of md header", {
 test_that("Test extraction of md header with settings", {
       
       tmpdir <- tempdir()
-      pathFile <- paste0(tmpdir, "/aFile.Rmd")
+      pathFile <- file.path(tmpdir, "aFile.Rmd")
       file.create(file = pathFile)
       writeLines("knitr::current_input()", pathFile)
       
