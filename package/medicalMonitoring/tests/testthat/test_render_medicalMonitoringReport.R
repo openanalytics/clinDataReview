@@ -1,6 +1,6 @@
 library(yaml)
 
-#tmpdir <- tempdir()
+tmpdir <- tempdir()
 ## File 1
 #configFile1 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
 #write_yaml(
@@ -165,7 +165,7 @@ test_that("Convert Md file to Html", {
       expect_true(grepl(outputDir, htmlOutput))
       
       if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
-            
+      
       # Md files
       mdFiles <- list.files(pattern = "md", file.path(testPathInterim))
       filePathMd <- file.path(testPathInterim, mdFiles)
@@ -186,44 +186,63 @@ test_that("Convert Md file to Html", {
 
 test_that("Check template name in config", {
       
-      # No template available
-      #expect_warning(checkTemplatesName(configFiles, testPathBase))
+      checkedConfig <- checkTemplatesName(configFiles, configDir = testPathConfig)
+      expect_is(checkedConfig, "character")
+      expect_identical(configFiles, checkedConfig)
       
-#      configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
-#      write_yaml(
-#          list(
-#              reportTitle = "Title",
-#              reportTitleLevel = 2,
-#              template = "divisionTemplate",
-#              templatePackage = "custom"
-#          ),
-#          configFileTemplate 
-#      )
-#      configFileTemplate <- basename(configFileTemplate)  
-#      
-#      checkedConfig <- checkTemplatesName(configFileTemplate, configDir = tmpdir)
-#      expect_is(checkedConfig, "character")
-#      expect_identical(configFileTemplate, checkedConfig)
-#      
-#      # Mispecification of template
-#      configFileTemplate2 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
-#      write_yaml(
-#          list(
-#              reportTitle = "Title",
-#              reportTitleLevel = 2,
-#              template = "divisionTemplate",
-#              templatePackage = "medicalMonitoring"
-#          ),
-#          configFileTemplate2
-#      )
-#      configFileTemplate2 <- basename(configFileTemplate2)     
-#      
-#      configFileTemplates <- c(configFileTemplate, configFileTemplate2)
-#      expect_warning(
-#          checkTemplatesName(configFileTemplates, configDir = tmpdir)
-#      )
-#      output <- checkTemplatesName(configFileTemplates, configDir = tmpdir)
-#      expect_length(output, 0)
+    })
+
+test_that("Check template name for config file without template specification", {
+      
+      file.create("config.yml")
+      configFileTemplateGeneral <- file.path(tmpdir, "config.yml")
+      write_yaml(list(), configFileTemplateGeneral)
+      
+      configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(
+          list(reportTitle = "Title", reportTitleLevel = 2),
+          configFileTemplate 
+      )
+      configFileTemplate <- basename(configFileTemplate)  
+      
+      expect_warning(
+          checkTemplatesName(configFileTemplate, tmpdir),
+          "Import of parameters from config file .+ failed with error:"
+      )
+      
+    })
+
+test_that("Check template name for config files with same template package", {
+      
+      file.create("config.yml")
+      configFileTemplateGeneral <- file.path(tmpdir, "config.yml")
+      write_yaml(list(), configFileTemplateGeneral)
+      
+      configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(
+          list(reportTitle = "Title", reportTitleLevel = 2,
+              template = "divisionTemplate", templatePackage = "custom"
+          ),
+          configFileTemplate 
+      )
+      configFileTemplate <- basename(configFileTemplate)  
+      
+      configFileTemplateBis <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(
+          list(reportTitle = "Title", reportTitleLevel = 2,
+              template = "divisionTemplate", templatePackage = "medicalMonitoring"
+          ),
+          configFileTemplateBis 
+      )
+      configFileTemplateBis <- basename(configFileTemplateBis)  
+      
+      configFileTemplates <- c(configFileTemplate, configFileTemplateBis)
+      expect_warning(
+          checkTemplatesName(configFileTemplates, configDir = tmpdir),
+          "The following config file[(]s[)] are ignored, because the same template name is used"
+      )
+      output <- checkTemplatesName(configFileTemplates, configDir = tmpdir)
+      expect_length(output, 0)
       
     })
 
