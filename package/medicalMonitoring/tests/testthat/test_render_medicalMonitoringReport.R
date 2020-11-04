@@ -304,6 +304,10 @@ test_that("Test render medical monitoring report", {
       expect_true(
           grepl("introduction", output)
       )
+      htmlFiles <- list.files(pattern = "html", outputDir)
+      expect_true(
+          any(grepl("1-introduction", htmlFiles))
+      )
       
       if(file.exists(list.files(pattern = ".md", getwd(), full.names = TRUE))) {
         file.remove(list.files(pattern = ".md", getwd(), full.names = TRUE))
@@ -317,5 +321,89 @@ test_that("Test render medical monitoring report", {
       if(file.exists(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))) {
         file.remove(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))
       }
+      
+      
+    })
+
+test_that("Test render medical monitoring report with log file", {
+      
+      logFile <- file.path(testPathBase, "log.txt")
+      
+      output <- render_medicalMonitoringReport(
+          configFiles = configFiles,
+          configDir = testPathConfig,
+          outputDir = outputDir,
+          indexPath = file.path(testPathBase, "index.Rmd"),
+          intermediateDir = testPathInterim,
+          logFile = logFile
+      )
+      expect_type(output, "character")
+      expect_true(
+          grepl("introduction", output)
+      )
+      expect_true(file.exists(logFile))
+      
+      if(file.exists(list.files(pattern = ".md", getwd(), full.names = TRUE))) {
+        file.remove(list.files(pattern = ".md", getwd(), full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))) {
+        file.remove(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))
+      }
+      if(file.exists(logFile)) file.remove(logFile)
+      
+    })
+
+test_that("Test render medical monitoring report for all config files", {
+      
+      output <- render_medicalMonitoringReport(
+          configFiles = NULL,
+          configDir = testPathConfig,
+          outputDir = outputDir,
+          indexPath = file.path(testPathBase, "index.Rmd"),
+          intermediateDir = testPathInterim
+      )
+      expect_type(output, "character")
+      expect_true(
+          grepl("introduction", output)
+      )
+      htmlFiles <- list.files(pattern = "html", outputDir)
+      sectionName <- checkReportTitles(configFiles, configDir = testPathConfig)
+      sectionName <- gsub(" ", "-", sectionName)
+      expect_true(
+          any(grepl(sectionName, htmlFiles, ignore.case = TRUE))
+      )      
+      
+      if(file.exists(list.files(pattern = ".md", getwd(), full.names = TRUE))) {
+        file.remove(list.files(pattern = ".md", getwd(), full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))) {
+        file.remove(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))
+      }
+      
+    })
+
+test_that("Test warnings of render medical monitoring report", {
+      
+#      expect_warning(
+#          output <- render_medicalMonitoringReport(
+#              configFiles = configFiles,
+#              configDir = testPathConfig,
+#              outputDir = outputDir,
+#              indexPath = file.path(testPathBase, "index.Rmd"),
+#              intermediateDir = testPathInterim
+#          )
+#      )
       
     })
