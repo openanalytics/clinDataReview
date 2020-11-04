@@ -8,8 +8,8 @@ test_that("Test check of config file", {
       tmpdir <- tempdir()
       
       ## Division config file
-      file.create("configDivision.yaml")
-      configFileDivision <- file.path(tmpdir, "configDivision.yml") 
+      configFileDivision <- file.path(tmpdir, "configDivision.yml")
+      file.create(configFileDivision)
       write_yaml(
           list(
               reportTitle = "Study name"
