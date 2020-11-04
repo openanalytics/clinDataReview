@@ -36,6 +36,7 @@ tmpdir <- tempdir()
 testPathBase <- normalizePath(path = "../files")
 testPathConfig <- file.path(testPathBase, "config")
 testPathInterim <- file.path(testPathBase, "interim")
+outputDir <- file.path(testPathBase, "report")
 configFiles <- list.files(testPathConfig)
 filePathConfig <- file.path(testPathConfig, configFiles)
 # Other config file
@@ -168,7 +169,7 @@ test_that("Test when general config file is not available", {
       )
       output <- getParamsFromConfig(basename(configFileTemp) , configDir = tmpdir)
       expect_type(output, "list")
-        
+      
     })
 
 test_that("Convert Md file to Html", {
@@ -176,7 +177,6 @@ test_that("Convert Md file to Html", {
       filePathSessionInfo <- file.path(testPathInterim, "sessionInfo.md")
       if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
       
-      outputDir <- file.path(testPathBase, "report")      
       htmlOutput <- convertMdToHtml(
           outputDir = outputDir,
           intermediateDir = testPathInterim,
@@ -291,3 +291,31 @@ test_that("Export of session infos", {
       
     })
 
+test_that("Test render medical monitoring report", {
+      
+      output <- render_medicalMonitoringReport(
+          configFiles = configFiles,
+          configDir = testPathConfig,
+          outputDir = outputDir,
+          indexPath = file.path(testPathBase, "index.Rmd"),
+          intermediateDir = testPathInterim
+      )
+      expect_type(output, "character")
+      expect_true(
+          grepl("introduction", output)
+      )
+      
+      if(file.exists(list.files(pattern = ".md", getwd(), full.names = TRUE))) {
+        file.remove(list.files(pattern = ".md", getwd(), full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))) {
+        file.remove(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))
+      }
+      
+    })
