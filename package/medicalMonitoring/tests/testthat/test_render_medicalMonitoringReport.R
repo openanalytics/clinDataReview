@@ -116,11 +116,6 @@ test_that("Get path of Md from config file - not default settings", {
 
 test_that("Get parameters from general config file", {
       
-      expect_error(
-          getParamsFromConfig("config.yml"),
-          "Config directory: .+ doesn't exist."
-      )
-      
       listConfig <- getParamsFromConfig("config.yml", configDir = testPathConfig)
       configFromYaml <- read_yaml(filePathGeneralConfig)
       n <- length(configFromYaml)
@@ -146,6 +141,34 @@ test_that("Get parameters from chapter-specific config file", {
           c(names(configFromYamlGeneral), names(configFromYaml))
       )
       
+    })
+
+test_that("Test errors of 'getParamsFromConfig'", {
+      
+      expect_error(
+          getParamsFromConfig("config.yml"),
+          "Config directory: .+ doesn't exist."
+      )
+      
+      expect_error(
+          getParamsFromConfig(otherConfigs, configDir = tmpdir),
+          "File .+ cannot be found."
+      )
+      
+    })
+
+test_that("Test when general config file is not available", {
+      
+      configFileTemp <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(list(), configFileTemp)
+      
+      expect_warning(
+          getParamsFromConfig(basename(configFileTemp) , configDir = tmpdir),
+          "General config file: .+ not available"
+      )
+      output <- getParamsFromConfig(basename(configFileTemp) , configDir = tmpdir)
+      expect_type(output, "list")
+        
     })
 
 test_that("Convert Md file to Html", {
@@ -268,11 +291,3 @@ test_that("Export of session infos", {
       
     })
 
-test_that("Test error of not available config.yml in 'getParamsFromConfig'", {
-      
-      # Remove general config file
-#      file.remove(filePath[1])
-#      expect_warning(getParamsFromConfig(otherConfigs, configDir = testPathConfig))
-      
-      
-    })
