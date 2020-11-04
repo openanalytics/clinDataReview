@@ -194,8 +194,8 @@ test_that("Check template name in config", {
 
 test_that("Check template name for config file without template specification", {
       
-      file.create("config.yml")
       configFileTemplateGeneral <- file.path(tmpdir, "config.yml")
+      file.create(configFileTemplateGeneral)
       write_yaml(list(), configFileTemplateGeneral)
       
       configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
@@ -214,8 +214,8 @@ test_that("Check template name for config file without template specification", 
 
 test_that("Check template name for config files with same template package", {
       
-      file.create("config.yml")
       configFileTemplateGeneral <- file.path(tmpdir, "config.yml")
+      file.create(configFileTemplateGeneral)
       write_yaml(list(), configFileTemplateGeneral)
       
       configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
