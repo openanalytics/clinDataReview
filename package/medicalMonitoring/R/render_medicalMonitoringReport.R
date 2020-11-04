@@ -375,7 +375,7 @@ getParamsFromConfig <- function(
     if(file.exists(configFilePath)) {
       configParams <- yaml::read_yaml(configFilePath)
     } else {
-      stop("File ", sQuote(configFilePath), "cannot be found. \n",
+      stop("File ", sQuote(configFilePath), " cannot be found. \n",
           "Please check the spelling is correct ",
           "or the file is saved in the directory with the other config files."
       )
