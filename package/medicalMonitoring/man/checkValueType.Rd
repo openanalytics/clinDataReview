@@ -14,7 +14,7 @@ checkValueType(data, vars, valueVar, valueType = "total", labelVars = NULL)
 containing plot nodes.
 If multiple, they should be specified in hierarchical order (from parent to child node).}
 
-\item{valueVar}{String with variable of \code{data} containing node value,
+\item{valueVar}{String with numeric variable of \code{data} containing node value,
 and associated label.}
 
 \item{valueType}{String with type of values in \code{valueVar}

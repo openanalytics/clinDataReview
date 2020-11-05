@@ -71,7 +71,7 @@ tableAE <- getSummaryStatisticsTable(
 
 )
 
-dataPlot <- tableAE
+dataPlot <- subset(dataPlot, !isTotal)
 
 dataPlot$n <- as.numeric(dataPlot$n)
 

@@ -3,7 +3,7 @@
 #' containing plot nodes.
 #' If multiple, they should be specified in hierarchical order (from parent to child node).
 #' @param varsLab Named character vector with labels for \code{vars}.
-#' @param valueVar,valueLab String with variable of \code{data} containing node value,
+#' @param valueVar,valueLab String with numeric variable of \code{data} containing node value,
 #' and associated label.
 #' @param valueType String with type of values in \code{valueVar}
 #' (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),

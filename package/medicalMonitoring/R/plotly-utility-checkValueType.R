@@ -18,6 +18,9 @@ checkValueType <- function(data,
 	valueType = "total",
 	labelVars = NULL){
 	
+	if(!is.numeric(data[, valueVar]))
+		stop(paste("'valueVar':", valueVar, "should be numeric."))
+
 	if(length(vars) > 1 & valueType == "total"){
 	
 		parentVars <- head(vars, -1)
