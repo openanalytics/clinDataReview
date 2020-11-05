@@ -3,7 +3,7 @@ context("Visualization of count data for medical monitoring")
 library(plotly)
 library(jsonlite)
 
-text_that("dataset with missing parent value returns an error", {
+test_that("dataset with missing parent value returns an error", {
 			
 	data <- data.frame(
 		varParent = c("A", "A", "B"),
