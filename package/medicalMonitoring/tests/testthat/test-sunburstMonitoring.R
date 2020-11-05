@@ -67,7 +67,7 @@ tableAE <- getSummaryStatisticsTable(
 
 )
 
-dataSunburst <- tableAE
+dataSunburst <- subset(tableAE, !isTotal)
 
 dataSunburst$n <- as.numeric(dataSunburst$n)
 

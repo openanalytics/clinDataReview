@@ -20,9 +20,9 @@ for the color variable, in case it is a numeric variable.}
 containing plot nodes.
 If multiple, they should be specified in hierarchical order (from parent to child node).}
     \item{\code{varsLab}}{Named character vector with labels for \code{vars}.}
-    \item{\code{valueVar}}{String with variable of \code{data} containing node value,
+    \item{\code{valueVar}}{String with numeric variable of \code{data} containing node value,
 and associated label.}
-    \item{\code{valueLab}}{String with variable of \code{data} containing node value,
+    \item{\code{valueLab}}{String with numeric variable of \code{data} containing node value,
 and associated label.}
     \item{\code{valueType}}{String with type of values in \code{valueVar}
 (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),

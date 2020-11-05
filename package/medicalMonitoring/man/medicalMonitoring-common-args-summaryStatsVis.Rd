@@ -10,7 +10,7 @@ If multiple, they should be specified in hierarchical order (from parent to chil
 
 \item{varsLab}{Named character vector with labels for \code{vars}.}
 
-\item{valueVar, valueLab}{String with variable of \code{data} containing node value,
+\item{valueVar, valueLab}{String with numeric variable of \code{data} containing node value,
 and associated label.}
 
 \item{valueType}{String with type of values in \code{valueVar}

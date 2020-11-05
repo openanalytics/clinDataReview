@@ -19,9 +19,20 @@
 #' label in plotly.}
 #' }
 #' @importFrom utils head tail capture.output
+#' @importFrom plyr colwise
 #' @author Laure Cougnaud
 formatToHierarchicalData <- function(data, vars){
 		
+	# filter missing records for 'vars'
+	idxAllNa <- which(rowSums(is.na(data[, vars, drop = FALSE])) == length(vars))
+	if(length(idxAllNa) > 0){
+		warning(length(idxAllNa), " record(s) are filtered from the data",
+			" because contain missing for all variable(s): ",
+			toString(shQuote(vars)), "."
+		)
+		data <- data[-idxAllNa, ]
+	}
+	
 	dataVars <- data[, vars, drop = FALSE]
 	
 	## Build IDs: combine values of child + parents if any
@@ -38,29 +49,54 @@ formatToHierarchicalData <- function(data, vars){
 		
 		varParent <- "hierarParent"
 		
-		data[[varParent]] <- apply(dataVars, 1, function(x){
-#			print(x)
-			colNotTotal <- which(x != "Total")
-			colParents <- head(colNotTotal, -1) # remove last var
-			colFirstParent <- tail(colParents, 1)
-			if(length(colFirstParent) == 0){
-				""
+		## extract ID of parent
+		
+		# create dataset with 'Total' for the parent variables
+		
+		# extract, for each record (row) the indices
+		# of the columns which should be replaced to 'Total'
+		getIdxCol <- function(x){
+			idxColVars <- if(!any(x == "Total")){
+				length(vars)
 			}else{
-				# original value in data
-				value <- as.character(x[colFirstParent]) 
-				# extract reformatted value in data:
-				# 1) rows with var == value
-				idxFirstParent <- which(dataVars[, colFirstParent] == value) 
-				# 2) and with total
-				nextVars <- vars[seq(from = colFirstParent + 1, to = length(vars))]
-				dataNextVars <- dataVars[, nextVars, drop = FALSE]
-				idxNextVarsTotal <- which(rowSums(dataNextVars == "Total") == length(nextVars))
-				idxFirstParentTotal <- intersect(idxFirstParent, idxNextVarsTotal)
-				if(length(idxFirstParentTotal) != 1)
-					stop("Missing parent value")
-				data[idxFirstParentTotal, varID]
+				idxColTotalParent <- min(which(x == "Total")-1)
+				seq(from = idxColTotalParent, to = length(vars))
 			}
-		})
+		}
+		idParentColToSet <- apply(dataVars, 1, FUN = getIdxCol)
+		
+		# build matrix with row/colum indices:
+		idxParentList <- lapply(seq_along(idParentColToSet), function(iRow)
+			cbind(row = iRow, col = idParentColToSet[[iRow]])
+		)
+		idxParent <- do.call(rbind, idxParentList)
+		
+		# convert factor -> character otherwise issue when
+		#  including 'Total' in the column if not available in factor levels
+		dataParent <- colwise(as.character)(dataVars)
+		# replace with 'Total'
+		dataParent[idxParent] <- "Total" 
+		
+		# build label for the parent
+		parent <- do.call(interaction, dataParent) 
+		
+		# build label for the record
+		idRecord <- interaction(dataVars)
+
+		# extract parent ID of each record
+		idParent <- data[match(parent, idRecord), varID]
+		
+		# the parent should be available for all records
+		#  excepted for higher category
+		isNoParent <- is.na(idParent)
+		if(any(isNoParent)){
+			idxColNoParent <- which(data[isNoParent, vars] != "Total", arr.ind = TRUE)[, "col"]
+			if(any(idxColNoParent != 1))
+				stop("Missing parent value")
+			idParent[isNoParent] <- ""
+		}
+		
+		data[[varParent]] <- idParent
 
 	}else	varParent <- NULL
 

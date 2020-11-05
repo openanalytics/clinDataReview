@@ -53,6 +53,16 @@ plotCountMonitoring <- function(
 	
 	typePlot <- match.arg(typePlot)
 	
+	# filter missing records for 'vars' (as input for table and plot)
+	idxAllNa <- which(rowSums(is.na(data[, vars, drop = FALSE])) == length(vars))
+	if(length(idxAllNa) > 0){
+		warning(length(idxAllNa), " record(s) are filtered from the data",
+			" because contain missing for all variable(s): ",
+			toString(shQuote(vars)), "."
+		)
+		data <- data[-idxAllNa, ]
+	}
+	
 	# for data to hierarchical format
 	dataPlot <- formatToHierarchicalData(data = data, vars = vars)
 	varsPlot <- attr(dataPlot, "metadata")
