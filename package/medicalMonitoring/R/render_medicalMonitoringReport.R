@@ -103,7 +103,7 @@ render_medicalMonitoringReport <- function(
   configFiles <- checkTemplatesName(configFiles = configFiles, configDir = configDir)
   
   # check uniqueness of report titles
-  reportTitles <- checkReportTitles(configFiles)
+  reportTitles <- checkReportTitles(configFiles, configDir = configDir)
   
   mdFiles <- c()
   knit_meta_reports <- c()
@@ -354,7 +354,7 @@ getParamsFromConfig <- function(
     configFile, configDir = "./config"){
   
   if(!dir.exists(configDir))
-    stop("Config directory:", sQuote(configDir), "doesn't exist.")
+    stop("Config directory: ", sQuote(configDir), " doesn't exist.")
   
   # load general config file
   configGeneralPath <- file.path(configDir, "config.yml")
@@ -375,7 +375,7 @@ getParamsFromConfig <- function(
     if(file.exists(configFilePath)) {
       configParams <- yaml::read_yaml(configFilePath)
     } else {
-      stop("File ", sQuote(configFilePath), "cannot be found. \n",
+      stop("File ", sQuote(configFilePath), " cannot be found. \n",
           "Please check the spelling is correct ",
           "or the file is saved in the directory with the other config files."
       )

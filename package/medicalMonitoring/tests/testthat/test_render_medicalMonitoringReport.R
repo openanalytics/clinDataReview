@@ -1,7 +1,6 @@
 library(yaml)
 
 tmpdir <- tempdir()
-
 ## File 1
 #configFile1 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
 #write_yaml(
@@ -34,55 +33,58 @@ tmpdir <- tempdir()
 #)
 #configFiles <- c(configFileGeneral, configFile1, configFile2)
 #configFiles <- basename(configFiles)
-#testPathBase <- file.path(
-#    "~", "git",
-#    "GLPGMedicalMonitoring",
-#    "package",
-#    "medicalMonitoring",
-#    "tests", "files"
-#)
-testPathBase <- "files" #normalizePath(path = "./files") #"../files" #file.path(getwd(), "files")
-#system.file("tests", "files", package = "medicalMonitoring")
-# #
-#stop("sono qui: ", toString(list.files(getwd())))
+testPathBase <- normalizePath(path = "../files")
 testPathConfig <- file.path(testPathBase, "config")
 testPathInterim <- file.path(testPathBase, "interim")
+outputDir <- file.path(testPathBase, "report")
 configFiles <- list.files(testPathConfig)
 filePathConfig <- file.path(testPathConfig, configFiles)
 # Other config file
 otherConfigs <- configFiles[! grepl("config.yml", configFiles)]
+filePathOtherConfigs <- file.path(testPathConfig, otherConfigs)
+filePathGeneralConfig <- setdiff(filePathConfig, filePathOtherConfigs)
 
-test_that("Check uniqueness of report titles", {
+test_that("Check extraction of report titles", {
       
       reportTitles <- checkReportTitles(configFiles, configDir = testPathConfig)
       expect_is(reportTitles, "character")
-      expect_length(reportTitles, 1) #2
-      expect_named(reportTitles, configFiles[1]) # [2 : 3]
+      expect_length(reportTitles, length(otherConfigs))
+      expect_named(reportTitles, otherConfigs)
+      
+    })
+
+test_that("Check uniqueness of report titles", {
       
       configFilesError <- c(configFiles[1], configFiles[1])
       expect_error(
-          checkReportTitles(configFilesError, configDir = testPathConfig)
+          checkReportTitles(configFilesError, configDir = testPathConfig),
+          "The title .+ is duplicated."
       )
       configFilesWarning <- c(configFiles, "config-ciao")
       expect_warning(
-          checkReportTitles(configFilesWarning, configDir = testPathConfig)
+          checkReportTitles(configFilesWarning, configDir = testPathConfig),
+          "Please check the spelling is correct"
       )
       
     })
 
-test_that("Get path of Md from config file", {
+test_that("Get path of Md from config file - default settings", {
       
-      # ????
       mdFiles <- getMdFromConfig(configFiles, intermediateDir = testPathInterim)
       expect_is(mdFiles, "character")
       expect_length(mdFiles, length(configFiles))
       
-      configFilesShortName <- gsub("config-", "", tools::file_path_sans_ext(configFiles))
-      mdFilesNames <- sprintf("%s.md",
-          c("index", configFilesShortName[configFilesShortName != "config"])
-      )
-      referenceNames <- file.path(testPathInterim, mdFilesNames)
-      #expect_identical(referenceNames, mdFiles)
+      mdNames <- file.path(
+          testPathInterim,
+          c(
+              gsub("config-(.+).yml", "\\1.md", otherConfigs),
+              "index.md"
+          ))
+      expect_identical(mdNames, mdFiles)
+      
+    })
+
+test_that("Get path of Md from config file - not default settings", {
       
       # Different name for indexPath
       mdFilesIndex <- getMdFromConfig(
@@ -92,31 +94,31 @@ test_that("Get path of Md from config file", {
       )
       expect_is(mdFilesIndex, "character")
       expect_length(mdFilesIndex, length(configFiles))
-      mdFilesMyNames <- sprintf("%s.md",
-          c("myIndex", configFilesShortName[configFilesShortName != "config"])
-      )
-      referenceNames <- file.path(testPathInterim, mdFilesMyNames)
-      #expect_identical(referenceNames, mdFilesIndex)
+      mdNames <- file.path(
+          testPathInterim,
+          c(
+              gsub("config-(.+).yml", "\\1.md", otherConfigs),
+              "myIndex.md"
+          ))
+      expect_identical(mdNames, mdFilesIndex)
       
       # Different intermediateDir
       mdFilesInterim <- getMdFromConfig(configFiles, intermediateDir = "myDir")
       expect_is(mdFilesInterim, "character")
       expect_length(mdFilesInterim, length(configFiles))
-      referenceNames <- file.path("myDir", mdFilesNames)
-      #expect_identical(referenceNames, mdFilesInterim)
+      mdNames <- file.path("myDir", c(
+              gsub("config-(.+).yml", "\\1.md", otherConfigs),
+              "index.md"
+          ))
+      expect_identical(mdNames, mdFilesInterim)
       
     })
 
 
 test_that("Get parameters from general config file", {
-      
-      expect_error(
-          getParamsFromConfig("config.yml", configDir = "blabla"),
-		  regexp = "Config directory:.*doesn't exist."
-      )
-      
+  
       listConfig <- getParamsFromConfig("config.yml", configDir = testPathConfig)
-      configFromYaml <- read_yaml(filePathConfig[2])
+      configFromYaml <- read_yaml(filePathGeneralConfig)
       n <- length(configFromYaml)
       expect_is(listConfig, "list")
       expect_length(listConfig, n)
@@ -124,32 +126,72 @@ test_that("Get parameters from general config file", {
           names(listConfig),
           names(configFromYaml)
       ) 
-     
+      
     })
 
 test_that("Get parameters from chapter-specific config file", {
       
       listConfig <- getParamsFromConfig(otherConfigs, configDir = testPathConfig)
-      configFromYamlGeneral <- read_yaml(filePathConfig[2])
-      configFromYaml <- read_yaml(filePathConfig[1])
+      configFromYamlGeneral <- read_yaml(filePathGeneralConfig)
+      configFromYaml <- read_yaml(filePathOtherConfigs)
       n <- length(configFromYamlGeneral) + length(configFromYaml)
       expect_is(listConfig, "list")
       expect_length(listConfig, n)
-      #expect_identical(listConfig, c(names(configFromYamlGeneral), names(configFromYaml)))
+      expect_identical(
+          names(listConfig),
+          c(names(configFromYamlGeneral), names(configFromYaml))
+      )
       
+    })
+
+test_that("Test errors of 'getParamsFromConfig'", {
+      
+      expect_error(
+          getParamsFromConfig("config.yml"),
+          "Config directory: .+ doesn't exist."
+      )
+      
+      expect_error(
+          getParamsFromConfig(otherConfigs, configDir = tmpdir),
+          "File .+ cannot be found."
+      )
+      
+    })
+
+test_that("Test when general config file is not available", {
+      
+      configFileTemp <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(list(), configFileTemp)
+      
+      expect_warning(
+          getParamsFromConfig(basename(configFileTemp) , configDir = tmpdir),
+          "General config file: .+ not available"
+      )
+      output <- getParamsFromConfig(basename(configFileTemp) , configDir = tmpdir)
+      expect_type(output, "list")
       
     })
 
 test_that("Convert Md file to Html", {
       
-      outputDir <- file.path(testPathBase, "report")
+      filePathSessionInfo <- file.path(testPathInterim, "sessionInfo.md")
+      if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
       
-      # Create md files
+      htmlOutput <- convertMdToHtml(
+          outputDir = outputDir,
+          intermediateDir = testPathInterim,
+          configDir = testPathConfig, 
+          mdFiles = NULL,
+          indexPath = "index.Rmd"
+      )
+      expect_is(htmlOutput, "character")
+      expect_true(grepl(outputDir, htmlOutput))
+      
+      if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
+      
+      # Md files
       mdFiles <- list.files(pattern = "md", file.path(testPathInterim))
       filePathMd <- file.path(testPathInterim, mdFiles)
-      
-      # Create rds files
-      rdsFiles <- list.files(pattern = "rds", file.path(testPathInterim))
       
       htmlOutput <- convertMdToHtml(
           outputDir = outputDir,
@@ -159,51 +201,71 @@ test_that("Convert Md file to Html", {
           indexPath = "index.Rmd"
       )
       expect_is(htmlOutput, "character")
-      #expect_true(grepl(outputDir, htmlOutput))
+      expect_true(grepl(outputDir, htmlOutput))
+      
+      if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
       
     })
 
-
 test_that("Check template name in config", {
       
-      # No template available
-      #expect_warning(checkTemplatesName(configFiles, testPathBase))
+      checkedConfig <- checkTemplatesName(configFiles, configDir = testPathConfig)
+      expect_is(checkedConfig, "character")
+      expect_identical(configFiles, checkedConfig)
       
-#      configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
-#      write_yaml(
-#          list(
-#              reportTitle = "Title",
-#              reportTitleLevel = 2,
-#              template = "divisionTemplate",
-#              templatePackage = "custom"
-#          ),
-#          configFileTemplate 
-#      )
-#      configFileTemplate <- basename(configFileTemplate)  
-#      
-#      checkedConfig <- checkTemplatesName(configFileTemplate, configDir = tmpdir)
-#      expect_is(checkedConfig, "character")
-#      expect_identical(configFileTemplate, checkedConfig)
-#      
-#      # Mispecification of template
-#      configFileTemplate2 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
-#      write_yaml(
-#          list(
-#              reportTitle = "Title",
-#              reportTitleLevel = 2,
-#              template = "divisionTemplate",
-#              templatePackage = "medicalMonitoring"
-#          ),
-#          configFileTemplate2
-#      )
-#      configFileTemplate2 <- basename(configFileTemplate2)     
-#      
-#      configFileTemplates <- c(configFileTemplate, configFileTemplate2)
-#      expect_warning(
-#          checkTemplatesName(configFileTemplates, configDir = tmpdir)
-#      )
-#      output <- checkTemplatesName(configFileTemplates, configDir = tmpdir)
-#      expect_length(output, 0)
+    })
+
+test_that("Check template name for config file without template specification", {
+      
+      configFileTemplateGeneral <- file.path(tmpdir, "config.yml")
+      file.create(configFileTemplateGeneral)
+      write_yaml(list(), configFileTemplateGeneral)
+      
+      configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(
+          list(reportTitle = "Title", reportTitleLevel = 2),
+          configFileTemplate 
+      )
+      configFileTemplate <- basename(configFileTemplate)  
+      
+      expect_warning(
+          checkTemplatesName(configFileTemplate, tmpdir),
+          "Import of parameters from config file .+ failed with error:"
+      )
+      
+    })
+
+test_that("Check template name for config files with same template package", {
+      
+      configFileTemplateGeneral <- file.path(tmpdir, "config.yml")
+      file.create(configFileTemplateGeneral)
+      write_yaml(list(), configFileTemplateGeneral)
+      
+      configFileTemplate <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(
+          list(reportTitle = "Title", reportTitleLevel = 2,
+              template = "divisionTemplate", templatePackage = "custom"
+          ),
+          configFileTemplate 
+      )
+      configFileTemplate <- basename(configFileTemplate)  
+      
+      configFileTemplateBis <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(
+          list(reportTitle = "Title", reportTitleLevel = 2,
+              template = "divisionTemplate", templatePackage = "medicalMonitoring"
+          ),
+          configFileTemplateBis 
+      )
+      configFileTemplateBis <- basename(configFileTemplateBis)  
+      
+      configFileTemplates <- c(configFileTemplate, configFileTemplateBis)
+      expect_warning(
+          checkTemplatesName(configFileTemplates, configDir = tmpdir),
+          "The following config file[(]s[)] are ignored, because the same template name is used"
+      )
+      output <- checkTemplatesName(configFileTemplates, configDir = tmpdir)
+      expect_length(output, 0)
       
     })
 
@@ -222,17 +284,126 @@ test_that("Export of session infos", {
       
       sessionInfos <- list(sessionInfo(), sessionInfo())
       
-      mdFile <- exportSessionInfoToMd(sessionInfos, intermediateDir = testPathInterim)
+      mdFile <-exportSessionInfoToMd(sessionInfos, intermediateDir = testPathInterim)
       expect_is(mdFile, "character")
       expect_identical(mdFile, file.path(testPathInterim, "sessionInfo.md"))
+      file.remove(file.path(testPathInterim, "sessionInfo.md"))
       
     })
 
-test_that("Test error of not available config.yml in 'getParamsFromConfig'", {
+test_that("Test render medical monitoring report", {
       
-      # Remove general config file
-#      file.remove(filePath[1])
-#      expect_warning(getParamsFromConfig(otherConfigs, configDir = testPathConfig))
+      output <- render_medicalMonitoringReport(
+          configFiles = configFiles,
+          configDir = testPathConfig,
+          outputDir = outputDir,
+          indexPath = file.path(testPathBase, "index.Rmd"),
+          intermediateDir = testPathInterim
+      )
+      expect_type(output, "character")
+      expect_true(
+          grepl("introduction", output)
+      )
+      htmlFiles <- list.files(pattern = "html", outputDir)
+      expect_true(
+          any(grepl("1-introduction", htmlFiles))
+      )
       
+      if(file.exists(list.files(pattern = ".md", getwd(), full.names = TRUE))) {
+        file.remove(list.files(pattern = ".md", getwd(), full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))) {
+        file.remove(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))
+      }
+      
+      
+    })
+
+test_that("Test render medical monitoring report with log file", {
+      
+      logFile <- file.path(testPathBase, "log.txt")
+      
+      output <- render_medicalMonitoringReport(
+          configFiles = configFiles,
+          configDir = testPathConfig,
+          outputDir = outputDir,
+          indexPath = file.path(testPathBase, "index.Rmd"),
+          intermediateDir = testPathInterim,
+          logFile = logFile
+      )
+      expect_type(output, "character")
+      expect_true(
+          grepl("introduction", output)
+      )
+      expect_true(file.exists(logFile))
+      
+      if(file.exists(list.files(pattern = ".md", getwd(), full.names = TRUE))) {
+        file.remove(list.files(pattern = ".md", getwd(), full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))) {
+        file.remove(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))
+      }
+      if(file.exists(logFile)) file.remove(logFile)
+      
+    })
+
+test_that("Test render medical monitoring report for all config files", {
+      
+      output <- render_medicalMonitoringReport(
+          configFiles = NULL,
+          configDir = testPathConfig,
+          outputDir = outputDir,
+          indexPath = file.path(testPathBase, "index.Rmd"),
+          intermediateDir = testPathInterim
+      )
+      expect_type(output, "character")
+      expect_true(
+          grepl("introduction", output)
+      )
+      htmlFiles <- list.files(pattern = "html", outputDir)
+      sectionName <- checkReportTitles(configFiles, configDir = testPathConfig)
+      sectionName <- gsub(" ", "-", sectionName)
+      expect_true(
+          any(grepl(sectionName, htmlFiles, ignore.case = TRUE))
+      )      
+      
+      if(file.exists(list.files(pattern = ".md", getwd(), full.names = TRUE))) {
+        file.remove(list.files(pattern = ".md", getwd(), full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))) {
+        file.remove(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))
+      }
+      if(file.exists(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))) {
+        file.remove(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))
+      }
+      
+    })
+
+test_that("Test warnings of render medical monitoring report", {
+      
+#      expect_warning(
+#          output <- render_medicalMonitoringReport(
+#              configFiles = configFiles,
+#              configDir = testPathConfig,
+#              outputDir = outputDir,
+#              indexPath = file.path(testPathBase, "index.Rmd"),
+#              intermediateDir = testPathInterim
+#          )
+#      )
       
     })

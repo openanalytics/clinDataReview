@@ -7,4 +7,4 @@ pathDataFolder: "path/to/data"
 pathDataFolderOld: "path/to/old/data"
 patientProfilePath: patientProfiles # (should be passed to the 'extraDirs' of the render_medicalMonitoringReport function)
 config:
-    - config-alert-division.yml
+    - config-adverseEvents-division.yml

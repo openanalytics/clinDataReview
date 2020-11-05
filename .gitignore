@@ -21,6 +21,7 @@ documentation
 *.md
 !package/medicalMonitoring/tests/**/*.md
 *.rds
+!package/medicalMonitoring/tests/**/*.rds
 _main.Rmd
 *.docx
 libs
