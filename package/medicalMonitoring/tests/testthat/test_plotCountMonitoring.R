@@ -116,7 +116,8 @@ test_that("specification of color categorical variable is successful", {
 		)
 	)
 	
-	plotJson <- fromJSON(txt = plotly_json(pl)$x$data, simplifyDataFrame = FALSE)
+	plotJson <- plotly_json(pl, jsonedit = FALSE)
+	plotJson <- fromJSON(txt = plotJson, simplifyDataFrame = FALSE)
 	colors <- plotJson$data[[1]]$marker$colors
 	groups <- plotJson$data[[1]]$ids
 	groupsParent <- sub("(\\w)-.+", "\\1", groups)
@@ -191,11 +192,13 @@ test_that("table is created with count visualization", {
 	tableData <- table$x$data
 	
 	tableInput <- cbind(data, hierarID = c("A-a", "A-b", "A", "B-c", "B"))
-	expect_equal(sort(colnames(dataTable)), sort(colnames(tableData)))
+	expect_equal(sort(colnames(tableInput)), sort(colnames(tableData)))
+	
+	tableData <- tableData[, colnames(tableInput)]
 	
 	expect_equal(
 		tableInput[do.call(order, tableInput), ], 
-		dataTable[do.call(order, dataTable), ]
+		tableData[do.call(order, tableData), ]
 	)
 			
 })
