@@ -5,6 +5,7 @@
     o fix in 'render_medicalMonitoringReport' when calling 'checkReportTitles': add configDir as argument
     o add unit tests
     o formatToHierarchicalData: fix for more than two vars (multiple parentVars)
+    o timeProfileIntervalPlot: fix overlap x-axis title and legend when few y elements
 0.6.0
     o checkReportTitles: write error when config file does not exist
     o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists
