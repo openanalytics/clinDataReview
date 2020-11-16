@@ -254,7 +254,9 @@ timeProfileIntervalPlot <- function(data,
 #	xMax <- max(data[, c(timeStartVar, timeEndVar)], na.rm = TRUE)
 	pl <- pl %>% layout(
 		title = title,
-		xaxis = list(title = list(text = xLab)),
+		# standoff: distance between axis text and title
+		#  adjusted to not have overlapping legend when only one y element
+		xaxis = list(title = list(text = xLab, standoff = 0)),
 		yaxis = list(
 			showgrid = TRUE,
 			title = list(text = yLab),
@@ -269,7 +271,7 @@ timeProfileIntervalPlot <- function(data,
 		legend = list(
 			orientation = "h", 
 			xanchor = "center", x = 0.5, 
-			yanchor = "top", y = -min(bottomMargin/plotHeight, 1)
+			yanchor = "top", y = -min(bottomMargin/plotHeight, 2)
 		),
 		hovermode = "closest",
 		# margin in pixels
