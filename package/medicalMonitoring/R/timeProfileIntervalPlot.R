@@ -171,7 +171,7 @@ timeProfileIntervalPlot <- function(data,
 	plotHeight <- sum(nLinesY) * 20
 	
 	# top margin: top bar + title
-	topMargin <- 20 + ifelse(!is.null(title), 20, 0) 
+	topMargin <- 30 + ifelse(!is.null(title), 20, 0) 
 	# bottom margin: # x-axis + x-lab + legend
 	bottomMargin <- 20 + ifelse(!is.null(xLab), 20, 0) + ifelse(!is.null(colorVar), 20, 0)
 	layoutMargin <- list(t = topMargin, b = bottomMargin)
