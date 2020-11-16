@@ -7,6 +7,7 @@
     o formatToHierarchicalData: fix for more than two vars (multiple parentVars)
     o timeProfileIntervalPlot: fix overlap x-axis title and legend when few y elements
     o timeProfileIntervalPlot: fix overlap top plot and modebar (no hover issue)
+    o barplotMonitoring: fix link legend <-> x-axis selection
 0.6.0
     o checkReportTitles: write error when config file does not exist
     o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists

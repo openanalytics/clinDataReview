@@ -46,6 +46,15 @@ barplotMonitoring <- function(
 	idVars <- c(xVar, colorVar)
 	data$idEl <- interaction(data[, idVars, drop = FALSE])
 	
+	# extract unique elements of x
+	# to fix issue legend selection <-> filter x-axis
+	isXNum <- is.numeric(data[, xVar])
+	if(!isXNum){
+		xEl <- if(is.factor(data[, xVar])){
+			levels(data[, xVar])
+		}else	sort(unique(data[, xVar]))
+	}
+	
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
 		hoverVars <- c(xVar, colorVar, yVar)
@@ -89,9 +98,23 @@ barplotMonitoring <- function(
 		hovertemplate = varToFm("hover"),
 		width = width, height = height
 	)
+	
+	## layout option
+	
+	xaxisArgs <- list(title = xLab, tickangle = 45)
+	# fix issue legend selection <-> filter x-axis:
+	if(!isXNum)
+		xaxisArgs <- c(xaxisArgs, 
+			list(
+				# text displayed at the ticks position
+				ticktext = xEl,
+				# values at which the ticks on the axis appear
+				tickvals = xEl
+			)
+		)
 	pl <- pl %>% layout(
 		title = title,
-		xaxis = list(title = xLab, tickangle = 45),
+		xaxis = xaxisArgs,
 		yaxis = list(title = yLab),
 		barmode = barmode
 	)
