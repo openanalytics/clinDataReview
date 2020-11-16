@@ -146,13 +146,12 @@ library(inTextSummaryTable)
 dataTotal <- subset(dataDM, RFXSTDTC != "")
 
 # compute adverse event table
-tableAE <- getSummaryStatisticsTable(
+tableAE <- computeSummaryStatisticsTable(
 	data = dataAE,
 	rowVar = c("AEBODSYS", "AEDECOD"),
 	dataTotal = dataTotal,
 	labelVars = labelVars,
-	stats = getStats("count"),
-	outputType = "data.frame-base"
+	stats = getStats("count")
 )
 
 dataPlot <- subset(tableAE, AEDECOD != "Total")
@@ -167,13 +166,31 @@ barplotMonitoring(
 	labelVars = labelVars
 )
 
-# stacked barplot
+# display percentage of events per severity
+dataPlot <- computeSummaryStatisticsTable(
+	data = dataAE,
+	rowVar = c("AEDECOD", "AESEV"),
+	dataTotal = dataTotal,
+	labelVars = labelVars,
+	statsPerc = "statm",
+	stats = getStats("\%m"),
+	dataTotalPerc = dataAE,
+	rowVarTotalPerc = "AEDECOD"
+)
 barplotMonitoring(
 	data = dataPlot,
-	xVar = "AEBODSYS", 
-	yVar = "n", yLab = "Number of patients with adverse events",
+	xVar = "AEDECOD", 
+	yVar = "statPercm", yLab = "Percentage of adverse events",
 	labelVars = labelVars,
-	colorVar = "AEDECOD", barmode = "stack"
+	colorVar = "AESEV", barmode = "stack",
+	hoverVar = c("AEDECOD", "AESEV", "statN", "statm", "statPercm"),
+	hoverLab = c(
+		labelVars["AEDECOD"],
+		labelVars["AESEV"],
+		statN = "Number of patients",
+		statm = "Number of events",
+		statPercm = "Percentage of events"
+	)
 )
 }
 \seealso{
