@@ -46,8 +46,8 @@ getJsDepMedicalMonitoring <- function(dep = NULL) {
 			name = name,
 			version = version,
 			src = srcDep,
-			script = list.files(srcDep,pattern = "\\.js$"),
-			stylesheet = list.files(srcDep,pattern = "\\.css$")
+			script = list.files(srcDep, pattern = "\\.js$"),
+			stylesheet = list.files(srcDep, pattern = "\\.css$")
 		)
 	}
 	
@@ -59,8 +59,8 @@ getJsDepMedicalMonitoring <- function(dep = NULL) {
 	# see ? htmltools::resolveDependencies
 	
 	htmlDep <- list(
-		getPackageJSDep(name = "FileSaver", version = "1.3.8"),
-		getPackageJSDep(name = "jszip", version = "3.2.2"),
+		getPackageJSDep(name = "FileSaver", version = "2.0.2"),
+		getPackageJSDep(name = "jszip", version = "3.5.0"),
 		getPackageJSDep(name = "jszip-utils", version = "0.1.0"),
 		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring")),
 		getPackageJSDep(name = "collapsibleButton", version = packageVersion("medicalMonitoring"))

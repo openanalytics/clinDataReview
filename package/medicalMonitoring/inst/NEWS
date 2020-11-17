@@ -8,6 +8,7 @@
     o timeProfileIntervalPlot: fix overlap x-axis title and legend when few y elements
     o timeProfileIntervalPlot: fix overlap top plot and modebar (no hover issue)
     o barplotMonitoring: fix link legend <-> x-axis selection
+    o minify/update JS dep: FileSaver, JSZip, JSZipUtils
 0.6.0
     o checkReportTitles: write error when config file does not exist
     o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists
