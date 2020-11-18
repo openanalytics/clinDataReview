@@ -181,14 +181,13 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 			all = FALSE
 		)
 	}else	dataPreviousI <- dataPrevious
+
 	argsCompTable <- c(
 		list(
 			newData = dataCurrentI,
 			oldData = dataPreviousI,
 			labelVars = labelVars,
-			patientProfilePath = patientProfilePath,
-			outputType = comparisonTableType,
-			checkExistPatientProfilePath = FALSE
+			outputType = comparisonTableType
 		),
 		comparisonTableParams
 	)
