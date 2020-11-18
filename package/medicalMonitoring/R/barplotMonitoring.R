@@ -74,7 +74,8 @@ barplotMonitoring <- function(
 	# get plot dim
 	dimPlot <- getSizePlotMonitoring(
 		width = width, height = height,
-		legend = !is.null(colorVar)
+		legend = !is.null(colorVar),
+		legendPosition = "bottom"
 	)
 	width <- unname(dimPlot["width"])
 	height <- unname(dimPlot["height"])
@@ -115,8 +116,16 @@ barplotMonitoring <- function(
 	pl <- pl %>% layout(
 		title = title,
 		xaxis = xaxisArgs,
-		yaxis = list(title = yLab),
+		yaxis = list(title = yLab), 
 		barmode = barmode
+	)
+	
+	pl <- pl %>% layout(legend = 
+		list(
+			orientation = "h",
+			x = 0.5, xanchor = "center",
+			y = 1
+		)
 	)
 		
 	# specific formatting for medical monitoring
