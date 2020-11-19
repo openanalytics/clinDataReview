@@ -9,6 +9,9 @@
     o timeProfileIntervalPlot: fix overlap top plot and modebar (no hover issue)
     o barplotMonitoring: fix link legend <-> x-axis selection, legend on top
     o minify/update JS dep: FileSaver, JSZip, JSZipUtils
+    o updates for compareTable data.table implementation
+    o getPlotTableVars: fixes
+    o scatterplotMonitoring: fix in case x/y/aesVar are not standard R names (e.g. contain space)
 0.6.0
     o checkReportTitles: write error when config file does not exist
     o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists

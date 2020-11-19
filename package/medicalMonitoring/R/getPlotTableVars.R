@@ -25,17 +25,23 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 	tableVarsNotSpec <- missing(tableVars) || is.null(tableVars)
 	tableLabNotSpec <- missing(tableLab) || is.null(tableLab)
 			
+	getPlotArgsAsVect <- function(elNames){
+		elList <- do.call(c, plotArgs[elNames]) # to deal with list(A = list(b = ...), B = list())
+		el <- unique(unlist(elList, use.names = FALSE))
+		return(el)
+	}
+	
 	if(plotFunction == "scatterplotMonitoring"){
 			
 		if(tableVarsNotSpec){
-			aesVar <- with(plotArgs, unlist(c(aesPointVar, aesLineVar)))
-			tableVars <- with(plotArgs, unique(c(idVar, xVar, yVar, aesVar)))
+			aesVar <- getPlotArgsAsVect(c("aesPointVar", "aesLineVar"))
+			tableVars <- unique(c(getPlotArgsAsVect(c("idVar", "xVar", "yVar")), aesVar))
 			tableLab <- with(plotArgs, 
 				c(
-					getLabelVar(var = idVar, label = xLab, labelVars = labelVars),
-					getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
-					getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
-					getLabelVar(var = aesVar, label = aesLab, labelVars = labelVars)
+					getLabelVar(var = idVar, label = if(!missing(idLab))	idLab, labelVars = labelVars),
+					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = yVar, label = if(!missing(yLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = aesVar, label = if(!missing(aesLab))	aesLab, labelVars = labelVars)
 				)
 			)
 		}else	if(tableLabNotSpec){

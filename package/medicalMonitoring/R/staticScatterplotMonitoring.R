@@ -97,22 +97,26 @@ staticScatterplotMonitoring <- function(
 
 	# base plot
 	# specify data in 'ggplot' call, e.g. to have line from variable correctly facetted
-	aesBase <- list(x = xVar, y = yVar)
-	gg <- ggplot(data = data, mapping = do.call(aes_string, aesBase))
+	aesBase <- list(x = sym(xVar), y = sym(yVar))
+	gg <- ggplot(data = data, mapping = do.call(aes, aesBase))
 	
 	# line
 	if(lineInclude){
 #		if(!"group" %in% names(aesLineVar)){
 #			warning("'group' should be specified in the 'aesLineVar'; no line is created.")
 #		}else{
-			argsGeomLine <- list(mapping = do.call(aes_string, aesLineVar))
+			aesLineVar <- sapply(aesLineVar, sym, simplify = FALSE)
+			argsGeomLine <- list(mapping = do.call(aes, aesLineVar))
 			gg <- gg + do.call(geom_line, argsGeomLine)
 #		}
 	}
 	
 	# scatter
-	aesGeom <- c(aesPointVar, if(!is.null(hoverVars))	list(text = "hover"))
-	argsGeom <- list(mapping = do.call(aes_string, aesGeom))
+	if(length(aesPointVar) > 0)
+		aesPointVar <- sapply(aesPointVar, sym, simplify = FALSE)
+	
+	aesGeom <- c(aesPointVar, if(!is.null(hoverVars))	list(text = sym("hover")))
+	argsGeom <- list(mapping = do.call(aes, aesGeom))
 	geomFct <- match.fun(paste("geom", geomType, sep = "_"))
 	gg <- gg + do.call(geomFct, argsGeom)
 	
