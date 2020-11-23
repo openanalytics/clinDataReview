@@ -287,7 +287,7 @@ filterDataSingle <- function(data,
 		
 		varNew <- filters[["varNew"]]
 		if(varNew %in% names(data))
-			warning(sQuote(varNew), "is overwritten in the data.")
+			warning(sQuote(varNew), " is overwritten in the data.")
 		data[[varNew]] <- isKept
 		labelNew <- filters[["labelNew"]]
 		if(is.null(labelNew))	labelNew <- paste0(varMsg, if(keepNAFilter)	" (including missing)")
