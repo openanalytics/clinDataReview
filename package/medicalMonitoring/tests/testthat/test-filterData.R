@@ -147,7 +147,7 @@ test_that("Return all in filter data for a single filter", {
       )
       
       expect_silent(
-          filterData <- medicalMonitoring:::filterDataSingle(
+          filterData <- filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a"),
               returnAll = TRUE
@@ -161,7 +161,27 @@ test_that("Return all in filter data for a single filter", {
       
     })
 
-
+test_that("Keep NA in filter data for single filter", {
+      
+      data <- data.frame(
+          A = c(NA, 2, 3),
+          B = c(4, 5, NA),
+          C = c("a", "a", "b"),
+          stringsAsFactors = FALSE      
+      )
+      expect_silent(
+          filterData <- medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "C", value = "a"),
+              keepNA = TRUE
+          )
+      )
+      expect_s3_class(filterData, "data.frame")
+      expect_true(any(is.na(filterData)))
+      expect_equal(nrow(filterData), 2)
+      expect_identical(filterData$keep, c(TRUE, TRUE, FALSE))
+      
+    })
 
 
 
