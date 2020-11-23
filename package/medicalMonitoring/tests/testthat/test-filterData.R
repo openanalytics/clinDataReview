@@ -102,6 +102,11 @@ test_that("Filter data for a single filter in the simplest setting", {
       expect_equal(nrow(filterData), 2)
       expect_identical(filterData$C, c("a", "a"))
       expect_identical(class(filterData$C), "character")
+      expect_identical(class(attributes(filterData)), "list")
+      
+      attrData <- attributes(filterData)
+      expect_true(any(grepl("msg", names(attrData))))
+      expect_true(any(! grepl("labelVars", names(attrData))))
       
     })
 
