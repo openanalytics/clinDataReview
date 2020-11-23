@@ -105,8 +105,8 @@ test_that("Filter data for a single filter in the simplest setting", {
       expect_identical(class(attributes(filterData)), "list")
       
       attrData <- attributes(filterData)
-      expect_true(any(grepl("msg", names(attrData))))
-      expect_true(any(! grepl("labelVars", names(attrData))))
+      expect_true("msg" %in% names(attrData))
+      expect_true(! "labelVars" %in% names(attrData))
       
     })
 
@@ -128,7 +128,7 @@ test_that("Errors in filtering data", {
       )
       
       expect_error(
-          medicalMonitoring:::filterDataSingle(
+          filterDataSingle(
               data = data,
               filters = list(var = "C")
           ),
@@ -137,7 +137,29 @@ test_that("Errors in filtering data", {
       
     })
 
-
+test_that("Return all in filter data for a single filter", {
+      
+      data <- data.frame(
+          A = c(1, 2, 3),
+          B = c(4, 5, 6),
+          C = c("a", "a", "b"),
+          stringsAsFactors = FALSE      
+      )
+      
+      expect_silent(
+          filterData <- medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "C", value = "a"),
+              returnAll = TRUE
+          )
+      )
+      expect_s3_class(filterData, "data.frame")
+      expect_true("keep" %in% colnames(filterData))
+      expect_identical(nrow(filterData), nrow(data))
+      expect_equal(ncol(filterData), (ncol(data) + 1))
+      expect_identical(filterData$keep, c(TRUE, TRUE, FALSE))
+      
+    })
 
 
 
