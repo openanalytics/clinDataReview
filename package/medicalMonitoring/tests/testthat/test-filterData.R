@@ -147,7 +147,7 @@ test_that("Return all in filter data for a single filter", {
       )
       
       expect_silent(
-          filterData <- filterDataSingle(
+          filterData <- medicalMonitoring:::filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a"),
               returnAll = TRUE
@@ -157,7 +157,7 @@ test_that("Return all in filter data for a single filter", {
       expect_true("keep" %in% colnames(filterData))
       expect_identical(nrow(filterData), nrow(data))
       expect_equal(ncol(filterData), (ncol(data) + 1))
-      expect_identical(filterData$keep, c(TRUE, TRUE, FALSE))
+      expect_equal(filterData$keep, c(TRUE, TRUE, FALSE))
       
     })
 
@@ -166,7 +166,7 @@ test_that("Keep NA in filter data for single filter", {
       data <- data.frame(
           A = c(NA, 2, 3),
           B = c(4, 5, NA),
-          C = c("a", "a", "b"),
+          C = c("a", NA, "b"),
           stringsAsFactors = FALSE      
       )
       expect_silent(
@@ -179,9 +179,132 @@ test_that("Keep NA in filter data for single filter", {
       expect_s3_class(filterData, "data.frame")
       expect_true(any(is.na(filterData)))
       expect_equal(nrow(filterData), 2)
-      expect_identical(filterData$A, c(NA, 2))
+      expect_equal(filterData$A, c(NA, 2))
+      expect_equal(filterData$C, c("a", NA))
       
     })
 
+test_that("Not keep NA in filter data for single filter", {
+      
+      data <- data.frame(
+          A = c(NA, 2, 3),
+          B = c(4, 5, NA),
+          C = c("a", NA, "b"),
+          stringsAsFactors = FALSE      
+      )
+      expect_silent(
+          filterData <- medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "C", value = "a"),
+              keepNA = FALSE
+          )
+      )
+      expect_s3_class(filterData, "data.frame")
+      expect_true(any(is.na(filterData)))
+      expect_equal(nrow(filterData), 1)
+      
+    })
 
+test_that("Filter column not in filter data for single filter", {
+      
+      data <- data.frame(
+          A = c(1, 2, 3),
+          B = c(4, 5, 6),
+          C = c("a", "a", "b"),
+          stringsAsFactors = FALSE      
+      )
+      expect_warning(
+          filterData <- medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "D", value = "a"),
+              keepNA = TRUE
+          ),
+          "Data is not filtered based on the variable: .* is not available in the input data."
+      )
+      expect_identical(data, filterData)
+      
+    })
 
+test_that("Filter with 'byVar' in filter data for single filter", {
+      
+      data <- data.frame(
+          A = c(1, 2, 3, 4),
+          B = c(5, 6, 7, 8),
+          C = c("a", "a", "b", "c"),
+          D = c("cat1", "cat2", "cat1", "cat1"),
+          stringsAsFactors = FALSE      
+      )
+      filterData <- medicalMonitoring:::filterDataSingle(
+          data = data,
+          filters = list(
+              var = "A", valueFct = function(x) x > 2,
+              rev = TRUE, varsBy = c("C", "D")
+          )
+      )
+      expect_s3_class(filterData, "data.frame")
+      #expect_true(nrow(filterData) == 2)
+      
+    })
+
+test_that("Filter with 'varNew' in filter data for single filter", {
+      
+      data <- data.frame(
+          A = c(1, 2, 3),
+          B = c(4, 5, 6),
+          C = c("a", "a", "b"),
+          stringsAsFactors = FALSE      
+      )
+      expect_silent(
+          filterData <- medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "C", value = "a", varNew = "newVar"),
+          )
+      )
+      expect_s3_class(filterData, "data.frame")
+      expect_equal(ncol(filterData), (ncol(data) + 1))
+      expect_equal(filterData$newVar, c(TRUE, TRUE, FALSE))
+      
+      expect_warning(
+          medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "C", value = "a", varNew = "B"),
+          ),
+          ".* is overwritten in the data."
+      )
+    })
+
+test_that("Filter with 'valueFct' in filter data for single filter", {
+      
+      data <- data.frame(
+          A = c(1, 2, 3),
+          B = c(4, 5, 6),
+          C = c("a", "a", "b"),
+          stringsAsFactors = FALSE      
+      )
+      expect_error(
+          medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "C", valueFct = grepl("a", data$C))
+          ),
+          "'valueFct' should be a character or a function."
+      )
+      
+      expect_silent(
+          filterData <- medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "A", valueFct = function(x) x > 1)
+          )
+      )
+      expect_s3_class(filterData, "data.frame")
+      expect_equal(nrow(filterData), 1)
+      
+      expect_silent(
+          filterData2 <- medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "A", valueFct = "function(x) x > 1")
+          )
+      )
+      expect_s3_class(filterData2, "data.frame")
+      #expect_equal(filterData, filterData2)
+      
+    })
