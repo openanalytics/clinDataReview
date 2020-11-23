@@ -91,7 +91,7 @@ test_that("Filter data for a single filter in the simplest setting", {
       )
       
       expect_silent(
-          filterData <- medicalMonitoring:::filterDataSingle(
+          filterData <- filterDataSingle(
               data = data,
               filters = list(
                   var = "C", value = "a"
@@ -105,6 +105,32 @@ test_that("Filter data for a single filter in the simplest setting", {
       
     })
 
+test_that("Errors in filtering data", {
+      
+      data <- data.frame(
+          A = c(1, 2, 3),
+          B = c(4, 5, 6),
+          C = c("a", "a", "b"),
+          stringsAsFactors = FALSE      
+      )
+      
+      expect_error(
+          filterDataSingle(
+              data = data,
+              filters = list(value = "a")
+          ),
+          "'var' used for filtering of data should be specified."
+      )
+      
+      expect_error(
+          medicalMonitoring:::filterDataSingle(
+              data = data,
+              filters = list(var = "C")
+          ),
+          "'value' of interest or 'valueFct' to obtain it, or filtering of missing values should be specified"
+      )
+      
+    })
 
 
 
