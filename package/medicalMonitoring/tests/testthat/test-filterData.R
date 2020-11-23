@@ -179,7 +179,7 @@ test_that("Keep NA in filter data for single filter", {
       expect_s3_class(filterData, "data.frame")
       expect_true(any(is.na(filterData)))
       expect_equal(nrow(filterData), 2)
-      expect_identical(filterData$keep, c(TRUE, TRUE, FALSE))
+      expect_identical(filterData$A, c(NA, 2))
       
     })
 
