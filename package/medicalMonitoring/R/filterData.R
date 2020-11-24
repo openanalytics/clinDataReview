@@ -41,11 +41,9 @@
 #' @inheritParams filterDataSingle
 #' @inheritParams medicalMonitoring-common-args
 #' @return Filtered \code{data} if \code{returnAll} is FALSE (by default).
-#' Otherwise \code{data} with additional column: \code{keep},
+#' Otherwise \code{data} with additional column: \code{keep} or \code{varNew} (if specified),
 #' containing TRUE for records which fullfill the specified
-#' condition(s) or FALSE otherwise.
-#' The data contains also any new variable(s) 
-#' (\code{varNew}) specified in the \code{filters}.
+#' condition(s) and FALSE otherwise.
 #' @example inst/examples/filterData-example.R
 #' @author Laure Cougnaud
 #' @export
@@ -150,8 +148,10 @@ filterData <- function(
 #' \itemize{
 #' \item{if FALSE (by default): }{the \code{data} for only the filtered records
 #' is returned.}
-#' \item{if TRUE: }{the full \code{data} is returned, with the extra column: 'keep',
-#' containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
+#' \item{if TRUE: }{the full \code{data} is returned. 
+#' Records are flagged based on the \code{filters} condition, in a new column:
+#' \code{varNew} (if specified), or 'keep' otherwise; containing TRUE
+#'  if the record fulfill all conditions, FALSE otherwise}
 #' } 
 #' @param labelData (optional) String with label for input \code{data},
 #' that will be included in progress messages.
@@ -283,7 +283,8 @@ filterDataSingle <- function(data,
 	)
 	
 	# add a new variable with filtering
-	if("varNew" %in% names(filters)){
+	isVarNewSpec <- "varNew" %in% names(filters)
+	if(isVarNewSpec){
 		
 		varNew <- filters[["varNew"]]
 		if(varNew %in% names(data))
@@ -293,9 +294,12 @@ filterDataSingle <- function(data,
 		if(is.null(labelNew))	labelNew <- paste0(varMsg, if(keepNAFilter)	" (including missing)")
 		labelVars[varNew] <- labelNew
 		
-	# add variable: 'keep' with filtering
-	}else	if(returnAll){
-		data$keep <- isKept
+	}
+	
+	if(returnAll){
+		# add variable: 'keep' with filtering
+		if(!isVarNewSpec)
+			data$keep <- isKept
 	# filter data
 	}else{		
 		data <- data[which(isKept), ]
