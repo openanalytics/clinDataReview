@@ -1,3 +1,5 @@
+0.8.0
+    o filterData: fix for returnAll <-> varNew
 0.7.0
     o fix MOMP -> report in vignette
     o fix createTemplateDoc
