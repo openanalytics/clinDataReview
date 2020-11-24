@@ -50,16 +50,17 @@ scrapeHtml <- function(pathHtml) {
 }
 
 #' @importFrom utils write.table
+#' @importFrom tools file_path_sans_ext
 saveScrapeTable <- function(table, pathHtml) {
   
-  fileName <- basename(pathHtml)
+  fileName <- file_path_sans_ext(basename(pathHtml))
   
-  dirScrape <- sprintf("%s/scrapedTables", dirname(pathHtml))
+  dirScrape <- file.path(dirname(pathHtml), "scrapedTables")
   
   if(! dir.exists(dirScrape)) dir.create(dirScrape)
   
-  pathScrapeTableTxt <- sprintf("%s/%s.txt", dirScrape, fileName)
-  pathScrapeTableCsv <- sprintf("%s/%s.csv", dirScrape, fileName)
+  pathScrapeTableTxt <- file.path(dirScrape, sprintf("%s.txt", fileName))
+  pathScrapeTableCsv <- file.path(dirScrape, sprintf("%s.csv", fileName))
   
   write.table(
       x = table,
