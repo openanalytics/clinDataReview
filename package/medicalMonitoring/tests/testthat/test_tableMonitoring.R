@@ -1,5 +1,9 @@
 context("Test table monitoring")
 
+# Seems from 'coverage' report that
+# 'tableMonitoring' is also tested through the other plot functionalities?
+# So other tests are skipped
+
 data <- data.frame(
     USUBJID = c("ID1", "ID2", "ID3", "ID4"),
     A = c(10, 12, 16, 18),
@@ -58,6 +62,4 @@ test_that("Use 'pathExpand' argument", {
       expect_is(tableMon, "htmlwidget")
       
     })
-
-# Seems 'tableMonitoring' is also tested through the other plot functionalities?
 
