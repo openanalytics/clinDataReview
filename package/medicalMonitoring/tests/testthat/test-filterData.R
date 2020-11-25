@@ -147,7 +147,7 @@ test_that("Return all in filter data for a single filter", {
       )
       
       expect_silent(
-          filterData <- medicalMonitoring:::filterDataSingle(
+          filterData <- filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a"),
               returnAll = TRUE
@@ -170,7 +170,7 @@ test_that("Keep NA in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_silent(
-          filterData <- medicalMonitoring:::filterDataSingle(
+          filterData <- filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a"),
               keepNA = TRUE
@@ -193,7 +193,7 @@ test_that("Not keep NA in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_silent(
-          filterData <- medicalMonitoring:::filterDataSingle(
+          filterData <- filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a"),
               keepNA = FALSE
@@ -214,7 +214,7 @@ test_that("Filter column not in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_warning(
-          filterData <- medicalMonitoring:::filterDataSingle(
+          filterData <- filterDataSingle(
               data = data,
               filters = list(var = "D", value = "a"),
               keepNA = TRUE
@@ -234,7 +234,7 @@ test_that("Filter with 'byVar' in filter data for single filter", {
           D = c("cat1", "cat2", "cat1", "cat1"),
           stringsAsFactors = FALSE      
       )
-      filterData <- medicalMonitoring:::filterDataSingle(
+      filterData <- filterDataSingle(
           data = data,
           filters = list(
               var = "A", valueFct = function(x) x > 2,
@@ -255,7 +255,7 @@ test_that("Filter with 'varNew' in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_silent(
-          filterData <- medicalMonitoring:::filterDataSingle(
+          filterData <- filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a", varNew = "newVar"),
           )
@@ -265,7 +265,7 @@ test_that("Filter with 'varNew' in filter data for single filter", {
       expect_equal(filterData$newVar, c(TRUE, TRUE))
       
       expect_warning(
-          medicalMonitoring:::filterDataSingle(
+          filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a", varNew = "B"),
           ),
@@ -282,7 +282,7 @@ test_that("Filter with 'valueFct' in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_error(
-          medicalMonitoring:::filterDataSingle(
+          filterDataSingle(
               data = data,
               filters = list(var = "C", valueFct = grepl("a", data$C))
           ),
@@ -290,7 +290,7 @@ test_that("Filter with 'valueFct' in filter data for single filter", {
       )
       
       expect_silent(
-          filterData <- medicalMonitoring:::filterDataSingle(
+          filterData <- filterDataSingle(
               data = data,
               filters = list(var = "A", valueFct = function(x) x > 1)
           )
@@ -299,7 +299,7 @@ test_that("Filter with 'valueFct' in filter data for single filter", {
       expect_equal(nrow(filterData), 1)
       
       expect_silent(
-          filterData2 <- medicalMonitoring:::filterDataSingle(
+          filterData2 <- filterDataSingle(
               data = data,
               filters = list(var = "A", valueFct = "function(x) x > 1")
           )
