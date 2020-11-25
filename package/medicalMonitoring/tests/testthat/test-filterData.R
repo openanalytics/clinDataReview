@@ -262,7 +262,7 @@ test_that("Filter with 'varNew' in filter data for single filter", {
       )
       expect_s3_class(filterData, "data.frame")
       expect_equal(ncol(filterData), (ncol(data) + 1))
-      expect_equal(filterData$newVar, c(TRUE, TRUE, FALSE))
+      expect_equal(filterData$newVar, c(TRUE, TRUE))
       
       expect_warning(
           medicalMonitoring:::filterDataSingle(
