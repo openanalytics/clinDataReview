@@ -116,3 +116,14 @@ test_that("interactive table is created", {
 	expect_is(res$table, "datatables")
 	
 })
+
+test_that("Barplot with hoverVars without label", {
+      
+      plOutput <- barplotMonitoring(
+          data = dataPlot, 
+          xVar = "AEDECOD", yVar = "n",
+          hoverVars = c("AEDECOD", "n")
+      )
+      expect_is(plOutput, "plotly")
+      
+    })
