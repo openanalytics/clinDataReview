@@ -53,7 +53,7 @@ test_that("Get the path to Rmd templates", {
 test_that("Create template documentation", {
 			
 	# R CMD check runs on package binary, so without 'inst' folder:
-	doc <- medicalMonitoring:::createTemplateDoc(
+	doc <- createTemplateDoc(
 		templatePath = system.file("template", package = "medicalMonitoring")
 	)
 	expect_is(doc, "character")
@@ -72,6 +72,16 @@ test_that("Create template documentation", {
 	expect_identical(docRoxParType, doc[1])
 	
 })
+
+test_that("Invisible output from create template documentation", {
+      
+      expect_silent(
+          res <- createTemplateDoc()
+      )
+      expect_equal(class(res), "character")
+      expect_identical(res, "")
+      
+    })
 
 test_that("Get documentation from a JSON schema", {
       
