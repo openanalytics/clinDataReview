@@ -1,5 +1,7 @@
 context("Test reporting utility funcitons")
 
+tmpdir <- tempdir()
+
 test_that("Test extraction of md header", {
       
       title <- getMdHeader("A title")
@@ -13,7 +15,6 @@ test_that("Test extraction of md header", {
 
 test_that("Test extraction of md header with settings", {
       
-      tmpdir <- tempdir()
       pathFile <- file.path(tmpdir, "aFile.Rmd")
       file.create(file = pathFile)
       writeLines("knitr::current_input()", pathFile)
@@ -24,5 +25,14 @@ test_that("Test extraction of md header with settings", {
       )
       titleFromSettings <- getMdHeader("A title", settings = settings)
       expect_is(titleFromSettings, "character")
+      
+    })
+
+test_that("Invisible output from 'knitPrintMedicalMonitoring'", {
+      
+      expect_silent(
+          res <- knitPrintMedicalMonitoring(list = NULL)
+      )
+      expect_null(res)
       
     })
