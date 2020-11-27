@@ -9,7 +9,7 @@ dataDM <- SDTMDataPelican$DM
 
 ##################
 ## Path to data ##
-testPathData <- normalizePath(path = "../data")
+testPathData <- normalizePath(path = "../dataTesting")
 
 test_that("Correct extraction of custom annotation", {
       
