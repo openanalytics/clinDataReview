@@ -186,7 +186,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 		list(
 			newData = dataCurrentI,
 			oldData = dataPreviousI,
-			labelVars = labelVars,
+			labelVars = NULL,
 			outputType = comparisonTableType
 		),
 		comparisonTableParams

@@ -162,9 +162,8 @@ argsCompTable <- c(
 	list(
 		newData = dataCurrent,
 		oldData = dataPrevious,
-		labelVars = labelVars,
-		outputType = comparisonTableType,
-		checkExistPatientProfilePath = FALSE
+		labelVars = NULL,
+		outputType = comparisonTableType
 	),
 	comparisonTableParams
 )
