@@ -175,8 +175,19 @@ test_that("Extraction of table label and valueVar for other plots when labels ar
           labelVars = labelVarsCounts
       )
       
-#      expect_silent(
-#          res <- getPlotTableVars(plotFunction, plotArgsCounts)
-#      )
+      expect_silent(
+          res <- getPlotTableVars(plotFunction, plotArgsCounts)
+      )
+      expect_equal(class(res), "character")
+      expect_length(res, 3)
+      attrRes <- attributes(res)
+      expect_equal(class(attrRes), "list")
+      expect_named(attrRes$tableLab)
+      expect_equal(
+          attrRes$tableLab,
+          c(A = "firstName", B  = "secondName", valueV = "thirdName")
+      )  
+      expect_equal(attrRes$tableLab, labelVarsCounts)       
+      
       
     })
