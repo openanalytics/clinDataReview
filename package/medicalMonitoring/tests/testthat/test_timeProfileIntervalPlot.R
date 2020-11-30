@@ -18,6 +18,10 @@ myData <- data.frame(
     endDay = endDay
 )
 
+####
+# Not sure those tests make sense as it is?
+
+
 test_that("Test plot of 'timeProfileIntervalPlot'", {
       
       plotObj <- timeProfileIntervalPlot(
@@ -86,3 +90,58 @@ test_that("Test plot and table of 'timeProfileIntervalPlot'", {
       
     })
 
+test_that("Use two variables for 'paramVar'", {
+      
+      plotObj <- timeProfileIntervalPlot(
+          data = myData,
+          paramVar = c("subjectID", "startDay"),
+          timeStartVar = "startDay",
+          timeEndVar = "endDay"
+      )
+      expect_is(plotObj, "htmlwidget")
+     
+    })
+
+test_that("Use shape variables for time", {
+      
+      plotObj <- timeProfileIntervalPlot(
+          data = myData,
+          paramVar = "subjectID",
+          timeStartVar = "startDay",
+          timeEndVar = "endDay",
+          timeStartShapeVar = "startDay",
+          timeEndShapeVar = "endDay"
+      )
+      expect_is(plotObj, "htmlwidget")
+            
+    })
+
+test_that("Set hover vars but not hover lab", {
+      
+      plotObj <- timeProfileIntervalPlot(
+          data = myData,
+          paramVar = "subjectID",
+          timeStartVar = "startDay",
+          timeEndVar = "endDay",
+          timeStartShapeVar = "startDay",
+          timeEndShapeVar = "endDay",
+          hoverVars = c("startDay", "endDay")
+      )
+      expect_is(plotObj, "htmlwidget")     
+      
+    })
+
+test_that("Set color var but not color palette", {
+      
+      plotObj <- timeProfileIntervalPlot(
+          data = myData,
+          paramVar = "subjectID",
+          timeStartVar = "startDay",
+          timeEndVar = "endDay",
+          timeStartShapeVar = "startDay",
+          timeEndShapeVar = "endDay",
+          colorVar = "startDay"
+      )
+      expect_is(plotObj, "htmlwidget")
+      
+    })

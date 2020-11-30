@@ -26,8 +26,10 @@ The specification within \code{filters} prevails on this parameter.}
 \itemize{
 \item{if FALSE (by default): }{the \code{data} for only the filtered records
 is returned.}
-\item{if TRUE: }{the full \code{data} is returned, with the extra column: 'keep',
-containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
+\item{if TRUE: }{the full \code{data} is returned. 
+Records are flagged based on the \code{filters} condition, in a new column:
+\code{varNew} (if specified), or 'keep' otherwise; containing TRUE
+ if the record fulfill all conditions, FALSE otherwise}
 }}
 
 \item{labelVars}{Named character vector containing variable labels.}

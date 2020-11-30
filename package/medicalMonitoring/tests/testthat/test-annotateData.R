@@ -6,7 +6,10 @@ data(SDTMDataPelican)
 
 dataLB <- SDTMDataPelican$LB
 dataDM <- SDTMDataPelican$DM
-dataEX <- SDTMDataPelican$EX
+
+##################
+## Path to data ##
+testPathData <- normalizePath(path = "../dataTesting")
 
 test_that("Correct extraction of custom annotation", {
       
@@ -163,15 +166,6 @@ test_that("Annotation based on functional_groups_lab", {
       
     })
 
-test_that("Annotation based on exposed_subject", {
-      
-      expect_warning(
-          annotateData(dataLB, annotations = "exposed_subjects")
-      )
-      # Add ex.sas7bdat ?
-      
-    })
-
 test_that("Annotation with 'dataset' custom annotation", {
       
       expect_warning(
@@ -237,7 +231,7 @@ test_that("Nested annotations", {
               list(
                   vars = "SEXFCT",
                   varFct = 'as.factor(SEX)'
-                  ),
+              ),
               list(
                   vars = "AGESTRING",
                   varFct = 'sprintf("%s %s", AGE, AGEU)',
@@ -248,5 +242,61 @@ test_that("Nested annotations", {
       expect_is(dataAnnot, "data.frame")
       extraVar <- with(dataDM, sprintf("%s %s", AGE, AGEU))
       expect_identical(dataAnnot$AGESTRING, extraVar)
+      
+    })
+
+test_that("Warning with exposure data", {
+      
+      expect_warning(
+          annotateData(
+              data = dataLB,
+              dataPath = "path/To/Data",
+              annotations = "exposed_subjects"
+          ),
+          "Data is not annotated with exposure data, because no such data"
+      )
+      
+    })
+
+test_that("Annotate with exposure data", {
+      
+      expect_silent(
+          dataEx <- annotateData(
+              data = dataLB,
+              dataPath = testPathData,
+              annotations = "exposed_subjects"
+          )
+      )
+      expect_s3_class(dataEx, "data.frame")
+      expect_equal(ncol(dataEx), ncol(dataLB) + 1)
+      expect_true("EXFL" %in% colnames(dataEx))     
+      
+    })
+
+test_that("Stop annotate with exposure data because no subjectVar", {
+      
+      expect_error(
+          annotateData(
+              data = dataLB,
+              dataPath = testPathData,
+              annotations = "exposed_subjects",
+              subjectVar = "LBTESTCD"
+          ),
+          "Data is not annotated with exposure data because doesn't contain variable"
+      )
+      
+    })
+
+test_that("Verbose annotation with exposure data", {
+      
+      expect_message(
+          dataEx <- annotateData(
+              data = dataLB,
+              dataPath = testPathData,
+              annotations = "exposed_subjects",
+              verbose = TRUE
+          ),
+          "Data is annotated with exposed subjects"
+      )
       
     })
