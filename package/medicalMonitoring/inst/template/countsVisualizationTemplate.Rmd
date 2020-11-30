@@ -189,11 +189,18 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 	# all variable of interest:
 	vars <- c(parentVar, countVar)
 	
+	varWithTotal <- tail(vars, -1)
+	
 	# variable to summarize
-	var <- if(!is.null(colorVar)){
+	if(!is.null(colorVar)){
 		if(packageVersion("inTextSummaryTable") < "2.11.0")
 			stop("'inTextSummaryTable' version >= 2.11.0 is required.")
-		c("all", colorVar[countVar])
+		colorVarCountVar <- colorVar[countVar]
+		var <- c("all", colorVarCountVar)
+		varInclude0 <- colorVarCountVar
+	}else{
+		var <- NULL
+		varInclude0 <- FALSE
 	}
 	
 	# Extract input data for plot: summary table
@@ -217,12 +224,20 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 		# the corresponding specified colorVar of the PARENT variable should be used
 		if(!is.null(colorVar)){
 			if(!is.null(names(colorVar))){
-				dataTotalRow <- sapply(tail(vars ,-1), function(var){
+				dataTotalRow <- sapply(varWithTotal, function(varI){
+							
+					# extract color variable for the parent variable
+					parentVarI <- vars[match(varI, vars)-1]
+					colorParentVar <- colorVar[parentVarI]
+					
 					dataTotalRow <- ddply(dataI, c("USUBJID", parentVar), function(x){
-						parentVarI <- vars[match(var, vars)-1]
-						x[[colorVar[var]]] <- x[[colorVar[parentVarI]]]
+						# if color var not specified for this variable: set to NA
+						x[[colorVar[countVar]]] <- if(is.na(colorParentVar)){
+							NA
+						}else	x[[colorParentVar]]
 						x
 					})
+			
 				}, simplify = FALSE)
 			}else	dataTotalRow <- NULL
 		}else	dataTotalRow <- NULL
@@ -238,12 +253,15 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 			dataTotal = dataTotalI, 
 			
 			# plotly treemap requires records (rows) for each group
-			rowVarTotalInclude = if(length(vars) > 1)	tail(vars, -1),
+			rowVarTotalInclude = if(length(varWithTotal) > 0)	varWithTotal,
 			# data considered to computed the total per parent sector
 			dataTotalRow = dataTotalRow,
 			
 			rowOrder = "total",
 			labelVars = labelVars,
+			
+			# in case color variable not specified for all variables
+			varInclude0 = varInclude0, 
 			
 			# statistics of interest
 			# for DT output, include columns with patients
@@ -255,9 +273,9 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 			
 		# combine counts of adverse events and stat of color variable in the same row
 		if(!is.null(colorVar)){
-			tableStatsCounts <- subset(tableStats, variable == "all" & !isTotal)[, 
-				c(vars, "statN", "statPercN", "statm", "n", "%", "m", if(!is.null(patientProfilePath))	"patientProfileLink")
-			]
+			colCounts <- c(vars, "statN", "statPercN", "statm", "n", "%", "m", if(!is.null(patientProfilePath))	"patientProfileLink")
+			tableStatsCounts <- subset(tableStats, variable == "all" & !isTotal)
+			tableStatsCounts <- tableStatsCounts[, colCounts]
 			tableStatsColorVar <- subset(tableStats, variable != "all" & !isTotal)[, c(vars, "statMean", "Mean")]
 			dataPlot <- merge(tableStatsCounts, tableStatsColorVar, all.x = TRUE, by = vars)
 		}else	dataPlot <- subset(tableStats, !isTotal)
