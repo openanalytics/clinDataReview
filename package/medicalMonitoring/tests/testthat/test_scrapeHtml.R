@@ -3,8 +3,6 @@ context("Test scrape html functions")
 basePath <- normalizePath(path = "../files")
 pathHtml <- list.files(file.path(basePath, "htmlScraping"), full.names = TRUE)
 
-pathHtml <- "~/git/GLPGMedicalMonitoring/package/medicalMonitoring/tests/files/htmlScraping/3-3-demographics.html"
-
 test_that("Errors of scraping html tables", {
       
       expect_error(
