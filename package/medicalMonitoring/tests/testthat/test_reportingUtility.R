@@ -28,11 +28,26 @@ test_that("Test extraction of md header", {
 #      
 #    })
 #
-#test_that("Invisible output from 'knitPrintMedicalMonitoring'", {
-#      
+test_that("Invisible output from 'knitPrintMedicalMonitoring'", {
+      
+      emptyList <- list()
+      class(emptyList) <- "medicalMonitoring"
+      
+      expect_silent(
+          res <- knitPrintMedicalMonitoring(list = emptyList)
+      )
+      expect_null(res)
+      
+    })
+
+test_that("Invisible output from 'knitPrintMedicalMonitoring' for nested list", {
+      
+#      emptyList <- list(firstList = list())
+#      class(emptyList$firstList) <- "medicalMonitoring"
+      
 #      expect_silent(
-#          res <- knitPrintMedicalMonitoring(list = NULL)
+#          res <- knitPrintMedicalMonitoring(list = emptyList)
 #      )
-#      expect_null(res)
-#      
-#    })
+      #expect_null(res)
+      
+    })
