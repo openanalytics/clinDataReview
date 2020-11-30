@@ -48,8 +48,10 @@ The specification within \code{filters} prevails on this parameter.}
 \itemize{
 \item{if FALSE (by default): }{the \code{data} for only the filtered records
 is returned.}
-\item{if TRUE: }{the full \code{data} is returned, with the extra column: 'keep',
-containing 'TRUE' if the record fulfill all conditions, FALSE otherwise}
+\item{if TRUE: }{the full \code{data} is returned. 
+Records are flagged based on the \code{filters} condition, in a new column:
+\code{varNew} (if specified), or 'keep' otherwise; containing TRUE
+ if the record fulfill all conditions, FALSE otherwise}
 }}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
@@ -64,11 +66,9 @@ that will be included in progress messages.}
 }
 \value{
 Filtered \code{data} if \code{returnAll} is FALSE (by default).
-Otherwise \code{data} with additional column: \code{keep},
+Otherwise \code{data} with additional column: \code{keep} or \code{varNew} (if specified),
 containing TRUE for records which fullfill the specified
-condition(s) or FALSE otherwise.
-The data contains also any new variable(s) 
-(\code{varNew}) specified in the \code{filters}.
+condition(s) and FALSE otherwise.
 }
 \description{
 A dataset can be filtered:
