@@ -74,7 +74,7 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 		}else{
 			
 			if(tableLabNotSpec)
-				tableLab <- with(plotArgs, getLabelVar(tableVars, labelVars = labelVars))
+				tableLab <- with(plotArgs, glpgUtilityFct::getLabelVar(tableVars, labelVars = labelVars))
 			
 			if(!valueVar %in% tableVars){
 				tableVars <- c(tableVars, valueVar)
@@ -82,7 +82,12 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 					tablePars$nonVisibleVar,
 					valueVar
 				)
-				tableLab[valueVar] <- plotArgs$valueLab
+                tableLabOrig <- tableLab
+                tableLab <- c(tableLab, valueVar)
+                idxNames <- which(names(tableLab) %in% names(tableLabOrig))
+                names(tableLab) <- c(names(tableLab)[idxNames], valueVar)
+                plotArgs$valueLab <- valueVar
+				tableLab[valueVar] <- with(plotArgs, glpgUtilityFct::getLabelVar(valueLab, labelVars = labelVars))
 			}
 			
 		}
