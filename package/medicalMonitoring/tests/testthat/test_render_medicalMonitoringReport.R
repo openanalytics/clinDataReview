@@ -116,7 +116,7 @@ test_that("Get path of Md from config file - not default settings", {
 
 
 test_that("Get parameters from general config file", {
-  
+      
       listConfig <- getParamsFromConfig("config.yml", configDir = testPathConfig)
       configFromYaml <- read_yaml(filePathGeneralConfig)
       n <- length(configFromYaml)
@@ -396,13 +396,39 @@ test_that("Test render medical monitoring report for all config files", {
 
 test_that("Test warnings of render medical monitoring report", {
       
+      ## File 1
+      configFile1 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+      write_yaml(
+          list(
+              template = divisionTemplate.Rmd,
+              templatePackage = medicalMonitoring,
+              reportTitle = "Adverse events",
+              reportTitleLevel = 1,
+          
+          ),
+          configFile1 
+      )
+      
+      ### General config file
+      file.create("config.yaml")
+      configFileGeneral <- paste0(tmpdir, "/config.yml") 
+      write_yaml(
+          list(
+              study = "Study name",
+              pathDataFolder = "path/to/data",
+              config = list(basename(configFile1))
+          ),
+          configFileGeneral
+      )
+      configFiles <- c(configFileGeneral, configFile1)
+      configFiles <- basename(configFiles)
+           
 #      expect_warning(
 #          output <- render_medicalMonitoringReport(
 #              configFiles = configFiles,
-#              configDir = testPathConfig,
-#              outputDir = outputDir,
-#              indexPath = file.path(testPathBase, "index.Rmd"),
-#              intermediateDir = testPathInterim
+#              configDir = tmpdir,
+#              outputDir = tmpdir,
+#              intermediateDir = tmpdir
 #          )
 #      )
       
