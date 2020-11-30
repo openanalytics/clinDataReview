@@ -1,4 +1,5 @@
 0.8.0
+    o remove 'settings' argument in 'getMdHeader'
     o filterData: fix for returnAll <-> varNew
     o scrapeHtml: minor changes in extracting the path
 0.7.0

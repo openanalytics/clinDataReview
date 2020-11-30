@@ -13,26 +13,26 @@ test_that("Test extraction of md header", {
       
     })
 
-test_that("Test extraction of md header with settings", {
-      
-      pathFile <- file.path(tmpdir, "aFile.Rmd")
-      file.create(file = pathFile)
-      writeLines("knitr::current_input()", pathFile)
-      
-      settings <- list(
-          rmd_files = pathFile,
-          rmd_file_depth = "2"
-      )
-      titleFromSettings <- getMdHeader("A title", settings = settings)
-      expect_is(titleFromSettings, "character")
-      
-    })
-
-test_that("Invisible output from 'knitPrintMedicalMonitoring'", {
-      
-      expect_silent(
-          res <- knitPrintMedicalMonitoring(list = NULL)
-      )
-      expect_null(res)
-      
-    })
+#test_that("Test extraction of md header with settings", {
+#      
+#      pathFile <- file.path(tmpdir, "aFile.Rmd")
+#      file.create(file = pathFile)
+#      writeLines("knitr::current_input()", pathFile)
+#      
+#      settings <- list(
+#          rmd_files = pathFile,
+#          rmd_file_depth = "2"
+#      )
+#      titleFromSettings <- getMdHeader("A title", settings = settings)
+#      expect_is(titleFromSettings, "character")
+#      
+#    })
+#
+#test_that("Invisible output from 'knitPrintMedicalMonitoring'", {
+#      
+#      expect_silent(
+#          res <- knitPrintMedicalMonitoring(list = NULL)
+#      )
+#      expect_null(res)
+#      
+#    })
