@@ -369,7 +369,8 @@ summaryTableDT <- sapply(names(summaryTableList$currentData$summaryTable), funct
       argsCompTable$oldData <- sumTableOld
       argsCompTable$outputType <- comparisonTableType
       argsCompTable$pageLength <- Inf
-	  argsCompTable$labelVars <- labelVars
+	  if(!is.null(labelVars))
+		  argsCompTable$colnames <- setNames(labelVars, labelVars)
       
       argsCompTable$caption <- if(!is.null(loopingVar) && loopingTotal){
         htmltools::tags$caption(
@@ -381,7 +382,7 @@ summaryTableDT <- sapply(names(summaryTableList$currentData$summaryTable), funct
       
       outputComparison <- do.call(compareTables, argsCompTable)
       
-    }, simplify = FALSE)
+}, simplify = FALSE)
 
 summaryTableDT <- summaryTableDT[!sapply(summaryTableDT, is.null)]
 
