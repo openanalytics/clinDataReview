@@ -186,11 +186,14 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 		list(
 			newData = dataCurrentI,
 			oldData = dataPreviousI,
-			labelVars = NULL,
 			outputType = comparisonTableType
 		),
-		comparisonTableParams
+		comparisonTableParams,
+		if(comparisonTableType == "table-comparison-interactive" & !is.null(labelVars)){
+			list(colnames = setNames(names(labelVars), labelVars))
+		}
 	)
+	
 	tableComparison <- do.call(compareTables, argsCompTable)
 	
 	# print listing

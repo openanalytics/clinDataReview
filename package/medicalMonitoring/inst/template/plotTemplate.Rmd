@@ -153,6 +153,8 @@ if(is.null(comparisonTableParams$referenceVars)){
 	# add looping var (in case e.g. replicated records across looping vars)
 	referenceVars <- c(referenceVars, loopingVar)
 	
+	referenceVars <- setdiff(referenceVars, "Comparison type")
+	
 	comparisonTableParams$referenceVars <- referenceVars
 	comparisonTableParams$changeableVars <- NULL
 	
@@ -162,7 +164,6 @@ argsCompTable <- c(
 	list(
 		newData = dataCurrent,
 		oldData = dataPrevious,
-		labelVars = NULL,
 		outputType = comparisonTableType
 	),
 	comparisonTableParams
