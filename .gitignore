@@ -1,6 +1,7 @@
 *.Rcheck
 .project
 *.html
+!package/medicalMonitoring/tests/files/htmlScraping/3-3-demographics.html
 /tests
 *.tar.gz
 # comments all js folder, excepted in the package
