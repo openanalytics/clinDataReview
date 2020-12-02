@@ -396,40 +396,49 @@ test_that("Test render medical monitoring report for all config files", {
 
 test_that("Test warnings of render medical monitoring report", {
       
-      ## File 1
-#      configFile1 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
-#      write_yaml(
-#          list(
-#              template = divisionTemplate.Rmd,
-#              templatePackage = medicalMonitoring,
-#              reportTitle = "Adverse events",
-#              reportTitleLevel = 1,
-#          
-#          ),
-#          configFile1 
-#      )
-#      
-#      ### General config file
-#      file.create("config.yaml")
-#      configFileGeneral <- paste0(tmpdir, "/config.yml") 
-#      write_yaml(
-#          list(
-#              study = "Study name",
-#              pathDataFolder = "path/to/data",
-#              config = list(basename(configFile1))
-#          ),
-#          configFileGeneral
-#      )
-#      configFiles <- c(configFileGeneral, configFile1)
-#      configFiles <- basename(configFiles)
-           
-#      expect_warning(
-#          output <- render_medicalMonitoringReport(
-#              configFiles = configFiles,
-#              configDir = tmpdir,
-#              outputDir = tmpdir,
-#              intermediateDir = tmpdir
-#          )
-#      )
+      ############
+      ## File 1 ##
+      configFile1 <- file.path(tmpdir, "configFile1.yml")
+      write_yaml(
+          list(
+              template = "divisionTemplate.Rmd",
+              templatePackage = "medicalMonitoring",
+              reportTitle = "Adverse events",
+              reportTitleLevel = 1          
+          ),
+          configFile1 
+      )
       
+      #########################
+      ## General config file ##
+      file.create("config.yaml")
+      configFileGeneral <- file.path(tmpdir, "config.yml") 
+      write_yaml(
+          list(
+              study = "Study name",
+              pathDataFolder = "path/to/data",
+              config = list(
+                  basename(configFile1),
+                  "configFile2"
+              )
+          ),
+          configFileGeneral
+      )
+      configFiles <- c(configFileGeneral, configFile1, "configFile2")
+      configFiles <- basename(configFiles)
+      
+      ################
+      ## Index file ##
+      file.path(testPathBase, "index.Rmd")
+      
+      expect_warning(
+          render_medicalMonitoringReport(
+              configFiles = configFiles,
+              configDir = tmpdir,
+              outputDir = tmpdir,
+              intermediateDir = tmpdir,
+              indexPath = file.path(testPathBase, "index.Rmd")
+          )
+      )
+            
     })
