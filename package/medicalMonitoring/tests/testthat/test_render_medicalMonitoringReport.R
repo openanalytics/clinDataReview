@@ -1,38 +1,7 @@
 library(yaml)
 
 tmpdir <- tempdir()
-## File 1
-#configFile1 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
-#write_yaml(
-#    list(
-#        reportTitle = "Title One",
-#        reportTitleLevel = 2
-#    ),
-#    configFile1 
-#)
-#
-### File 2
-#configFile2 <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
-#write_yaml(
-#    list(
-#        reportTitle = "Title Two",
-#        reportTitleLevel = 2
-#    ),
-#    configFile2 
-#)
-#
-### General config file
-#file.create("config.yaml")
-#configFileGeneral <- paste0(tmpdir, "/config.yml") 
-#write_yaml(
-#    list(
-#        study = "Study name",
-#        config = list(basename(configFile1), basename(configFile2))
-#    ),
-#    configFileGeneral
-#)
-#configFiles <- c(configFileGeneral, configFile1, configFile2)
-#configFiles <- basename(configFiles)
+
 testPathBase <- normalizePath(path = "../files")
 testPathConfig <- file.path(testPathBase, "config")
 testPathInterim <- file.path(testPathBase, "interim")
@@ -411,7 +380,6 @@ test_that("Test warnings of render medical monitoring report", {
       
       #########################
       ## General config file ##
-      file.create("config.yaml")
       configFileGeneral <- file.path(tmpdir, "config.yml") 
       write_yaml(
           list(
