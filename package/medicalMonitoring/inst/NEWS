@@ -4,6 +4,7 @@
     o filterData: fix for returnAll <-> varNew
     o scrapeHtml: minor changes in extracting the path
     o countsVisualizationTemplate: fix when colorVar not specified for all parent vars
+    o patient profiles template: change default palette for Windows support: u25C0 -> u25C4, u25B6 -> u25BA
     o unit tests
 0.7.0
     o fix MOMP -> report in vignette
