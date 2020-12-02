@@ -363,11 +363,14 @@ test_that("Test render medical monitoring report for all config files", {
       
     })
 
-test_that("Test warnings of render medical monitoring report", {
+test_that("Test warning of not existance of config file for 'render_medicalMonitoringReport'", {
+      
+      tmpFolder <- tempfile()
+      dir.create(tmpFolder)
       
       ############
       ## File 1 ##
-      configFile1 <- file.path(tmpdir, "configFile1.yml")
+      configFile1 <- file.path(tmpFolder, "configFile1.yml")
       write_yaml(
           list(
               template = "divisionTemplate.Rmd",
@@ -380,7 +383,7 @@ test_that("Test warnings of render medical monitoring report", {
       
       #########################
       ## General config file ##
-      configFileGeneral <- file.path(tmpdir, "config.yml") 
+      configFileGeneral <- file.path(tmpFolder, "config.yml") 
       write_yaml(
           list(
               study = "Study name",
@@ -397,16 +400,95 @@ test_that("Test warnings of render medical monitoring report", {
       
       ################
       ## Index file ##
-      file.path(testPathBase, "index.Rmd")
+      idxFile <- file.path(testPathBase, "index.Rmd")
+      
+      ################
+      ## Extra dirs ##
+      extraTmpDirs <- c(file.path(tmpFolder, "tables"), file.path(tmpFolder, "figures"))
       
       expect_warning(
-          render_medicalMonitoringReport(
+          output <- render_medicalMonitoringReport(
               configFiles = configFiles,
-              configDir = tmpdir,
-              outputDir = tmpdir,
-              intermediateDir = tmpdir,
-              indexPath = file.path(testPathBase, "index.Rmd")
+              configDir = tmpFolder,
+              outputDir = tmpFolder,
+              intermediateDir = tmpFolder,
+              indexPath = idxFile,
+              extraDirs = extraTmpDirs
           )
       )
-            
+      expect_type(output, "character")
+      expect_true(
+          grepl("introduction", output)
+      ) 
+      
     })
+
+test_that("Test warning of template Rmd already available for 'render_medicalMonitoringReport'", {
+      
+      tmpFolder <- tempfile()
+      dir.create(tmpFolder)
+      
+      ############
+      ## File 1 ##
+      configFile1 <- file.path(tmpFolder, "configFile1.yml")
+      write_yaml(
+          list(
+              template = "divisionTemplate.Rmd",
+              templatePackage = "medicalMonitoring",
+              reportTitle = "Adverse events",
+              reportTitleLevel = 1          
+          ),
+          configFile1 
+      )
+      
+      #########################
+      ## General config file ##
+      configFileGeneral <- file.path(tmpFolder, "config.yml") 
+      write_yaml(
+          list(
+              study = "Study name",
+              pathDataFolder = "path/to/data",
+              config = list(
+                  basename(configFile1)
+              )
+          ),
+          configFileGeneral
+      )
+      configFiles <- c(configFileGeneral, configFile1)
+      configFiles <- basename(configFiles)
+      
+      ################
+      ## Index file ##
+      idxFile <- file.path(testPathBase, "index.Rmd")
+      
+      ################
+      ## Extra dirs ##
+      extraTmpDirs <- c(file.path(tmpFolder, "tables"), file.path(tmpFolder, "figures"))      
+      dir.create(extraTmpDirs[1]); dir.create(extraTmpDirs[2])
+      
+      firstRun <- render_medicalMonitoringReport(
+          configFiles = configFiles,
+          configDir = tmpdir,
+          outputDir = tmpdir,
+          intermediateDir = tmpdir,
+          indexPath = idxFile,
+          extraDirs = extraTmpDirs 
+      )
+      
+      expect_warning(
+          secondRun <- render_medicalMonitoringReport(
+              configFiles = configFiles,
+              configDir = tmpFolder,
+              outputDir = tmpFolder,
+              intermediateDir = tmpFolder,
+              indexPath = idxFile,
+              extraDirs = extraTmpDirs       
+          ),
+          "Document with similar name than specified template from"
+      )
+      expect_type(secondRun, "character")
+      expect_true(
+          grepl("introduction", secondRun)
+      )         
+      
+    })    
