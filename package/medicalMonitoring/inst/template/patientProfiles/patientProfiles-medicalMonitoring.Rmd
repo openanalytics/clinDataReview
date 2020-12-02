@@ -117,7 +117,7 @@ output:
 	shapePaletteDateFlag <- c(
 		# u25A0 bigger square
 		Complete = '\u25AA', Partial = '\u25CF', 
-		`Missing start` = "\u25C0", `Missing end` = "\u25B6"
+		`Missing start` = "\u25C4", `Missing end` = "\u25BA"
 	)
 	# convert date-flag variable to factor and returm warning if extra elements are present
 	formatDateFlagVar <- function(x, type = c("start", "end")){
