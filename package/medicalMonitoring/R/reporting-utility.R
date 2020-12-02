@@ -141,9 +141,9 @@ knitPrintMedicalMonitoring <- function(
         list <- list[!isEmpty]
         titles <- if(!noName)	names(list)
         
-        if(length(list) == 0){
-          return(invisible())
-        }else{
+#        if(length(list) == 0){
+#          return(invisible())
+#        }else{
           # print list of objects
           # Note for static plot, we would need the 'generalLabel' option
           knitPrintListObjects(
@@ -151,7 +151,7 @@ knitPrintMedicalMonitoring <- function(
               titles = titles, 
               titleLevel = level
           )
-        }
+        #}
         
         # nested list
       }else	if(any(sapply(list, inherits, what = "list"))){
