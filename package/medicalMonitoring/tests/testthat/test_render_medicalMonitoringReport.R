@@ -624,8 +624,8 @@ test_that("Warning of failed check for config for 'render_medicalMonitoringRepor
           list(
               template = "divisionTemplate.Rmd",
               templatePackage = "medicalMonitoring" #,
-              #reportTitle = "Adverse events",
-              #reportTitleLevel = 1          
+          #reportTitle = "Adverse events",
+          #reportTitleLevel = 1          
           ),
           configFile1 
       )
@@ -673,4 +673,126 @@ test_that("Warning of failed check for config for 'render_medicalMonitoringRepor
       
       
     })
+
+test_that("Warning of template from not available package for 'render_medicalMonitoringReport'", {
+      
+      tmpFolder <- tempfile()
+      dir.create(tmpFolder)
+      
+      ############
+      ## File 1 ##
+      configFile1 <- file.path(tmpFolder, "configFile1.yml")
+      write_yaml(
+          list(
+              template = "divisionTemplate.Rmd",
+              templatePackage = "myPackage" #,
+          #reportTitle = "Adverse events",
+          #reportTitleLevel = 1          
+          ),
+          configFile1 
+      )
+      
+      #########################
+      ## General config file ##
+      configFileGeneral <- file.path(tmpFolder, "config.yml") 
+      write_yaml(
+          list(
+              study = "Study name",
+              pathDataFolder = "path/to/data",
+              config = list(
+                  basename(configFile1)
+              )
+          ),
+          configFileGeneral
+      )
+      configFiles <- c(configFileGeneral, configFile1)
+      configFiles <- basename(configFiles)
+      
+      ################
+      ## Index file ##
+      idxFile <- file.path(testPathBase, "index.Rmd")
+      
+      ################
+      ## Extra dirs ##
+      extraTmpDirs <- c(file.path(tmpFolder, "tables"), file.path(tmpFolder, "figures"))      
+      dir.create(extraTmpDirs[1]); dir.create(extraTmpDirs[2])
+      
+      expect_warning(
+          res <- render_medicalMonitoringReport(
+              configFiles = configFiles,
+              configDir = tmpFolder,
+              outputDir = tmpFolder,
+              intermediateDir = tmpFolder,
+              indexPath = idxFile,
+              extraDirs = extraTmpDirs       
+          ),
+          "Template file: .+ not available in the .+ package."
+      )
+      expect_type(res, "character")
+      expect_true(
+          grepl("introduction", res)
+      )      
+      
+    })
+
+test_that("Warning of template in another package for 'render_medicalMonitoringReport'", {
+      
+      
+      tmpFolder <- tempfile()
+      dir.create(tmpFolder)
+      
+      ############
+      ## File 1 ##
+      configFile1 <- file.path(tmpFolder, "configFile1.yml")
+      write_yaml(
+          list(
+              template = "subjectProfile.Rnw",
+              templatePackage = "patientProfilesVis" #,
+          #reportTitle = "Adverse events",
+          #reportTitleLevel = 1          
+          ),
+          configFile1 
+      )
+      
+      #########################
+      ## General config file ##
+      configFileGeneral <- file.path(tmpFolder, "config.yml") 
+      write_yaml(
+          list(
+              study = "Study name",
+              pathDataFolder = "path/to/data",
+              config = list(
+                  basename(configFile1)
+              )
+          ),
+          configFileGeneral
+      )
+      configFiles <- c(configFileGeneral, configFile1)
+      configFiles <- basename(configFiles)
+      
+      ################
+      ## Index file ##
+      idxFile <- file.path(testPathBase, "index.Rmd")
+      
+      ################
+      ## Extra dirs ##
+      extraTmpDirs <- c(file.path(tmpFolder, "tables"), file.path(tmpFolder, "figures"))      
+      dir.create(extraTmpDirs[1]); dir.create(extraTmpDirs[2])
+      
+      expect_error(          
+          expect_warning(
+              res <- render_medicalMonitoringReport(
+                  configFiles = configFiles,
+                  configDir = tmpFolder,
+                  outputDir = tmpFolder,
+                  intermediateDir = tmpFolder,
+                  indexPath = idxFile,
+                  extraDirs = extraTmpDirs       
+              ),
+              "No config parameter available, input parameters for the report are not checked."
+          )
+      )
+      
+    })
+
 
