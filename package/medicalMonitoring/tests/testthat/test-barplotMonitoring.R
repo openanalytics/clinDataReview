@@ -101,7 +101,7 @@ test_that("plotting function runs properly", {
 	expect_equivalent(object = plDataBarDf, expected = dataPlot)
 	
 	## check if created plot == reference
-	expect_doppelganger(title = "basic", fig = pl, writer = write_svg_plotly)
+	#expect_doppelganger(title = "basic", fig = pl, writer = write_svg_plotly)
 
 })
 
