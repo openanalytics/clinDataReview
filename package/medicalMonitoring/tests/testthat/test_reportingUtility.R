@@ -42,7 +42,7 @@ test_that("Invisible output from 'knitPrintMedicalMonitoring'", {
 
 test_that("Invisible output from 'knitPrintMedicalMonitoring' for nested list", {
       
-#      emptyList <- list(firstList = list())
+	emptyList <- list(firstList = list(A = structure(NULL, "medicalMonitoring")))
 #      class(emptyList$firstList) <- "medicalMonitoring"
       
 #      expect_silent(
