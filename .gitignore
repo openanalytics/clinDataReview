@@ -12,6 +12,7 @@ js
 testPackage/lib
 *.sas7bdat
 patientProfiles
+!package/medicalMonitoring/inst/template/patientProfiles
 *.pdf
 *cache*
 MOMP
