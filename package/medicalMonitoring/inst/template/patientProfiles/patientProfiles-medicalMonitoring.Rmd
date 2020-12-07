@@ -146,7 +146,7 @@ output:
 		`High Normal` = '\u25B2', # small filled up-pointing arrow
 		HIGH = '\u25B2', High = '\u25B2', # filled up-pointing arrow
 		`High Panic` = '\u25B2', # big filled up-pointing arrow
-		Abnormal = 'asterisk', # star
+		Abnormal = '\u2666', # star
 		'NA' = '+', # cross (3)
 		Unknown = '+'
 	)
