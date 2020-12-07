@@ -4,17 +4,27 @@
 \alias{scrapeHtml}
 \title{Scrape html}
 \usage{
-scrapeHtml(pathHtml)
+scrapeHtml(
+  pathHtml,
+  pathToExportDir = dirname(pathHtml),
+  fileNameExport = file_path_sans_ext(basename(pathHtml))
+)
 }
 \arguments{
 \item{pathHtml}{String pointing to the path
 where the html is stored}
+
+\item{pathToExportDir}{String for the path to save the data from the html.
+By default the same directory where the html is stored.}
+
+\item{fileNameExport}{String with name of the file to be saved.
+By default the name is the same of the html file.}
 }
 \value{
-The data
+The data. The output is also saved in a directory.
 }
 \description{
-Scrape html file(s) and retrieve the data
+Scrape html file(s), retrieve the data and saves the output.
 }
 \examples{
 
