@@ -54,7 +54,7 @@ This report displays a listing of the variables and data of interest, displayed 
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[medicalMonitoring]{processData}}
 \item{\code{tableParams}: }{(optional) object , parameters to create the table, passed to \link[medicalMonitoring]{tableMonitoring}}
-\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff', 'table-comparison-interactive' } , output type of the comparison table}
+\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff-interactive', 'table-comparison-interactive' } , output type of the comparison table}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}

@@ -48,7 +48,7 @@
     "comparisonTableType": {
       "type": "string",
       "doc": "output type of the comparison table",
-      "enum": ["none", "newData-diff", "table-comparison-interactive"]
+      "enum": ["none", "newData-diff-interactive", "table-comparison-interactive"]
     },
     "comparisonTableParams": {
       "type": "object",
