@@ -186,34 +186,60 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 		list(
 			newData = dataCurrentI,
 			oldData = dataPreviousI,
-			outputType = comparisonTableType
+			outputType = ifelse(
+				comparisonTableType == "table-comparison-interactive",
+				"table-comparison",
+				comparisonTableType
+			)
 		),
-		comparisonTableParams,
-		if(comparisonTableType == "table-comparison-interactive" & !is.null(labelVars)){
-			list(colnames = setNames(names(labelVars), labelVars))
+		comparisonTableParams
+	)
+	tableComparison <- do.call(compareTables, argsCompTable)
+
+	switch(comparisonTableType,
+		
+		`table-comparison-interactive` = {
+			
+			# add patient profiles to diff table:
+			if(!is.null(patientProfilePath)){
+				tableComparison$USUBJID <- dataCurrentI[
+					match(tableComparison$USUBJID, dataCurrentI$USUBJID),
+					"patientProfileLink"
+				]
+			}
+			
+			argsExportDiff <- c(
+				list(diffData = tableComparison),
+				if(!is.null(labelVars))
+					list(colnames = setNames(names(labelVars), labelVars)),
+				if(!is.null(patientProfilePath))
+					list(escape = match("USUBJID", colnames(tableComparison))-1)
+			)
+		
+			tableComparisonDT <- do.call(exportDiffData, argsExportDiff)
+			
+		},
+			
+		# TODO: replace by 'newData-diff-interactive' output type
+		`newData-diff` = {
+		
+			tableParams$tableVars <- c("Comparison type", tableParams$tableVars)		
+			argsTable <- c(
+				list(
+					data = tableComparison, 
+					labelVars = labelVars,
+					pathVar = if(!is.null(patientProfilePath))	"patientProfilePath",
+					pathLab = labelVars["USUBJID"]
+				),
+				tableParams
+			)
+			tableComparisonDT <- do.call("tableMonitoring", argsTable)	
+			
 		}
+
 	)
 	
-	tableComparison <- do.call(compareTables, argsCompTable)
-	
-	# print listing
-	if(comparisonTableType == "newData-diff"){
-		
-		tableParams$tableVars <- c("Comparison type", tableParams$tableVars)		
-		argsTable <- c(
-			list(
-				data = tableComparison, 
-				labelVars = labelVars,
-				pathVar = if(!is.null(patientProfilePath))	"patientProfilePath",
-				pathLab = labelVars["USUBJID"]
-			),
-			tableParams
-		)
-		tableComparison <- do.call("tableMonitoring", argsTable)	
-		
-	}
-	
-	tableComparison
+	tableComparisonDT
 	
 })
 
