@@ -4,6 +4,8 @@
     o filterData: fix for returnAll <-> varNew
     o scrapeHtml: minor changes in extracting the path
     o countsVisualizationTemplate: fix when colorVar not specified for all parent vars
+    o patient profiles template: Windows shape palette: u25C0 -> u25C4, u25B6 -> u25BA, u271A -> +, u2605 (star) -> u2666 (diamond)
+    o patient profiles template: shape palette for aesthetic: u25AA -> u25A0, u25CF -> u25CB
     o unit tests
     o comparison table functionality based on data.table
 0.7.0

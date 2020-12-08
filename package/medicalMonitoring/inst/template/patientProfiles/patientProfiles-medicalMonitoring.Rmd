@@ -115,9 +115,8 @@ output:
 
 	# In ADaM-like format, date flag variables are formatted as following:
 	shapePaletteDateFlag <- c(
-		# u25A0 bigger square
-		Complete = '\u25AA', Partial = '\u25CF', 
-		`Missing start` = "\u25C0", `Missing end` = "\u25B6"
+		Complete = '\u25A0', Partial = '\u25CB', # open circle
+		`Missing start` = "\u25C4", `Missing end` = "\u25BA"
 	)
 	# convert date-flag variable to factor and returm warning if extra elements are present
 	formatDateFlagVar <- function(x, type = c("start", "end")){
@@ -147,9 +146,9 @@ output:
 		`High Normal` = '\u25B2', # small filled up-pointing arrow
 		HIGH = '\u25B2', High = '\u25B2', # filled up-pointing arrow
 		`High Panic` = '\u25B2', # big filled up-pointing arrow
-		Abnormal = '\u2605', # star
-		'NA' = '\u271A', # cross (3)
-		Unknown = '\u271A'
+		Abnormal = '\u2666', # star
+		'NA' = '+', # cross (3)
+		Unknown = '+'
 	)
 	colorPaletteRind <- c(
 		`Low Panic` = unname(colorPalette["signalRed"]),
