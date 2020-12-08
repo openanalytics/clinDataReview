@@ -202,15 +202,6 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 	# set columns to labels (if available)
 	argsExportDiff$colnames <- setNames(names(tableLab), tableLab)
 	
-	# get columns ordered to have patientProfileLink just after USUBJID column
-	getColsOrderedPatientProfiles <- function(data){
-		cols <- colnames(data)
-		idxColPPLink <- match("patientProfileLink", cols)
-		idxColUSUBJID <- match("USUBJID", cols)
-		idxColsSorted <- union(c(seq_len(idxColUSUBJID), idxColPPLink), seq_len(ncol(dataCurrentI)))
-		return(cols[idxColsSorted])
-	}
-	
 	# formatting for patient profiles
 	getArgsExportDiffPatientProfiles <- function(data, argsExportDiff){
 		argsExportDiff <- c(argsExportDiff,
@@ -231,8 +222,12 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 			# formatting for patient profiles:
 			if(!is.null(patientProfilePath)){
 				
-				cols <- getColsOrderedPatientProfiles(data = dataCurrentI)
-				dataCurrentI <- subset(dataCurrentI, select = cols)
+				# set patient profile link column just after USUBJID
+				dataCurrentI <- reorderColumns(
+					data = dataCurrentI, 
+					vars = c("patientProfileLink" = match("USUBJID", colnames(dataCurrentI))+1)
+				)
+				# toDTGLPG params-specific for patient profile
 				argsExportDiff <- getArgsExportDiffPatientProfiles(
 					data = dataCurrentI, 
 					argsExportDiff = argsExportDiff
@@ -270,21 +265,28 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 			
 			## export to DT
 			
-			# add patient profiles to diff table:
+			# formatting for patient profiles:
 			if(!is.null(patientProfilePath)){
+				
+				# add patient profiles to diff table:
 				tableComparison$patientProfileLink <- dataCurrentI[
 					match(tableComparison$USUBJID, dataCurrentI$USUBJID),
 					"patientProfileLink"
 				]
-			}
 			
-			# formatting for patient profiles:
-			cols <- getColsOrderedPatientProfiles(data = tableComparison)
-			tableComparison <- tableComparison[, cols, drop = FALSE]
-			argsExportDiff <- getArgsExportDiffPatientProfiles(
-				data = tableComparison, 
-				argsExportDiff = argsExportDiff
-			)
+				# set patient profile link column just after USUBJID
+				tableComparison <- reorderColumns(
+					data = tableComparison, 
+					vars = c("patientProfileLink" = match("USUBJID", colnames(tableComparison))+1)
+				)
+				
+				# toDTGLPG params-specific for patient profile
+				argsExportDiff <- getArgsExportDiffPatientProfiles(
+					data = tableComparison, 
+					argsExportDiff = argsExportDiff
+				)
+				
+			}
 			
 			argsExportDiff <- c(
 				list(diffData = tableComparison), 
