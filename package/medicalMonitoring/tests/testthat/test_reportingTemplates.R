@@ -17,7 +17,7 @@ test_that("Test check of config file", {
           configFileDivision
       )
       
-	  # R CMD check runs on package binary, so without 'inst' folder:
+      # R CMD check runs on package binary, so without 'inst' folder:
       refConfig <- system.file(package = "medicalMonitoring", "template", "divisionTemplate.json")
       
       expect_error(
@@ -51,27 +51,27 @@ test_that("Get the path to Rmd templates", {
     })
 
 test_that("Create template documentation", {
-			
-	# R CMD check runs on package binary, so without 'inst' folder:
-	doc <- createTemplateDoc(
-		templatePath = system.file("template", package = "medicalMonitoring")
-	)
-	expect_is(doc, "character")
-	
-	docRoxParType <- paste0(
-			"\\section{Parameter type}{Please note that the type mentioned below ",
-			"corresponds to the type in the config file (in YAML/JSON format).",
-			"The mapping to R data type is as followed:",
-			"\\itemize{",
-			"\\item{string: }{character vector of length 1}",
-			"\\item{integer: }{integer vector of length 1}",
-			"\\item{array: }{vector/list without names}",
-			"\\item{object: }{list with names}",
-			"}}"
-	)
-	expect_identical(docRoxParType, doc[1])
-	
-})
+      
+      # R CMD check runs on package binary, so without 'inst' folder:
+      doc <- createTemplateDoc(
+          templatePath = system.file("template", package = "medicalMonitoring")
+      )
+      expect_is(doc, "character")
+      
+      docRoxParType <- paste0(
+          "\\section{Parameter type}{Please note that the type mentioned below ",
+          "corresponds to the type in the config file (in YAML/JSON format).",
+          "The mapping to R data type is as followed:",
+          "\\itemize{",
+          "\\item{string: }{character vector of length 1}",
+          "\\item{integer: }{integer vector of length 1}",
+          "\\item{array: }{vector/list without names}",
+          "\\item{object: }{list with names}",
+          "}}"
+      )
+      expect_identical(docRoxParType, doc[1])
+      
+    })
 
 test_that("Invisible output from create template documentation", {
       
@@ -85,7 +85,7 @@ test_that("Invisible output from create template documentation", {
 
 test_that("Get documentation from a JSON schema", {
       
-		# R CMD check runs on package binary, so without 'inst' folder:
+      # R CMD check runs on package binary, so without 'inst' folder:
       path <- system.file("template", package = "medicalMonitoring")
       
       jsonFileNames <- list.files(
@@ -98,4 +98,20 @@ test_that("Get documentation from a JSON schema", {
       jsonSchemaDoc <- JSONSchToRd(JSONSch = templateSpec)
       expect_is(jsonSchemaDoc, "character")
       
-})
+    })
+
+test_that("Documentation for template not available from JSON schema", {
+      
+      tmpFolder <- tempfile()
+      dir.create(tmpFolder)
+      
+      templateName <- file.path(tmpFolder, "template.Rmd")
+      file.create(templateName)
+      
+      expect_silent(
+          res <- createTemplateDoc(templatePath = tmpFolder)
+      )
+      expect_type(res, "character")
+      expect_true(any(grepl("[\\]section[{]template[}]", res)))
+      
+    })
