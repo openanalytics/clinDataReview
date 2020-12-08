@@ -182,77 +182,120 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 		)
 	}else	dataPreviousI <- dataPrevious
 
-	## create data.frame with differences:
-	
-	# input parameters for compareTables function:
+	## input parameters for compareTables function:
 	argsCompTable <- comparisonTableParams
+	
+	## input parameters for exportDiffData function:
+	argsExportDiff <- list()
+			
+	# extract variables to display in the table + and labels 
+	tableVars <- tableParams$tableVars
+	if(is.null(tableVars))	tableVars <- colnames(dataCurrentI)
+	tableLab <- getLabelVar(var = tableVars, labelVars = labelVars, label = tableParams$tableLab)
+	if(!is.null(patientProfilePath)){
+		tableVars <- c(tableVars, "patientProfileLink")
+		tableLab <- c(tableLab, setNames(tableLab["USUBJID"], "patientProfileLink"))
+	}
+	dataCurrentI <- subset(dataCurrentI, select = tableVars)
+	dataPreviousI <- subset(dataPreviousI, select = tableVars)
+	
+	# set columns to labels (if available)
+	argsExportDiff$colnames <- setNames(names(tableLab), tableLab)
+	
+	# get columns ordered to have patientProfileLink just after USUBJID column
+	getColsOrderedPatientProfiles <- function(data){
+		cols <- colnames(data)
+		idxColPPLink <- match("patientProfileLink", cols)
+		idxColUSUBJID <- match("USUBJID", cols)
+		idxColsSorted <- union(c(seq_len(idxColUSUBJID), idxColPPLink), seq_len(ncol(dataCurrentI)))
+		return(cols[idxColsSorted])
+	}
+	
+	# formatting for patient profiles
+	getArgsExportDiffPatientProfiles <- function(data, argsExportDiff){
+		argsExportDiff <- c(argsExportDiff,
+			list(
+				# escape it in the table	
+				escape = match("patientProfileLink", colnames(data))-1,
+				# doesn't display USUBJID
+				nonVisibleVar = "USUBJID"
+			)
+		)
+		return(argsExportDiff)
+	}
 	
 	switch(comparisonTableType, 
 			
 		`newData-diff-interactive` = {
-			
-			argsCompTable$outputType <- "newData-diff-interactive"
-			
-			# set columns to labels (if available)
-			if(!is.null(labelVars))
-				argsCompTable$colnames <- setNames(names(labelVars), labelVars)
-			
-			# add patientProfileLink at the column position of USUBJID
+					
+			# formatting for patient profiles:
 			if(!is.null(patientProfilePath)){
 				
-				idxColPPLink <- match("patientProfileLink", colnames(dataCurrentI))
-				idxColUSUBJID <- match("USUBJID", colnames(dataCurrentI))
-				idxColsSorted <- union(c(seq_len(idxColUSUBJID), idxColPPLink), seq_len(ncol(dataCurrentI)))
-				dataCurrentI <- dataCurrentI[, idxColsSorted]
-				
-				argsCompTable$escape <- idxColUSUBJID 
-				
-				if(!is.null(labelVars))
-					argsCompTable$colnames <- c(argsCompTable$colnames,
-						setNames("patientProfileLink", getLabelVar(var = "USUBJID", labelVars = labelVars))
-					)
+				cols <- getColsOrderedPatientProfiles(data = dataCurrentI)
+				dataCurrentI <- subset(dataCurrentI, select = cols)
+				argsExportDiff <- getArgsExportDiffPatientProfiles(
+					data = dataCurrentI, 
+					argsExportDiff = argsExportDiff
+				)
 				
 			}
 			
-			argsCompTable$newData <- dataCurrentI
-			argsCompTable$oldData <- dataPreviousI
-			argsCompTable$nonVisibleVar <- c("USUBJID", "patientProfilesPath")
+			argsCompTable <- c(
+				argsCompTable,
+				 list(
+					outputType = "newData-diff-interactive",
+				 	newData = dataCurrentI,
+				 	oldData = dataPreviousI
+				 ),
+				 argsExportDiff
+		 	)
+			
 			tableComparisonDT <- do.call(compareTables, argsCompTable)
 			
 		},
 		
 		`table-comparison-interactive` = {
 			
-			# extract comparison table
-			argsCompTable$newData <- dataCurrentI
-			argsCompTable$oldData <- dataPreviousI
-			argsCompTable$outputType <- "table-comparison"
+			## extract comparison table
+			argsCompTable <- c(
+				argsCompTable,
+				list(
+					outputType = "table-comparison",
+					newData = dataCurrentI,
+					oldData = dataPreviousI
+				)
+			)
 			tableComparison <- do.call(compareTables, argsCompTable)
+			tableCompAttr <- attributes(tableComparison)[c("referenceVars", "changeableVars")]
+			
+			## export to DT
 			
 			# add patient profiles to diff table:
-			if(!is.null(patientProfilePath))
-				tableComparison$USUBJID <- dataCurrentI[
+			if(!is.null(patientProfilePath)){
+				tableComparison$patientProfileLink <- dataCurrentI[
 					match(tableComparison$USUBJID, dataCurrentI$USUBJID),
 					"patientProfileLink"
 				]
+			}
 			
-			# export to DT
-			argsExportDiff <- list(diffData = tableComparison)			
+			# formatting for patient profiles:
+			cols <- getColsOrderedPatientProfiles(data = tableComparison)
+			tableComparison <- tableComparison[, cols, drop = FALSE]
+			argsExportDiff <- getArgsExportDiffPatientProfiles(
+				data = tableComparison, 
+				argsExportDiff = argsExportDiff
+			)
 			
-			# set columns to labels (if available)
-			if(!is.null(labelVars))
-				argsExportDiff$colnames <- setNames(names(labelVars), labelVars)
-			
-			# escape this column
-			argsExportDiff$escape <- match("USUBJID", colnames(tableComparison))-1
-			
+			argsExportDiff <- c(
+				list(diffData = tableComparison), 
+				tableCompAttr,
+				argsExportDiff
+			)
 			tableComparisonDT <- do.call(exportDiffData, argsExportDiff)
 			
 		}
 		
 	)
-
-	tableComparisonDT <- do.call(exportDiffData, argsExportDiff)
 	
 })
 
