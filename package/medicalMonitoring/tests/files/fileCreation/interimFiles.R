@@ -19,7 +19,7 @@ rdsFiles <- sprintf("%s.rds", names)
 file.create(file.path(testPathInterim, rdsFiles))
 sessList <- list(knitMeta = sessionInfo())
 for(i in 1 : length(rdsFiles)) {
-  saveRDS(sessList, file.path(intermediateDir, rdsFiles[i]))  
+  saveRDS(sessList, file.path(testPathInterim, rdsFiles[i]), version = 2)  
 }
 
 #####################
