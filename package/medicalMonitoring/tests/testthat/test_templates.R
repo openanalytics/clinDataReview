@@ -20,12 +20,48 @@ expect_that("Creation of division template", {
       templateName <- "divisionTemplate.Rmd"
       pathTemplate <- system.file("template", templateName, package = "medicalMonitoring")      
       
-      divTemplate <- rmarkdown::render(
+      rmarkdown::render(
           pathTemplate,
           output_file = file.path(tmpdir, templateName)
       )
       expect_true(any(file.exists(templateName, tmpdir)))
+      expect_true(templateName %in% list.files(tmpdir))
       detach(params)
+      rm(params)
       
     })
 
+expect_that("Creation of listing template", {
+      
+      testPathBase <- normalizePath(path = "../dataTesting")
+      configFilePath <- file.path(tmpdir, "listingConfig.yml")
+      paramsYaml <- list(
+          pathDataFolder = testPathBase,
+          template = "listingTemplate.Rmd",
+          templatePackage = "medicalMonitoring",
+          reportTitle = "Adverse events: listing",
+          reportTitleLevel = 2,
+          dataFileName =  list.files(testPathBase, pattern = "xpt"),
+          tableParams = list(
+              tableVars = c("USUBJID", "EXDOSE")
+          )
+      )      
+      write_yaml(
+          paramsYaml,
+          file = configFilePath
+      )
+      params <- read_yaml(configFilePath)
+      
+      templateName <- "listingTemplate.Rmd"
+      pathTemplate <- system.file("template", templateName, package = "medicalMonitoring")      
+      
+      rmarkdown::render(
+          pathTemplate,
+          output_file = file.path(tmpdir, templateName)
+      )
+      expect_true(any(file.exists(templateName, tmpdir)))
+      expect_true(templateName %in% list.files(tmpdir))
+      detach(params)
+      rm(params)
+      
+    })
