@@ -1,3 +1,5 @@
+context("Test template creation")
+
 library(yaml)
 library(rmarkdown)
 
