@@ -16,7 +16,7 @@ labelVars <- attr(SDTMDataPelican, "labelVars")
 
 ##########################
 ## Subset exposure data ##
-dataEXsub <- subset(dataEX, grepl("4902-02|4903-03", dataEX$USUBJID) & EXDOSE == 70)
+dataEXsub <- subset(dataEX, grepl("4902-02|4903-03", dataEX$USUBJID) & EXDOSE == 75)
 
 if(! dir.exists(pathTestData)) dir.create(pathTestData, recursive = TRUE)
 write_xpt(dataEXsub, file.path(pathTestData, "adex.xpt"))
