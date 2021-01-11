@@ -5,7 +5,7 @@ library(rmarkdown)
 
 tmpdir <- tempdir()
 
-expect_that("Creation of division template", {
+test_that("Creation of division template", {
       
       # Read division config from available one in tests folder
       testPathBase <- normalizePath(path = "../files")
@@ -33,7 +33,7 @@ expect_that("Creation of division template", {
       
     })
 
-expect_that("Creation of listing template", {
+test_that("Creation of listing template", {
       
       testPathBase <- normalizePath(path = "../dataTesting")
       configFilePath <- file.path(tmpdir, "listingConfig.yml")
