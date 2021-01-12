@@ -4,12 +4,13 @@ library(yaml)
 library(rmarkdown)
 
 tmpdir <- tempdir()
+testPathData <- normalizePath(path = "../dataTesting")
 
 test_that("Creation of division template", {
       
       # Read division config from available one in tests folder
-      testPathBase <- normalizePath(path = "../files")
-      testPathConfig <- file.path(testPathBase, "config")
+      testPathFiles <- normalizePath(path = "../files")
+      testPathConfig <- file.path(testPathFiles, "config")
       configFiles <- list.files(testPathConfig)
       filePathConfig <- file.path(testPathConfig, configFiles)
       
@@ -35,15 +36,18 @@ test_that("Creation of division template", {
 
 test_that("Creation of listing template", {
       
-      testPathBase <- normalizePath(path = "../dataTesting")
-      configFilePath <- file.path(tmpdir, "listingConfig.yml")
+      templateName <- "listingTemplate.Rmd"
+      configFilePath <- file.path(tmpdir,
+          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+      )
+      
       paramsYaml <- list(
-          pathDataFolder = testPathBase,
-          template = "listingTemplate.Rmd",
+          pathDataFolder = testPathData,
+          template = templateName,
           templatePackage = "medicalMonitoring",
-          reportTitle = "Adverse events: listing",
+          reportTitle = gsub("(.+)Template[.].+", "\\1 template", templateName),
           reportTitleLevel = 2,
-          dataFileName =  list.files(testPathBase, pattern = "xpt"),
+          dataFileName =  list.files(testPathData, pattern = "xpt"),
           tableParams = list(
               tableVars = c("USUBJID", "EXDOSE")
           )
@@ -54,7 +58,6 @@ test_that("Creation of listing template", {
       )
       params <- read_yaml(configFilePath)
       
-      templateName <- "listingTemplate.Rmd"
       pathTemplate <- system.file("template", templateName, package = "medicalMonitoring")      
       
       rmarkdown::render(
@@ -67,3 +70,41 @@ test_that("Creation of listing template", {
       rm(params)
       
     })
+
+test_that("Creation of counts visualization template", {
+      
+      templateName <- "countsVisualizationTemplate.Rmd"
+      configFilePath <- file.path(tmpdir,
+          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+      )
+      
+      paramsYaml <- list(
+          pathDataFolder = testPathData,
+          template = templateName,
+          templatePackage = "medicalMonitoring",
+          reportTitle = gsub("(.+)Template[.].+", "\\1 template", templateName),
+          dataFileName =  list.files(testPathData, pattern = "xpt"),
+          countVar = "EXDOSE"
+      )      
+      
+      write_yaml(
+          paramsYaml,
+          file = configFilePath
+      )
+      params <- read_yaml(configFilePath)
+            
+      pathTemplate <- system.file("template", templateName, package = "medicalMonitoring")      
+      
+      rmarkdown::render(
+          pathTemplate,
+          output_file = file.path(tmpdir, templateName)
+      )
+      expect_true(any(file.exists(templateName, tmpdir)))
+      expect_true(templateName %in% list.files(tmpdir))
+      detach(params)
+      rm(params)
+    
+    })
+
+
+
