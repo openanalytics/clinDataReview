@@ -106,5 +106,41 @@ test_that("Creation of counts visualization template", {
     
     })
 
+test_that("Creation of plot template", {
+      
+      templateName <- "plotTemplate.Rmd"
+      configFilePath <- file.path(tmpdir,
+          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+      )
+      
+      paramsYaml <- list(
+          pathDataFolder = testPathData,
+          template = templateName,
+          templatePackage = "medicalMonitoring",
+          reportTitle = gsub("(.+)Template[.].+", "\\1 template", templateName),
+          dataFileName =  list.files(testPathData, pattern = "xpt"),
+          plotFunction = "scatterplotMonitoring",
+          plotParams = list(
+              xVar = "USUBJID", yVar = "EXDOSE")
+      )      
+      
+      write_yaml(
+          paramsYaml,
+          file = configFilePath
+      )
+      params <- read_yaml(configFilePath)
+      
+      pathTemplate <- system.file("template", templateName, package = "medicalMonitoring")      
+      
+      rmarkdown::render(
+          pathTemplate,
+          output_file = file.path(tmpdir, templateName)
+      )
+      expect_true(any(file.exists(templateName, tmpdir)))
+      expect_true(templateName %in% list.files(tmpdir))
+      detach(params)
+      rm(params)
+      
+    })
 
 
