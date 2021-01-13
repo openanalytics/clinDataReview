@@ -184,11 +184,6 @@ test_that("Creation of summary plot template", {
 
 test_that("Creation of summary table template", {
       
-      
-      tmpdir <- tempdir()
-      testPathData <- normalizePath(path = "../dataTesting")
-      
-      
       templateName <- "summaryTableTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
           sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
@@ -220,6 +215,57 @@ test_that("Creation of summary table template", {
       )
       expect_true(any(file.exists(templateName, tmpdir)))
       expect_true(templateName %in% list.files(tmpdir))
+      detach(params)
+      rm(params)
+      
+    })
+
+
+test_that("Creation of patient profiles template", {
+      
+      templateName <- "patientProfilesTemplate.Rmd"
+      configFilePath <- file.path(tmpdir,
+          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+      )
+      
+      paramsYaml <- list(
+          pathDataFolder = testPathData,
+          patientProfilePath = file.path(tmpdir, "patientProfiles"),
+          template = templateName,
+          templatePackage = "medicalMonitoring",
+          reportTitle = gsub("(.+)Template[.].+", "\\1 template", templateName),
+          patientProfilesParams = list(
+              list(
+                  typePlot = "text",
+                  dataFileName =  list.files(testPathData, pattern = "xpt"),
+                  plotParams = list(
+                      paramValueVar = c("USUBJID", "EXDOSE")
+                  )
+              )
+          )
+      )      
+      
+      write_yaml(
+          paramsYaml,
+          file = configFilePath
+      )
+      params <- read_yaml(configFilePath)
+      
+      pathTemplate <- system.file("template", templateName, package = "medicalMonitoring")      
+      
+      rmarkdown::render(
+          pathTemplate,
+          output_file = file.path(tmpdir, templateName)
+      )
+      expect_true(any(file.exists(templateName, tmpdir)))
+      expect_true(templateName %in% list.files(tmpdir))
+      expect_true(file.exists(file.path(tmpdir, "patientProfiles")))
+      expect_true(all(
+              grepl("subjectProfile-",
+                  list.files(file.path(tmpdir, "patientProfiles"))
+              )
+          )
+      )     
       detach(params)
       rm(params)
       
