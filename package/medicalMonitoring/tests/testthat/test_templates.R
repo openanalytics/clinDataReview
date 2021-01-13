@@ -182,3 +182,46 @@ test_that("Creation of summary plot template", {
       
     })
 
+test_that("Creation of summary table template", {
+      
+      
+      tmpdir <- tempdir()
+      testPathData <- normalizePath(path = "../dataTesting")
+      
+      
+      templateName <- "summaryTableTemplate.Rmd"
+      configFilePath <- file.path(tmpdir,
+          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+      )
+      
+      paramsYaml <- list(
+          pathDataFolder = testPathData,
+          template = templateName,
+          templatePackage = "medicalMonitoring",
+          reportTitle = gsub("(.+)Template[.].+", "\\1 template", templateName),
+          dataFileName =  list.files(testPathData, pattern = "xpt"),
+          tableParams = list(
+              var = c("USUBJID", "EXDOSE"),
+              stats = "setNames(getStats(type = 'n'), nm = 'n')"
+          )
+      )      
+      
+      write_yaml(
+          paramsYaml,
+          file = configFilePath
+      )
+      params <- read_yaml(configFilePath)
+      
+      pathTemplate <- system.file("template", templateName, package = "medicalMonitoring")      
+      
+      rmarkdown::render(
+          pathTemplate,
+          output_file = file.path(tmpdir, templateName)
+      )
+      expect_true(any(file.exists(templateName, tmpdir)))
+      expect_true(templateName %in% list.files(tmpdir))
+      detach(params)
+      rm(params)
+      
+    })
+
