@@ -1,30 +1,65 @@
 
+#' Zip the medical monitoring report
+#' 
+#' Create a zip folder of medical monitoring reports with a redirect page.
+#' The medical monitoring report out of the 
+#' \code{\link{render_medicalMonitoring}} is copied into a new folder.
+#' A redirect html page is created to enable the user to navigate the report
+#' without needing to look into the new directory.
+#' 
+#' @param reportDir String for the path to the directory where
+#' the medical monitoring reports are stored
+#' @param newDir String for the path where the files from
+#' \code{reportDir} should be copied to.
+#' @param redirectPage String with the path of the html file that redirects
+#' to the "1-introduction.html" page of the report.
+#' @param zipFolder String with the path to the zipped folder.
+#' @return The zip folder is created in the specified location.
 #' @importFrom utils zip
+#' @export 
 zipMedicalMonitoring <- function(
     reportDir = "./report",
-    dependencyDir = "./report_dependencies",
-    redirectPage = "report.html", zipFolderName = "report.zip"
+    newDir = "./report_dependencies",
+    redirectPage = "report.html", zipFolder = "report.zip"
 ) {
   
-  folderName <- basename(dependencyDir)  
+  stopifnot(
+      inherits(reportDir, "character"),
+      inherits(newDir, "character"),
+      inherits(redirectPage, "character"),
+      inherits(zipFolder, "character")     
+  )
+  
+  if(! dir.exists(reportDir)) stop("Directory specified in 'reportDir' does not exist.")
+  
+  folderName <- basename(newDir)  
   dir.create(folderName)
   
   reportFiles <- list.files(reportDir, full.names = TRUE)  
-  file.copy(reportFiles, dependencyDir, recursive = TRUE)
+  file.copy(reportFiles, newDir, recursive = TRUE)
   
-  createRedirectPage(redirectPage) 
-  zip(zipFolderName, c(redirectPageName, folderName))
+  createRedirectPage(redirectPage, dir = newDir) 
+  zip(zipFolder, c(redirectPageName, folderName))
   
 }
 
 
-
+#' Create a redirect page
+#' 
+#' Create an html page that redirects to the 
+#' "1-introduction.html" page of the medical monitoring report available in 
+#' a directory.
+#' See output from \code{\link{render_medicalMonitoring}}.
+#' @param redirectPage String with the path of the html file that redirects
+#' to the "1-introduction.html" page of the report.
+#' @param dir String for the path where the "1-introduction.html" is stored.
+#' @return The html file is created.
 createRedirectPage <- function(
     redirectPage = "report.html",
-    dependencyDir = "./report_dependencies"
+    dir = "./report_dependencies"
 ) {
   
-  linkToPage <- file.path(dependencyDir, "1-introduction.html")
+  linkToPage <- file.path(dir, "1-introduction.html")
   
   htmlPage <- c(
       sprintf(
