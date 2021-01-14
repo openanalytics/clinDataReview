@@ -23,23 +23,18 @@ zipMedicalMonitoring <- function(
     redirectPage = "report.html", zipFolder = "report.zip"
 ) {
   
-  stopifnot(
-      inherits(reportDir, "character"),
-      inherits(newDir, "character"),
-      inherits(redirectPage, "character"),
-      inherits(zipFolder, "character")     
-  )
-  
+  if(! all(sapply(match.call()[-1], function(x) is.character(eval(x))))) stop("Input arguments should be characters.")  
   if(! dir.exists(reportDir)) stop("Directory specified in 'reportDir' does not exist.")
   
   folderName <- basename(newDir)  
-  dir.create(folderName)
+  if(! dir.exists(newDir)) dir.create(newDir)
   
-  reportFiles <- list.files(reportDir, full.names = TRUE)  
+  reportFiles <- list.files(reportDir, full.names = TRUE)
+  if(length(reportFiles) == 0) stop("No files available in the 'reportDir'.")
   file.copy(reportFiles, newDir, recursive = TRUE)
   
-  createRedirectPage(redirectPage, dir = newDir) 
-  zip(zipFolder, c(redirectPageName, folderName))
+  createRedirectPage(redirectPage, dir = folderName) 
+  zip(zipFolder, files = c(basename(redirectPage), folderName))
   
 }
 
