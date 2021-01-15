@@ -3,7 +3,7 @@
 #' 
 #' Create a zip folder of medical monitoring reports with a redirect page.
 #' The medical monitoring report out of the 
-#' \code{\link{render_medicalMonitoring}} is copied into a new folder.
+#' \code{\link{render_medicalMonitoringReport}} is copied into a new folder.
 #' A redirect html page is created to enable the user to navigate the report
 #' without needing to look into the new directory.
 #' 
@@ -33,8 +33,15 @@ zipMedicalMonitoring <- function(
   if(length(reportFiles) == 0) stop("No files available in the 'reportDir'.")
   file.copy(reportFiles, newDir, recursive = TRUE)
   
-  createRedirectPage(redirectPage, dir = folderName) 
-  zip(zipFolder, files = c(basename(redirectPage), folderName))
+  createRedirectPage(redirectPage, dir = folderName)
+  
+  origWd <- getwd()
+  setwd(dirname(zipFolder))
+  zip(
+      zipFolder,
+      files = c(basename(redirectPage), folderName)
+  )
+  on.exit(setwd(origWd))
   
 }
 
@@ -44,7 +51,7 @@ zipMedicalMonitoring <- function(
 #' Create an html page that redirects to the 
 #' "1-introduction.html" page of the medical monitoring report available in 
 #' a directory.
-#' See output from \code{\link{render_medicalMonitoring}}.
+#' See output from \code{\link{render_medicalMonitoringReport}}.
 #' @param redirectPage String with the path of the html file that redirects
 #' to the "1-introduction.html" page of the report.
 #' @param dir String for the path where the "1-introduction.html" is stored.

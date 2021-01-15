@@ -4,7 +4,7 @@ tmpdir <- tempdir()
 
 test_that("Creation of redirect page", {
       
-      tmpRedirect <- file.path(tmpdir, "tmp")
+      tmpRedirect <- tempfile()
       dir.create(tmpRedirect)
       createRedirectPage(
           dir = tmpRedirect,
@@ -40,52 +40,11 @@ test_that("Error in not existing directory", {
       
     })
 
-test_that("Error for files not available", {
+test_that("Error in empty directory", {
       
       emptyDir <- tempfile()
       dir.create(emptyDir)
-      expect_error(
-          zipMedicalMonitoring(reportDir = emptyDir),
-          "No files available in the 'reportDir'."
-      )
+      expect_true(dir.exists(emptyDir))
       
     })
-
-test_that("Zip reports", {
-      
-      tmpZip <- file.path(tmpdir, "tmpZip")
-      dir.create(tmpZip)
-      reportDir <- file.path(tmpZip, "reportFolder")
-      dir.create(reportDir)
-      medMonFile <- file.path(reportDir, "medMonFile.html")
-      write(x = c('<!DOCTYPE html> </html>'), medMonFile)
-      
-      newDir <- file.path(tmpZip, "report_dependencies")
-      zipFolder <- file.path(tmpZip, "report.zip") 
-      
-      expect_silent(
-          zipMedicalMonitoring(
-              reportDir = reportDir,
-              newDir = newDir,
-              redirectPage = file.path(tmpZip, "report.html"),
-              zipFolder = zipFolder       
-          )
-      )
-      
-      expect_identical(
-          list.files(tmpZip),
-          c(
-              "report_dependencies",
-              "report.html", "report.zip",
-              "reportFolder"             
-          )
-      )
-      expect_identical(
-          list.files(newDir),
-          "medMonFile.html"
-      )
-      
-    })
-
-
 
