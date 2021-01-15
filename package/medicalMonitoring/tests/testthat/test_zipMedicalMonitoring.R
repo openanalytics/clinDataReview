@@ -2,6 +2,18 @@ context("Test zip of reports")
 
 tmpdir <- tempdir()
 
+test_that("Error in empty directory", {
+      
+#      emptyDir <- tempfile()
+#      dir.create(emptyDir)
+#      expect_true(dir.exists(emptyDir))
+      expect_error(
+          zipMedicalMonitoring(reportDir = tmpdir),
+          "No files available in the 'reportDir'."
+      )
+      
+    })
+
 test_that("Creation of redirect page", {
       
       tmpRedirect <- tempfile()
@@ -40,15 +52,4 @@ test_that("Error in not existing directory", {
       
     })
 
-test_that("Error in empty directory", {
-      
-      emptyDir <- tempfile()
-      dir.create(emptyDir)
-      expect_true(dir.exists(emptyDir))
-      expect_error(
-          zipMedicalMonitoring(reportDir = as.character(emptyDir)),
-          "No files available in the 'reportDir'."
-      )
-      
-    })
 
