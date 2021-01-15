@@ -29,7 +29,7 @@ The zip folder is created in the specified location.
 \description{
 Create a zip folder of medical monitoring reports with a redirect page.
 The medical monitoring report out of the 
-\code{\link{render_medicalMonitoring}} is copied into a new folder.
+\code{\link{render_medicalMonitoringReport}} is copied into a new folder.
 A redirect html page is created to enable the user to navigate the report
 without needing to look into the new directory.
 }
