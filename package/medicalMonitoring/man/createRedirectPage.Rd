@@ -19,5 +19,5 @@ The html file is created.
 Create an html page that redirects to the 
 "1-introduction.html" page of the medical monitoring report available in 
 a directory.
-See output from \code{\link{render_medicalMonitoring}}.
+See output from \code{\link{render_medicalMonitoringReport}}.
 }
