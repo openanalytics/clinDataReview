@@ -42,8 +42,8 @@ test_that("Error in not existing directory", {
 
 test_that("Error for files not available", {
       
-      emptyDir <- file.path(tmpdir, "emptyDir")
-      dir.create(file.path(tmpdir, "emptyDir"))
+      emptyDir <- tempfile()
+      dir.create(emptyDir)
       expect_error(
           zipMedicalMonitoring(reportDir = emptyDir),
           "No files available in the 'reportDir'."
@@ -88,15 +88,4 @@ test_that("Zip reports", {
     })
 
 
-#zipMedicalMonitoring(
-#    reportDir = "~/Downloads/SMC_demo_20201130/report_dependencies",
-#    newDir = "~/Desktop/medMon",
-#    redirectPage = file.path("~/Desktop", "report.html"),
-#    zipFolder = file.path("~/Desktop", "report.zip")       
-#)
-#
-#createRedirectPage(
-#    redirectPage = file.path("~/Desktop", "report.html"),
-#    dir = file.path("medMon")
-#)
 
