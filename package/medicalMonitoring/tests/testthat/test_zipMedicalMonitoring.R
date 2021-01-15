@@ -32,7 +32,7 @@ test_that("Error in input arguments", {
     })
 
 test_that("Error in not existing directory", {
- 
+      
       expect_error(
           zipMedicalMonitoring(reportDir = "folderReport"),
           "Directory specified in 'reportDir' does not exist."
@@ -45,6 +45,10 @@ test_that("Error in empty directory", {
       emptyDir <- tempfile()
       dir.create(emptyDir)
       expect_true(dir.exists(emptyDir))
+      expect_error(
+          zipMedicalMonitoring(reportDir = emptyDir),
+          "No files available in the 'reportDir'."
+      )
       
     })
 
