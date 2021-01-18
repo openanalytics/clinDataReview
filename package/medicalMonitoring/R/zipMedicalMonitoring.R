@@ -63,19 +63,79 @@ createRedirectPage <- function(
   
   linkToPage <- file.path(dir, "1-introduction.html")
   
-  htmlPage <- c(
-      sprintf(
-          '<!DOCTYPE html>
-              <html lang="" xml:lang="">
-              <head>
-              <meta http-equiv="refresh" content="0; URL=\'%s\'" />
-              </head>
-              <body>
-              </body>
-              </html>',
-          linkToPage
-      )
+#  htmlPage <- c(
+#      sprintf(
+#          '<!DOCTYPE html>
+#              <html lang="" xml:lang="">
+#              <head>
+#              <meta http-equiv="refresh" content="0; URL=\'%s\'" />
+#              </head>
+#              
+#			  <body>
+#              </body>
+#              </html>',
+#          linkToPage
+#      )
+#  )
+  htmlPage <- c('
+          <!DOCTYPE html>
+          <html>
+          
+          <script>
+          function loadDoc() {
+          
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+          window.location.replace("file:///home/mpasetto/Desktop/report/medMon/1-introduction.html")
+          }
+          };
+          
+          xhttp.open("HEAD", "file:///home/mpasetto/Desktop/report/medMon/1-introduction.html", true);
+          xhttp.send();
+          }
+          </script>
+          
+          <body onLoad = \"loadDoc()\">
+          
+          \'The report could not be found. Please be sure to unzip the folder 
+            and open again the report page from the unzipped directory.\'
+          
+          </body>
+          </html>
+          '
   )
   write(x = htmlPage, file = redirectPage)
   
 }
+
+
+
+
+'
+    <!DOCTYPE html>
+    <html>
+    
+    <script>
+    function loadDoc() {
+    
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+    window.location.replace("file:///home/mpasetto/Desktop/report/medMon/1-introduction.html")
+    }
+    };
+    
+    xhttp.open("HEAD", "1-introduction.html", true);
+    xhttp.send();
+    }
+    </script>
+    
+    <body onLoad = \"loadDoc()\">
+    
+    \'Ciao\'
+    
+    </body>
+    </html>
+    '
+
