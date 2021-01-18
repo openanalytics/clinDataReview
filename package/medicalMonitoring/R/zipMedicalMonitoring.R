@@ -77,74 +77,47 @@ createRedirectPage <- function(
 #          linkToPage
 #      )
 #  )
-  htmlPage <- c('
-          <!DOCTYPE html>
-          <html>
-          
-          <script>
-          function loadDoc() {
-          
-          var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function() {
-          if (this.readyState == 4 && this.status == 200) {
-          window.location.replace("file:///home/mpasetto/Desktop/report/medMon/1-introduction.html")
-          }
-          };
-          
-          xhttp.open("HEAD", "file:///home/mpasetto/Desktop/report/medMon/1-introduction.html", true);
-          xhttp.send();
-          }
-          </script>
-          
-          <body onLoad = \"loadDoc()\">
-          
-          <style>
-          p.styleP {
-          font-size: 40px;
-          text-align: center;
-          }
-          </style>
-          
-          <p  class="styleP">
-          \'The report could not be found. Please be sure to unzip the folder 
-          and open again the report page from the unzipped directory.\'
-          </p>
-          
-          </body>
-          </html>
+  htmlPage <- c(
+      sprintf(
           '
+              <!DOCTYPE html>
+              <html>
+              
+              <script>
+              function loadDoc() {
+              
+              var xhttp = new XMLHttpRequest();
+              xhttp.onreadystatechange = function() {
+              if (this.readyState == 4 && this.status == 200) {
+              window.location.replace("%s")
+              }
+              };
+              
+              xhttp.open("HEAD", "%s", true);
+              xhttp.send();
+              }
+              </script>
+              
+              <body onLoad = \"loadDoc()\">
+              
+              <style>
+              p.styleP {
+              font-size: 40px;
+              text-align: center;
+              }
+              </style>
+              
+              <p  class="styleP">
+              \'The report could not be found. Please be sure to unzip the folder 
+              and open again the report page from the unzipped directory.\'
+              </p>
+              
+              </body>
+              </html>
+              ',
+          linkToPage, linkToPage
+      )
   )
   write(x = htmlPage, file = redirectPage)
   
 }
-
-
-
-
-'
-    <!DOCTYPE html>
-    <html>
-    
-    <script>
-    function loadDoc() {
-    
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-    window.location.replace("file:///home/mpasetto/Desktop/report/medMon/1-introduction.html")
-    }
-    };
-    
-    xhttp.open("HEAD", "1-introduction.html", true);
-    xhttp.send();
-    }
-    </script>
-    
-    <body onLoad = \"loadDoc()\">
-    
-    \'Ciao\'
-    
-    </body>
-    </html>
-    '
-
