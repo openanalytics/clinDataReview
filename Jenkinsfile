@@ -50,7 +50,14 @@ pipeline {
                         command: 
                         - cat
                         tty: true
-                        imagePullPolicy: Always"""
+                        imagePullPolicy: Always
+                        resources:
+                            requests: 
+                                memory: "1024Mi"
+                            limits:
+                                memory: "1536Mi"
+
+                        """
                     defaultContainer 'r'
                 }
             }
