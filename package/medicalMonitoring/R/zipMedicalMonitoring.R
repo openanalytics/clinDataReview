@@ -108,8 +108,8 @@ createRedirectPage <- function(
               </style>
               
               <p  class="styleP">
-              \'The report could not be found. Please be sure to unzip the folder 
-              and open again the report page from the unzipped directory.\'
+              The report could not be found. Please be sure to unzip the folder 
+              and open again the report page from the unzipped directory.
               </p>
               
               </body>
@@ -118,6 +118,7 @@ createRedirectPage <- function(
           linkToPage, linkToPage
       )
   )
+  
   write(x = htmlPage, file = redirectPage)
   
 }
