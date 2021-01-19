@@ -18,8 +18,8 @@
 #' @importFrom utils zip
 #' @export 
 zipMedicalMonitoring <- function(
-    reportDir = "./report",
-    newDir = "./report_dependencies",
+    reportDir = "report",
+    newDir = "report_dependencies",
     redirectPage = "report.html", zipFolder = "report.zip"
 ) {
   
@@ -59,44 +59,41 @@ zipMedicalMonitoring <- function(
 #' @export 
 createRedirectPage <- function(
     redirectPage = "report.html",
-    dir = "./report_dependencies"
+    dir = "report_dependencies"
 ) {
   
   linkToPage <- file.path(dir, "1-introduction.html")
+  linkToFigure <- file.path(dir, "figures/subjectPlots.png")
   
-#  htmlPage <- c(
-#      sprintf(
-#          '<!DOCTYPE html>
-#              <html lang="" xml:lang="">
-#              <head>
-#              <meta http-equiv="refresh" content="0; URL=\'%s\'" />
-#              </head>
-#              
-#			  <body>
-#              </body>
-#              </html>',
-#          linkToPage
-#      )
-#  )
   htmlPage <- c(
       sprintf(
           '
               <!DOCTYPE html>
               <html>
               
-              <script>
-              function loadDoc() {
+              <p id="error"></p>
               
-              var xhttp = new XMLHttpRequest();
-              xhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-              window.location.replace("%s")
+			  <script>
+
+              function imageExists(url, callback) {
+              		var img = new Image();
+              		img.onload = function() { callback(true, url); };
+              		img.onerror = function() { callback(false, url); };
+              		img.src = url;
               }
+              
+              function loadDoc() {
+              		var fileURL = "%s";
+              		imageExists(fileURL, function(exists, url) {
+              		if(exists) {
+						console.log("The image exists! unzipping has occurred");
+              			window.location.replace("%s");
+              		} else {
+              			document.getElementById("error").innerHTML = \'<p class=\"styleP\">The report could not be found. Please be sure to unzip the folder and open again the report page from the unzipped directory.</p>\';
+              			}
+              		});
               };
               
-              xhttp.open("HEAD", "%s", true);
-              xhttp.send();
-              }
               </script>
               
               <body onLoad = \"loadDoc()\">
@@ -107,16 +104,11 @@ createRedirectPage <- function(
               text-align: center;
               }
               </style>
-              
-              <p  class="styleP">
-              The report could not be found. Please be sure to unzip the folder 
-              and open again the report page from the unzipped directory.
-              </p>
-              
+                      
               </body>
               </html>
               ',
-          linkToPage, linkToPage
+          linkToFigure, linkToPage
       )
   )
   
