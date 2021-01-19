@@ -56,6 +56,7 @@ zipMedicalMonitoring <- function(
 #' to the "1-introduction.html" page of the report.
 #' @param dir String for the path where the "1-introduction.html" is stored.
 #' @return The html file is created.
+#' @export 
 createRedirectPage <- function(
     redirectPage = "report.html",
     dir = "./report_dependencies"
