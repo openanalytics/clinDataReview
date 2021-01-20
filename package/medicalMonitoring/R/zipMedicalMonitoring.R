@@ -23,7 +23,12 @@ zipMedicalMonitoring <- function(
     redirectPage = "report.html", zipFolder = "report.zip"
 ) {
   
-  if(! all(sapply(match.call()[-1], function(x) is.character(eval(x))))) stop("Input arguments should be characters.")  
+  areChrs <- all(c(
+          is.character(reportDir), is.character(newDir),
+          is.character(redirectPage), is.character(zipFolder)
+      )
+  )  
+  if(! areChrs) stop("Input arguments should be characters.")  
   if(! dir.exists(reportDir)) stop("Directory specified in 'reportDir' does not exist.")
   
   folderName <- basename(newDir)  
@@ -73,25 +78,25 @@ createRedirectPage <- function(
               
               <p id="error"></p>
               
-			  <script>
-
+              <script>
+              
               function imageExists(url, callback) {
-              		var img = new Image();
-              		img.onload = function() { callback(true, url); };
-              		img.onerror = function() { callback(false, url); };
-              		img.src = url;
+              var img = new Image();
+              img.onload = function() { callback(true, url); };
+              img.onerror = function() { callback(false, url); };
+              img.src = url;
               }
               
               function loadDoc() {
-              		var fileURL = "%s";
-              		imageExists(fileURL, function(exists, url) {
-              		if(exists) {
-						console.log("The image exists! unzipping has occurred");
-              			window.location.replace("%s");
-              		} else {
-              			document.getElementById("error").innerHTML = \'<p class=\"styleP\">The report could not be found. Please be sure to unzip the folder and open again the report page from the unzipped directory.</p>\';
-              			}
-              		});
+              var fileURL = "%s";
+              imageExists(fileURL, function(exists, url) {
+              if(exists) {
+              console.log("The image exists! unzipping has occurred");
+              window.location.replace("%s");
+              } else {
+              document.getElementById("error").innerHTML = \'<p class=\"styleP\">The report could not be found. Please be sure to unzip the folder and open again the report page from the unzipped directory.</p>\';
+              }
+              });
               };
               
               </script>
@@ -104,7 +109,7 @@ createRedirectPage <- function(
               text-align: center;
               }
               </style>
-                      
+              
               </body>
               </html>
               ',
