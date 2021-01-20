@@ -4,13 +4,13 @@ tmpdir <- tempdir()
 
 test_that("Error in empty directory", {
       
-#      emptyDir <- tempfile()
-#      dir.create(emptyDir)
+      emptyDir <- tempfile()
+      dir.create(emptyDir)
 #      expect_true(dir.exists(emptyDir))
-#      expect_error(
-#          zipMedicalMonitoring(reportDir = tmpdir),
-#          "No files available in the 'reportDir'."
-#      )
+      expect_error(
+          zipMedicalMonitoring(reportDir = emptyDir),
+          "No files available in the 'reportDir'."
+      )
       
     })
 
@@ -38,6 +38,14 @@ test_that("Error in input arguments", {
       )
       expect_error(
           zipMedicalMonitoring(newDir = 1),
+          "Input arguments should be characters."
+      )
+      expect_error(
+          zipMedicalMonitoring(redirectPage = 1),
+          "Input arguments should be characters."
+      )
+      expect_error(
+          zipMedicalMonitoring(zipFolder = 1),
           "Input arguments should be characters."
       )
       
