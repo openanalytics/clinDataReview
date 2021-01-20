@@ -22,7 +22,14 @@ pipeline {
                       - name: dind
                         image: 196229073436.dkr.ecr.eu-west-1.amazonaws.com/oa-infrastructure/dind
                         securityContext:
-                          privileged: true'''
+                          privileged: true
+                        resources:
+                            requests: 
+                                memory: "1024Mi"
+                            limits:
+                                memory: "1536Mi"
+                          
+                    '''
                     defaultContainer 'dind'
                 }
             }
