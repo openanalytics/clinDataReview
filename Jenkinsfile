@@ -85,11 +85,6 @@ pipeline {
                             steps {
                                 sh 'ls medicalMonitoring_*.tar.gz && R CMD check medicalMonitoring_*.tar.gz --no-manual'
                             }
-                            post {
-                                always {
-                                    junit "*.Rcheck/tests/results.xml"
-                                }
-                            }
                         }
 						stage('Install') {
                             steps {
