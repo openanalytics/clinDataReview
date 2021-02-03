@@ -2,8 +2,8 @@
     o unit tests
     o add 'zipMedicalMonitoring' function
     o getPlotTableVars:
-        - fix label table labels scatterplot
-        - extra doc
+        - fix issues vars label scatterplot, time profile interval plot
+        - extra doc, tests
 0.8.0
     o fix extraction of labels for 'getPlotTableVars' when 'valueVar' not in 'tableVars'
     o remove 'settings' argument in 'getMdHeader'

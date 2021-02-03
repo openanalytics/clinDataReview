@@ -38,6 +38,8 @@ tableMonitoring <- function(
 	
 	tableVarsInit <- tableVars
 	
+	if(is.null(tablePars))	tablePars <- list()
+	
 	if(!idVar %in% colnames(data))
 		warning(paste(
 			"Subject ID variable:", idVar,

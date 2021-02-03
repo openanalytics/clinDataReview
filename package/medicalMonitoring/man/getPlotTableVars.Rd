@@ -14,9 +14,7 @@ be available in the \code{medicalMonitoring package}.}
 \item{plotArgs}{List with parameters passed to the plotting function.}
 }
 \value{
-Character vector with variable to include in the table,
-with extra attributes: 'tableLab'/'tablePars' containing the associated
-labels and the table parameters (passed to \code{\link{tableMonitoring}}).
+
 }
 \description{
 This function is used in each plotting function of the package 
@@ -43,6 +41,9 @@ The associated label(s) are extracted from the associated
 parameter (\code{tableLab}) or the general
 parameter for the variable labels (\code{labelVars}) if not specified.}
 }
+For the functions: \code{\link{plotCountMonitoring}}, 
+\code\link{{treemapMonitoring}}, \code{\link{sunburstMonitoring}}:
+value to represent are included in the table and colored with a bar.
 }
 \author{
 Laure Cougnaud

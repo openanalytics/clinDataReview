@@ -25,16 +25,29 @@
 #' parameter (\code{tableLab}) or the general
 #' parameter for the variable labels (\code{labelVars}) if not specified.}
 #' }
+#' For the functions: \code{\link{plotCountMonitoring}}, 
+#' \code\link{{treemapMonitoring}}, \code{\link{sunburstMonitoring}}:
+#' value to represent are included in the table and colored with a bar.
 #' @param plotFunction String with name of the plotting function,
 #' be available in the \code{medicalMonitoring package}.
 #' @param plotArgs List with parameters passed to the plotting function.
 #' @return Character vector with variable to include in the table,
-#' with extra attributes: 'tableLab'/'tablePars' containing the associated
-#' labels and the table parameters (passed to \code{\link{tableMonitoring}}).
+#' with extra attributes (passed to \code{\link{tableMonitoring}}): 
+#' \itemize{
+#' \item{'tableLab': }{Named character vector with labels 
+#' for the table variables}
+#' \item{'tablePars' :}{extra table parameters, only
+#' if specified as input or specified internally.
+#' }
+#' labels and the table parameters .
 #' @author Laure Cougnaud
 #' @export
 getPlotTableVars <- function(plotFunction, plotArgs){
 
+	# exception: default args for treemap/sunburst extracted from plotCountMonitoring
+	if(plotFunction %in% c("treemapMonitoring", "sunburstMonitoring"))
+		plotFunction <- "plotCountMonitoring"
+	
 	# in case only a subset of the pars are provided
 	# add default values of parameters
 	plotFctArgsDef <- formals(plotFunction)
@@ -44,7 +57,9 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 	# extract pars of interest:
 	tableVars <- plotArgs$tableVars
 	tableLab <- plotArgs$tableLab
-	tablePars <- plotArgs$tablePars
+	
+	# convert object of mode call -> to list
+	tablePars <- eval(plotArgs$tablePars)
 	
 	# check if par is specified or not
 	# 'missing' when used withing plotting fct
@@ -127,14 +142,14 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 					tablePars$nonVisibleVar,
 					valueVar
 				)
-				plotArgs$valueLab <- valueLab <- getLabelVar(valueVar, labelVars = labelVars)
+				valueLab <- with(plotArgs, getLabelVar(valueVar, labelVars = labelVars))
                 tableLab <- c(tableLab, setNames(valueLab, valueVar))
 			}
 			
 		}
 		
-		if("barVar" %in% names(tablePars))
-			tablePars <- c(tablePars, list(barVar = valueVar))
+		if(!"barVar" %in% names(tablePars))
+			tablePars$barVar <- valueVar
 		
 	}else if(plotFunction == "timeProfileIntervalPlot"){
 		
@@ -151,7 +166,7 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 					getLabelVar(var = timeStartVar, label = timeStartLab, labelVars = labelVars),
 					getLabelVar(var = timeEndVar, label = timeEndLab, labelVars = labelVars),
 					getLabelVar(var = colorVar, label = colorLab, labelVars = labelVars),
-					getLabelVar(var = timeStartVar, label = timeStartShapeLab, labelVars = labelVars),
+					getLabelVar(var = timeStartShapeVar, label = timeStartShapeLab, labelVars = labelVars),
 					getLabelVar(var = timeEndShapeVar, label = timeEndShapeLab, labelVars = labelVars)
 				)
 			)
@@ -178,7 +193,8 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 	
 	res <- tableVars
 	attr(res, "tableLab") <- tableLab
-	attr(res, "tablePars") <- tablePars
+	if(length(tablePars) > 0)
+		attr(res, "tablePars") <- tablePars
 	
 	return(res)
 	
