@@ -26,7 +26,7 @@
 #' parameter for the variable labels (\code{labelVars}) if not specified.}
 #' }
 #' For the functions: \code{\link{plotCountMonitoring}}, 
-#' \code\link{{treemapMonitoring}}, \code{\link{sunburstMonitoring}}:
+#' \code{\link{treemapMonitoring}}, \code{\link{sunburstMonitoring}}:
 #' value to represent are included in the table and colored with a bar.
 #' @param plotFunction String with name of the plotting function,
 #' be available in the \code{medicalMonitoring package}.
