@@ -1,9 +1,36 @@
 #' Extract variables displayed in the attached table, for
 #' each available plotting function of the medical monitoring package.
-#' @param plotFunction String with name of the plotting function.
+#' 
+#' This function is used in each plotting function of the package 
+#' to extract the variable(s) displayed in the table associated to the
+#' plot and their associated labels.\cr
+#' This can also be used in the template reports, e.g. to extract
+#' reference variable(s) for the comparison table functionality
+#' in the plot template report.\cr
+#' The following framework is used:
+#' \itemize{
+#' \item{if variables to be displayed in the table (\code{tableVars})
+#' are not specified:\cr}{all variables displayed in the plot
+#' are selected, based on the plot arguments.\cr
+#'  For example: the variables
+#' displayed in the x and y axis and for coloring are extracted
+#' for the \code{\link{scatterplotMonitoring}} plotting function.\cr
+#' Label for these variable(s) are extracted from the associated parameter 
+#' (e.g. \code{xLab} for \code{xVar} and so on) or the general
+#' parameter for the variable labels (\code{labelVars}) if not specified.
+#' }
+#' \item{if variables to be displayed in the table (\code{tableVars})
+#' are specified:\cr}{these variable(s) are returned.\cr
+#' The associated label(s) are extracted from the associated 
+#' parameter (\code{tableLab}) or the general
+#' parameter for the variable labels (\code{labelVars}) if not specified.}
+#' }
+#' @param plotFunction String with name of the plotting function,
+#' be available in the \code{medicalMonitoring package}.
 #' @param plotArgs List with parameters passed to the plotting function.
 #' @return Character vector with variable to include in the table,
-#' with extra attribute: 'tableLab'/'tablePars' containing variable labels.
+#' with extra attributes: 'tableLab'/'tablePars' containing the associated
+#' labels and the table parameters (passed to \code{\link{tableMonitoring}}).
 #' @author Laure Cougnaud
 #' @export
 getPlotTableVars <- function(plotFunction, plotArgs){
@@ -23,7 +50,6 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 	# 'missing' when used withing plotting fct
 	# 'null' when specified via template report
 	tableVarsNotSpec <- missing(tableVars) || is.null(tableVars)
-	tableLabNotSpec <- missing(tableLab) || is.null(tableLab)
 			
 	getPlotArgsAsVect <- function(elNames){
 		elList <- do.call(c, plotArgs[elNames]) # to deal with list(A = list(b = ...), B = list())
@@ -34,27 +60,42 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 	if(plotFunction == "scatterplotMonitoring"){
 			
 		if(tableVarsNotSpec){
+			
 			aesVar <- getPlotArgsAsVect(c("aesPointVar", "aesLineVar"))
 			tableVars <- unique(c(getPlotArgsAsVect(c("idVar", "xVar", "yVar")), aesVar))
 			tableLab <- with(plotArgs, 
 				c(
 					getLabelVar(var = idVar, label = if(!missing(idLab))	idLab, labelVars = labelVars),
 					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
-					getLabelVar(var = yVar, label = if(!missing(yLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
 					getLabelVar(var = aesVar, label = if(!missing(aesLab))	aesLab, labelVars = labelVars)
 				)
 			)
-		}else	if(tableLabNotSpec){
-			tableLab <- with(plotArgs, getLabelVar(tableVars, labelVars = labelVars))
+		}else{
+			tableLab <- with(plotArgs, 
+				getLabelVar(tableVars, labelVars = labelVars, 
+					label = if(!missing(tableLab))	tableLab
+				)
+			)
 		}
 			
 	}else	if(plotFunction == "barplotMonitoring"){
 			
 		if(tableVarsNotSpec){
-			tableVars <- with(plotArgs,  c(xVar, colorVar, yVar))
-			tableLab <- setNames(with(plotArgs, c(xLab, colorLab, yLab)), tableVars)
-		}else	if(tableLabNotSpec){
-			tableLab <- with(plotArgs, getLabelVar(tableVars, labelVars = labelVars))
+			tableVars <- with(plotArgs, c(xVar, colorVar, yVar))
+			tableLab <- with(plotArgs, 
+				c(
+					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
+					getLabelVar(var = colorVar, label = if(!missing(colorLab))	colorLab, labelVars = labelVars)
+				)
+			)
+		}else{
+			tableLab <- with(plotArgs, 
+				getLabelVar(tableVars, labelVars = labelVars, 
+					label = if(!missing(tableLab))	tableLab
+				)
+			)
 		}
 		
 	}else	if(plotFunction %in% c("plotCountMonitoring", "treemapMonitoring", "sunburstMonitoring")){
@@ -73,26 +114,27 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			
 		}else{
 			
-			if(tableLabNotSpec)
-				tableLab <- with(plotArgs, glpgUtilityFct::getLabelVar(tableVars, labelVars = labelVars))
+			tableLab <- with(plotArgs, 
+				getLabelVar(tableVars, labelVars = labelVars, 
+					label = if(!missing(tableLab))	tableLab
+				)
+			)
 			
 			if(!valueVar %in% tableVars){
+				
 				tableVars <- c(tableVars, valueVar)
 				tablePars$nonVisibleVar <- c(
 					tablePars$nonVisibleVar,
 					valueVar
 				)
-                tableLabOrig <- tableLab
-                tableLab <- c(tableLab, valueVar)
-                idxNames <- which(names(tableLab) %in% names(tableLabOrig))
-                names(tableLab) <- c(names(tableLab)[idxNames], valueVar)
-                plotArgs$valueLab <- valueVar
-				tableLab[valueVar] <- with(plotArgs, glpgUtilityFct::getLabelVar(valueLab, labelVars = labelVars))
+				plotArgs$valueLab <- valueLab <- getLabelVar(valueVar, labelVars = labelVars)
+                tableLab <- c(tableLab, setNames(valueLab, valueVar))
 			}
 			
 		}
 		
-		tablePars <- c(tablePars, list(barVar = valueVar))
+		if("barVar" %in% names(tablePars))
+			tablePars <- c(tablePars, list(barVar = valueVar))
 		
 	}else if(plotFunction == "timeProfileIntervalPlot"){
 		
@@ -114,8 +156,12 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 				)
 			)
 			
-		}else	if(tableLabNotSpec){
-			tableLab <- with(plotArgs, getLabelVar(tableVars, labelVars = labelVars))
+		}else{
+			tableLab <- with(plotArgs, 
+				getLabelVar(tableVars, labelVars = labelVars, 
+					label = if(!missing(tableLab))	tableLab
+				)
+			)
 		}
 		
 	}else{
