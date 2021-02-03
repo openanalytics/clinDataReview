@@ -6,8 +6,10 @@
 #' @param keyLab String with label for \code{keyVar}.
 #' @param tableButton Logical, if TRUE (by default)
 #' the table is included within an HTML button.
-#' @param tableVars,tableLab Character vector with variables to be included 
-#' in the table; and associated labels.
+#' @param tableVars Character vector with variables to be included 
+#' in the table.
+#' @param tableLab Named character vector with labels
+#' for each \code{tableVars}.
 #' @param tablePars List with parameters passed to the
 #' \code{\link[glpgUtilityFct]{toDTGLPG}} function.
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
