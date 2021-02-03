@@ -5,8 +5,8 @@
 \title{Zip the medical monitoring report}
 \usage{
 zipMedicalMonitoring(
-  reportDir = "./report",
-  newDir = "./report_dependencies",
+  reportDir = "report",
+  newDir = "report_dependencies",
   redirectPage = "report.html",
   zipFolder = "report.zip"
 )

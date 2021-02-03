@@ -4,7 +4,7 @@
 \alias{createRedirectPage}
 \title{Create a redirect page}
 \usage{
-createRedirectPage(redirectPage = "report.html", dir = "./report_dependencies")
+createRedirectPage(redirectPage = "report.html", dir = "report_dependencies")
 }
 \arguments{
 \item{redirectPage}{String with the path of the html file that redirects

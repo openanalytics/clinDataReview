@@ -134,10 +134,10 @@ when some records are selected in the table, they are highlighted in the
 associated table.}
 
 \item{tableVars}{Character vector with variables to be included 
-in the table; and associated labels.}
+in the table.}
 
-\item{tableLab}{Character vector with variables to be included 
-in the table; and associated labels.}
+\item{tableLab}{Named character vector with labels
+for each \code{tableVars}.}
 
 \item{tableButton}{Logical, if TRUE (by default)
 the table is included within an HTML button.}

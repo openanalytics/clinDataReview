@@ -55,8 +55,11 @@ be included in a collapsible row or as hyperlink in the table?
 Should be TRUE for if multiple paths are included for each \code{idVar},
 FALSE otherwise (by default).}
 
-\item{tableVars, tableLab}{Character vector with variables to be included 
-in the table; and associated labels.}
+\item{tableVars}{Character vector with variables to be included 
+in the table.}
+
+\item{tableLab}{Named character vector with labels
+for each \code{tableVars}.}
 
 \item{tableButton}{Logical, if TRUE (by default)
 the table is included within an HTML button.}
