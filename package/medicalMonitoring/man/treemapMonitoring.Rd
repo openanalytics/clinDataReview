@@ -67,9 +67,9 @@ in the current console.
 For the visualizations, progress messages during download
 of subject-specific report are displayed in the browser console.}
     \item{\code{tableVars}}{Character vector with variables to be included 
-in the table; and associated labels.}
-    \item{\code{tableLab}}{Character vector with variables to be included 
-in the table; and associated labels.}
+in the table.}
+    \item{\code{tableLab}}{Named character vector with labels
+for each \code{tableVars}.}
     \item{\code{tableButton}}{Logical, if TRUE (by default)
 the table is included within an HTML button.}
     \item{\code{tablePars}}{List with parameters passed to the
