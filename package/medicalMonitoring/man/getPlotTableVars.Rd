@@ -42,7 +42,7 @@ parameter (\code{tableLab}) or the general
 parameter for the variable labels (\code{labelVars}) if not specified.}
 }
 For the functions: \code{\link{plotCountMonitoring}}, 
-\code\link{{treemapMonitoring}}, \code{\link{sunburstMonitoring}}:
+\code{\link{treemapMonitoring}}, \code{\link{sunburstMonitoring}}:
 value to represent are included in the table and colored with a bar.
 }
 \author{
