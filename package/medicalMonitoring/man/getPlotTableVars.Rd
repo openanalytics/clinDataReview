@@ -14,7 +14,16 @@ be available in the \code{medicalMonitoring package}.}
 \item{plotArgs}{List with parameters passed to the plotting function.}
 }
 \value{
-
+Character vector with variable to include in the table,
+with extra attributes (passed to \code{\link{tableMonitoring}}): 
+\itemize{
+\item{'tableLab': }{Named character vector with labels 
+for the table variables}
+\item{'tablePars' :}{extra table parameters, only
+included if specified as input or specified internally.
+}
+}
+labels and the table parameters .
 }
 \description{
 This function is used in each plotting function of the package 
