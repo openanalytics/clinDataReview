@@ -8,17 +8,41 @@ each available plotting function of the medical monitoring package.}
 getPlotTableVars(plotFunction, plotArgs)
 }
 \arguments{
-\item{plotFunction}{String with name of the plotting function.}
+\item{plotFunction}{String with name of the plotting function,
+be available in the \code{medicalMonitoring package}.}
 
 \item{plotArgs}{List with parameters passed to the plotting function.}
 }
 \value{
 Character vector with variable to include in the table,
-with extra attribute: 'tableLab'/'tablePars' containing variable labels.
+with extra attributes: 'tableLab'/'tablePars' containing the associated
+labels and the table parameters (passed to \code{\link{tableMonitoring}}).
 }
 \description{
-Extract variables displayed in the attached table, for
-each available plotting function of the medical monitoring package.
+This function is used in each plotting function of the package 
+to extract the variable(s) displayed in the table associated to the
+plot and their associated labels.\cr
+This can also be used in the template reports, e.g. to extract
+reference variable(s) for the comparison table functionality
+in the plot template report.\cr
+The following framework is used:
+\itemize{
+\item{if variables to be displayed in the table (\code{tableVars})
+are not specified:\cr}{all variables displayed in the plot
+are selected, based on the plot arguments.\cr
+ For example: the variables
+displayed in the x and y axis and for coloring are extracted
+for the \code{\link{scatterplotMonitoring}} plotting function.\cr
+Label for these variable(s) are extracted from the associated parameter 
+(e.g. \code{xLab} for \code{xVar} and so on) or the general
+parameter for the variable labels (\code{labelVars}) if not specified.
+}
+\item{if variables to be displayed in the table (\code{tableVars})
+are specified:\cr}{these variable(s) are returned.\cr
+The associated label(s) are extracted from the associated 
+parameter (\code{tableLab}) or the general
+parameter for the variable labels (\code{labelVars}) if not specified.}
+}
 }
 \author{
 Laure Cougnaud
