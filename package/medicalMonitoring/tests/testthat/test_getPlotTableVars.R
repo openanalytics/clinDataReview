@@ -1,24 +1,12 @@
 context("Test extraction of table variables")
 
-# Seems from 'coverage' report that
-# 'getPlotTableVars' is also tested through the other plot functionalities?
+# 'getPlotTableVars' is also tested through the other plot functionalities
+# if a table is extracted for a specific plot
 # So other tests are skipped
 
-data <- data.frame(A = c(1, 2), B = c(3, 4), C = c(3, 5))
-plotArgs <- list(
-    data = data,
-    xVar = "A", yVar = "B",
-    tableVars = colnames(data),
-    tableLab = NULL
-)
-labelVars <- c(A = "firstName", B = "secondName")
-plotArgsWithLabelVars <- c(plotArgs, list(labelVars = labelVars))
-plotArgsWithXYLab <- c(plotArgs, 
-	list(xLab = c(A = "firstName"), yLan = c(B = "secondName"))
-)
-
 test_that("error is triggered if plotting function not available", {
-      
+			
+	data <- data.frame(A = c(1, 2), B = c(3, 4))		
 	plotArgs <- list(
 		data = data,
 		xVar = "A", yVar = "B"
