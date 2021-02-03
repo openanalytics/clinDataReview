@@ -37,7 +37,8 @@
 #' \item{'tableLab': }{Named character vector with labels 
 #' for the table variables}
 #' \item{'tablePars' :}{extra table parameters, only
-#' if specified as input or specified internally.
+#' included if specified as input or specified internally.
+#' }
 #' }
 #' labels and the table parameters .
 #' @author Laure Cougnaud
