@@ -323,7 +323,7 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 		
 			# create plot
 			colorLab <- toString(getLabelVar(colorVar[countVar], data = dataI, labelVars = labelVars))
-			pathLab <- getLabelVar(var = "USUBJID", labelVars = labelVars)
+			pathLab <- unname(getLabelVar(var = "USUBJID", labelVars = labelVars))
 			plotCountMonitoring(
 				data = dataI,
 				vars = c(parentVar, countVar),
