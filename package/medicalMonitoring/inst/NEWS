@@ -5,6 +5,7 @@
         - fix issues vars label scatterplot, time profile interval plot
         - extract lab from tableLab + labelVars if tableVars is specified
         - extra doc, tests
+    o Js FileSaver library: remove reference to FileSaver.min.js.map
 0.8.0
     o fix extraction of labels for 'getPlotTableVars' when 'valueVar' not in 'tableVars'
     o remove 'settings' argument in 'getMdHeader'
