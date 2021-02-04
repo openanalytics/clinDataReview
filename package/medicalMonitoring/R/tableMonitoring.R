@@ -53,7 +53,11 @@ tableMonitoring <- function(
 		tableVars, 
 		keyVar
 	))
-	tableLab <- c(idLab[idVar], tableLab, keyLab[keyVar])
+	tableLab <- c(
+		getLabelVar(var = idVar, label = idLab, labelVars = labelVars),
+		tableLab, 
+		getLabelVar(var = keyVar, label = keyLab, labelVars = labelVars)
+	)
 	tableLab <- tableLab[!duplicated(names(tableLab))]
 	
 	usePathVar <- !is.null(pathVar)
@@ -72,7 +76,8 @@ tableMonitoring <- function(
 		
 		# create the hyperlink (if not already created)
 		if(pathExpand){
-			tableLab[pathVar] <- pathLab
+			tableLab[pathVar] <- getLabelVar(var = pathVar, 
+				label = pathLab, labelVars = labelVars)
 		}
 		
 	}
