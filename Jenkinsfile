@@ -73,7 +73,7 @@ pipeline {
                     stages {
                         stage('Roxygen') {
                             steps {
-                                sh 'R -q -e \'roxygen2::roxygenize("package/medicalMonitoring", load = "source")\''
+                                sh 'R -q -e \'roxygen2::roxygenize("package/medicalMonitoring")\''
                             }
                         }
                         stage('Build') {
@@ -86,7 +86,7 @@ pipeline {
                                 sh 'ls medicalMonitoring_*.tar.gz && R CMD check medicalMonitoring_*.tar.gz --no-manual'
                             }
                         }
-						stage('Install') {
+						            stage('Install') {
                             steps {
                                 sh 'R -q -e \'install.packages(list.files(".", "medicalMonitoring_.*.tar.gz"), repos = NULL) \''
                             }
