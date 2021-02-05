@@ -6,7 +6,7 @@
         - extract lab from tableLab + labelVars if tableVars is specified
         - extra doc, tests
     o Js FileSaver library: remove reference to FileSaver.min.js.map
-    o help page 'medicalMonitoring-templates' properly created in pkg built
+    o help page 'medicalMonitoring-templates' properly created in pkg built + tests
 0.8.0
     o fix extraction of labels for 'getPlotTableVars' when 'valueVar' not in 'tableVars'
     o remove 'settings' argument in 'getMdHeader'
