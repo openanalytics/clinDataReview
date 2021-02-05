@@ -110,7 +110,7 @@ test_that("parameter documentation from JSON schema is converted to R documentat
 	jsonSchemaDoc <- JSONSchToRd(JSONSch = templateSpec, title = "templateName")
 	expect_type(jsonSchemaDoc, "character")
 	# title is parsed
-	expect_match(jsonSchemaDoc, regexp = "[\\]section[{]test title templateName[}]", all = FALSE)
+	expect_match(jsonSchemaDoc, regexp = "\\section{test title templateName}", fixed = TRUE, all = FALSE)
 	# description is parsed
 	expect_match(jsonSchemaDoc, regexp = "this is example of json file for unit tests", all = FALSE)
 	# parameter doc is parsed
@@ -123,7 +123,9 @@ test_that("parameter documentation from JSON schema is converted to R documentat
 
 test_that("documentation for template report contains parameter description from JSON schema file", {
 			
-	tmpFolder <- tempdir(check = TRUE)
+	# create new empty tmp folder
+	tmpFolder <- tempfile("test")
+	dir.create(tmpFolder)
 			
 	templateName <- file.path(tmpFolder, "template.Rmd")
 	file.create(templateName)
@@ -160,7 +162,9 @@ test_that("documentation for template report contains parameter description from
 
 test_that("documentation for template report is still created if no JSON schema parameter file is available", {
       
-	tmpFolder <- tempdir(check = TRUE)
+	# create new empty tmp folder
+	tmpFolder <- tempfile("test")
+	dir.create(tmpFolder)
       
 	templateName <- file.path(tmpFolder, "template.Rmd")
 	file.create(templateName)
@@ -169,6 +173,6 @@ test_that("documentation for template report is still created if no JSON schema 
 		res <- createTemplateDoc(templatePath = tmpFolder)
 	)
 	expect_type(res, "character")
-	expect_match(res, regexp = "[\\]section[{]template[}]", all = FALSE)
+	expect_match(res, regexp = "\\section{template}", fixed = TRUE, all = FALSE)
       
 })
