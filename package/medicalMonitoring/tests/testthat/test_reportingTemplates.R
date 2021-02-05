@@ -57,7 +57,7 @@ test_that("path to template report is extracted from the installed package", {
       
 })
 
-test_that("documentation for template reports is created", {
+test_that("documentation of template reports is created even if no reports are available", {
       
 	# R CMD check runs on package binary, so without 'inst' folder:
 	doc <- createTemplateDoc()
@@ -78,7 +78,7 @@ test_that("documentation for template reports is created", {
       
 })
 
-test_that("documentation for template reports is not created if wrong folder is specified", {
+test_that("documentation for template reports is not created if template folder doesn't exist", {
       
 	expect_silent(
 		res <- createTemplateDoc(system.file("inst", "template", package = "medicalMonitoring"))
@@ -88,7 +88,7 @@ test_that("documentation for template reports is not created if wrong folder is 
       
 })
 
-test_that("parameter documentation from JSON schema is converted to R documentation", {
+test_that("parameter documentation is converted from JSON schema to R documentation", {
 			
 	# R CMD check runs on package binary, so without 'inst' folder:
 	jsonFileName <- tempfile(pattern = "template", fileext = ".json")
@@ -121,7 +121,7 @@ test_that("parameter documentation from JSON schema is converted to R documentat
       
 })
 
-test_that("documentation for template report contains parameter description from JSON schema file", {
+test_that("documentation for template reports contains parameter description from JSON schema file", {
 			
 	# create new empty tmp folder
 	tmpFolder <- tempfile("test")
@@ -160,7 +160,7 @@ test_that("documentation for template report contains parameter description from
 	
 })
 
-test_that("documentation for template report is still created if no JSON schema parameter file is available", {
+test_that("documentation for template reports is created even if report, but no JSON schema parameter file is available", {
       
 	# create new empty tmp folder
 	tmpFolder <- tempfile("test")
