@@ -67,7 +67,7 @@ getPathTemplate <- function(file, package = "medicalMonitoring"){
 #' @references \href{JSON schema specification}{https://json-schema.org/understanding-json-schema/}
 #' @author Laure Cougnaud
 createTemplateDoc <- function(
-	templatePath = system.file("inst", "template", package = "medicalMonitoring")){
+	templatePath = system.file("template", package = "medicalMonitoring")){
 		
 	getBaseName <- function(path, type){
 		bn <- file_path_sans_ext(basename(path))
