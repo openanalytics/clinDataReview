@@ -111,9 +111,17 @@ collapseHtmlContent <- function(
 		style = btnStyle
 	)
 
-	btnContent <- div(input, style = "height:100%; display: inline-block;") #div(class = "row", div(input))
+	# set a specific class to be able to set width of embedded DT
+	# only for the DT included within a collapsible input
+	btnContent <- div(input, 
+		style = "height:100%; display: inline-block;", 
+		class = "hideshow_cnt"
+	)
 	
-	res <- tagList(btn, btnContent, br(), br())
+	res <- tagList(
+		btn, 
+		btnContent, br(), br()
+	)
 	
 	return(res)
 	
