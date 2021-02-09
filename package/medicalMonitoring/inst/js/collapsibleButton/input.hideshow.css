@@ -1,0 +1,16 @@
+/* to avoid that DataTable header within button content
+/* is not aligned with columns upon  */
+/* first click of linked plot: */
+/* set width of dataTable  to 100% */
+
+/* for bookdown gitbook and rmd html document outputs: */
+
+div.hideshow_cnt .dataTables_scrollHeadInner {
+  width: 100% !important;
+}
+
+/* for rmd html_document ouput format only */
+
+div.hideshow_cnt .no-footer {
+  width: 100% !important;
+}
