@@ -162,9 +162,7 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			if(!is.null(name))	paste0("{", name, ": }"), 
 			"{"
 		)
-		items <- if(length(x) > 1){
-			c(itemsRox2Start, x, "}")
-		}else	paste0(itemsRox2Start, x, "}")
+		items <- paste0(itemsRox2Start, x, "}")
 		return(items)
 	}
 	getItemize <- function(x){
@@ -239,7 +237,7 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 				"}",
 				if(isRequired)	"}"
 			)
-			getItem(pDocText, name = pDocName)
+			getItem(x = pDocText, name = pDocName)
 			
 		})
 		
