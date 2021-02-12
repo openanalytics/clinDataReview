@@ -94,7 +94,7 @@ createRedirectPage <- function(
               console.log("The image exists! unzipping has occurred");
               window.location.replace("%s");
               } else {
-              document.getElementById("error").innerHTML = \'<p class=\"styleP\">The report could not be found. Please be sure to unzip the folder and open again the report page from the unzipped directory.</p>\';
+              document.getElementById("error").innerHTML = \'<p class=\"styleP\">The report could not be found. If you received this report in a ZIP format, please make sure to first unzip the folder before opening the report.</p>\';
               }
               });
               };
