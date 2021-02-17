@@ -1,4 +1,5 @@
 0.9.0
+    o get metadata functionality
     o unit tests
     o add 'zipMedicalMonitoring' function
     o getPlotTableVars:
