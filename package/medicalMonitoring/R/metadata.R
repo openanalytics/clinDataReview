@@ -74,7 +74,7 @@ getMetadata <- function(filePath) {
   pathsInfoTable <- rbind(
       `path SDTMs` = pathSDTMs,
       `path MeMo ADs` = pathMeMoADs,
-      `date Time MeMo run` = dateTimeMeMorun  
+      `date time MeMo run` = dateTimeMeMorun  
   )
    
   resList <- list(
