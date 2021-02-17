@@ -36,5 +36,6 @@ package/Meta
 
 figures_vignette
 *.css
+!package/medicalMonitoring/inst/js/**/*.css
 
 report/CDISC01/comparisonData
