@@ -237,6 +237,10 @@ summaryTableList <- sapply(names(pathsData), function(dataBatch) {
                   all = FALSE # only include data if present in y
               )
             }
+			
+			if("colVarDataLevels" %in% names(argsTable)){
+				argsTable$colVarDataLevels <- eval(expr = parse(text = argsTable$colVarDataLevels))
+			}
             
             # create table with descriptive statistics (data.frame format)
             argsTable <- c(
