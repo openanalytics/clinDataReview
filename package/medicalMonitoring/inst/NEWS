@@ -8,6 +8,7 @@
     o Js FileSaver library: remove reference to FileSaver.min.js.map
     o help page 'medicalMonitoring-templates' properly created in pkg built + tests
     o fix issue DT header not aligned upon first click on shared plot
+    o summaryTableTemplate: tableParams$colVarDataLevels evaluated as expr
 0.8.0
     o fix extraction of labels for 'getPlotTableVars' when 'valueVar' not in 'tableVars'
     o remove 'settings' argument in 'getMdHeader'
