@@ -11,26 +11,28 @@
 #' The first (\code{pathsInfo}) is printed as \code{\link{knitr::kable}} object 
 #' and the second (\code{datasetInfo}) is printed as hide/show html button with 
 #' the function \code{\link{collapseHtmlContent}}.
-#' @param metadataInfo List of two elements named \code{pathsInfo} and 
+#' @param x List of two elements named \code{pathsInfo} and 
 #' \code{datasetInfo}.
 #' @return Nothing. The tables are ready to be printed in Rmd.
-#' @importFrom knitr kable
+#' @importFrom knitr kable knit_print
 #' @importFrom glpgUtilityFct toDTGLPG
+#' @importFrom htmltools tagList knit_print.shiny.tag.list
 #' @export
-printMetadataInReport <- function(metadataInfo) {
+knit_print.medicalMonitoringMetadata <- function(x, ...) {
   
-  pathsInfoTable <- metadataInfo$pathsInfo
-  datasetInfoTable <- metadataInfo$datasetInfo
+  pathsInfoTable <- x$pathsInfo
+  datasetInfoTable <- x$datasetInfo
   
   pathsInfo <- kable(pathsInfoTable, col.names = c(""))  
   datasetInfoDT <- toDTGLPG(datasetInfoTable)
   
   print(pathsInfo)
   cat("\n\n")
-  collapseHtmlContent(
+  table <- collapseHtmlContent(
       datasetInfoDT,
       title = "Click to show or hide further metadata information"
   )
+  htmltools::knit_print.shiny.tag.list(table)
  
 }
 
@@ -82,7 +84,10 @@ getMetadata <- function(filePath) {
       datasetInfo = datasetInfoTable
   )
   
+  class(resList) <- c("medicalMonitoringMetadata",  class(resList))
+  
   return(resList)
+  
 }
 
 checkAvailabilityMetadata <- function(inputFile, subListName) {
