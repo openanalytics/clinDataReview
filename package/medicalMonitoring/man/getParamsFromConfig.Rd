@@ -19,12 +19,16 @@ general 'config.yml'.}
 }
 \value{
 List with parameters from the specified \code{configFile}
-and the general config file: \code{config.yml}.
+and the general config file: \code{config.yml}.\cr
+Parameters with YAML type 'expr-lazy' are imported as character,
+with this additional class.
 }
 \description{
 Get parameters from a config file
 }
 \seealso{
+forceParams
+
 Other medical monitoring reporting: 
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdFromConfig}()},
