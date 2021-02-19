@@ -50,6 +50,7 @@ scatterplotMonitoring <- function(
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	facetPars = list(), facetType = c("wrap", "grid"),
+	scalePars = list(),
 	themePars = list(legend.position = "bottom"),
 	refLinePars = NULL,
 	labelVars = NULL,
@@ -128,6 +129,7 @@ scatterplotMonitoring <- function(
 		aesPointVar = aesPointVar, 
 		aesLineVar = aesLineVar, lineInclude = lineInclude,
 		aesLab = aesLab,
+		scalePars = scalePars,
 		# axis specification:
 		xTrans = xTrans, yTrans = yTrans,
 		xPars = xPars, yPars = yPars,

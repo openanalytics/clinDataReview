@@ -206,3 +206,4 @@ knitPrintMedicalMonitoring <- function(
   }
   
 }
+

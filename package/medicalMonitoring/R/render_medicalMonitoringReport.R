@@ -345,7 +345,10 @@ getMdFromConfig <- function(
 #' file of interest in YAML format.
 #' @inheritParams medicalMonitoring-common-args-report
 #' @return List with parameters from the specified \code{configFile}
-#' and the general config file: \code{config.yml}.
+#' and the general config file: \code{config.yml}.\cr
+#' Parameters with YAML type 'expr-lazy' are imported as character,
+#' with this additional class.
+#' @seealso forceParams
 #' @author Laure Cougnaud
 #' @importFrom yaml read_yaml
 #' @family medical monitoring reporting
@@ -356,11 +359,17 @@ getParamsFromConfig <- function(
   if(!dir.exists(configDir))
     stop("Config directory: ", sQuote(configDir), " doesn't exist.")
   
+	lazyRHandlers <- list(
+		`expr-lazy` = function(x){
+			structure(x, class = c("expr-lazy", class(x)))
+		}
+	)
+
   # load general config file
   configGeneralPath <- file.path(configDir, "config.yml")
   if(file.exists(configGeneralPath)) {
     
-    configGeneralParams <- yaml::read_yaml(configGeneralPath)
+    configGeneralParams <- yaml::read_yaml(configGeneralPath, handlers = lazyRHandlers)
     
   } else {
     warning("General config file: 'config.yml' not available in:", 
@@ -373,7 +382,7 @@ getParamsFromConfig <- function(
     configFilePath <- file.path(configDir, configFile)
     
     if(file.exists(configFilePath)) {
-      configParams <- yaml::read_yaml(configFilePath)
+      configParams <- yaml::read_yaml(configFilePath, handlers = lazyRHandlers)
     } else {
       stop("File ", sQuote(configFilePath), " cannot be found. \n",
           "Please check the spelling is correct ",
@@ -390,6 +399,48 @@ getParamsFromConfig <- function(
   
   return(params)
   
+}
+
+#' Force the evaluation of the
+#' parameters from config file.
+#' 
+#' This function is only useful if some
+#' parameters should be lazy-evaluated in the report.
+#' These parameters should have the class: \code{expr-lazy}.
+#' A typical use case is a parameter that
+#' consists of a R expression
+#' depending on objects created in a template
+#' report (typically \code{data}).
+#' \cr
+#' Parameters are searched in the environment
+#' in which this function is called from.
+#' @param params List of parameters as obtained
+#' via the \code{\link{getParamsFromConfig}}
+#' function.
+#' @return Input parameter list, with
+#' object(s) of class \code{expr-lazy}
+#' evaluated.
+#' @examples 
+#' data <- mtcars
+#' params <- list(label = "Cars dataset", nrow = structure("nrow(data)", class = "expr-lazy"))
+#' str(params)
+#' str(forceParams(params))
+#' @author Laure Cougnaud
+#' @seealso getParamsFromConfig
+#' @export
+forceParams <- function(params){
+	
+	envirParent <- parent.frame(n = 1)
+
+	paramsEval <- rapply(
+		object = params, 
+		f = function(x)	eval(parse(text = x), envir = envirParent),
+		classes = "expr-lazy",
+		how = "replace"
+	)
+
+	return(paramsEval)
+	
 }
 
 #' Convert medical monitoring Markdown files to HTML

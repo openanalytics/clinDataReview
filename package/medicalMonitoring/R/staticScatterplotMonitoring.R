@@ -9,6 +9,10 @@
 #' e.g. \code{list(group = "USUBJID")}.
 #' @param lineInclude Logical, if TRUE (by default if \code{aesLineVar} is specified)
 #' include a scatterplot.
+#' @param scalePars List with parameters to customize
+#' scales. Each sublist should contains a set of parameters
+#' passed to the \code{\link[ggplot2]{scale_discrete_manual}}
+#' function.
 #' @param aesLab Named character vector with labels for each aesthetic variable.
 #' @param xTrans,yTrans Transformation for the x/y- variables,
 #' passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
@@ -52,6 +56,9 @@ staticScatterplotMonitoring <- function(
 	aesPointVar = list(), 
 	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
 	aesLab,
+	colorScale = list(),
+	shapeScale = list(),
+	linetypeScale = list(),
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
@@ -61,6 +68,7 @@ staticScatterplotMonitoring <- function(
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	facetPars = list(), facetType = c("wrap", "grid"),
+	scalePars = list(),
 	themePars = list(legend.position = "bottom"),
 	refLinePars = NULL,
 	labelVars = NULL,
@@ -119,6 +127,11 @@ staticScatterplotMonitoring <- function(
 	argsGeom <- list(mapping = do.call(aes, aesGeom))
 	geomFct <- match.fun(paste("geom", geomType, sep = "_"))
 	gg <- gg + do.call(geomFct, argsGeom)
+	
+	# aesthetic scales
+	for(scaleParsI in scalePars){
+		gg <- gg + do.call(scale_discrete_manual, scaleParsI)
+	}
 	
 	# axis specification
 	setAxis <- function(gg, trans, pars, lims, axis){

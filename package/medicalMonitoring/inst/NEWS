@@ -11,6 +11,8 @@
     o fix issue DT header not aligned upon first click on shared plot
     o summaryTableTemplate: tableParams$colVarDataLevels evaluated as expr
     o include metadata MeMo ADs in report
+    o scatterplotMonitoring: scale params
+    o plot template: support lazy-loading params for plotParams
 0.8.0
     o fix extraction of labels for 'getPlotTableVars' when 'valueVar' not in 'tableVars'
     o remove 'settings' argument in 'getMdHeader'

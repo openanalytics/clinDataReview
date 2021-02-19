@@ -215,7 +215,7 @@ listPlots <- dlply(data, loopingVar, function(dataI){
 	id <- do.call(formatLabel, argsLabel)
 	
 	# Create the plot
-	argsPlot <- plotParams
+	argsPlot <- forceParams(plotParams)
 	argsPlot$data <- dataI
 	argsPlot$labelVars <- labelVars
 	argsPlot$table <- TRUE
