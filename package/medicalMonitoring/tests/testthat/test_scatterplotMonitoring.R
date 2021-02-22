@@ -271,3 +271,57 @@ test_that("No legend", {
       expect_is(plOutput, "plotly")
       
     })
+
+test_that("custom color palette is specified", {
+		
+	data <- data.frame(
+		DY = c(1, 2, 1, 2),
+		AVAL = c(3, 4, 2, 6),
+		NRIND = c("Normal", "High", "Low", "Normal"),
+		USUBJID = c(1, 1, 2, 2),
+		stringsAsFactors = FALSE
+	)
+	colorPalette <- c(
+		Low = "purple", 
+		Normal = "green", 
+		High = "blue"
+	)
+	pl <- scatterplotMonitoring(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL", 
+		aesPointVar = list(color = "NRIND"),
+		scalePars = list(
+			list(aesthetic = "colour", values = colorPalette)	
+		)
+	)
+	plData <- plotly_build(pl)$x$data
+	plData <- lapply(plData, function(x){
+		data.frame(
+			x = as.numeric(x$x),
+			y = as.numeric(x$y),
+			NRIND = as.character(x$name),
+			color = as.character(x$marker$color),
+			stringsAsFactors = FALSE
+		)
+	})
+	plData <- do.call(rbind, plData)
+	plData <- plData[do.call(order, plData), ]
+	
+	# plotly specifies color in rgba
+	colorPaletteRGB <- col2rgb(colorPalette)
+	colorPaletteRGBA <- paste0(
+		"rgba(", 
+		apply(colorPaletteRGB, 2, paste, collapse = ","), 
+		",1)" # + alpha
+	)
+	names(colorPaletteRGBA) <- colorPalette
+	
+	# extract color for input data:
+	data$color <- colorPaletteRGBA[colorPalette[data$NRIND]]
+	dataPlot <- data[, c("DY", "AVAL", "NRIND", "color")] 
+	dataPlot <- dataPlot[do.call(order, dataPlot), ]
+	
+	expect_equal(dataPlot, plData, check.attributes = FALSE)
+			
+})
