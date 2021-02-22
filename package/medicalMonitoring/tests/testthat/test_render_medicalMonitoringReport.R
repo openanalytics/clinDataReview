@@ -851,3 +851,15 @@ test_that("Warning for ignore missing Md files", {
       )
       
     })
+	
+test_that("parameters with R code and lazy-loading are imported from a config file", {
+				
+	configFileTemp <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+	write_yaml(list(param = structure("nrow(dataI)", tag = "!expr-lazy")), configFileTemp)
+				
+	params <- getParamsFromConfig(basename(configFileTemp), configDir = tmpdir)
+	expect_is(params, "list")
+	expect_is(params[["param"]], c("expr-lazy", "character"))
+	expect_equal(as.character(params[["param"]]), "nrow(dataI)")
+				
+})
