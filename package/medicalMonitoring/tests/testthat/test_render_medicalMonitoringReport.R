@@ -863,3 +863,22 @@ test_that("parameters with R code and lazy-loading are imported from a config fi
 	expect_equal(as.character(params[["param"]]), "nrow(dataI)")
 				
 })
+
+test_that("parameters with R code and lazy-loading are evaluated", {
+	
+	params <- list(nrowData = structure("nrow(customData)", class = "expr-lazy"))
+	
+	# error if R object is missing
+	expect_error(
+		forceParams(params),
+		".*customData.* not found"
+	)
+	
+	# parameter is replaced by its evaluated version:
+	customData <- iris
+	expect_silent(paramEvaluated <- forceParams(params))
+	expect_is(paramEvaluated, "list")
+	expect_named(paramEvaluated, "nrowData")
+	expect_equal(paramEvaluated$nrowData, nrow(customData))
+			
+})
