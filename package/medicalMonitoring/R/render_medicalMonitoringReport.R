@@ -348,7 +348,7 @@ getMdFromConfig <- function(
 #' and the general config file: \code{config.yml}.\cr
 #' Parameters with YAML type 'expr-lazy' are imported as character,
 #' with this additional class.
-#' @seealso forceParams
+#' @seealso \link{forceParams}
 #' @author Laure Cougnaud
 #' @importFrom yaml read_yaml
 #' @family medical monitoring reporting
@@ -426,7 +426,7 @@ getParamsFromConfig <- function(
 #' str(params)
 #' str(forceParams(params))
 #' @author Laure Cougnaud
-#' @seealso getParamsFromConfig
+#' @seealso \link{getParamsFromConfig}
 #' @export
 forceParams <- function(params){
 	

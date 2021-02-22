@@ -158,9 +158,9 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 		
 		# extract specified data
 		paramsPlotI <- getDataForParams(paramsPlotI)
-		data <- paramsPlotI[["data"]]
+		dataI <- paramsPlotI[["data"]]
 		labelVars <- labelVarsAll
-		if(is.null(data)){
+		if(is.null(dataI)){
 			warning("Patient profiles:", label, "not created, because", 
 				dataFileName, "is not specified or available.")
 			break
@@ -170,15 +170,15 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 		dataProcessing <- paramsPlotI[["dataProcessing"]]
 		if(!is.null(dataProcessing)){
 			
-			data <- processData(
-				data = data, 
+			dataI <- processData(
+				data = dataI, 
 				dataPath = pathDataFolder,
 				processing = dataProcessing,
 				verbose = TRUE,
 				labelVars = labelVars
 			)
 			# Labels updated with extra annotation:
-			labelVars <- attr(data, "labelVars")
+			labelVars <- attr(dataI, "labelVars")
 			
 		}
 
@@ -197,7 +197,7 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 		
 		## extract plotting parameters
 		plotParams <- c(
-			list(data = data, labelVars = labelVars), 
+			list(data = dataI, labelVars = labelVars), 
 			paramsPlotI[["plotParams"]], 
 			if(exists("patientProfilesGeneralParams"))	patientProfilesGeneralParams
 		)
@@ -205,12 +205,12 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 		# Extra formatting for parameters:
 		# ... passed as R code:
 		for(param in c("timeTrans", "timeExpand")){
-			if(!is.null(plotParams[[param]]))
+			if(!is.null(plotParams[[param]]) & !inherits(plotParams[[param]], "expr-lazy"))
 				plotParams[[param]] <- eval(parse(text = plotParams[[param]]))
 		}
 		# ... named character vector (imported as a list):
 		for(palette in c("colorPalette", "shapePalette")){
-			if(!is.null(plotParams[[palette]])){
+			if(!is.null(plotParams[[palette]]) & !inherits(plotParams[[param]], "expr-lazy")){
 				if(is.character(plotParams[[palette]]))
 					plotParams[[palette]] <- eval(parse(text = plotParams[[palette]]))
 				if(is.list(plotParams[[palette]]))
@@ -226,6 +226,8 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 					function(i) c(-Inf, +Inf)[i]
 				)
 		}
+		# parse parameters tagged as: '!expr-lazy'
+		plotParams <- forceParams(plotParams)
 
 		## create patient profiles for specified module
 		listPlotsI <- do.call(plotFct, plotParams)
@@ -235,7 +237,7 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 		patientProfilesPlots <- c(patientProfilesPlots, setNames(list(listPlotsI), label))
 		
 		## free memory
-		rm(list = c("data", "plotParams", "listPlotsI"));tmp <- gc(verbose = FALSE) 
+		rm(list = c("dataI", "plotParams", "listPlotsI"));tmp <- gc(verbose = FALSE) 
 		
 	}
 
