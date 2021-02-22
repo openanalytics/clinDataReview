@@ -27,7 +27,7 @@ with this additional class.
 Get parameters from a config file
 }
 \seealso{
-forceParams
+\link{forceParams}
 
 Other medical monitoring reporting: 
 \code{\link{convertMdToHtml}()},

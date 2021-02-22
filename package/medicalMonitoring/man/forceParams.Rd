@@ -36,7 +36,7 @@ str(params)
 str(forceParams(params))
 }
 \seealso{
-getParamsFromConfig
+\link{getParamsFromConfig}
 }
 \author{
 Laure Cougnaud

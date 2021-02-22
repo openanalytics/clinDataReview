@@ -73,7 +73,7 @@ This report creates the specified patient profiles (with the \code{patientProfil
 \item{\strong{\code{typePlot}}: }{string among: \emph{ 'text', 'line', 'interval', 'event' } , plot type, used to get the appropriate plot module function: \itemize{\item{'text': }{\link[patientProfilesVis]{subjectProfileTextPlot}}\item{'line': }{\link[patientProfilesVis]{subjectProfileLinePlot}}\item{'interval': }{\link[patientProfilesVis]{subjectProfileIntervalPlot}}\item{'event': }{\link[patientProfilesVis]{subjectProfileEventPlot}}}}
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[medicalMonitoring]{processData}}
-\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function:}
+\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !expr-lazy [dataI]}}
 } , parameters for each patient profile module}
 \item{\code{patientProfilesCreateReportParams}: }{(optional) object , parameters for the creation of the patient profile report(s), passed to \link[patientProfilesVis]{createSubjectProfileReport}}
 \item{\code{tableParams}: }{(optional) object , parameters specifying a table containing data of interest and links to created patient profiles}
@@ -89,7 +89,7 @@ This report visualizes input data with a function of the medical monitoring pack
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[medicalMonitoring]{processData}}
 \item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotMonitoring' } , plotting function of the package to consider}
-\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function}
+\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !expr-lazy [dataI]}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff' } , output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
