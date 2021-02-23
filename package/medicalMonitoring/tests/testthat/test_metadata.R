@@ -73,7 +73,7 @@ test_that("Get metadata", {
       
     })
 
-test("Print metadata", {
+test_that("Print metadata", {
       
       resMetadata <- getMetadata(tmpYamlFile)
       
