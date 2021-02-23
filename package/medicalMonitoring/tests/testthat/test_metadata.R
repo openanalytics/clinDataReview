@@ -3,6 +3,30 @@ context("Test metadata functionality")
 tmpdir <- tempdir()
 library(yaml)
 
+tmpYamlFile <- tempfile(
+    pattern = "file", tmpdir = tempdir(), fileext = ".yml"
+)
+listArgs <- list(
+    pathSDTMs = "pathSDTMs",
+    pathMeMoADs = "pathMeMoADs",
+    dateTimeMeMorun = "20200101",
+    datasetInfo = list(
+        list(
+            dataset = "ex.xpt",
+            datetime = "20200101"
+        ),
+        list(
+            dataset = "sl.xpt",
+            datetime = "20200101",
+            signatureStatus = "OK"
+        )
+    )
+)
+write_yaml(
+    listArgs,
+    file = tmpYamlFile
+)
+
 test_that("Check availability of metadata", {
       
       listName <- list(A = c(1, 2))
@@ -25,29 +49,6 @@ test_that("Get metadata", {
           getMetadata("fileNotExist"),          
           "Metadata file does not exist."
       )
-      tmpYamlFile <- tempfile(
-          pattern = "file", tmpdir = tempdir(), fileext = ".yml"
-      )
-      listArgs <- list(
-          pathSDTMs = "pathSDTMs",
-          pathMeMoADs = "pathMeMoADs",
-          dateTimeMeMorun = "20200101",
-          datasetInfo = list(
-              list(
-                  dataset = "ex.xpt",
-                  datetime = "20200101"
-              ),
-              list(
-                  dataset = "sl.xpt",
-                  datetime = "20200101",
-                  signatureStatus = "OK"
-              )
-          )
-      )
-      write_yaml(
-          listArgs,
-          file = tmpYamlFile
-      )
       resMetadata <- getMetadata(filePath = tmpYamlFile)
       expect_is(resMetadata, "list")
       expect_equal(
@@ -69,6 +70,18 @@ test_that("Get metadata", {
           dfInfo$signatureStatus,
           c(NA, "OK")
       )
+      
+    })
+
+test("Print metadata", {
+      
+      resMetadata <- getMetadata(tmpYamlFile)
+      
+      resPrint <- medicalMonitoring:::knit_print.medicalMonitoringMetadata(
+          getMetadata(tmpYamlFile)
+      )
+      expect_is(resPrint, "knit_asis")
+      
       
     })
 
