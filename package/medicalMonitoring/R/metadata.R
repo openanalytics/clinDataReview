@@ -62,12 +62,12 @@ getMetadata <- function(filePath) {
   
   if(! file.exists(filePath)) stop("Metadata file does not exist.")
   
-  inputFile <- read_yaml(filePath)
+  paramsList <- read_yaml(filePath)
   
-  pathSDTMs <- checkAvailabilityMetadata(inputFile, "pathSDTMs")
-  pathMeMoADs <- checkAvailabilityMetadata(inputFile, "pathMeMoADs")
-  dateTimeMeMorun <- checkAvailabilityMetadata(inputFile, "dateTimeMeMorun")
-  datasetInfoFromList <- checkAvailabilityMetadata(inputFile, "datasetInfo")
+  pathSDTMs <- checkAvailabilityMetadata(paramsList, "pathSDTMs")
+  pathMeMoADs <- checkAvailabilityMetadata(paramsList, "pathMeMoADs")
+  dateTimeMeMorun <- checkAvailabilityMetadata(paramsList, "dateTimeMeMorun")
+  datasetInfoFromList <- checkAvailabilityMetadata(paramsList, "datasetInfo")
   
   if(is.list(datasetInfoFromList)) {
     datasetInfoTable <- rbindlist(datasetInfoFromList, use.names = TRUE, fill = TRUE)
@@ -90,11 +90,16 @@ getMetadata <- function(filePath) {
   
 }
 
-checkAvailabilityMetadata <- function(inputFile, subListName) {
+#' Check availability of arguments in list
+#' 
+#' @param paramsList A named list.
+#' @param subListName String indicating which of the sublist names to check for existance.
+#' @return The content of the sublist. If not available, returns "Not Available".
+checkAvailabilityMetadata <- function(paramsList, subListName) {
   
-  if(is.null(inputFile[[subListName]])) {
+  if(is.null(paramsList[[subListName]])) {
     subListName <- "Not available" 
-  } else subListName <- inputFile[[subListName]]
+  } else subListName <- paramsList[[subListName]]
   
   return(subListName)
   
