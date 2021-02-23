@@ -12,7 +12,7 @@ checkAvailabilityMetadata(paramsList, subListName)
 \item{subListName}{String indicating which of the sublist names to check for existance.}
 }
 \value{
-A string with the name of the sublist. If not available, returns "Not Available".
+The content of the sublist. If not available, returns "Not Available".
 }
 \description{
 Check availability of arguments in list
