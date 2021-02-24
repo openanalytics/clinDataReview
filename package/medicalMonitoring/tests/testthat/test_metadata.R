@@ -12,13 +12,13 @@ listArgs <- list(
     dateTimeMeMorun = "20200101",
     datasetInfo = list(
         list(
-            dataset = "ex.xpt",
-            datetime = "20200101"
+            column1 = "ex.xpt",
+            column2 = "20200101"
         ),
         list(
-            dataset = "sl.xpt",
-            datetime = "20200101",
-            signatureStatus = "OK"
+            column1 = "sl.xpt",
+            column2 = "20200101",
+            column3 = "OK"
         )
     )
 )
@@ -43,12 +43,45 @@ test_that("Check availability of metadata", {
       
     })
 
-test_that("Get metadata", {
+test_that("Error in get metadata", {
       
       expect_error(
           getMetadata("fileNotExist"),          
           "Metadata file does not exist."
       )
+      
+    })
+
+test_that("Not available metadata inputs", {
+      
+      tmpYamlFileNA <- tempfile(
+          pattern = "file", tmpdir = tempdir(), fileext = ".yml"
+      )
+      listArgsNA <- list(
+          path1 = "pathSDTMs",
+          path2 = "pathMeMoADs",
+          date = "20200101"
+      )
+      write_yaml(
+          listArgsNA,
+          file = tmpYamlFileNA
+      )      
+      resMetadataNA <- getMetadata(tmpYamlFileNA)
+      expect_is(resMetadataNA, "list")
+      expect_equal(
+          class(resMetadataNA), c("medicalMonitoringMetadata", "list")
+      )
+      expect_named(resMetadataNA, c("pathsInfo", "datasetInfo"))
+      
+      expect_identical(
+          colnames(resMetadataNA$datasetInfo),
+          "Not.Available"
+      )
+      
+    })
+
+test_that("Get metadata", {
+      
       resMetadata <- getMetadata(filePath = tmpYamlFile)
       expect_is(resMetadata, "list")
       expect_equal(
@@ -67,7 +100,7 @@ test_that("Get metadata", {
       
       dfInfo <- resMetadata$datasetInfo
       expect_identical(
-          dfInfo$signatureStatus,
+          dfInfo$column3,
           c(NA, "OK")
       )
       
