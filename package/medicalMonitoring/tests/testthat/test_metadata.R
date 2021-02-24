@@ -104,7 +104,9 @@ test_that("Not available metadata inputs", {
           listArgsNA,
           file = tmpYamlFileNA
       )      
-      resMetadata1 <- getMetadata(tmpYamlFileNA)
+      expect_silent(
+          resMetadataNA <- getMetadata(tmpYamlFileNA)
+      )
       expect_is(resMetadataNA, "list")
       expect_equal(
           class(resMetadataNA), c("medicalMonitoringMetadata", "list")
@@ -120,7 +122,9 @@ test_that("Not available metadata inputs", {
 
 test_that("Get metadata", {
       
-      resMetadata <- getMetadata(filePath = tmpYamlFile)
+      expect_silent(
+          resMetadata <- getMetadata(filePath = tmpYamlFile)
+      )
       expect_is(resMetadata, "list")
       expect_equal(
           class(resMetadata), c("medicalMonitoringMetadata", "list")
