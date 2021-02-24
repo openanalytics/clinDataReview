@@ -75,7 +75,7 @@ getMetadata <- function(filePath) {
 #' the function \code{\link{collapseHtmlContent}}.
 #' @param x List of two elements named \code{pathsInfo} and 
 #' \code{datasetInfo}.
-#' @param options Extra options to be passed as chunk options.
+#' @param options List of extra options to be passed as chunk options.
 #' @param ... Extra arguments to be passed.
 #' @return Nothing. The tables are ready to be printed in Rmd.
 #' @importFrom knitr knit_print
@@ -83,19 +83,22 @@ getMetadata <- function(filePath) {
 #' @importFrom htmltools tagList knit_print.shiny.tag.list
 #' @export
 knit_print.medicalMonitoringMetadata <- function(
-    x, options, ...
+    x, options = list(), ...
 ) {
-    
+  
   datasetInfoTable <- x$datasetInfo
   datasetInfoDT <- toDTGLPG(datasetInfoTable)
   
-  if (options$dateReportRun) {
-    pathsInfoWithDate <- addDateOfReportRun(x$pathsInfo)
-    print(formatPathDateInfoMetadata(pathsInfoWithDate))
-  } else {
-    print(formatPathDateInfoMetadata(x$pathsInfo))
-  }
-    
+  if(! is.null(options$dateReportRun)) {
+    if (options$dateReportRun) {
+      pathsInfoWithDate <- addDateOfReportRun(x$pathsInfo)
+      print(formatPathDateInfoMetadata(pathsInfoWithDate))
+    } else {
+      print(formatPathDateInfoMetadata(x$pathsInfo))
+    }
+  } else print(formatPathDateInfoMetadata(x$pathsInfo))
+  
+  
   cat("\n\n")
   table <- collapseHtmlContent(
       datasetInfoDT,
