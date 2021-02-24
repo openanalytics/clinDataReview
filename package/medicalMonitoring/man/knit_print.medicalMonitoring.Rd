@@ -10,8 +10,8 @@
 \arguments{
 \item{x}{Object of class \code{medicalMonitoring}}
 
-\item{...}{Extra parameters for \code{\link[knitr]{knit_print}},
-not used by default.}
+\item{...}{Extra parameters for compatibility with \code{\link[knitr]{knit_print}},
+not used currently.}
 }
 \description{
 Print \code{medicalMonitoringTable} object in a knitted document

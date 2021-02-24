@@ -8,11 +8,13 @@
 #' \item{\code{pathsInfo}}{ an R object.}
 #' \item{\code{datasetInfo}}{ a data.frame or a matrix.}
 #' }
-#' The first (\code{pathsInfo}) is printed as \code{\link{knitr::kable}} object 
+#' The first (\code{pathsInfo}) is printed as \code{\link[knitr]{kable}} object 
 #' and the second (\code{datasetInfo}) is printed as hide/show html button with 
 #' the function \code{\link{collapseHtmlContent}}.
 #' @param x List of two elements named \code{pathsInfo} and 
 #' \code{datasetInfo}.
+#' @param ... Extra parameters for compatibility with \code{\link[knitr]{knit_print}},
+#' not used currently.
 #' @return Nothing. The tables are ready to be printed in Rmd.
 #' @importFrom knitr kable knit_print
 #' @importFrom glpgUtilityFct toDTGLPG
