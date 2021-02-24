@@ -81,12 +81,12 @@ test_that("Warning in get metadata when more than one file is provided", {
       )
       expect_named(resMetadata1, c("pathsInfo", "datasetInfo"))
       
-      pathInfos <- resMetadata1$pathsInfo
+      pathsInfos <- resMetadata1$pathsInfo
       expect_identical(
-          rownames(pathInfos),
-          c("path SDTMs", "path MeMo ADs", "date time MeMo run")
+          rownames(pathsInfos),
+          c("pathSDTMs", "pathMeMoADs", "dateTimeMeMorun")
       )
-      expect_identical(pathInfos[1], "Not available")
+      expect_identical(pathsInfos[1], "Not available")
       
     })
 
@@ -134,10 +134,10 @@ test_that("Get metadata", {
       expect_is(resMetadata$datasetInfo, "data.table")
       expect_is(resMetadata$datasetInfo, "data.frame")
       
-      pathInfos <- resMetadata$pathsInfo
+      pathsInfo <- resMetadata$pathsInfo
       expect_identical(
-          rownames(pathInfos),
-          c("path SDTMs", "path MeMo ADs", "date time MeMo run")
+          rownames(pathsInfo),
+          c("pathSDTMs", "pathMeMoADs", "dateTimeMeMorun")
       )
       
       dfInfo <- resMetadata$datasetInfo
@@ -145,6 +145,59 @@ test_that("Get metadata", {
           dfInfo$column3,
           c(NA, "OK")
       )
+      
+    })
+
+test_that("Rename metadata paths info", {
+      
+      expect_silent(
+          resMetadata <- getMetadata(filePath = tmpYamlFile)
+      )
+      pathsInfo <- resMetadata$pathsInfo
+      expect_silent(
+          resRename <- renamePathDateInfoMetadata(pathsInfo)
+      )
+      expect_identical(
+          rownames(resRename),
+          c(
+              "Original data (SDTM) path:",
+              "Medical Monitoring Analysis Dataset (MeMo-AD) path:",
+              "MeMo-AD creation date:"
+          )
+      )
+      
+    })
+
+test_that("Add date of report running", {
+      
+      expect_silent(
+          resMetadata <- getMetadata(filePath = tmpYamlFile)
+      )
+      pathsInfo <- resMetadata$pathsInfo
+      
+      expect_silent(
+          resDate <- addDateOfReportRun(pathsInfo)
+      )
+      expect_equal(
+          nrow(resDate), nrow(pathsInfo) + 1
+      )
+      expect_identical(
+          rownames(resDate)[nrow(resDate)],
+          "dateToday"
+      )
+      
+    })
+
+test_that("Format output of paths info", {
+      
+      expect_silent(
+          resMetadata <- getMetadata(filePath = tmpYamlFile)
+      )
+      pathsInfo <- resMetadata$pathsInfo
+      expect_silent(
+          kableFormat <- formatPathDateInfoMetadata(pathsInfo)
+      )
+      expect_is(kableFormat, "knitr_kable")
       
     })
 

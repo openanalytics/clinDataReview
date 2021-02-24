@@ -1,43 +1,4 @@
 
-#' Print metadata file in the medical monitoring report
-#' 
-#' This function receives the metadata information from \code{\link{getMetadata}} and 
-#' prints them in a format for an Rmd report.
-#' In general, any list could be called as long as it is composed by two elements:
-#' \itemize{
-#' \item{\code{pathsInfo}}{ an R object.}
-#' \item{\code{datasetInfo}}{ a data.frame or a matrix.}
-#' }
-#' The first (\code{pathsInfo}) is printed as \code{\link[knitr]{kable}} object 
-#' and the second (\code{datasetInfo}) is printed as hide/show html button with 
-#' the function \code{\link{collapseHtmlContent}}.
-#' @param x List of two elements named \code{pathsInfo} and 
-#' \code{datasetInfo}.
-#' @param ... Extra parameters for compatibility with \code{\link[knitr]{knit_print}},
-#' not used currently.
-#' @return Nothing. The tables are ready to be printed in Rmd.
-#' @importFrom knitr kable knit_print
-#' @importFrom glpgUtilityFct toDTGLPG
-#' @importFrom htmltools tagList knit_print.shiny.tag.list
-#' @export
-knit_print.medicalMonitoringMetadata <- function(x, ...) {
-  
-  pathsInfoTable <- x$pathsInfo
-  datasetInfoTable <- x$datasetInfo
-  
-  pathsInfo <- kable(pathsInfoTable, col.names = c(""))  
-  datasetInfoDT <- toDTGLPG(datasetInfoTable)
-  
-  print(pathsInfo)
-  cat("\n\n")
-  table <- collapseHtmlContent(
-      datasetInfoDT,
-      title = "Click to show or hide further metadata information"
-  )
-  htmltools::knit_print.shiny.tag.list(table)
- 
-}
-
 #' Read metadata file
 #' 
 #' Read the metadata file from a yaml format.
@@ -83,11 +44,11 @@ getMetadata <- function(filePath) {
   } else datasetInfoTable <- data.frame("Not Available" = datasetInfoFromList)
   
   pathsInfoTable <- rbind(
-      `path SDTMs` = pathSDTMs,
-      `path MeMo ADs` = pathMeMoADs,
-      `date time MeMo run` = dateTimeMeMorun  
+      pathSDTMs = pathSDTMs,
+      pathMeMoADs = pathMeMoADs,
+      dateTimeMeMorun = dateTimeMeMorun  
   )
-   
+  
   resList <- list(
       pathsInfo = pathsInfoTable,
       datasetInfo = datasetInfoTable
@@ -98,6 +59,105 @@ getMetadata <- function(filePath) {
   return(resList)
   
 }
+
+
+#' Print metadata file in the medical monitoring report
+#' 
+#' This function receives the metadata information from \code{\link{getMetadata}} and 
+#' prints them in a format for an Rmd report.
+#' In general, any list could be called as long as it is composed by two elements:
+#' \itemize{
+#' \item{\code{pathsInfo}}{ an R object.}
+#' \item{\code{datasetInfo}}{ a data.frame or a matrix.}
+#' }
+#' The first (\code{pathsInfo}) is printed as \code{\link{knitr::kable}} object 
+#' and the second (\code{datasetInfo}) is printed as hide/show html button with 
+#' the function \code{\link{collapseHtmlContent}}.
+#' @param x List of two elements named \code{pathsInfo} and 
+#' \code{datasetInfo}.
+#' @param options Extra options to be passed as chunk options.
+#' @param ... Extra arguments to be passed.
+#' @return Nothing. The tables are ready to be printed in Rmd.
+#' @importFrom knitr knit_print
+#' @importFrom glpgUtilityFct toDTGLPG
+#' @importFrom htmltools tagList knit_print.shiny.tag.list
+#' @export
+knit_print.medicalMonitoringMetadata <- function(
+    x, options, ...
+) {
+    
+  datasetInfoTable <- x$datasetInfo
+  datasetInfoDT <- toDTGLPG(datasetInfoTable)
+  
+  if (options$dateReportRun) {
+    pathsInfoWithDate <- addDateOfReportRun(x$pathsInfo)
+    print(formatPathDateInfoMetadata(pathsInfoWithDate))
+  } else {
+    print(formatPathDateInfoMetadata(x$pathsInfo))
+  }
+    
+  cat("\n\n")
+  table <- collapseHtmlContent(
+      datasetInfoDT,
+      title = "Click to show or hide further details on the original SDTM data"
+  )
+  htmltools::knit_print.shiny.tag.list(table)
+  
+}
+
+#' Format the info on paths from metadata
+#' 
+#' @param pathsInfo  matrix, see output from \code{\link{getMetadata}}.
+#' @return A kable object, to be printed.
+#' @importFrom knitr kable
+formatPathDateInfoMetadata <- function(pathsInfo) {
+  
+  pathsInfoRenamed <- renamePathDateInfoMetadata(pathsInfo)
+  pathsInfoToPrint <- kable(pathsInfoRenamed, col.names = c(""))
+  
+  return(pathsInfoToPrint)
+}
+
+#' Add date of report running
+#' 
+#' Add the today's date of when the report runs to the info of the metadata.
+#' @param pathsInfo  matrix, see output from \code{\link{getMetadata}}.
+#' @return A matrix, same as input \code{pathsInfo} with an extra row with the date 
+#' of today.
+addDateOfReportRun <- function(pathsInfo) {
+  
+  dateToday <- as.character(Sys.Date())
+  pathsInfoWithDate <- rbind(pathsInfo, dateToday)
+  
+  return(pathsInfoWithDate)
+}
+
+#' Rename variable names of metadata info
+#' 
+#' Rename variable names referring to the paths and the date.
+#' @param pathsInfo A matrix, see output from \code{\link{getMetadata}}.
+#' @return A matrix, same as input \code{pathsInfo} with renamed variable names.
+renamePathDateInfoMetadata <- function(pathsInfo) {
+  
+  rownames(pathsInfo) <- gsub("pathSDTMs",
+      "Original data (SDTM) path:",
+      gsub("pathMeMoADs",
+          "Medical Monitoring Analysis Dataset (MeMo-AD) path:",
+          gsub("dateTimeMeMorun",
+              "MeMo-AD creation date:",
+              gsub("dateToday",
+                  "Report & patient profiles creation date:",
+                  rownames(pathsInfo)
+              )
+          )
+      )
+  )
+  
+  return(pathsInfo)
+  
+}
+
+
 
 #' Check availability of arguments in list
 #' 
@@ -113,22 +173,4 @@ checkAvailabilityMetadata <- function(paramsList, subListName) {
   return(subListName)
   
 }
-
-#formatDatasetInfo <- function(datasetInfoFromList) {
-#    
-#  datasetInfoList <- datasetInfoFromList
-#  itemsInList <- c(
-#      "dataset", "datetime", "signatureStatus", "signatureComment"
-#  )
-#  allItemsAvailable <- sapply(
-#      1 : length(datasetInfoList),
-#      function(i) identical(names(datasetInfoList[[i]]), itemsInList)
-#  )
-#  if(! all(allItemsAvailable)) stop("Not all parameters in 'datasetInfo' are available.")
-#  datasetInfoTable <- do.call(rbind, datasetInfoList)
-#  
-#  return(datasetInfoTable)
-#  
-#}
-#
 
