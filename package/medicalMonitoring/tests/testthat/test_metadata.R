@@ -210,11 +210,17 @@ test_that("Print metadata", {
       )
       expect_is(resPrintWithoutOptions, "knit_asis")
       
-      resPrint <- medicalMonitoring:::knit_print.medicalMonitoringMetadata(
+      resPrintWithDate <- medicalMonitoring:::knit_print.medicalMonitoringMetadata(
           getMetadata(tmpYamlFile),
           options = list(dateReportRun = TRUE)
       )
-      expect_is(resPrint, "knit_asis")
+      expect_is(resPrintWithDate, "knit_asis")
+      
+      resPrintWithoutDate <- medicalMonitoring:::knit_print.medicalMonitoringMetadata(
+          getMetadata(tmpYamlFile),
+          options = list(dateReportRun = FALSE)
+      )
+      expect_is(resPrintWithoutDate, "knit_asis")
       
     })
 
