@@ -7,7 +7,9 @@
 getMetadata(filePath)
 }
 \arguments{
-\item{filePath}{String of path to file.}
+\item{filePath}{String of path to file. Currently only one file path is supported. 
+If more than one paths are provided, a warning will be printed and 
+the first path will be used.}
 }
 \value{
 A list of:

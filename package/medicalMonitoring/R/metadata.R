@@ -48,7 +48,9 @@ knit_print.medicalMonitoringMetadata <- function(x, ...) {
 #' \item{\code{datasetInfo}}{ General information about the data sets.}
 #' }
 #' 
-#' @param filePath String of path to file.
+#' @param filePath String of path to file. Currently only one file path is supported. 
+#' If more than one paths are provided, a warning will be printed and 
+#' the first path will be used.
 #' @return A list of:
 #' \itemize{
 #' \item{\code{pathsInfo}}{ Information extracted from the inputs 
@@ -60,14 +62,19 @@ knit_print.medicalMonitoringMetadata <- function(x, ...) {
 #' @export 
 getMetadata <- function(filePath) {
   
+  if(! is.character(filePath)) stop("'filePath' argument should be a character.")
+  if(length(filePath) > 1) {
+    warning("More than one 'filePath' provided. Only the first one will be used.")
+    filePath <- filePath[1]
+  }
   if(! file.exists(filePath)) stop("Metadata file does not exist.")
   
-  inputFile <- read_yaml(filePath)
+  paramsList <- read_yaml(filePath)
   
-  pathSDTMs <- checkAvailabilityMetadata(inputFile, "pathSDTMs")
-  pathMeMoADs <- checkAvailabilityMetadata(inputFile, "pathMeMoADs")
-  dateTimeMeMorun <- checkAvailabilityMetadata(inputFile, "dateTimeMeMorun")
-  datasetInfoFromList <- checkAvailabilityMetadata(inputFile, "datasetInfo")
+  pathSDTMs <- checkAvailabilityMetadata(paramsList, "pathSDTMs")
+  pathMeMoADs <- checkAvailabilityMetadata(paramsList, "pathMeMoADs")
+  dateTimeMeMorun <- checkAvailabilityMetadata(paramsList, "dateTimeMeMorun")
+  datasetInfoFromList <- checkAvailabilityMetadata(paramsList, "datasetInfo")
   
   if(is.list(datasetInfoFromList)) {
     datasetInfoTable <- rbindlist(datasetInfoFromList, use.names = TRUE, fill = TRUE)
@@ -90,11 +97,16 @@ getMetadata <- function(filePath) {
   
 }
 
-checkAvailabilityMetadata <- function(inputFile, subListName) {
+#' Check availability of arguments in list
+#' 
+#' @param paramsList A named list.
+#' @param subListName String indicating which of the sublist names to check for existance.
+#' @return The content of the sublist. If not available, returns "Not Available".
+checkAvailabilityMetadata <- function(paramsList, subListName) {
   
-  if(is.null(inputFile[[subListName]])) {
+  if(is.null(paramsList[[subListName]])) {
     subListName <- "Not available" 
-  } else subListName <- inputFile[[subListName]]
+  } else subListName <- paramsList[[subListName]]
   
   return(subListName)
   
