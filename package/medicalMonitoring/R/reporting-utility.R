@@ -47,8 +47,8 @@ getMdHeader <- function(
 #' Print \code{medicalMonitoringTable} object in a knitted document
 #' (e.g. Rmarkdown document).
 #' @param x Object of class \code{medicalMonitoring}
-#' @param ... Extra parameters for \code{\link[knitr]{knit_print}},
-#' not used by default.
+#' @param ... Extra parameters for compatibility with \code{\link[knitr]{knit_print}},
+#' not used currently.
 #' @importFrom knitr knit_print
 #' @importFrom htmltools tagList knit_print.shiny.tag.list
 #' @author Laure Cougnaud
