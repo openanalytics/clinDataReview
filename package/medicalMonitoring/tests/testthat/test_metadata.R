@@ -43,7 +43,7 @@ test_that("Check availability of metadata", {
       
     })
 
-test_that("Error in get metadata", {
+test_that("Error in get metadata when file does not exist", {
       
       expect_error(
           getMetadata("fileNotExist"),          
@@ -51,6 +51,16 @@ test_that("Error in get metadata", {
       )
       
     })
+
+test_that("Error in get metadata when input is not character", {
+      
+      expect_error(
+          getMetadata(filePath = 1),          
+          "'filePath' argument should be a character."
+      )
+      
+    })
+
 
 test_that("Not available metadata inputs", {
       
