@@ -48,7 +48,9 @@ knit_print.medicalMonitoringMetadata <- function(x, ...) {
 #' \item{\code{datasetInfo}}{ General information about the data sets.}
 #' }
 #' 
-#' @param filePath String of path to file.
+#' @param filePath String of path to file. Currently only one file path is supported. 
+#' If more than one paths are provided, a warning will be printed and 
+#' the first path will be used.
 #' @return A list of:
 #' \itemize{
 #' \item{\code{pathsInfo}}{ Information extracted from the inputs 
@@ -61,6 +63,10 @@ knit_print.medicalMonitoringMetadata <- function(x, ...) {
 getMetadata <- function(filePath) {
   
   if(! is.character(filePath)) stop("'filePath' argument should be a character.")
+  if(length(filePath) > 1) {
+    warning("More than one 'filePath' provided. Only the first one will be used.")
+    filePath <- filePath[1]
+  }
   if(! file.exists(filePath)) stop("Metadata file does not exist.")
   
   paramsList <- read_yaml(filePath)
