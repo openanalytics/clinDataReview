@@ -4,11 +4,15 @@
 \alias{knit_print.medicalMonitoringMetadata}
 \title{Print metadata file in the medical monitoring report}
 \usage{
-\method{knit_print}{medicalMonitoringMetadata}(x, ...)
+\method{knit_print}{medicalMonitoringMetadata}(x, options, ...)
 }
 \arguments{
 \item{x}{List of two elements named \code{pathsInfo} and 
 \code{datasetInfo}.}
+
+\item{options}{Extra options to be passed as chunk options.}
+
+\item{...}{Extra arguments to be passed.}
 }
 \value{
 Nothing. The tables are ready to be printed in Rmd.
