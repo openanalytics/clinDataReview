@@ -60,6 +60,7 @@ knit_print.medicalMonitoringMetadata <- function(x, ...) {
 #' @export 
 getMetadata <- function(filePath) {
   
+  if(! is.character(filePath)) stop("'filePath' argument should be a character.")
   if(! file.exists(filePath)) stop("Metadata file does not exist.")
   
   paramsList <- read_yaml(filePath)
