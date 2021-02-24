@@ -238,9 +238,7 @@ summaryTableList <- sapply(names(pathsData), function(dataBatch) {
               )
             }
 			
-			if("colVarDataLevels" %in% names(argsTable)){
-				argsTable$colVarDataLevels <- eval(expr = parse(text = argsTable$colVarDataLevels))
-			}
+			argsTable <- forceParams(argsTable)
             
             # create table with descriptive statistics (data.frame format)
             argsTable <- c(
