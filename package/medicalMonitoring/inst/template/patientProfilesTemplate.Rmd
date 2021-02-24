@@ -203,14 +203,22 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 		)
 		
 		# Extra formatting for parameters:
+
 		# ... passed as R code:
+
+		# this code is retained for back-compatibility
+		# new approach is to tag a parameter as 'r-lazy'
 		for(param in c("timeTrans", "timeExpand")){
-			if(!is.null(plotParams[[param]]) & !inherits(plotParams[[param]], "expr-lazy"))
+			if(!is.null(plotParams[[param]]) & 
+				!inherits(plotParams[[param]], "r-lazy") & 
+				is.character(plotParams[[param]])
+			)
 				plotParams[[param]] <- eval(parse(text = plotParams[[param]]))
 		}
 		# ... named character vector (imported as a list):
 		for(palette in c("colorPalette", "shapePalette")){
-			if(!is.null(plotParams[[palette]]) & !inherits(plotParams[[param]], "expr-lazy")){
+			if(!is.null(plotParams[[palette]]) & 
+				!inherits(plotParams[[palette]], "r-lazy")){
 				if(is.character(plotParams[[palette]]))
 					plotParams[[palette]] <- eval(parse(text = plotParams[[palette]]))
 				if(is.list(plotParams[[palette]]))
@@ -226,7 +234,8 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 					function(i) c(-Inf, +Inf)[i]
 				)
 		}
-		# parse parameters tagged as: '!expr-lazy'
+		
+		# parse parameters tagged as: '!r-lazy'
 		plotParams <- forceParams(plotParams)
 
 		## create patient profiles for specified module

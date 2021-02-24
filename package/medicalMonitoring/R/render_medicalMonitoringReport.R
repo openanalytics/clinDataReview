@@ -346,7 +346,15 @@ getMdFromConfig <- function(
 #' @inheritParams medicalMonitoring-common-args-report
 #' @return List with parameters from the specified \code{configFile}
 #' and the general config file: \code{config.yml}.\cr
-#' Parameters with YAML type 'expr-lazy' are imported as character,
+#' There are two specific handlers:
+#' \itemize{
+#' \item{parameters tagged with '[param] !r [value]'
+#' are evaluated in R, and their evaluated value is returned}
+#' \item{parameters tagged with '[param] !r-lazy [value]'
+#' are imported as character, and need to be further process
+#' with \code{\link{forceParams}} inside the report.}
+#' }
+#' Parameters with YAML type 'r-lazy' are imported as character,
 #' with this additional class.
 #' @seealso \link{forceParams}
 #' @author Laure Cougnaud
@@ -360,8 +368,15 @@ getParamsFromConfig <- function(
     stop("Config directory: ", sQuote(configDir), " doesn't exist.")
   
 	lazyRHandlers <- list(
-		`expr-lazy` = function(x){
-			structure(x, class = c("expr-lazy", class(x)))
+		# as the Rmd !r default handler
+		`r` = function(x){
+			eval(str2expression(text = x))
+		},
+		# version with lazy-evaluation
+		# Note: would be 'cleaner' to store expression rather than character
+		# but rapply doesn't work with 'call' type of parameters	
+		`r-lazy` = function(x){
+			structure(x, class = c("r-lazy", class(x)))
 		}
 	)
 
@@ -406,7 +421,7 @@ getParamsFromConfig <- function(
 #' 
 #' This function is only useful if some
 #' parameters should be lazy-evaluated in the report.
-#' These parameters should have the class: \code{expr-lazy}.
+#' These parameters should have the class: \code{r-lazy}.
 #' A typical use case is a parameter that
 #' consists of a R expression
 #' depending on objects created in a template
@@ -418,11 +433,11 @@ getParamsFromConfig <- function(
 #' via the \code{\link{getParamsFromConfig}}
 #' function.
 #' @return Input parameter list, with
-#' object(s) of class \code{expr-lazy}
+#' object(s) of class \code{r-lazy}
 #' evaluated.
 #' @examples 
 #' data <- mtcars
-#' params <- list(label = "Cars dataset", nrow = structure("nrow(data)", class = "expr-lazy"))
+#' params <- list(label = "Cars dataset", nrow = structure("nrow(data)", class = "r-lazy"))
 #' str(params)
 #' str(forceParams(params))
 #' @author Laure Cougnaud
@@ -435,7 +450,7 @@ forceParams <- function(params){
 	paramsEval <- rapply(
 		object = params, 
 		f = function(x)	eval(parse(text = x), envir = envirParent),
-		classes = "expr-lazy",
+		classes = "r-lazy",
 		how = "replace"
 	)
 
