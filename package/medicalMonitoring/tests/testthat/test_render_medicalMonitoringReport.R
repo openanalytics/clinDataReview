@@ -852,21 +852,32 @@ test_that("Warning for ignore missing Md files", {
       
     })
 	
-test_that("parameters with R code and lazy-loading are imported from a config file", {
+test_that("parameters with R code are evaluated upon the import of the config file", {
 				
 	configFileTemp <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
-	write_yaml(list(param = structure("nrow(dataI)", tag = "!expr-lazy")), configFileTemp)
+	write_yaml(list(param = structure("toString(c('a', 'b'))", tag = "!r")), configFileTemp)
+			
+	# parameter is replaced by its evaluated version:
+	params <- getParamsFromConfig(basename(configFileTemp), configDir = tmpdir)
+	expect_equal(params$param, "a, b")
+				
+})
+	
+test_that("parameters with R code and lazy-evaluation are imported non evaluated from a config file", {
+				
+	configFileTemp <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = tmpdir)
+	write_yaml(list(param = structure("nrow(dataI)", tag = "!r-lazy")), configFileTemp)
 				
 	params <- getParamsFromConfig(basename(configFileTemp), configDir = tmpdir)
 	expect_is(params, "list")
-	expect_is(params[["param"]], c("expr-lazy", "character"))
+	expect_is(params[["param"]], c("r-lazy", "character"))
 	expect_equal(as.character(params[["param"]]), "nrow(dataI)")
 				
 })
 
-test_that("parameters with R code and lazy-loading are evaluated", {
+test_that("parameters with R code and lazy-evaluation are evaluated", {
 	
-	params <- list(nrowData = structure("nrow(customData)", class = "expr-lazy"))
+	params <- list(nrowData = structure("nrow(customData)", class = "r-lazy"))
 	
 	# error if R object is missing
 	expect_error(

@@ -14,13 +14,13 @@ function.}
 }
 \value{
 Input parameter list, with
-object(s) of class \code{expr-lazy}
+object(s) of class \code{r-lazy}
 evaluated.
 }
 \description{
 This function is only useful if some
 parameters should be lazy-evaluated in the report.
-These parameters should have the class: \code{expr-lazy}.
+These parameters should have the class: \code{r-lazy}.
 A typical use case is a parameter that
 consists of a R expression
 depending on objects created in a template
@@ -31,7 +31,7 @@ in which this function is called from.
 }
 \examples{
 data <- mtcars
-params <- list(label = "Cars dataset", nrow = structure("nrow(data)", class = "expr-lazy"))
+params <- list(label = "Cars dataset", nrow = structure("nrow(data)", class = "r-lazy"))
 str(params)
 str(forceParams(params))
 }
