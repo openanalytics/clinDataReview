@@ -1,3 +1,4 @@
+
 #' Read metadata file
 #' 
 #' Read the metadata file from a yaml format.

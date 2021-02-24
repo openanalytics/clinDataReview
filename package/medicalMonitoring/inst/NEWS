@@ -12,7 +12,9 @@
     o summaryTableTemplate: tableParams$colVarDataLevels evaluated as expr
     o include metadata MeMo ADs in report
     o scatterplotMonitoring: scale params
-    o plot/patient profile template: support lazy-loading params for plotParams
+    o config params import extension:
+        - standard evaluation with '!r'
+        - lazy evaluation with '!r-lazy' + use for 'plotParams' in plot/patient profile template
 0.8.0
     o fix extraction of labels for 'getPlotTableVars' when 'valueVar' not in 'tableVars'
     o remove 'settings' argument in 'getMdHeader'

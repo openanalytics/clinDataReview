@@ -56,9 +56,6 @@ staticScatterplotMonitoring <- function(
 	aesPointVar = list(), 
 	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
 	aesLab,
-	colorScale = list(),
-	shapeScale = list(),
-	linetypeScale = list(),
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
