@@ -9,6 +9,9 @@
 \arguments{
 \item{x}{List of two elements named \code{pathsInfo} and 
 \code{datasetInfo}.}
+
+\item{...}{Extra parameters for compatibility with \code{\link[knitr]{knit_print}},
+not used currently.}
 }
 \value{
 Nothing. The tables are ready to be printed in Rmd.
@@ -21,7 +24,7 @@ In general, any list could be called as long as it is composed by two elements:
 \item{\code{pathsInfo}}{ an R object.}
 \item{\code{datasetInfo}}{ a data.frame or a matrix.}
 }
-The first (\code{pathsInfo}) is printed as \code{\link{knitr::kable}} object 
+The first (\code{pathsInfo}) is printed as \code{\link[knitr]{kable}} object 
 and the second (\code{datasetInfo}) is printed as hide/show html button with 
 the function \code{\link{collapseHtmlContent}}.
 }
