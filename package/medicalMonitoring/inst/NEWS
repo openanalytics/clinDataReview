@@ -9,7 +9,6 @@
     o Js FileSaver library: remove reference to FileSaver.min.js.map
     o help page 'medicalMonitoring-templates' properly created in pkg built + tests
     o fix issue DT header not aligned upon first click on shared plot
-    o summaryTableTemplate: tableParams$colVarDataLevels evaluated as expr
     o include metadata MeMo ADs in report
     o scatterplotMonitoring: scale params
     o config params import extension:
