@@ -43,15 +43,6 @@ test_that("Check availability of metadata", {
       
     })
 
-test_that("Error in get metadata when file does not exist", {
-      
-      expect_error(
-          getMetadata("fileNotExist"),          
-          "Metadata file does not exist."
-      )
-      
-    })
-
 test_that("Error in get metadata when input is not character", {
       
       expect_error(
@@ -61,6 +52,43 @@ test_that("Error in get metadata when input is not character", {
       
     })
 
+test_that("Error in get metadata when file does not exist", {
+      
+      expect_error(
+          getMetadata("fileNotExist"),          
+          "Metadata file does not exist."
+      )
+      
+    })
+
+test_that("Warning in get metadata when more than one file is provided", {
+      
+      tmpYamlFileExtra <- tempfile(
+          pattern = "file", tmpdir = tempdir(), fileext = ".yml"
+      )
+      write_yaml(
+          list(path1 = "pathSDTMs"),
+          file = tmpYamlFileExtra
+      )
+      filePaths <- c(tmpYamlFileExtra, tmpYamlFile)
+      expect_warning(
+          resMetadata1 <- getMetadata(filePaths),
+          "More than one 'filePath' provided. Only the first one will be used."
+      )
+      expect_is(resMetadata1, "list")
+      expect_equal(
+          class(resMetadata1), c("medicalMonitoringMetadata", "list")
+      )
+      expect_named(resMetadata1, c("pathsInfo", "datasetInfo"))
+      
+      pathInfos <- resMetadata1$pathsInfo
+      expect_identical(
+          rownames(pathInfos),
+          c("path SDTMs", "path MeMo ADs", "date time MeMo run")
+      )
+      expect_identical(pathInfos[1], "Not available")
+      
+    })
 
 test_that("Not available metadata inputs", {
       
@@ -76,7 +104,7 @@ test_that("Not available metadata inputs", {
           listArgsNA,
           file = tmpYamlFileNA
       )      
-      resMetadataNA <- getMetadata(tmpYamlFileNA)
+      resMetadata1 <- getMetadata(tmpYamlFileNA)
       expect_is(resMetadataNA, "list")
       expect_equal(
           class(resMetadataNA), c("medicalMonitoringMetadata", "list")
