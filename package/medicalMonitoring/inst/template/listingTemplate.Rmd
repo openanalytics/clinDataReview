@@ -215,10 +215,23 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 		return(argsExportDiff)
 	}
 	
+	# convert character columns as factor (as requested)
+	convertColToFact <- function(data){
+		idxColChar <- which(sapply(data, is.character))
+		idxColChar <- setdiff(idxColChar, match("patientProfileLink", colnames(data)))
+		if(length(idxColChar) > 0)
+			data[, idxColChar] <- lapply(data[, idxColChar], as.factor)
+		return(data)
+	}
+	
 	switch(comparisonTableType, 
 			
 		`newData-diff-interactive` = {
 					
+			# convert character columns as factor (as requested)
+			dataCurrentI <- convertColToFact(dataCurrentI)
+			dataPreviousI <- convertColToFact(dataPreviousI)
+			
 			# formatting for patient profiles:
 			if(!is.null(patientProfilePath)){
 				
@@ -264,6 +277,9 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 			tableCompAttr <- attributes(tableComparison)[c("referenceVars", "changeableVars")]
 			
 			## export to DT
+		
+			# convert character columns as factor (as requested)
+			tableComparison <- convertColToFact(tableComparison)
 			
 			# formatting for patient profiles:
 			if(!is.null(patientProfilePath)){
