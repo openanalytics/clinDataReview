@@ -40,7 +40,7 @@ COPY patientProfilesVis_*.tar.gz /tmp/patientProfilesVis.tar.gz
 RUN R -e "install.packages('/tmp/patientProfilesVis.tar.gz', repos = NULL, dependencies = FALSE)"
 
 # extra dependencies of inTextSummaryTable
-RUN R -e "remotes::install_version('ggrepel', version = '0.9.1', upgrade = FALSE)" &&
+RUN R -e "remotes::install_version('ggrepel', version = '0.9.1', upgrade = FALSE)" && \
     R -e "remotes::install_version('cowplot', version = '1.1.1', upgrade = FALSE)"
 
 # inTextSummaryTable
