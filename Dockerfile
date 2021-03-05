@@ -5,6 +5,11 @@
 FROM openanalytics/r-ver:3.6.1
 
 # System libraries (incl. system requirements for R packages)
+
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository ppa:cran/libgit2
+
 RUN apt-get update && apt-get install --no-install-recommends -y \
     libgit2-dev \
     libssl-dev \
