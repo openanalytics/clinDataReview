@@ -1,3 +1,5 @@
+0.9.2
+    o fix for highlight_key -> crosstalk::SharedData
 0.9.1
     o listing template: format columns as factor for table comparison interactive
 0.9.0
