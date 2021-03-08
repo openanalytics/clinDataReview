@@ -20,7 +20,7 @@
 #' @return \code{\link[DT]{datatable}}
 #' @author Laure Cougnaud
 #' @importFrom glpgUtilityFct toDTGLPG getLabelVar
-#' @importFrom plotly highlight_key
+#' @importFrom crosstalk SharedData
 #' @importFrom stats as.formula
 #' @export
 tableMonitoring <- function(
@@ -151,7 +151,7 @@ tableMonitoring <- function(
 	}
 	
 	# build shared data
-	dataTableSharedData <- highlight_key(
+	dataTableSharedData <- crosstalk::SharedData$new(
 		data = data, 
 		key = if(!is.null(keyVar))	varToFm(keyVar), 
 		group = id

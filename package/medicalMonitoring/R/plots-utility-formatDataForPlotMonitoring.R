@@ -12,7 +12,7 @@
 #' }
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
-#' @importFrom plotly highlight_key
+#' @importFrom crosstalk SharedData
 #' @export
 formatDataForPlotMonitoring <- function(
 	data, 
@@ -42,7 +42,7 @@ formatDataForPlotMonitoring <- function(
 	}
 	
 	# SharedData object:	
-	dataSharedData <- highlight_key(
+	dataSharedData <- crosstalk::SharedData$new(
 		data = data, 
 		key = if(!is.null(keyVar))	varToFm(keyVar), 
 		group = id
