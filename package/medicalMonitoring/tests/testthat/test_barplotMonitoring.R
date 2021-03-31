@@ -127,3 +127,23 @@ test_that("Barplot with hoverVars without label", {
       expect_is(plOutput, "plotly")
       
     })
+
+test_that("x-variable non nested in color variable is created with success for a stack barplot", {
+		
+	data <- data.frame(
+		ANRIND = c("Low", "Normal", "High", "Normal"),
+		AEDECOD = c("a", "a", "b", "b"),
+		n = c(2, 3, 4, 1)
+	)
+	# create plot
+	expect_warning(
+		pl <- barplotMonitoring(
+			data = data,
+			xVar = "AEDECOD", colorVar = "ANRIND",
+			yVar = "n",
+			barmode = "stack"
+		),
+		"ordering of the x-variable"
+	)
+	
+})
