@@ -46,15 +46,6 @@ barplotMonitoring <- function(
 	idVars <- c(xVar, colorVar)
 	data$idEl <- interaction(data[, idVars, drop = FALSE])
 	
-	# extract unique elements of x
-	# to fix issue legend selection <-> filter x-axis
-	isXNum <- is.numeric(data[, xVar])
-	if(!isXNum){
-		xEl <- if(is.factor(data[, xVar])){
-			levels(data[, xVar])
-		}else	sort(unique(data[, xVar]))
-	}
-	
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
 		hoverVars <- c(xVar, colorVar, yVar)
@@ -103,16 +94,36 @@ barplotMonitoring <- function(
 	## layout option
 	
 	xaxisArgs <- list(title = xLab, tickangle = 45)
-	# fix issue legend selection <-> filter x-axis:
-	if(!isXNum)
-		xaxisArgs <- c(xaxisArgs, 
-			list(
-				# text displayed at the ticks position
-				ticktext = xEl,
-				# values at which the ticks on the axis appear
-				tickvals = xEl
+	
+	# in case x-var is not nested within color variable
+	# when elements are selected in the legend legend selection,
+	# corresponding elements are not filtered in the x-axis (bar is only removed)
+	# this is a fix:
+	if(!is.null(colorVar) && !is.numeric(data[, xVar])){
+		
+		nColorsByX <- tapply(data[, colorVar], data[, xVar], function(x) length(unique(x)))
+		
+		if(any(nColorsByX > 1)){
+		
+			xEl <- if(is.factor(data[, xVar])){
+				levels(data[, xVar])
+			}else	sort(unique(data[, xVar]))
+			xaxisArgs <- c(xaxisArgs, 
+				list(
+					# text displayed at the ticks position
+					ticktext = xEl,
+					# values at which the ticks on the axis appear
+					tickvals = xEl
+				)
 			)
-		)
+			warning(paste(
+				"X-variable is not nested within the color variable.\n",
+				"In order to have proper filtering of the x-axis based on legend selection,",
+				"the ordering of the x-variable is based on the color (not the x) variable."
+			))
+			
+		}
+	}
 	pl <- pl %>% layout(
 		title = title,
 		xaxis = xaxisArgs,
