@@ -103,7 +103,7 @@ barplotMonitoring <- function(
 		
 		nColorsByX <- tapply(data[, colorVar], data[, xVar], function(x) length(unique(x)))
 		
-		if(any(nColorsByX > 1)){
+		if(any(nColorsByX > 1, na.rm = TRUE)){
 		
 			xEl <- if(is.factor(data[, xVar])){
 				levels(data[, xVar])
