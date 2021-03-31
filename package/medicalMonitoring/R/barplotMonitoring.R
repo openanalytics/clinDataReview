@@ -99,11 +99,11 @@ barplotMonitoring <- function(
 	# when elements are selected in the legend legend selection,
 	# corresponding elements are not filtered in the x-axis (bar is only removed)
 	# this is a fix:
-	if(!is.null(colorVar) && !is.numeric(data[, xVar])){
+	if(!is.null(colorVar) && !is.numeric(data[, xVar]) && barmode == "stack"){
 		
 		nColorsByX <- tapply(data[, colorVar], data[, xVar], function(x) length(unique(x)))
 		
-		if(any(nColorsByX > 1)){
+		if(any(nColorsByX > 1, na.rm = TRUE)){
 		
 			xEl <- if(is.factor(data[, xVar])){
 				levels(data[, xVar])
@@ -119,7 +119,7 @@ barplotMonitoring <- function(
 			warning(paste(
 				"X-variable is not nested within the color variable.\n",
 				"In order to have proper filtering of the x-axis based on legend selection,",
-				"the ordering of the x-variable is based on the color (not the x) variable."
+				"the ordering of the x-variable might be based on the color (not the x) variable."
 			))
 			
 		}
