@@ -87,7 +87,7 @@ getJsDepMedicalMonitoring <- function(dep = NULL) {
 #' @param borderColor String with border color for the collapsible object.
 #' @return \code{\link[htmltools]{tag}} object
 #' @author Laure Cougnaud
-#' @importFrom htmltools tags div tagList br
+#' @importFrom htmltools tags div tagList br `htmlDependencies<-`
 #' @importFrom glpgStyle glpgColor
 #' @export
 collapseHtmlContent <- function(
@@ -122,6 +122,7 @@ collapseHtmlContent <- function(
 		btn, 
 		btnContent, br(), br()
 	)
+	htmlDependencies(res) <- getJsDepMedicalMonitoring("collapsibleButton")
 	
 	return(res)
 	

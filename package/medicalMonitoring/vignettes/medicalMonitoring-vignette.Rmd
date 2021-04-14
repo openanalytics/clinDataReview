@@ -4,7 +4,12 @@ author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 params:
   createPatientProfiles: false
-output: medicalMonitoring::html_medicalMonitoring_report
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 5
+    number_sections: true
 vignette: >
   %\VignetteIndexEntry{Introduction to the medicalMonitoring package}
   %\VignetteEngine{knitr::rmarkdown}
