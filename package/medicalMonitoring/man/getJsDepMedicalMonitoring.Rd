@@ -5,16 +5,22 @@
 \title{Get Javascript custom scripts required for specific
 medical monitoring functionalities.}
 \usage{
-getJsDepMedicalMonitoring(dep = NULL)
+getJsDepMedicalMonitoring(
+  type = c("collapsibleButton", "patientProfiles"),
+  dep = NULL
+)
 }
 \arguments{
+\item{type}{(optional) Character vector with type of dependencies,
+either: 'collapsibleButton' or 'patientProfiles'.}
+
 \item{dep}{(optional) Character vector with names of Javascript dependencies 
 By default, all dependencies are included.}
 }
 \value{
 List of \code{\link[htmltools]{htmlDependency}}.
 To include this dependency in a report e.g. generated with rmarkdown,
-these should be passed to the: \code{extra_dependencies} parameter
+these can be passed to the: \code{extra_dependencies} parameter
 of the \code{output_format} specific function, e.g.:
 \code{rmarkdown::render(...,	
 output_format = rmarkdown::html_document(extra_dependencies = dep))

@@ -1,5 +1,5 @@
 ---
-title: "Vignette of the `medicalMonitoring` package"
+title: "Introduction to the `medicalMonitoring` package"
 author: "Laure Cougnaud"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 params:
@@ -47,37 +47,6 @@ for medical monitoring.
 	library(pander)
 
 ```
-
-## Report
-
-The functionality to download the patient profiles require additional _Javascript_ functions/packages:
-
-* custom _Javascript_ functions
-* external _Javascript_ dependencies: _JSZip_, _JSZipUtils_, _FileSaver_
-
-These dependencies are included in the `medicalMonitoring` package.
-
-To create a report containing such visualization,
-dedicated output formats should be specified in the YAML header of the document:
-
-* for a [_Rmarkdown_](https://cran.r-project.org/package=rmarkdown) report: : `html_medicalMonitoring_report`
-```
----
-title: "Study name"
-subtitle: "Analysis description"
-output: html_medicalMonitoring_report
----
-```
-
-* for a [_bookdown_](https://cran.r-project.org/package=bookdown) report: `gitbook_medicalMonitoring_report`
-```
----
-title: "Study name"
-subtitle: "Analysis description"
-output: gitbook_medicalMonitoring_report
----
-```
-
 
 ## Data format
 

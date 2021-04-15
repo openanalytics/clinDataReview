@@ -2,12 +2,12 @@
 % Please edit documentation in R/reporting-formats.R
 \name{gitbook_medicalMonitoring_report}
 \alias{gitbook_medicalMonitoring_report}
-\title{GLPG-theme medical monitoring format for bookdown report.}
+\title{Medical monitoring format for bookdown report.}
 \usage{
 gitbook_medicalMonitoring_report(
   split_by = "section+number",
   config = list(sharing = NULL, toc = list(collapse = "section")),
-  extra_dependencies = getJsDepMedicalMonitoring(),
+  extra_dependencies = NULL,
   ...
 )
 }
@@ -19,9 +19,7 @@ gitbook_medicalMonitoring_report(
 by default: no sharing and collapsed by section.
 (see help of the \link[bookdown]{gitbook} function)}
 
-\item{extra_dependencies}{List of \code{\link[htmltools]{htmlDependency}}
-by default extracted from \code{\link{getJsDepMedicalMonitoring}}.
-(see help of the \link[rmarkdown]{html_document} function)}
+\item{extra_dependencies}{NULL by default}
 
 \item{...}{Extra parameters passed to the
 \link[glpgStyle]{gitbook_report} function.}
@@ -30,9 +28,9 @@ by default extracted from \code{\link{getJsDepMedicalMonitoring}}.
 R Markdown output format to pass to \code{\link[bookdown]{render_book}}.
 }
 \description{
-This format includes also additional javascript libraries
-required for visualization/tables of a medical monitoring
-report.
+This function is only meant to set sensitive
+defaults for gitbook.\cr
+\code{\link[bookdown]{gitbook}} can be used instead.
 }
 \seealso{
 Other medical monitoring reporting: 

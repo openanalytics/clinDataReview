@@ -36,6 +36,7 @@
 #' @author Laure Cougnaud
 #' @importFrom plotly highlight
 #' @importFrom htmlwidgets onRender JS
+#' @importFrom htmlwidgets prependContent
 #' @export
 formatPlotlyMonitoring <- function(
 	pl, data,
@@ -92,6 +93,8 @@ formatPlotlyMonitoring <- function(
 		dataPP <- dataPPDf[, c(idVar, pathVar)]
 		colnames(dataPP) <- c("key", "path")
 		
+		# Add Js function to the widget
+		
 		# Important: parameters should be in the same order
 		# than specified in function definition 
 		# (fct call by parameter doesn't exists natively in Javascript)
@@ -107,7 +110,14 @@ formatPlotlyMonitoring <- function(
 			),
 		"}") 
 		
-		pl <- pl %>% onRender(jsCode = jsPatientProfiles, data = dataPP)
+		pl <- pl %>% onRender(
+			jsCode = jsPatientProfiles, 
+			data = dataPP
+		)
+		
+		# and required Js libraries
+		prepCntArgs <- c(list(x = pl), getJsDepMedicalMonitoring(type = "patientProfiles"))
+		pl <- do.call(prependContent, prepCntArgs)		
 	
 	}
 	

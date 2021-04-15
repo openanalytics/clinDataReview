@@ -72,19 +72,6 @@ function getPatientProfiles(pathpatientprofiles, filelabel = null, verbose = fal
  
 };
 
-// download patient profiles for a specific DT
-// el: DT object
-function getPatientProfilesDT(el, verbose = false){
-    // extract patient profiles paths
-    s = el.parentElement.innerHTML;// get row containing the button
-    hrefArray = s.match(/href='[^']*/g); // extract the hyperlinks 
-    linksArray = hrefArray.map(item => item.match(/href='([^']*)/)[1]); // and the patient profiles path
-    // build label for file name
-    //parentRow = el.closest('tr').previousSibling; // get parent row
-    //console.log(el.closest('.dataTables_scroll')); // column names
-    getPatientProfiles(pathpatientprofiles=linksArray, filelabel='', verbose = verbose, download=true);
-};
-
 // download patient profiles for a specific plot
 // el: plotly object, with 'key' element containing patient IDs
 // data: array of dictionaries, containing: 'key': patient IDs, 'path': path to patient profiles

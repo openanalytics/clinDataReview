@@ -27,9 +27,11 @@ formatHoverText <- function(x, label, width = 50){
 #' medical monitoring functionalities.
 #' @param dep (optional) Character vector with names of Javascript dependencies 
 #' By default, all dependencies are included.
+#' @param type (optional) Character vector with type of dependencies,
+#' either: 'collapsibleButton' or 'patientProfiles'.
 #' @return List of \code{\link[htmltools]{htmlDependency}}.
 #' To include this dependency in a report e.g. generated with rmarkdown,
-#' these should be passed to the: \code{extra_dependencies} parameter
+#' these can be passed to the: \code{extra_dependencies} parameter
 #' of the \code{output_format} specific function, e.g.:
 #' \code{rmarkdown::render(...,	
 #' output_format = rmarkdown::html_document(extra_dependencies = dep))
@@ -38,7 +40,19 @@ formatHoverText <- function(x, label, width = 50){
 #' @importFrom utils packageVersion
 #' @author Laure Cougnaud
 #' @export
-getJsDepMedicalMonitoring <- function(dep = NULL) {
+getJsDepMedicalMonitoring <- function(
+	type = c("collapsibleButton", "patientProfiles"),
+	dep = NULL) {
+
+	type <- match.arg(type, several.ok = TRUE)
+	if(!is.null(dep))
+		dep <- match.arg(dep, 
+			choices = c("FileSaver", 
+				"jszip", "jszip-utils", 
+				"PatientProfiles", "collapsibleButton"
+			),
+			several.ok = TRUE
+		)
 	
 	getPackageJSDep <- function(name, version) {
 		srcDep <- system.file("js", package = "medicalMonitoring", name)
@@ -65,6 +79,17 @@ getJsDepMedicalMonitoring <- function(dep = NULL) {
 		getPackageJSDep(name = "PatientProfiles", version = packageVersion("medicalMonitoring")),
 		getPackageJSDep(name = "collapsibleButton", version = packageVersion("medicalMonitoring"))
 	)
+	
+	if(!is.null(type)){
+		if(!is.null(dep))
+			warning("'type' or 'dep' should be specified (not both). 'dep' is considered.")
+		dep <- c(
+			if("collapsibleButton" %in% type)	"collapsibleButton",
+			if("patientProfiles" %in% type)
+				c("FileSaver", "jszip", "jszip-utils",
+					"PatientProfiles")
+		)
+	}
 	
 	if(!is.null(dep)) {
 		selectedDep <- which(sapply(htmlDep, '[[', "name") %in% dep)
@@ -124,7 +149,7 @@ collapseHtmlContent <- function(
 		btnContent, br(), br()
 	)
 	
-	res <- prependContent(res, getJsDepMedicalMonitoring("collapsibleButton"))
+	res <- prependContent(res, getJsDepMedicalMonitoring(type = "collapsibleButton"))
 	
 	return(res)
 	

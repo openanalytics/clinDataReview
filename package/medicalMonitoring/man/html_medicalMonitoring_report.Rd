@@ -2,17 +2,12 @@
 % Please edit documentation in R/reporting-formats.R
 \name{html_medicalMonitoring_report}
 \alias{html_medicalMonitoring_report}
-\title{GLPG-theme medical monitoring format for rmarkdown report.}
+\title{Medical monitoring format for rmarkdown report.}
 \usage{
-html_medicalMonitoring_report(
-  extra_dependencies = getJsDepMedicalMonitoring(),
-  ...
-)
+html_medicalMonitoring_report(extra_dependencies = NULL, ...)
 }
 \arguments{
-\item{extra_dependencies}{List of \code{\link[htmltools]{htmlDependency}}
-by default extracted from \code{\link{getJsDepMedicalMonitoring}}
-(see help of the \link[rmarkdown]{html_document} function)}
+\item{extra_dependencies}{NULL by default.}
 
 \item{...}{Extra parameters passed to the
 \link[glpgStyle]{html_report} function.}
@@ -21,9 +16,9 @@ by default extracted from \code{\link{getJsDepMedicalMonitoring}}
 R Markdown output format to pass to \code{\link[rmarkdown]{render}}.
 }
 \description{
-This format includes also additional javascript libraries
-required for visualization/tables of a medical monitoring
-report.
+This function only kept for back-compatibility, 
+\code{\link[rmarkdown]{html_document}}
+can be used instead.
 }
 \seealso{
 Other medical monitoring reporting: 
