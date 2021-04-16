@@ -30,7 +30,7 @@
 #' @author Laure Cougnaud
 #' @import plotly
 #' @importFrom glpgStyle getGLPGColorPalette getGLPGShapePalette
-#' @importFrom glpgUtilityFct formatVarForPlotLabel
+#' @importFrom clinUtils formatVarForPlotLabel
 #' @export
 timeProfileIntervalPlot <- function(data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
