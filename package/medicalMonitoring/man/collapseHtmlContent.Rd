@@ -7,8 +7,8 @@
 collapseHtmlContent(
   input,
   title = "Click to show or hide",
-  color = glpgStyle::glpgColor()["green"],
-  borderColor = glpgStyle::glpgColor()["orange"]
+  color = getColorPalette(n = 1),
+  borderColor = getColorPalette(n = 1)
 )
 }
 \arguments{

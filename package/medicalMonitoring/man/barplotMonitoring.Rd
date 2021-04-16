@@ -100,7 +100,7 @@ for each \code{tableVars}.}
 the table is included within an HTML button.}
 
 \item{tablePars}{List with parameters passed to the
-\code{\link[glpgUtilityFct]{toDTGLPG}} function.}
+\code{\link[clinUtils]{getClinDT}} function.}
 
 \item{id}{String with general id for the plot:
 \itemize{

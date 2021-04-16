@@ -73,7 +73,7 @@ for each \code{tableVars}.}
     \item{\code{tableButton}}{Logical, if TRUE (by default)
 the table is included within an HTML button.}
     \item{\code{tablePars}}{List with parameters passed to the
-\code{\link[glpgUtilityFct]{toDTGLPG}} function.}
+\code{\link[clinUtils]{getClinDT}} function.}
   }}
 }
 \value{

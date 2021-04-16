@@ -10,8 +10,7 @@ test_that("Format of gitbook for medical monitoring", {
           split_by = 'section',
       )
       expect_is(output, "rmarkdown_output_format")
-      
-      # Further testing in glpgStyle::gitbook_report
+
     })
 
 test_that("Format html report", {
@@ -22,6 +21,5 @@ test_that("Format html report", {
           res$bookdown_output_format,
           "html"
       )
-      # Further testing in glpgStyle::html_report
       
     })

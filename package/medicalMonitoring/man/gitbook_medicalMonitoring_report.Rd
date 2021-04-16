@@ -22,7 +22,7 @@ by default: no sharing and collapsed by section.
 \item{extra_dependencies}{NULL by default}
 
 \item{...}{Extra parameters passed to the
-\link[glpgStyle]{gitbook_report} function.}
+\link[bookdown]{gitbook} function.}
 }
 \value{
 R Markdown output format to pass to \code{\link[bookdown]{render_book}}.

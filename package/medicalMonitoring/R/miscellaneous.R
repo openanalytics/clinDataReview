@@ -114,13 +114,13 @@ getJsDepMedicalMonitoring <- function(
 #' @author Laure Cougnaud
 #' @importFrom htmltools tags div tagList br
 #' @importFrom htmlwidgets prependContent
-#' @importFrom glpgStyle glpgColor
+#' @importFrom clinUtils getColorPalette
 #' @export
 collapseHtmlContent <- function(
 	input, 
 	title = "Click to show or hide",
-	color = glpgStyle::glpgColor()["green"], 
-	borderColor = glpgStyle::glpgColor()["orange"]
+	color = getColorPalette(n = 1), 
+	borderColor = getColorPalette(n = 1)
 	){
 	
 	btnStyle <- paste0(

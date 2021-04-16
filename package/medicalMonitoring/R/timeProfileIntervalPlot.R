@@ -22,15 +22,13 @@
 #' @param colorVar (optional) String with color variable.
 #' @param colorLab (optional) String with label for \code{colorVar}.
 #' @param colorPalette (optional) Named character vector with color palette.
-#' If not specified, the GLPG color palette is used.
 #' @param alpha (optional) Numeric with transparency, 1 by default.
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
 #' @inherit scatterplotMonitoring return
 #' @author Laure Cougnaud
 #' @import plotly
-#' @importFrom glpgStyle getGLPGColorPalette getGLPGShapePalette
-#' @importFrom clinUtils formatVarForPlotLabel
+#' @importFrom clinUtils formatVarForPlotLabel getColorPalette getShapePalette
 #' @export
 timeProfileIntervalPlot <- function(data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
@@ -158,9 +156,13 @@ timeProfileIntervalPlot <- function(data,
 	dataPlotSharedData <- convertToSharedDataIntPlot(data)
 	
 	if(is.null(colorPalette)){
+		colorPaletteOpt <- getOption("medicalMonitoring.colors")
 		if(!is.null(colorVar)){
-			colorPalette <- getGLPGColorPalette(x = data[, colorVar])
-		}else	colorPalette <- getGLPGColorPalette(n = 1)
+			colorPalette <- getColorPalette(
+				x = data[, colorVar],
+				palette = colorPaletteOpt
+			)
+		}else	colorPalette <- getColorPalette(n = 1, palette = colorPaletteOpt)
 	}
 
 	linesYVar <- regmatches(
@@ -189,7 +191,10 @@ timeProfileIntervalPlot <- function(data,
 	# 2) have a symbol when start and end is the same
 	if(!is.null(timeStartShapeVar) | !is.null(timeEndShapeVar)){
 		if(is.null(shapePalette)){
-			shapePalette <- getGLPGShapePalette(x = shapeLevels)
+			shapePalette <- getShapePalette(
+				x = shapeLevels, 
+				palette = getOption("medicalMonitoring.shapes")
+			)
 		}else	shapePalette <- shapePalette[shapeLevels]
 	}else	shapePalette <- NULL
 

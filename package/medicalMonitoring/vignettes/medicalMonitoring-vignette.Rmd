@@ -606,6 +606,82 @@ package.
 
 ```
 
+### Palettes
+
+#### Set palette for the entire session
+
+Palette for the colors and shapes associated with specific variables 
+can be set for all medical monitoring visualizations at once by 
+setting the `medicalMonitoring.colors` and `medicalMonitoring.shapes` 
+options at the start of the R session.
+
+Please see the `clinUtils` package for the default options.
+
+```{r palettes-default-get}
+
+# display default palettes
+colorsDefault <- getOption("medicalMonitoring.colors")
+colorsDefault
+shapesDefault <- getOption("medicalMonitoring.shapes")
+shapesDefault
+
+```
+
+```{r palettes-default-example}
+
+timeProfileIntervalPlot(
+	data = dataAE,
+	paramVar = "USUBJID",
+	# time-variables
+	timeStartVar = "AESTDY",
+	timeEndVar = "AEENDY",
+	colorVar = "AESEV",
+	timeStartShapeVar = "AESTFLG",
+	timeEndShapeVar = "AEENFLG",
+	labelVars = labelVars
+)
+
+```
+
+The palettes can be set for all visualizations, 
+e.g. at the start of the R session, with:
+
+```{r palettes-customGeneral-set}
+
+# change palettes for the entire R session
+options(medicalMonitoring.colors = c("gold", "pink", "cyan"))
+options(medicalMonitoring.shapes = clinShapes)
+
+```
+
+In case the palette contains less elements than available in the data, these are replicated.
+
+```{r palettes-customGeneral-example}
+
+timeProfileIntervalPlot(
+	data = dataAE,
+	paramVar = "USUBJID",
+	# time-variables
+	timeStartVar = "AESTDY",
+	timeEndVar = "AEENDY",
+	colorVar = "AESEV",
+	timeStartShapeVar = "AESTFLG",
+	timeEndShapeVar = "AEENFLG",
+	labelVars = labelVars
+)
+
+```
+
+Palettes are reset to the default patient profiles palettes at the start of a new R session, or by setting:
+
+```{r palettes-default-reset}
+
+# change palettes for the entire R session
+options(medicalMonitoring.colors = colorsDefault)
+options(medicalMonitoring.shapes = shapesDefault)
+
+```
+
 # Medical monitoring report {#renderReport}
 
 Utility functions are provided to run a standard medical monitoring report.

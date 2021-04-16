@@ -10,7 +10,7 @@
 #' (see help of the \link[bookdown]{gitbook} function)
 #' @param extra_dependencies NULL by default
 #' @param ... Extra parameters passed to the
-#' \link[glpgStyle]{gitbook_report} function.
+#' \link[bookdown]{gitbook} function.
 #' @return R Markdown output format to pass to \code{\link[bookdown]{render_book}}.
 #' @importFrom bookdown gitbook
 #' @author Laure Cougnaud
@@ -42,7 +42,7 @@ gitbook_medicalMonitoring_report <- function(
 #' can be used instead.
 #' @param extra_dependencies NULL by default.
 #' @param ... Extra parameters passed to the
-#' \link[glpgStyle]{html_report} function.
+#' \link[rmarkdown]{html_document} function.
 #' @return R Markdown output format to pass to \code{\link[rmarkdown]{render}}.
 #' @author Laure Cougnaud
 #' @family medical monitoring reporting

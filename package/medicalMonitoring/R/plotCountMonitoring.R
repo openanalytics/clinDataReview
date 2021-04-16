@@ -16,8 +16,7 @@
 #' @import plotly
 #' @importFrom stats as.formula
 #' @importFrom utils head tail
-#' @importFrom RColorBrewer brewer.pal
-#' @importFrom glpgStyle getGLPGColorPalette
+#' @importFrom clinUtils getColorPalette
 #' @author Laure Cougnaud
 #' @export
 plotCountMonitoring <- function(
@@ -99,18 +98,23 @@ plotCountMonitoring <- function(
 	
 	# get color vector
 	if(!is.null(colorVar)){
+		
+		colorPaletteOpt <- getOption("medicalMonitoring.colors")
+		
 		if(is.numeric(dataPlot[, colorVar])){
 			if(is.null(colorRange))	colorRange <- range(data[, colorVar], na.rm = TRUE)
 			colorsX <- tapply(dataPlot[, colorVar], dataPlot[, varID], mean)
 			colorGroups <- cut(colorsX, breaks = c(-Inf, seq(from = colorRange[1], to = colorRange[2], length.out = 8), +Inf))
-			colorPalette <- RColorBrewer::brewer.pal(n = nlevels(colorGroups), name = "YlOrRd")
+			colorPalette <- getColorPalette(n = nlevels(colorGroups), default = colorPaletteOpt)
 			names(colorPalette) <- levels(colorGroups)
 		}else{
 			colorGroups <- dataPlot[, colorVar][order(dataPlot[, varID])]
 			if(!is.factor(colorGroups))	colorGroups <- factor(colorGroups)	
-			colorPalette <- getGLPGColorPalette(x = colorGroups)
+			colorPalette <- getColorPalette(x = colorGroups, default = colorPaletteOpt)
 		}
+		
 		colors <- unname(colorPalette[as.character(colorGroups)])
+		
 	}
 	# create interactive plot:
 	pl <- plot_ly(

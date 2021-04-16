@@ -55,7 +55,7 @@ This report displays a listing of the variables and data of interest, displayed 
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[medicalMonitoring]{processData}}
 \item{\code{tableParams}: }{(optional) object , parameters to create the table, passed to \link[medicalMonitoring]{tableMonitoring}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff-interactive', 'table-comparison-interactive' } , output type of the comparison table}
-\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}}
+\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 }
@@ -91,7 +91,7 @@ This report visualizes input data with a function of the medical monitoring pack
 \item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotMonitoring' } , plotting function of the package to consider}
 \item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !r-lazy [dataI]}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff' } , output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.}
-\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
+\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 }
@@ -131,7 +131,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\code{tableParamsDocx}: }{(optional) object , parameters to format the table to the docx format, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
 \item{\code{tableParamsDT}: }{(optional) object , parameters to format the table to the DT interactive table included in the report, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'table-comparison-interactive' } , output type of the comparison table}
-\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[glpgUtilityFct]{compareTables}. By default, statistics variables are compared across row and column elements.}
+\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. By default, statistics variables are compared across row and column elements.}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}

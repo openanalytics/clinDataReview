@@ -83,8 +83,7 @@ of the end of the time interval.}
 
 \item{colorLab}{(optional) String with label for \code{colorVar}.}
 
-\item{colorPalette}{(optional) Named character vector with color palette.
-If not specified, the GLPG color palette is used.}
+\item{colorPalette}{(optional) Named character vector with color palette.}
 
 \item{alpha}{(optional) Numeric with transparency, 1 by default.}
 
@@ -143,7 +142,7 @@ for each \code{tableVars}.}
 the table is included within an HTML button.}
 
 \item{tablePars}{List with parameters passed to the
-\code{\link[glpgUtilityFct]{toDTGLPG}} function.}
+\code{\link[clinUtils]{getClinDT}} function.}
 
 \item{id}{String with general id for the plot:
 \itemize{

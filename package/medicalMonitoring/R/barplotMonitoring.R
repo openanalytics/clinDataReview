@@ -13,7 +13,7 @@
 #' @family visualizations of summary statistics for medical monitoring
 #' @import plotly
 #' @importFrom stats as.formula
-#' @importFrom glpgStyle getGLPGColorPalette
+#' @importFrom clinUtils getColorPalette
 #' @author Laure Cougnaud
 #' @export
 barplotMonitoring <- function(
@@ -72,9 +72,13 @@ barplotMonitoring <- function(
 	height <- unname(dimPlot["height"])
 	
 	if(is.null(colorPalette)){
+		colorPaletteOpt <- getOption("medicalMonitoring.colors")
 		if(!is.null(colorVar)){
-			colorPalette <- getGLPGColorPalette(x = data[, colorVar])
-		}else	colorPalette <- getGLPGColorPalette(n = 1)
+			colorPalette <- getColorPalette(
+				x = data[, colorVar], 
+				palette = colorPaletteOpt
+			)
+		}else	colorPalette <- getColorPalette(n = 1, palette = colorPaletteOpt)
 	}
 	
 	# use plotly rather than ggplot -> ggplotly implementation

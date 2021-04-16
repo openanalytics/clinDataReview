@@ -10,7 +10,7 @@ html_medicalMonitoring_report(extra_dependencies = NULL, ...)
 \item{extra_dependencies}{NULL by default.}
 
 \item{...}{Extra parameters passed to the
-\link[glpgStyle]{html_report} function.}
+\link[rmarkdown]{html_document} function.}
 }
 \value{
 R Markdown output format to pass to \code{\link[rmarkdown]{render}}.
