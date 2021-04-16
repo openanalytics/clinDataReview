@@ -52,7 +52,7 @@
     },
     "comparisonTableParams": {
       "type": "object",
-      "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used."
+      "doc": "parameters for the comparison table, passed to \\link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used."
     },
     
     "loopingVar": {

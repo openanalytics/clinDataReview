@@ -168,7 +168,7 @@ argsCompTable <- c(
 	),
 	comparisonTableParams
 )
-outputComparison <- do.call(compareTables, argsCompTable)
+outputComparison <- do.call(clinUtils::compareTables, argsCompTable)
 
 if(!is.null(outputComparison)){
 	

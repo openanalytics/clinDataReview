@@ -52,7 +52,7 @@
     },
     "comparisonTableParams": {
       "type": "object",
-      "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}"
+      "doc": "parameters for the comparison table, passed to \\link[clinUtils]{compareTables}"
     },
     "loopingVar": {
       "type": ["array", "string"],

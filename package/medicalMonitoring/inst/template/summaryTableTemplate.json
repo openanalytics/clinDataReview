@@ -63,7 +63,7 @@
     },
     "comparisonTableParams": {
       "type": "object",
-      "doc": "parameters for the comparison table, passed to \\link[glpgUtilityFct]{compareTables}. By default, statistics variables are compared across row and column elements."
+      "doc": "parameters for the comparison table, passed to \\link[clinUtils]{compareTables}. By default, statistics variables are compared across row and column elements."
     },
     "loopingVar": {
       "type": ["array", "string"],
