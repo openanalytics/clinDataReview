@@ -8,7 +8,7 @@ Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring
   during a clinical trial.
 Imports: 
-  patientProfilesVis (>= 0.12.0), glpgStyle (>= 1.0.0), glpgUtilityFct (>= 3.0.0), 
+  glpgStyle (>= 1.0.0), glpgUtilityFct (>= 3.0.0), 
   ggplot2, plotly, 
   htmlwidgets, plyr, htmltools,
   knitr, 
@@ -21,6 +21,7 @@ Suggests:
     testthat,
     vdiffr,
     inTextSummaryTable (>= 2.19.0),
+    patientProfilesVis (>= 0.12.0), 
     reshape2,
     countrycode
 VignetteBuilder: knitr

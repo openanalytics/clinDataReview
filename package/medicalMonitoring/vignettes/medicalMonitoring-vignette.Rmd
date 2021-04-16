@@ -176,41 +176,12 @@ at once.
 ## Patient profiles
 
 The interactive visualizations of the medical monitoring package include
-functionalities to link a plot to specific patient profiles report.
+functionalities to link a plot to patient-specific report,
+e.g. patient profiles created with the `patientProfilesVis` package.
 
-A standard patient profiles report for _SDTM_ input format is created with the function:
-`runPatientProfileTemplateReport`.
-
-```{r createPatientProfilesReport, eval = params$createPatientProfiles, results = "hide"}
-
-	library(patientProfilesVis)
-	
-	# export example data
-	dataPath <- "data";dir.create(dataPath)
-	library(haven)
-	dataPathFiles <- sapply(names(SDTMDataPelican), function(dm){
-		# issue for empty col
-		idxCol <- !sapply(SDTMDataPelican[[dm]], function(x) all(x == ""))
-		dataPathDM <- file.path(dataPath, paste0(dm, ".sas7bdat"))
-		write_sas(
-			data = SDTMDataPelican[[dm]][, idxCol], 
-			path = dataPathDM
-		)
-		dataPathDM
-	})
-#	sapply(dataPathFiles, read_sas)
-
-	# create patient profile report
-	runPatientProfileTemplateReport(
-		dataPath = dataPath, 
-		outputFile = "patientProfiles/subjectProfile.pdf",
-		study = "Pelican",
-		batch = "20180606",
-		author = "Laure Cougnaud",
-		overwrite = TRUE
-	)
-
-```
+Such patient profiles can be created via a config file,
+with a dedicated template report available in the `medicalMonitoring`
+package.
 
 ## Data visualization
 
