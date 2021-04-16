@@ -58,7 +58,7 @@ if(!exists("createPatientProfiles"))	createPatientProfiles <- TRUE
 
 library(medicalMonitoring)
 library(glpgStyle)
-library(glpgUtilityFct)
+library(clinUtils)
 library(patientProfilesVis)
 library(ggplot2) # in case 'timeTrans'/'timeExpand' is specified
 
@@ -81,7 +81,7 @@ pathFiles <- list.files(path = pathDataFolder, pattern = "*.(sas7bdat|xpt)$", fu
 if(length(pathFiles) == 0)
 	stop(paste0("No data is available in:", params$dataPath, "."))
 
-dataAll <- loadDataADaMSDTM(files = pathFiles)
+dataAll <- clinUtils::loadDataADaMSDTM(files = pathFiles)
 labelVarsAll <- attr(dataAll, "labelVars")
 
 message(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."))

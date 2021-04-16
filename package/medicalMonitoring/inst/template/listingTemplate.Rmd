@@ -66,7 +66,7 @@ if(!exists("loopingTotal"))	loopingTotal <- TRUE
 
 ```{r listingTemplate-loadPackages}
 
-library(glpgUtilityFct)
+library(clinUtils)
 library(inTextSummaryTable)
 library(medicalMonitoring)
 library(plyr)
@@ -98,7 +98,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 	# Load data
 	pathData <- file.path(pathsData[[dataBatch]], dataFileName)
 	
-	dataAll <- loadDataADaMSDTM(pathData, verbose = FALSE)
+	dataAll <- clinUtils::loadDataADaMSDTM(pathData, verbose = FALSE)
 	data <- dataAll[[1]]
 	
 	# Extract label information

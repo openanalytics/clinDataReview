@@ -66,7 +66,7 @@ if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 ```{r plotTemplate-loadPackages}
 
 library(medicalMonitoring)
-library(glpgUtilityFct)
+library(clinUtils)
 library(plyr)
 
 ```
