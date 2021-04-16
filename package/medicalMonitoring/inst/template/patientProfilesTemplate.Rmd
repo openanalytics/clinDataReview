@@ -184,7 +184,7 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 
 		## extract type of plot
 		typePlot <- paramsPlotI[["typePlot"]]
-		plotFctName <- paste0("subjectProfile", simpleCap(typePlot), "Plot")
+		plotFctName <- paste0("subjectProfile", clinUtils::simpleCap(typePlot), "Plot")
 		getFctRes <- try(
 			plotFct <- do.call(`::`, list(pkg = "patientProfilesVis", name = plotFctName)),
 			silent = TRUE

@@ -69,7 +69,7 @@
 #' extra attribute: 'labelVars'
 #' containing updated \code{labelVars} (accessible via: in \code{attr(output, 'labelVars')}).
 #' @example inst/examples/annotateData-example.R
-#' @importFrom glpgUtilityFct loadDataADaMSDTM getLabelVar simpleCap getLabelVars
+#' @importFrom clinUtils loadDataADaMSDTM getLabelVar simpleCap getLabelVars
 #' @importFrom tools file_path_sans_ext
 #' @export
 annotateData <- function(

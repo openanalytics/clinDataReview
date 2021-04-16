@@ -345,7 +345,7 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 		})
 
 	}, simplify = FALSE)
-	names(listPlots) <- paste(simpleCap(typePlot), "visualization")
+	names(listPlots) <- paste(clinUtils::simpleCap(typePlot), "visualization")
 
 	knitPrintMedicalMonitoring(
 		list = listPlots,
