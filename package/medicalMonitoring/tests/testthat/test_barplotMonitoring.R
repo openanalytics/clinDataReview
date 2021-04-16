@@ -2,6 +2,7 @@ context("Barplot monitoring")
 
 # load example data
 library(glpgUtilityFct)
+library(clinUtils)
 data(SDTMDataPelican)
 data(labelVarsSDTMPelican)
 dataDM <- SDTMDataPelican$DM

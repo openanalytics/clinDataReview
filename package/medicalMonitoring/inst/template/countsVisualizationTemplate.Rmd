@@ -295,10 +295,10 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 	labelVars[c("%", "statPercN")] <- paste(c(
 		"Percentage of patients",
 		if(!is.null(loopingVar) && loopingTotal)	
-			paste("by", toString(getLabelVar(loopingVar, labelVars = labelVars)))
+			paste("by", toString(clinUtils::getLabelVar(loopingVar, labelVars = labelVars)))
 	), collapse = " ")
 	labelVars[c("m", "statm")] <- "Number of events"
-	labelVars[c("Mean", "statMean")] <- paste("Mean", getLabelVar(colorVar[countVar], labelVars = labelVars))
+	labelVars[c("Mean", "statMean")] <- paste("Mean", clinUtils::getLabelVar(colorVar[countVar], labelVars = labelVars))
 
 ```
 
@@ -322,8 +322,8 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 			id <- do.call(formatLabelChunk, argsFormatLabelChunk)
 		
 			# create plot
-			colorLab <- toString(getLabelVar(colorVar[countVar], data = dataI, labelVars = labelVars))
-			pathLab <- unname(getLabelVar(var = "USUBJID", labelVars = labelVars))
+			colorLab <- toString(clinUtils::getLabelVar(colorVar[countVar], data = dataI, labelVars = labelVars))
+			pathLab <- unname(clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars))
 			plotCountMonitoring(
 				data = dataI,
 				vars = c(parentVar, countVar),

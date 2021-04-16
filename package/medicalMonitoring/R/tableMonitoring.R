@@ -19,7 +19,7 @@
 #' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @return \code{\link[DT]{datatable}}
 #' @author Laure Cougnaud
-#' @importFrom glpgUtilityFct toDTGLPG getLabelVar
+#' @importFrom clinUtils toDTGLPG getLabelVar
 #' @importFrom crosstalk SharedData
 #' @importFrom stats as.formula
 #' @export

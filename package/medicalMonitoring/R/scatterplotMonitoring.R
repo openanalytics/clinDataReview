@@ -26,7 +26,7 @@
 #' \item{otherwise: }{\code{\link[plotly]{plotly}} object}
 #' }
 #' @example inst/examples/scatterplotMonitoring-example.R
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom clinUtils getLabelVar
 #' @import plotly
 #' @author Laure Cougnaud
 #' @family Medical monitoring visualization of individual profile

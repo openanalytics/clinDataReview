@@ -43,7 +43,7 @@
 #' @inheritParams medicalMonitoring-common-args
 #' @return \code{\link[ggplot2]{ggplot}} object
 #' @import ggplot2
-#' @importFrom glpgUtilityFct getLabelVar
+#' @importFrom clinUtils getLabelVar
 #' @importFrom stats setNames
 #' @author Laure Cougnaud
 staticScatterplotMonitoring <- function(

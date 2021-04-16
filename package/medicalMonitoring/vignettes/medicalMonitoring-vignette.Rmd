@@ -70,6 +70,7 @@ A few `sdtm` datasets from the _Pelican_ study are included in the
 
 ```{r loadData}	
 	
+	library(clinUtils)
 	library(glpgUtilityFct)
 	
 	data(SDTMDataPelican)
@@ -494,7 +495,7 @@ The size of the different segments is relative the respective counts.
 		data = dataSunburst,
 		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
-		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
+		pathVar = "patientProfileLink", pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE,
 		verbose = TRUE,
 		labelVars = labelVars
@@ -519,7 +520,7 @@ of the respective group.
 		data = dataTreemap,
 		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
-		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
+		pathVar = "patientProfileLink", pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE,
 		verbose = TRUE,
 		labelVars = labelVars
@@ -543,7 +544,7 @@ A barplot visualizes the counts for one single variable in a specific order.
 		xVar = "AESOC", colorVar = "AEDECOD",
 		yVar = "n", yLab = "Number of patients with adverse events",
 		labelVars = labelVars,
-		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars),
+		pathVar = "patientProfileLink", pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
 		table = TRUE,
 		verbose = TRUE,
 		barmode = "stack"

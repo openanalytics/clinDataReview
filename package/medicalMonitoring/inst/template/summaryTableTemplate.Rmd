@@ -318,7 +318,7 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
             tagList(
                 br(),
                 paste0("Totals (percentages) are considered by ", 
-                    toString(getLabelVar(loopingVar, labelVars = labelVars)), 
+                    toString(clinUtils::getLabelVar(loopingVar, labelVars = labelVars)), 
                     "."
                 )
             )
@@ -377,7 +377,7 @@ summaryTableDT <- sapply(names(summaryTableList$currentData$summaryTable), funct
       argsCompTable$caption <- if(!is.null(loopingVar) && loopingTotal){
         htmltools::tags$caption(
             paste0("Totals (percentages) are considered by ", 
-                toString(getLabelVar(loopingVar, labelVars = labelVars)),
+                toString(clinUtils::getLabelVar(loopingVar, labelVars = labelVars)),
                 ".")
         )
       }

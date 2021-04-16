@@ -191,7 +191,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 	# extract variables to display in the table + and labels 
 	tableVars <- tableParams$tableVars
 	if(is.null(tableVars))	tableVars <- colnames(dataCurrentI)
-	tableLab <- getLabelVar(var = tableVars, labelVars = labelVars, label = tableParams$tableLab)
+	tableLab <- clinUtils::getLabelVar(var = tableVars, labelVars = labelVars, label = tableParams$tableLab)
 	if(!is.null(patientProfilePath)){
 		tableVars <- c(tableVars, "patientProfileLink")
 		tableLab <- c(tableLab, setNames(tableLab["USUBJID"], "patientProfileLink"))
