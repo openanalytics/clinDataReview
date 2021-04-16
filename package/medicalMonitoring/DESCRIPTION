@@ -15,7 +15,7 @@ Imports:
   pander, rmarkdown, RColorBrewer, yaml,
   methods, jsonvalidate, jsonlite, stringr,
   rvest, magrittr, utils, xml2, tools, data.table,
-  crosstalk
+  crosstalk, bookdown
 License: file LICENSE
 Suggests: 
     testthat,
