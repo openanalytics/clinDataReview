@@ -105,12 +105,12 @@ plotCountMonitoring <- function(
 			if(is.null(colorRange))	colorRange <- range(data[, colorVar], na.rm = TRUE)
 			colorsX <- tapply(dataPlot[, colorVar], dataPlot[, varID], mean)
 			colorGroups <- cut(colorsX, breaks = c(-Inf, seq(from = colorRange[1], to = colorRange[2], length.out = 8), +Inf))
-			colorPalette <- getColorPalette(n = nlevels(colorGroups), default = colorPaletteOpt)
+			colorPalette <- getColorPalette(n = nlevels(colorGroups), palette = colorPaletteOpt)
 			names(colorPalette) <- levels(colorGroups)
 		}else{
 			colorGroups <- dataPlot[, colorVar][order(dataPlot[, varID])]
 			if(!is.factor(colorGroups))	colorGroups <- factor(colorGroups)	
-			colorPalette <- getColorPalette(x = colorGroups, default = colorPaletteOpt)
+			colorPalette <- getColorPalette(x = colorGroups, palette = colorPaletteOpt)
 		}
 		
 		colors <- unname(colorPalette[as.character(colorGroups)])
