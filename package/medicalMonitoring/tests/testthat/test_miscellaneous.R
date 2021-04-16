@@ -1,6 +1,45 @@
 context("Test miscellaneous functions")
 library(DT)
 
+test_that("createPatientProfileVar", {
+			
+	data <- data.frame(USUBJID = c("subj1", "subj2", "subj3"))		
+	
+	expect_error(
+		createPatientProfileVar(
+			data = data,
+			patientProfilePath = "unExistingFolder"
+		),
+		regex  = "*not found"
+	)
+	
+	patientProfilePath <- "patientProfiles"	
+	
+	expect_silent(
+		dataUpdated <- createPatientProfileVar(
+			data = data,
+			patientProfilePath = patientProfilePath, checkExist = FALSE
+		)
+	)
+	# Patient profile columns properly created
+	patientProfileVars <- c("patientProfileLink", "patientProfilePath")
+	expect_true(all(patientProfileVars %in% colnames(dataUpdated)))
+	expect_true(all(sapply(dataUpdated[, patientProfileVars], inherits, "character")))
+	
+	dir.create(patientProfilePath)
+	expect_warning(
+		createPatientProfileVar(
+			data = data,
+			patientProfilePath = patientProfilePath,
+			subjectVar = "usubjid"
+		),
+		regex = "patient profile variable is not created"
+	)
+	
+	unlink(patientProfilePath)
+	
+})
+
 test_that("Formatting of hover text", {
       
       x <- LETTERS
