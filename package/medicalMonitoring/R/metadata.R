@@ -79,7 +79,7 @@ getMetadata <- function(filePath) {
 #' @param ... Extra arguments to be passed.
 #' @return Nothing. The tables are ready to be printed in Rmd.
 #' @importFrom knitr knit_print
-#' @importFrom glpgUtilityFct toDTGLPG
+#' @importFrom clinUtils getClinDT
 #' @importFrom htmltools tagList knit_print.shiny.tag.list
 #' @export
 knit_print.medicalMonitoringMetadata <- function(
@@ -87,7 +87,7 @@ knit_print.medicalMonitoringMetadata <- function(
 ) {
   
   datasetInfoTable <- x$datasetInfo
-  datasetInfoDT <- toDTGLPG(datasetInfoTable)
+  datasetInfoDT <- getClinDT(datasetInfoTable)
   
   if(! is.null(options$dateReportRun)) {
     if (options$dateReportRun) {

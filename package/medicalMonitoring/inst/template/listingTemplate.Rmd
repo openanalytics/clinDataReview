@@ -240,7 +240,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 					data = dataCurrentI, 
 					vars = c("patientProfileLink" = match("USUBJID", colnames(dataCurrentI))+1)
 				)
-				# toDTGLPG params-specific for patient profile
+				# getClinDT params-specific for patient profile
 				argsExportDiff <- getArgsExportDiffPatientProfiles(
 					data = dataCurrentI, 
 					argsExportDiff = argsExportDiff
@@ -296,7 +296,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 					vars = c("patientProfileLink" = match("USUBJID", colnames(tableComparison))+1)
 				)
 				
-				# toDTGLPG params-specific for patient profile
+				# getClinDT params-specific for patient profile
 				argsExportDiff <- getArgsExportDiffPatientProfiles(
 					data = tableComparison, 
 					argsExportDiff = argsExportDiff

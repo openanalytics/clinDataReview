@@ -11,7 +11,7 @@
 #' @param tableLab Named character vector with labels
 #' for each \code{tableVars}.
 #' @param tablePars List with parameters passed to the
-#' \code{\link[glpgUtilityFct]{toDTGLPG}} function.
+#' \code{\link[clinUtils]{getClinDT}} function.
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' in the current console.
 #' @inheritParams formatDataForPlotMonitoring
@@ -19,7 +19,7 @@
 #' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @return \code{\link[DT]{datatable}}
 #' @author Laure Cougnaud
-#' @importFrom clinUtils toDTGLPG getLabelVar
+#' @importFrom clinUtils getClinDT getLabelVar
 #' @importFrom crosstalk SharedData
 #' @importFrom stats as.formula
 #' @export
@@ -150,8 +150,8 @@ tableMonitoring <- function(
 	)
 	
 	# create table
-	argsToDTGLPG <- c(list(data = dataTableSharedData), tablePars)
-	table <- do.call(toDTGLPG, argsToDTGLPG)
+	argsClinDT <- c(list(data = dataTableSharedData), tablePars)
+	table <- do.call(getClinDT, argsClinDT)
 	
 	if(tableButton){
 		
