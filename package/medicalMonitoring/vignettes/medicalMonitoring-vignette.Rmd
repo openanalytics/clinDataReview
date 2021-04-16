@@ -556,7 +556,7 @@ A barplot visualizes the counts for one single variable in a specific order.
 
 To include multiple medical monitoring visualizations (with or without attached table)
 in a loop (a.k.a in the same _Rmarkdown_ chunk), the list of visualizations
-should be passed to the `knitPrintListObjects` function of the `glpgUtilityFct`
+should be passed to the `knitPrintListObjects` function of the `clinUtils`
 package.
 
 ```{r lab-profile-loop, results = "asis"}
@@ -597,9 +597,9 @@ package.
 	})
 
 	# include this output in the report:
-	library(glpgUtilityFct)
+	library(clinUtils)
 	listLabels <- getLabelParamcd(paramcd = names(plotsLab), data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
-	knitPrintListObjects(
+	clinUtils::knitPrintListObjects(
 		xList = plotsLab, 
 		titles = listLabels, titleLevel = 4
 	)

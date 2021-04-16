@@ -99,7 +99,7 @@ knit_print.medicalMonitoring <- function(x, ...){
 #' If a element in the list are empty (NULL), these elements
 #' (and the associated sections) are not included in the report.
 #' @author Laure Cougnaud
-#' @importFrom glpgUtilityFct knitPrintListObjects
+#' @importFrom clinUtils knitPrintListObjects
 #' @importFrom stringr str_split fixed
 #' @family medical monitoring reporting
 #' @export
