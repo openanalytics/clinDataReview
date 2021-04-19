@@ -20,7 +20,6 @@ Imports:
   jsonvalidate,
   magrittr,
   methods,
-  pander,
   plotly, 
   plyr,
   rmarkdown,
@@ -32,11 +31,12 @@ Imports:
   xml2
 License: file LICENSE
 Suggests: 
-    testthat,
-    vdiffr,
+    countrycode,
     inTextSummaryTable (>= 2.19.0),
+    pander,
     patientProfilesVis (>= 0.12.0), 
     reshape2,
-    countrycode
+    testthat,
+    vdiffr
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
