@@ -64,8 +64,8 @@ This function returns two objects:
 * a vector containing the labels for each column of the data (used e.g. for
   default titles of the figures), stored in the `$labelVars` slot
 
-A few `sdtm` datasets from the _Pelican_ study are included in the
-`glpgUtilityFct` package for the demonstration, via the dataset
+A few `sdtm` datasets are included in the
+`clinUtils` package for the demonstration, via the dataset
 `SDTMDataPelican` and corresponding variable labels `labelVarsSDTMPelican`.
 
 ```{r loadData}	
