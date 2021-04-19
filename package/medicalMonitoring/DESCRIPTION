@@ -8,14 +8,28 @@ Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
 Description: Creation of semi-automated report for medical monitoring
   during a clinical trial.
 Imports: 
-  glpgUtilityFct (>= 3.0.0), 
-  ggplot2, plotly, 
-  htmlwidgets, plyr, htmltools,
-  knitr, 
-  pander, rmarkdown, yaml,
-  methods, jsonvalidate, jsonlite, stringr,
-  rvest, magrittr, utils, xml2, tools, data.table,
-  crosstalk, bookdown
+  bookdown,
+  clinUtils,
+  crosstalk,
+  data.table,
+  ggplot2,
+  htmltools,
+  htmlwidgets,
+  knitr,
+  jsonlite,
+  jsonvalidate,
+  magrittr,
+  methods,
+  pander,
+  plotly, 
+  plyr,
+  rmarkdown,
+  stringr,
+  rvest,
+  utils,
+  tools,
+  yaml,
+  xml2
 License: file LICENSE
 Suggests: 
     testthat,
