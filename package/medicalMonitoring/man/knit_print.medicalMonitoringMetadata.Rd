@@ -25,7 +25,7 @@ In general, any list could be called as long as it is composed by two elements:
 \item{\code{pathsInfo}}{ an R object.}
 \item{\code{datasetInfo}}{ a data.frame or a matrix.}
 }
-The first (\code{pathsInfo}) is printed as \code{\link{knitr::kable}} object 
+The first (\code{pathsInfo}) is printed as \code{\link[knitr]{kable}} object 
 and the second (\code{datasetInfo}) is printed as hide/show html button with 
 the function \code{\link{collapseHtmlContent}}.
 }
