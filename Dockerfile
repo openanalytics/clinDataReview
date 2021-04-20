@@ -192,14 +192,6 @@ RUN R -e "remotes::install_version('vdiffr', version = '0.3.3', upgrade = FALSE)
 # extra dependencies for reporting
 RUN R -e "remotes::install_version('bookdown', version = '0.21', upgrade = FALSE)"
  
-# glpgStyle
-COPY glpgStyle_*.tar.gz /tmp/glpgStyle.tar.gz
-RUN R -e "install.packages('/tmp/glpgStyle.tar.gz', repos = NULL, dependencies = FALSE)"
- 
-# glpgUtilityFct
-COPY glpgUtilityFct_*.tar.gz /tmp/glpgUtilityFct.tar.gz
-RUN R -e "install.packages('/tmp/glpgUtilityFct.tar.gz', repos = NULL, dependencies = FALSE)"
-
 # extra dependencies of patientProfilesVis
 RUN R -e "remotes::install_version('gridExtra', version = '2.3', upgrade = FALSE)"
 
@@ -228,3 +220,11 @@ RUN R -e "remotes::install_version('haven', version = '2.3.1', upgrade = FALSE)"
 # clinUtils
 COPY clinUtils_*.tar.gz /tmp/clinUtils.tar.gz
 RUN R -e "install.packages('/tmp/clinUtils.tar.gz', repos = NULL, dependencies = FALSE)"
+
+# glpgStyle
+COPY glpgStyle_*.tar.gz /tmp/glpgStyle.tar.gz
+RUN R -e "install.packages('/tmp/glpgStyle.tar.gz', repos = NULL, dependencies = FALSE)"
+ 
+# glpgUtilityFct
+COPY glpgUtilityFct_*.tar.gz /tmp/glpgUtilityFct.tar.gz
+RUN R -e "install.packages('/tmp/glpgUtilityFct.tar.gz', repos = NULL, dependencies = FALSE)"
