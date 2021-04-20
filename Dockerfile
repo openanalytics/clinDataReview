@@ -192,6 +192,10 @@ RUN R -e "remotes::install_version('vdiffr', version = '0.3.3', upgrade = FALSE)
 # extra dependencies for reporting
 RUN R -e "remotes::install_version('bookdown', version = '0.21', upgrade = FALSE)"
  
+# glpgStyle
+COPY glpgStyle_*.tar.gz /tmp/glpgStyle.tar.gz
+RUN R -e "install.packages('/tmp/glpgStyle.tar.gz', repos = NULL, dependencies = FALSE)"
+ 
 # glpgUtilityFct
 COPY glpgUtilityFct_*.tar.gz /tmp/glpgUtilityFct.tar.gz
 RUN R -e "install.packages('/tmp/glpgUtilityFct.tar.gz', repos = NULL, dependencies = FALSE)"
