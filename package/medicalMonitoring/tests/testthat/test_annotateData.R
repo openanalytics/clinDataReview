@@ -10,10 +10,10 @@ dataEX <- data.frame(
     #"EXSTDTC" = c(),
     "STDY" = c("0103", "0102", "0104", "0125", "0120"),
     "ASTDY" = c("0803", "0802", "0804", "0825", "0820"),
-    stringsAsFactor = FALSE
+    stringsAsFactors = FALSE
 )
-pathTestData <- tempdir()
-write_xpt(dataEX, file.path(pathTestData, "adex.xpt"))
+testPathData <- tempdir()
+write_xpt(dataEX, file.path(testPathData, "adex.xpt"))
 
 
 dataDM <- data.frame(
@@ -34,10 +34,6 @@ dataLB <- data.frame(
     "PARAMCD" = c("ALS", "ALT", "ALT", "BILI", "BILI"),
     stringsAsFactors = FALSE
 )
-
-##################
-## Path to data ##
-testPathData <- normalizePath(path = "../dataTesting")
 
 test_that("Correct extraction of custom annotation", {
       

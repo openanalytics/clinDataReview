@@ -2,9 +2,20 @@ context("Test template creation")
 
 library(yaml)
 library(rmarkdown)
+library(haven)
+library(tools)
 
 tmpdir <- tempdir()
-testPathData <- normalizePath(path = "../dataTesting")
+
+dataEX <- data.frame(
+    "USUBJID" = c(1, 1, 2, 3, 4),
+    "EXDOSE" = "100",
+    stringsAsFactors = FALSE
+)
+testPathData <-  file.path(tmpdir, "dataTesting")
+dir.create(testPathData)
+write_xpt(dataEX, file.path(testPathData, "adex.xpt"))
+
 
 test_that("Creation of division template", {
       
@@ -38,7 +49,7 @@ test_that("Creation of listing template", {
       
       templateName <- "listingTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
-          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+          sprintf("%sConfig.yml", file_path_sans_ext(templateName))
       )
       
       paramsYaml <- list(
@@ -75,7 +86,7 @@ test_that("Creation of counts visualization template", {
       
       templateName <- "countsVisualizationTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
-          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+          sprintf("%sConfig.yml", file_path_sans_ext(templateName))
       )
       
       paramsYaml <- list(
@@ -110,7 +121,7 @@ test_that("Creation of plot template", {
       
       templateName <- "plotTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
-          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+          sprintf("%sConfig.yml", file_path_sans_ext(templateName))
       )
       
       paramsYaml <- list(
@@ -146,7 +157,7 @@ test_that("Creation of summary plot template", {
       
       templateName <- "summaryPlotTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
-          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+          sprintf("%sConfig.yml", file_path_sans_ext(templateName))
       )
       
       paramsYaml <- list(
@@ -186,7 +197,7 @@ test_that("Creation of summary table template", {
       
       templateName <- "summaryTableTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
-          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+          sprintf("%sConfig.yml", file_path_sans_ext(templateName))
       )
       
       paramsYaml <- list(
@@ -225,7 +236,7 @@ test_that("Creation of patient profiles template", {
       
       templateName <- "patientProfilesTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
-          sprintf("%sConfig.yml", tools::file_path_sans_ext(templateName))
+          sprintf("%sConfig.yml", file_path_sans_ext(templateName))
       )
       
       paramsYaml <- list(

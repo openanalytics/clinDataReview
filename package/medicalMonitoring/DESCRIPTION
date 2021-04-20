@@ -38,6 +38,7 @@ Suggests:
     patientProfilesVis (>= 0.12.0), 
     reshape2,
     testthat,
+    tools,
     vdiffr
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
