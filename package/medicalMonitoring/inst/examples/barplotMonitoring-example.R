@@ -1,11 +1,10 @@
-library(glpgUtilityFct)
+library(clinUtils)
 
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
+data(dataADaMCDISCP01)
+labelVars <- attr(dataADaMCDISCP01, "labelVars")
 
-dataAE <- SDTMDataPelican$AE
-dataDM <- SDTMDataPelican$DM
-labelVars <- labelVarsSDTMPelican
+dataAE <- dataADaMCDISCP01$ADAE
+dataDM <- dataADaMCDISCP01$ADSL
 
 ## example of basic barplot:
 
@@ -13,7 +12,7 @@ labelVars <- labelVarsSDTMPelican
 library(inTextSummaryTable)
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
-dataTotal <- subset(dataDM, RFXSTDTC != "")
+dataTotal <- subset(dataDM, RFSTDTC != "")
 
 # compute adverse event table
 tableAE <- computeSummaryStatisticsTable(
