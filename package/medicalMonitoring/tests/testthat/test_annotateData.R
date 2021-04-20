@@ -1,11 +1,39 @@
 context("Data annotation")
 
-library(glpgUtilityFct)
+##########################################################
+## Create data sets for testing 'annotateData' function ##
+##########################################################
+library(haven)
 
-data(SDTMDataPelican)
+dataEX <- data.frame(
+    "USUBJID" = 1 : 5,
+    #"EXSTDTC" = c(),
+    "STDY" = c("0103", "0102", "0104", "0125", "0120"),
+    "ASTDY" = c("0803", "0802", "0804", "0825", "0820"),
+    stringsAsFactor = FALSE
+)
+pathTestData <- tempdir()
+write_xpt(dataEX, file.path(pathTestData, "adex.xpt"))
 
-dataLB <- SDTMDataPelican$LB
-dataDM <- SDTMDataPelican$DM
+
+dataDM <- data.frame(
+    "USUBJID" = 1 : 5,
+    "SAFFL" = "Y",
+    "SEX" = c("F", "F", "M", "M", "M"),
+    "AGE" = c(54, 78, 34, 51, 67),
+    "YEAR" = c(1967, 1943, 1987, 1970, 1954),
+    stringsAsFactors = FALSE
+)
+
+dataLB <- data.frame(
+    "USUBJID" = 1 : 5,
+    "SAFFL" = "Y",
+    "AVAL" = rnorm(5),
+    "AVAL2" = rnorm(5),
+    "VISIT" = c("Day 1", "Day 1", "Day 2", "Day 2", "Day 1"),
+    "PARAMCD" = c("ALS", "ALT", "ALT", "BILI", "BILI"),
+    stringsAsFactors = FALSE
+)
 
 ##################
 ## Path to data ##
@@ -25,10 +53,12 @@ test_that("Correct extraction of custom annotation", {
 
 test_that("Correct computation of new variable based on combination of multiple variables", {
       
-      dataLB <- annotateData(dataLB, annotations = list(vars = "ULN_ratio", varFct = "LBSTRESN / LBSTNRHI"))
+      dataLB <- annotateData(
+          dataLB, annotations = list(vars = "RATIO", varFct = "AVAL / AVAL2")
+      )
       expect_equivalent(
-          object = dataLB$`ULN_ratio`,
-          expected = with(dataLB, LBSTRESN / LBSTNRHI)
+          object = dataLB$RATIO,
+          expected = with(dataLB, AVAL / AVAL2)
       )
       
     })
@@ -52,16 +82,17 @@ test_that("Annotation based on varFct'", {
           annotateData(
               dataDM,
               annotations = list(
-                  varFct = 'sprintf("%s %s", AGE, AGEU)',
+                  varFct = 'sprintf("%s %s", AGE, YEAR)',
                   varLabel = "Age and year"
               )
-          )
+          ),
+          "'vars' should be specified"
       )
       dataAnnot <- annotateData(
           dataDM,
           annotations = list(
-              vars = "AGESTRING",
-              varFct = 'sprintf("%s %s", AGE, AGEU)',
+              vars = "AGEYEAR",
+              varFct = 'sprintf("%s %s", AGE, YEAR)',
               varLabel = "Age and year"
           )
       )
@@ -69,8 +100,8 @@ test_that("Annotation based on varFct'", {
           annotateData(
               dataDM,
               annotations = list(
-                  vars = "AGESTRING",
-                  varFct = 'sprintf("%s %s", AGE, AGEU)',
+                  vars = "AGEYEAR",
+                  varFct = 'sprintf("%s %s", AGE, YEAR)',
                   varLabel = "Age and year"
               ),
               verbose = TRUE
@@ -80,8 +111,8 @@ test_that("Annotation based on varFct'", {
       dataAnnotBis <- annotateData(
           dataDM,
           annotations = list(
-              vars = "AGESTRING",
-              varFct = 'function(data) with(data, sprintf("%s %s", data$AGE, data$AGEU))',
+              vars = "AGEYEAR",
+              varFct = 'function(data) with(data, sprintf("%s %s", data$AGE, data$YEAR))',
               varLabel = "Age and year"
           )
       )
@@ -90,8 +121,8 @@ test_that("Annotation based on varFct'", {
       dataAnnotTris <- annotateData(
           dataDM,
           annotations = list(
-              vars = "AGESTRING",
-              varFct = function(data) with(data, sprintf("%s %s", data$AGE, data$AGEU)),
+              vars = "AGEYEAR",
+              varFct = function(data) with(data, sprintf("%s %s", data$AGE, data$YEAR)),
               varLabel = "Age and year"
           )
       )
@@ -103,17 +134,19 @@ test_that("Annotation based on varFct'", {
 test_that("Annotation based on demographics", {
       
       expect_error(
-          annotateData(dataLB, annotations = "demographic")
+          annotateData(dataLB, annotations = "demographic"),
+          "Data is not annotated, because 'annotations' should be one of"
       )
       
       expect_warning(
-          annotateData(dataLB, annotations = "demographics")
+          annotateData(dataLB, annotations = "demographics"),
+          "Data is not annotated with demographics data because no such data"
       )
       
-      varsDM <- c("AGE", "SEX", "RACE", "COUNTRY", "SITEID")
+      varsDM <- c("AGE", "SEX", "SITEID")
       dataLB_annot <- annotateData(
           dataLB,
-          dataPath = system.file("extdata", package = "glpgUtilityFct"),
+          dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
           annotations = "demographics"
       )
       expect_is(dataLB_annot, "data.frame")
@@ -122,7 +155,7 @@ test_that("Annotation based on demographics", {
       expect_message(
           annotateData(
               dataLB,
-              dataPath = system.file("extdata", package = "glpgUtilityFct"),
+              dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
               annotations = "demographics",
               verbose = TRUE
           )
@@ -133,9 +166,10 @@ test_that("Annotation based on demographics", {
 test_that("Annotation based on functional_groups_lab", {
       
       dataLB_warning <- dataLB
-      dataLB_warning$PARAMCD <- dataLB_warning$LBTESTCD <- NULL
+      dataLB_warning$PARAMCD <- NULL
       expect_warning(
-          annotateData(dataLB_warning, annotations = "functional_groups_lab")
+          annotateData(dataLB_warning, annotations = "functional_groups_lab"),
+          "Data is not annotated with functional groups, because no variable"
       )
       dataNoAnnot <- annotateData(dataLB_warning, annotations = "functional_groups_lab")
       expect_identical(dataNoAnnot, dataLB_warning)
@@ -152,9 +186,7 @@ test_that("Annotation based on functional_groups_lab", {
       expect_is(dataLB_annot$LBFCTGRP, "factor")
       expect_identical(
           levels(dataLB_annot$LBFCTGRP),
-          c("Renal function", "Electrolytes",
-              "Liver function", "Lipids",
-              "Haematology", "Other")
+          c("Liver function", "Other")
       )
       expect_message(
           annotateData(
@@ -171,22 +203,23 @@ test_that("Annotation with 'dataset' custom annotation", {
       expect_warning(
           annotateData(
               dataLB,
-              dataPath = system.file("extdata", package = "glpgUtilityFct"),
-              annotations = list(dataset = "adsl")
-          )
+              dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
+              annotations = list(dataset = "dm")
+          ),
+          "Data is not annotated with variable"
       )
       dataAnnot <- annotateData(
           dataLB,
-          dataPath = system.file("extdata", package = "glpgUtilityFct"),
-          annotations = list(dataset = "adsl")
+          dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
+          annotations = list(dataset = "dm")
       )
       expect_is(dataAnnot, "data.frame")
       
       dataAnnotVars <- annotateData(
           dataLB,
-          dataPath = system.file("extdata", package = "glpgUtilityFct"),
+          dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
           annotations = list(
-              dataset = "adsl",
+              dataset = "dm",
               vars = "AGE"
           )
       )
@@ -199,9 +232,9 @@ test_that("Annotation with 'dataset' custom annotation", {
       # Variable already present should not be added
       dataAnnotVars <- annotateData(
           dataLB,
-          dataPath = system.file("extdata", package = "glpgUtilityFct"),
+          dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
           annotations = list(
-              dataset = "adsl",
+              dataset = "dm",
               vars = "USUBJID"
           )
       )
@@ -234,13 +267,13 @@ test_that("Nested annotations", {
               ),
               list(
                   vars = "AGESTRING",
-                  varFct = 'sprintf("%s %s", AGE, AGEU)',
+                  varFct = 'sprintf("%s %s", AGE, YEAR)',
                   varLabel = "Age and year"
               )
           )
       )
       expect_is(dataAnnot, "data.frame")
-      extraVar <- with(dataDM, sprintf("%s %s", AGE, AGEU))
+      extraVar <- with(dataDM, sprintf("%s %s", AGE, YEAR))
       expect_identical(dataAnnot$AGESTRING, extraVar)
       
     })
