@@ -226,3 +226,14 @@ RUN R -e "remotes::install_version('ggrepel', version = '0.9.1', upgrade = FALSE
 COPY inTextSummaryTable_*.tar.gz /tmp/inTextSummaryTable.tar.gz
 RUN R -e "install.packages('/tmp/inTextSummaryTable.tar.gz', repos = NULL, dependencies = FALSE)"
 
+# extra dependencies of clinUtils
+RUN R -e "remotes::install_version('haven', version = '2.3.1', upgrade = FALSE)" && \
+    R -e "remotes::install_version('png', version = '0.1-7', upgrade = FALSE)" && \
+    R -e "remotes::install_version('htmlwidgets', version = '1.5.3', upgrade = FALSE)" && \
+    R -e "remotes::install_version('plotly', version = '4.9.3', upgrade = FALSE)" && \
+    R -e "remotes::install_version('DT', version = '0.17', upgrade = FALSE)" && \
+    R -e "remotes::install_version('crosstalk', version = '1.1.1', upgrade = FALSE)"
+
+# clinUtils
+COPY clinUtils_*.tar.gz /tmp/clinUtils.tar.gz
+RUN R -e "install.packages('/tmp/clinUtils.tar.gz', repos = NULL, dependencies = FALSE)"
