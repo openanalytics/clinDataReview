@@ -98,17 +98,15 @@ parameter \code{annotType}. Custom dataset/variables of interest
 are specified via the \code{annotDataset}/\code{annotVar} parameters.
 }
 \examples{
-library(glpgUtilityFct)
+library(clinUtils)
 
-data(SDTMDataPelican)
+data(dataADaMCDISCP01)
 
-dataLB <- SDTMDataPelican$LB
-dataDM <- SDTMDataPelican$DM
-dataEX <- SDTMDataPelican$EX
-dataAE <- SDTMDataPelican$AE
+dataLB <- dataADaMCDISCP01$ADLBC
+dataDM <- dataADaMCDISCP01$ADSL
+dataAE <- dataADaMCDISCP01$ADAE
 
-data(labelVarsSDTMPelican)
-labelVars <- labelVarsSDTMPelican
+labelVars <- attr(dataADaMCDISCP01, "labelVars")
 
 # standard annotations:
 # path to dataset should be specified via: 'pathData'
@@ -120,21 +118,21 @@ annotateData(dataLB, annotations = "demographics", pathData = ...)
 head(annotateData(dataLB, annotations = list(data = dataDM)), 1)
 
 # only variables of interest
-head(annotateData(dataLB, annotations = list(data = dataDM, vars = c("ARMCD", "COUNTRY"))), 1)
+head(annotateData(dataLB, annotations = list(data = dataDM, vars = c("ARM", "ETHNIC"))), 1)
 
 # filter annotation dataset
 dataAnnotated <- annotateData(dataLB, 
 	annotations = list(
 		data = dataDM, 
-		vars = c("ARMCD", "COUNTRY", "SEX"), 
-		filters = list(var = "SEX", value = "F")
+		vars = c("ARM", "ETHNIC"), 
+		filters = list(var = "ARM", value = "Placebo")
 	)
 )
-head(subset(dataAnnotated, SEX == "F"), 1)
-head(subset(dataAnnotated, is.na(SEX)), 1)
+head(subset(dataAnnotated, ARM == "Placebo"), 1)
+head(subset(dataAnnotated, is.na(ARM)), 1)
 
 # worst-case scenario: add a new variable based on filtering condition
-dataAE$AESEV <- factor(dataAE$AESEV, levels = c('MILD', "MODERATE"))
+dataAE$AESEV <- factor(dataAE$AESEV, levels = c('MILD', "MODERATE", "SEVERE"))
 dataAEWC <- annotateData(
 	data = dataAE,
 	annotations = list(
@@ -160,23 +158,21 @@ attr(dataAEWC, "labelVars")["WORSTINT"]
 
 # add a new variable based on a combination of variables:
 dataLB <- annotateData(dataLB, 
-	annotations = list(vars = "ULN_ratio", varFct = "LBSTRESN / LBSTNRHI")
+	annotations = list(vars = "HILORATIO", varFct = "A1HI / A1LO")
 )
 
 # add a new variable based on extraction of a existing variable
 # Note: slash should be doubled when the function is specified as text
 dataLB <- annotateData(dataLB, 
-	annotations = list(vars = "PERIOD", varFct = "sub('Day .* - (.+)', '\\\\\\\\1', VISIT)")
+	annotations = list(vars = "PERIOD", varFct = "sub('.* Week (.+)', 'Week \\\\\\\\1', AVISIT)")
 )
-print(unique(dataLB[, c("VISIT", "PERIOD")]))
 
 # multiple annotations:
 dataAnnotated <- annotateData(dataLB, 
 	annotations = list(
-		list(data = dataDM, vars = c("ARMCD", "COUNTRY", "SEX")),
-		list(data = dataEX)
+		list(data = dataDM, vars = c("ARM", "ETHNIC")),
+		list(data = dataAE, vars = c("AESEV"))
 	)
 )
 head(dataAnnotated, 1)
-head(subset(dataAnnotated, !is.na(EXSEQ)), 1)
 }
