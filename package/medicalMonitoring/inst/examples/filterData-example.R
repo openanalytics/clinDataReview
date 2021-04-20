@@ -1,8 +1,9 @@
-library(glpgUtilityFct)
+library(clinUtils)
 
-data(SDTMDataPelican)
+data(dataADaMCDISCP01)
+labelVars <- attr(dataADaMCDISCP01, "labelVars")
 
-dataDM <- SDTMDataPelican$DM
+dataDM <- dataADaMCDISCP01$ADSL
 
 ## single filter
 
@@ -23,23 +24,23 @@ filterData(
 # filter based on inequality operator
 filterData(
 	data = dataDM, 
-	filters = list(var = "AGE", value = 20, op = "<="), 
+	filters = list(var = "AGE", value = 75, op = "<="), 
 	verbose = TRUE
 )
 
 # missing values are retained by default!
 dataDMNA <- dataDM
-dataDMNA[1:2, "AGE"] <- NA
+dataDMNA[1 : 2, "AGE"] <- NA
 filterData(
 	data = dataDMNA, 
-	filters = list(var = "AGE", value = 20, op = "<="), 
+	filters = list(var = "AGE", value = 75, op = "<="), 
 	verbose = TRUE
 )
 
 # filter missing values on variable
 filterData(
 	data = dataDMNA, 
-	filters = list(var = "AGE", value = 20, op = "<=", keepNA = FALSE), 
+	filters = list(var = "AGE", value = 75, op = "<=", keepNA = FALSE), 
 	verbose = TRUE
 )
 
@@ -64,7 +65,7 @@ filterData(
 filterData(
 	data = dataDM, 
 	filters = list(
-		list(var = "AGE", value = 20, op = "<="),
+		list(var = "AGE", value = 75, op = "<="),
 		list(var = "SEX", value = "M")
 	), 
 	verbose = TRUE
@@ -74,7 +75,7 @@ filterData(
 filterData(
 	data = dataDM, 
 	filters = list(
-		list(var = "AGE", value = 20, op = "<="),
+		list(var = "AGE", value = 75, op = "<="),
 		"|",
 		list(var = "SEX", value = "M")
 	), 
