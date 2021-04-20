@@ -1,11 +1,10 @@
-library(glpgUtilityFct)
+library(clinUtils)
 
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
+data(dataADaMCDISCP01)
+labelVars <- attr(dataADaMCDISCP01, "labelVars")
 
-dataAE <- SDTMDataPelican$AE
-dataDM <- SDTMDataPelican$DM
-labelVars <- labelVarsSDTMPelican
+dataDM <- dataADaMCDISCP01$ADSL
+dataAE <- dataADaMCDISCP01$ADAE
 
 library(plyr)
 
@@ -15,7 +14,7 @@ library(plyr)
 library(inTextSummaryTable)
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
-dataTotal <- subset(dataDM, RFXSTDTC != "")
+dataTotal <- subset(dataDM, RFSTDTC != "")
 
 # compute adverse event table
 tableAE <- getSummaryStatisticsTable(
@@ -41,13 +40,14 @@ dataPlot$n <- as.numeric(dataPlot$n)
 treemapMonitoring(
 	data = dataPlot,
 	vars = c("AESOC", "AEDECOD"),
-	valueVar = "n", valueLab = "Number of patients with adverse events"
+	valueVar = "n",
+    valueLab = "Number of patients with adverse events"
 )
 
 ## treemap with coloring
 
 # extract worst-case scenario
-dataAE$AESEVN <- as.numeric(factor(dataAE$AESEV, levels = c("MILD", "MODERATE")))
+dataAE$AESEVN <- as.numeric(factor(dataAE$AESEV, levels = c("MILD", "MODERATE", "SEVERE")))
 if(any(is.na(dataAE$AESEVN)))
 	stop("Severity should be filled for all subjects.")
 

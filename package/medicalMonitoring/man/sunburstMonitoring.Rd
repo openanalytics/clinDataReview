@@ -90,14 +90,13 @@ a \code{medicalMonitoring} object, a.k.a a list with the
 Note: the table and plot are not (yet) linked.
 }
 \examples{
-library(glpgUtilityFct)
+library(clinUtils)
 
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
+data(dataADaMCDISCP01)
+labelVars <- attr(dataADaMCDISCP01, "labelVars")
 
-dataAE <- SDTMDataPelican$AE
-dataDM <- SDTMDataPelican$DM
-labelVars <- labelVarsSDTMPelican
+dataAE <- dataADaMCDISCP01$ADAE
+dataDM <- dataADaMCDISCP01$ADSL
 
 ## example of basic sunburst:
 
@@ -105,7 +104,7 @@ labelVars <- labelVarsSDTMPelican
 library(inTextSummaryTable)
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
-dataTotal <- subset(dataDM, RFXSTDTC != "")
+dataTotal <- subset(dataDM, RFSTDTC != "")
 
 # compute adverse event table
 tableAE <- getSummaryStatisticsTable(
@@ -131,15 +130,16 @@ dataSunburst$n <- as.numeric(dataSunburst$n)
 sunburstMonitoring(
 	data = dataSunburst,
 	vars = c("AESOC", "AEDECOD"),
-	valueVar = "n", valueLab = "Number of patients with adverse events"
+	valueVar = "n",
+    valueLab = "Number of patients with adverse events"
 )
 
 ## example where sum(counts) of child = counts of parent
 
-# counts of patients per country/site
+# counts of patients per arm/site
 tableDM <- getSummaryStatisticsTable(
 	data = dataDM,
-	rowVar = c("COUNTRY", "SITEID"),
+	rowVar = c("ARM", "SITEID"),
 	labelVars = labelVars,
 	# plotly treemap requires records (rows) for each group
 	rowVarTotalInclude = "SITEID",
@@ -151,7 +151,7 @@ tableDM$statN <- as.numeric(tableDM$statN)
 # create the plot
 sunburstMonitoring(
 	data = tableDM,
-	vars = c("COUNTRY", "SITEID"),
+	vars = c("ARM", "SITEID"),
 	valueVar = "statN", valueLab = "Counts of patients",
 	valueType = "total"
 )
