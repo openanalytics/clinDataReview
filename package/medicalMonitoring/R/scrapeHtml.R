@@ -10,7 +10,6 @@
 #' @param fileNameExport String with name of the file to be saved.
 #' By default the name is the same of the html file.
 #' @return The data. The output is also saved in a directory.
-#' @example inst/examples/scrapeHtml-example.R
 #' @author Michela Pasetto
 #' @importFrom tools file_path_sans_ext
 #' @export 

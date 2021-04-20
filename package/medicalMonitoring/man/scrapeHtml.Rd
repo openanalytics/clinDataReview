@@ -26,20 +26,6 @@ The data. The output is also saved in a directory.
 \description{
 Scrape html file(s), retrieve the data and saves the output.
 }
-\examples{
-
-#' \dontrun{
-## Demographics
-#demographicsHtml <- "~/Documents/Projects/Galapagos/medicalMonitoring/demoReleases/20200703/MOMP/3-3-demographics.html"
-#
-### Listings
-#aeListingHtml <- "~/Documents/Projects/Galapagos/medicalMonitoring/demoReleases/20200703/MOMP/5-6-adverse-events-listing.html"
-#
-#tableHtml <- scrapeHtml(pathHtml = aeListingHtml)
-
-#' }
-
-}
 \author{
 Michela Pasetto
 }
