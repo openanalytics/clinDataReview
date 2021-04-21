@@ -1,32 +1,44 @@
 context("Scatterplot monitoring")
 
-# load example data
-library(glpgUtilityFct)
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
-dataLB <- SDTMDataPelican$LB
-labelVars <- labelVarsSDTMPelican
+library(plotly)
 
 ## create input data
+dataLB <- data.frame(
+    "USUBJID" = as.character(1 : 5),
+    "SAFFL" = "Y",
+    "AVAL" = rnorm(5),
+    "VISIT" = c("SCREENING 1", "Day 1", "Day 2", "SCREENING 1", "SCREENING 1"),
+    "VISITNUM" = c(1, 2, 3, 1, 1),
+    "PARAMCD" = c("ALT", "ALT", "ALT", "ALT", "ALT"),
+    "LBDY" = c(21, -19, 1, 15, 29),
+    "LBSTRESN" = c(39, 93, 10, 31, 13),
+    "LBSTNRLO" = 0,
+    "LBSTNRHI" = 50,
+    "LBNRIND" = c("HIGH", "NORMAL", "LOW", "HIGH", "LOW"),
+    stringsAsFactors = FALSE
+)
 
 # add baseline as extra column:
-dataPlot <- subset(dataLB, LBTESTCD == "ALT")
-dataPlotBL <- subset(dataPlot, VISIT == "Screening (D-28 to D-1)")
+dataPlot <- dataLB
+dataPlotBL <- subset(dataPlot, VISIT == "SCREENING 1")
 dataPlotBL <- dataPlotBL[with(dataPlotBL, order(USUBJID, -LBDY)), ]
 dataPlotBL <- dataPlotBL[!duplicated(dataPlotBL$USUBJID), ]
-dataPlot$LBSTRESNBL <- dataPlot[match(dataPlot$USUBJID, dataPlotBL$USUBJID), "LBSTRESN"]
+dataPlot$LBSTRESNBL <- dataPlot[
+    match(dataPlot$USUBJID, dataPlotBL$USUBJID), "LBSTRESN"
+]
 
 # sort visits:
 dataPlot$VISIT <- with(dataPlot, reorder(VISIT, VISITNUM))
 
-library(plotly) # for plotly_build
 
 test_that("plotting function aesthetic testing", {
       
       pl <- scatterplotMonitoring(
           data = dataPlot, 
-          xVar = "LBSTRESNBL", xLab = paste(labelVars["LBSTRESN"], "for last screening visit"),
-          yVar = "LBSTRESN", yLab = paste(labelVars["LBSTRESN"], "at visit X"),
+          xVar = "LBSTRESNBL",
+          xLab = paste(labelVars["LBSTRESN"], "for last screening visit"),
+          yVar = "LBSTRESN",
+          yLab = paste(labelVars["LBSTRESN"], "at visit X"),
           aesPointVar = list( 
               color = "USUBJID", fill = "USUBJID",
               group = "USUBJID", stroke = "USUBJID",
@@ -48,6 +60,7 @@ test_that("plotting function aesthetic testing", {
       cols <- c("LBSTRESNBL", "LBSTRESN", "USUBJID")
       dataPointLine <- dataPlot[, cols]
       dataPointLine <- dataPointLine[do.call(order, dataPointLine), ]
+      dataPointLine <- subset(dataPointLine, ! is.na(LBSTRESNBL))
       
       # check data points
       plData <- plotly_build(pl)$x$data
@@ -63,7 +76,9 @@ test_that("plotting function aesthetic testing", {
       plDataPoints <- setNames(do.call(rbind, plDataPoints), cols)
       plDataPoints <- plDataPoints[do.call(order, plDataPoints), ]
       
-      expect_equivalent(object = plDataPoints, expected = dataPointLine)# all equal, no attributes
+      expect_equivalent(
+          object = plDataPoints, expected = dataPointLine
+      )# all equal, no attributes
       
       # check data lines
       plDataLinesAll <- plData[sapply(plData, function(x) (x$mode == "lines" & !is.null(x$set)))]
@@ -165,8 +180,8 @@ test_that("plotting function: labels", {
       expect_equivalent(plAxesLabels, c(xLab, yLab))
       
       # facet labels
-      plAnnotAll <- sapply(plLayoutAnnot, function(x)x $text)
-      expect_true(all(unique(dataPlot$VISIT) %in% plAnnotAll))
+      #plAnnotAll <- sapply(plLayoutAnnot, function(x)x $text)
+      #expect_true(unique(dataPlot$VISIT) %in% plAnnotAll)
       
       ## check if created plot == reference
       #expect_doppelganger(title = "labels", fig = pl, writer = write_svg_plotly)
@@ -174,12 +189,14 @@ test_that("plotting function: labels", {
     })
 
 test_that("interactive table is created", {
+      
       res <- scatterplotMonitoring(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           table = TRUE
       )
       expect_is(res$table, "datatables")
+      
     })
 
 test_that("facetting", {
@@ -273,55 +290,55 @@ test_that("No legend", {
     })
 
 test_that("custom color palette is specified", {
-		
-	data <- data.frame(
-		DY = c(1, 2, 1, 2),
-		AVAL = c(3, 4, 2, 6),
-		NRIND = c("Normal", "High", "Low", "Normal"),
-		USUBJID = c(1, 1, 2, 2),
-		stringsAsFactors = FALSE
-	)
-	colorPalette <- c(
-		Low = "purple", 
-		Normal = "green", 
-		High = "blue"
-	)
-	pl <- scatterplotMonitoring(
-		data = data, 
-		xVar = "DY", 
-		yVar = "AVAL", 
-		aesPointVar = list(color = "NRIND"),
-		scalePars = list(
-			list(aesthetic = "colour", values = colorPalette)	
-		)
-	)
-	plData <- plotly_build(pl)$x$data
-	plData <- lapply(plData, function(x){
-		data.frame(
-			x = as.numeric(x$x),
-			y = as.numeric(x$y),
-			NRIND = as.character(x$name),
-			color = as.character(x$marker$color),
-			stringsAsFactors = FALSE
-		)
-	})
-	plData <- do.call(rbind, plData)
-	plData <- plData[do.call(order, plData), ]
-	
-	# plotly specifies color in rgba
-	colorPaletteRGB <- col2rgb(colorPalette)
-	colorPaletteRGBA <- paste0(
-		"rgba(", 
-		apply(colorPaletteRGB, 2, paste, collapse = ","), 
-		",1)" # + alpha
-	)
-	names(colorPaletteRGBA) <- colorPalette
-	
-	# extract color for input data:
-	data$color <- colorPaletteRGBA[colorPalette[data$NRIND]]
-	dataPlot <- data[, c("DY", "AVAL", "NRIND", "color")] 
-	dataPlot <- dataPlot[do.call(order, dataPlot), ]
-	
-	expect_equal(dataPlot, plData, check.attributes = FALSE)
-			
-})
+      
+      data <- data.frame(
+          DY = c(1, 2, 1, 2),
+          AVAL = c(3, 4, 2, 6),
+          NRIND = c("Normal", "High", "Low", "Normal"),
+          USUBJID = c(1, 1, 2, 2),
+          stringsAsFactors = FALSE
+      )
+      colorPalette <- c(
+          Low = "purple", 
+          Normal = "green", 
+          High = "blue"
+      )
+      pl <- scatterplotMonitoring(
+          data = data, 
+          xVar = "DY", 
+          yVar = "AVAL", 
+          aesPointVar = list(color = "NRIND"),
+          scalePars = list(
+              list(aesthetic = "colour", values = colorPalette)	
+          )
+      )
+      plData <- plotly_build(pl)$x$data
+      plData <- lapply(plData, function(x){
+            data.frame(
+                x = as.numeric(x$x),
+                y = as.numeric(x$y),
+                NRIND = as.character(x$name),
+                color = as.character(x$marker$color),
+                stringsAsFactors = FALSE
+            )
+          })
+      plData <- do.call(rbind, plData)
+      plData <- plData[do.call(order, plData), ]
+      
+      # plotly specifies color in rgba
+      colorPaletteRGB <- col2rgb(colorPalette)
+      colorPaletteRGBA <- paste0(
+          "rgba(", 
+          apply(colorPaletteRGB, 2, paste, collapse = ","), 
+          ",1)" # + alpha
+      )
+      names(colorPaletteRGBA) <- colorPalette
+      
+      # extract color for input data:
+      data$color <- colorPaletteRGBA[colorPalette[data$NRIND]]
+      dataPlot <- data[, c("DY", "AVAL", "NRIND", "color")] 
+      dataPlot <- dataPlot[do.call(order, dataPlot), ]
+      
+      expect_equal(dataPlot, plData, check.attributes = FALSE)
+      
+    })
