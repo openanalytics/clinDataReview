@@ -1,18 +1,19 @@
 context("Sunburst monitoring")
 
-# load example data
-library(glpgUtilityFct)
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
-dataDM <- SDTMDataPelican$DM
-dataAE <- SDTMDataPelican$AE
-labelVars <- labelVarsSDTMPelican
-
-# sunburst takes as input table with counts
+library(clinUtils)
 library(inTextSummaryTable)
 
+# load example data
+data(dataADaMCDISCP01)
+labelVars <- attr(dataADaMCDISCP01, "labelVars")
+
+dataAE <- dataADaMCDISCP01$ADAE
+dataDM <- dataADaMCDISCP01$ADSL
+
+# sunburst takes as input table with counts
+
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
-dataTotal <- subset(dataDM, RFXSTDTC != "")
+dataTotal <- subset(dataDM, RFSTDTC != "")
 
 ## patient profiles report
 
@@ -78,6 +79,7 @@ test_that("plotting function runs properly", {
 		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events"
 	)
+    expect_is(pl, "plotly")
 	
 	## check if created plot == reference
 	#expect_doppelganger(title = "basic", fig = pl, writer = write_svg_plotly)
@@ -113,7 +115,7 @@ test_that("plotting function - total", {
 	# successful example of the 'total'
 	tableDM <- getSummaryStatisticsTable(
 		data = dataDM,
-		rowVar = c("COUNTRY", "SITEID"),
+		rowVar = c("ARM", "SITEID"),
 		labelVars = labelVars,
 		# plotly treemap requires records (rows) for each group
 		rowVarTotalInclude = "SITEID",
@@ -126,7 +128,7 @@ test_that("plotting function - total", {
 	expect_silent({
 		sunburstMonitoring(
 			data = tableDM,
-			vars = c("COUNTRY", "SITEID"), valueVar = "statN", 
+			vars = c("ARM", "SITEID"), valueVar = "statN", 
 			valueType = "total"
 		)
 	})

@@ -2,12 +2,6 @@ context("Test the 'timeProfileIntervalPlot' function")
 
 library(plotly)
 
-#library(glpgUtilityFct)
-#data(SDTMDataPelican)
-#data(labelVarsSDTMPelican)
-#dataAE <- SDTMDataPelican$AE
-#labelVars <- labelVarsSDTMPelican
-
 subjectIDs <- as.character(rep(c(1, 2, 3), each = 3))
 startDay <- c(NA, NA, 11, 44, 12, 7, 48, 54, 11)
 endDay <- c(NA, NA, 12, NA, 26, 9, 50, NA, 13)
