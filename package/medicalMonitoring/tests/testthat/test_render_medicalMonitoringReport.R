@@ -1,3 +1,5 @@
+context("Test the 'render_medicalMonitoringReport'")
+
 library(yaml)
 
 tmpdir <- tempdir()

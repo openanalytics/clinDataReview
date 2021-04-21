@@ -83,10 +83,21 @@ test_that("Get JS dependencies", {
       expect_length(dependencies, 5)
       matrixRes <- sapply(dependencies, expect_length, 10)
       
-      dependencyOne <- getJsDepMedicalMonitoring("FileSaver")
+      dependencyOne <- getJsDepMedicalMonitoring("collapsibleButton")
       expect_is(dependencyOne, "list")
       expect_length(dependencyOne[[1]], 10)
       expect_is(dependencyOne[[1]], "html_dependency")
+      
+      dependencyOne <- getJsDepMedicalMonitoring("patientProfiles")
+      expect_is(dependencyOne, "list")
+      expect_length(dependencyOne[[1]], 10)
+      expect_length(dependencyOne[[2]], 10)
+      expect_length(dependencyOne[[3]], 10)
+      expect_length(dependencyOne[[4]], 10)
+      expect_is(dependencyOne[[1]], "html_dependency")
+      expect_is(dependencyOne[[2]], "html_dependency")
+      expect_is(dependencyOne[[3]], "html_dependency")
+      expect_is(dependencyOne[[4]], "html_dependency")
       
     })
 
@@ -99,7 +110,7 @@ test_that("Collapse Html content", {
       names <- sapply(button, function(x) x$name)
       names(names) <- NULL
       expect_identical(
-          names,
+          unlist(names),
           c("input", "div", "br", "br")
       )
       

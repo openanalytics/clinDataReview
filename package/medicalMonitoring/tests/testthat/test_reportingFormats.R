@@ -18,7 +18,7 @@ test_that("Format html report", {
       res <- html_medicalMonitoring_report()
       expect_is(res, "rmarkdown_output_format")
       expect_identical(
-          res$bookdown_output_format,
+          res$pandoc$to,
           "html"
       )
       
