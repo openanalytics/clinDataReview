@@ -205,7 +205,8 @@ COPY clinUtils_*.tar.gz /tmp/clinUtils.tar.gz
 RUN R -e "install.packages('/tmp/clinUtils.tar.gz', repos = NULL, dependencies = FALSE)"
 
 # extra dependencies of patientProfilesVis
-RUN R -e "remotes::install_version('gridExtra', version = '2.3', upgrade = FALSE)"
+RUN R -e "remotes::install_version('gridExtra', version = '2.3', upgrade = FALSE)" && \
+    R -e "remotes::install_version('cowplot', version = '1.1.1', upgrade = FALSE)"
 
 # patientProfilesVis
 COPY patientProfilesVis_*.tar.gz /tmp/patientProfilesVis.tar.gz
