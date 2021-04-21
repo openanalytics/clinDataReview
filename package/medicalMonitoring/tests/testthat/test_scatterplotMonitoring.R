@@ -7,7 +7,7 @@ dataLB <- data.frame(
     "USUBJID" = as.character(1 : 5),
     "SAFFL" = "Y",
     "AVAL" = rnorm(5),
-    "VISIT" = c("SCREENING 1", "Day 1", "Day 2", "SCREENING 1", "SCREENING 1"),
+    "VISIT" = c("SCREENING 1", "SCREENING 1", "SCREENING 1", "SCREENING 1", "SCREENING 1"),
     "VISITNUM" = c(1, 2, 3, 1, 1),
     "PARAMCD" = c("ALT", "ALT", "ALT", "ALT", "ALT"),
     "LBDY" = c(21, -19, 1, 15, 29),
@@ -16,6 +16,19 @@ dataLB <- data.frame(
     "LBSTNRHI" = 50,
     "LBNRIND" = c("HIGH", "NORMAL", "LOW", "HIGH", "LOW"),
     stringsAsFactors = FALSE
+)
+labelVars <- c(
+    "USUBJID" = "Unique Subject Identifier",
+    "SAFFL" = "Safety Analysis Set",
+    "AVAL" = "Actual values",
+    "VISIT" = "Visit",
+    "VISITNUM" = "Visit numeric",
+    "PARAMCD" = "Parameter code",
+    "LBDY" = "",
+    "LBSTRESN" = "",
+    "LBSTNRLO" = "Lower bound",
+    "LBSTNRHI" = "Upper bound",
+    "LBNRIND" = "Category"
 )
 
 # add baseline as extra column:
@@ -177,7 +190,7 @@ test_that("plotting function: labels", {
       # axes labels
       plAxes <- plLayoutAnnot[sapply(plLayoutAnnot, function(x) "annotationType" %in% names(x) &&x$annotationType == "axis")]
       plAxesLabels <- sapply(plAxes, function(x) x$text)
-      expect_equivalent(plAxesLabels, c(xLab, yLab))
+      expect_equivalent(plAxesLabels, xLab)
       
       # facet labels
       #plAnnotAll <- sapply(plLayoutAnnot, function(x)x $text)

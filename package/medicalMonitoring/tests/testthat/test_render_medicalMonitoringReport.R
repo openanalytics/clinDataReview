@@ -356,9 +356,9 @@ test_that("Test render medical monitoring report for all config files", {
       if(file.exists(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))) {
         file.remove(list.files(pattern = "[.]md", testPathBase, full.names = TRUE))
       }
-      if(file.exists(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))) {
-        file.remove(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))
-      }
+#      if(file.exists(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))) {
+#        file.remove(list.files(pattern = "[.]css", testPathBase, full.names = TRUE))
+#      }
       if(file.exists(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))) {
         file.remove(list.files(pattern = "sessionInfo.md", testPathInterim, full.names = TRUE))
       }
