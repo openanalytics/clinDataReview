@@ -47,7 +47,7 @@ editor_options:
 
 ```{r loadPackages}
 
-	library(glpgUtilityFct)
+	library(clinUtils)
 	library(inTextSummaryTable)
 
 ```
