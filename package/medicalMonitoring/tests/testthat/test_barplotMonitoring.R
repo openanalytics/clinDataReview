@@ -1,19 +1,20 @@
 context("Barplot monitoring")
 
-# load example data
-library(glpgUtilityFct)
 library(clinUtils)
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
-dataDM <- SDTMDataPelican$DM
-dataAE <- SDTMDataPelican$AE
-labelVars <- labelVarsSDTMPelican
+library(inTextSummaryTable)
+library(plotly)
+
+# load example data
+data(dataADaMCDISCP01)
+labelVars <- attr(dataADaMCDISCP01, "labelVars")
+
+dataAE <- dataADaMCDISCP01$ADAE
+dataDM <- dataADaMCDISCP01$ADSL
 
 # sunburst takes as input table with counts
-library(inTextSummaryTable)
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
-dataTotal <- subset(dataDM, RFXSTDTC != "")
+dataTotal <- subset(dataDM, RFSTDTC != "")
 
 ## patient profiles report
 
