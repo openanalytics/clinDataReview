@@ -1,60 +1,73 @@
 context("Filter data")
 
-# load example data
-library(glpgUtilityFct)
-data(SDTMDataPelican)
-dataDM <- SDTMDataPelican$DM
+dataDM <- data.frame(
+    "USUBJID" = 1 : 5,
+    "SAFFL" = "Y",
+    "SEX" = c("F", "F", "M", "M", "M"),
+    "AGE" = c(54, 78, 34, 51, 67),
+    "YEAR" = c(1967, 1943, 1987, 1970, 1954),
+    "ARMCD" = c("SCRNFAIL", "PLACEBO", "TRT", "TRT", "SCRNFAIL"),
+    stringsAsFactors = FALSE
+)
 
 test_that("simple condition with inclusion criteria", {
       
-      dataFilt <- filterData(dataDM, filters = list(var = "SEX", value = "M"), verbose = TRUE)
+      dataFilt <- filterData(
+          dataDM, filters = list(var = "SEX", value = "M"), verbose = TRUE
+      )
       expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, SEX == "M"))
       
     })
 
 test_that("simple condition with non inclusion criteria", {
       
-      dataFilt <- filterData(dataDM, filters = list(var = "SEX", value = "M", rev = TRUE), verbose = TRUE)
+      dataFilt <- filterData(
+          dataDM, filters = list(var = "SEX", value = "M", rev = TRUE), verbose = TRUE
+      )
       expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, SEX != "M"))
       
     })
 
 test_that("simple condition with specified operator", {
       
-      dataFilt <- filterData(dataDM,  list(var = "AGE", value = 20, op = "<="), verbose = TRUE)
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, AGE <= 20))
+      dataFilt <- filterData(
+          dataDM,  list(var = "AGE", value = 50, op = "<="), verbose = TRUE
+      )
+      expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, AGE <= 50))
       
     })
 
 test_that("missing values are included by default", {
       
       dataDMNA <- dataDM
-      dataDMNA[1:2, "AGE"] <- NA
-      dataFilt <- filterData(dataDMNA, list(var = "AGE", value = 20, op = "<="), verbose = TRUE)
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDMNA, AGE <= 20 | is.na(AGE)))
+      dataDMNA[1 : 2, "AGE"] <- NA
+      dataFilt <- filterData(
+          dataDMNA, list(var = "AGE", value = 50, op = "<="), verbose = TRUE
+      )
+      expect_equal(structure(dataFilt, msg = NULL), subset(dataDMNA, AGE <= 50 | is.na(AGE)))
       
     })
 
 test_that("missing values are retained (keepNA)", {
       
       dataDMNA <- dataDM
-      dataDMNA[1:2, "AGE"] <- NA
-      dataFilt <- filterData(dataDMNA, list(var = "AGE", value = 20, op = "<=", keepNA = FALSE), verbose = TRUE)
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDMNA, AGE <= 20))
+      dataDMNA[1 : 2, "AGE"] <- NA
+      dataFilt <- filterData(dataDMNA, list(var = "AGE", value = 50, op = "<=", keepNA = FALSE), verbose = TRUE)
+      expect_equal(structure(dataFilt, msg = NULL), subset(dataDMNA, AGE <= 50))
       
     })
 
 test_that("multiple condition with specification operator and without", {
       
       filters <- list(
-          list(var = "AGE", value = 20, op = "<="),
+          list(var = "AGE", value = 50, op = "<="),
           "|",
           list(var = "SEX", value = "M"),
           list(var = "ARMCD", value = "SCRNFAIL")
       )
       dataFilt <- filterData(data = dataDM, filters = filters, verbose = TRUE)
       
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, (AGE <= 20 | SEX == "M") & ARMCD == "SCRNFAIL"))
+      expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, (AGE <= 50 | SEX == "M") & ARMCD == "SCRNFAIL"))
       
     })
 
