@@ -35,6 +35,11 @@ heightLineIn  <- 0.2
 
 ```
 
+This vignette focuses on the visualization functionalities of the
+`medicalMonitoring` package.
+
+We will use example data sets from the `clinUtils` package.
+
 ```{r loadLibraries}
 
 library(medicalMonitoring)
@@ -65,7 +70,17 @@ created with the `patientProfilesVis` package.
 Such patient profiles can be created via a config file, with a dedicated
 template report available in the `medicalMonitoring` package.
 
-Plase, continue the documentation below to know how to set up a config file.
+The documentation on how to set up a config file is available in the vignette
+about reporting.
+
+You can directly go skip to this vignette with 
+
+
+```{r reportingVignette, eval = FALSE}
+
+vignette("medicalMonitoring-reportingVignette", "medicalMonitoring")
+
+```
 
 # Data visualization
 
@@ -582,5 +597,13 @@ new R session, or by setting:
 # change palettes for the entire R session
 options(medicalMonitoring.colors = colorsDefault)
 options(medicalMonitoring.shapes = shapesDefault)
+
+```
+
+# Appendix
+
+```{r sessionInfo, echo = FALSE}
+
+pander(sessionInfo())
 
 ```
