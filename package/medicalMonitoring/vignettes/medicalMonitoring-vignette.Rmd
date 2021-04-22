@@ -717,42 +717,62 @@ and not evaluated in the vignette itself.
 
 ### Input
 
-The input for the medical monitoring report consists of:
+The input for the medical monitoring report consists of a set of _Rmardown_
+files and a `config` directory. Below more specifications.
 
-* A set of _Rmarkdown_ files in the current directory
-    + _index.Rmd_ file, containing the front page of the document.  
+**Rmd files**
+
+A set of _Rmarkdown_ files in the working directory should be
+
+* _index.Rmd_ file, containing the front page of the document.  
 This file should be formatted as a _Rmarkdown_ report with _YAML_ header,
 with `output` set to: `medicalMonitoring::gitbook_medicalMonitoring_report`
-    + multiple Rmd files, one for each chapter (or template for multiple chapters)
-* a `config` directory containing:
-    + a general configuration file: _config.yml_ with:
-        + `pathDataFolder`: path to a directory containing input data in _sas7bdat_
-        or _xpt_ format
-        + `patientProfilesPath`(optional) : path to a directory containing the patient profiles
-        + `study` (optional): study name
-        + `version` (optional): data version, e.g. batch
-    + a configuration file for each chapter, as: _config-[chapterName].yml_ containing:
-        + `template`: filename of the _Rmd_ file to consider for this chapter
-        + `reportTitle`: chapter title, used for section header
-        + `dataFileName`: filename of the dataset of interest for this chapter, e.g.: 'adae.sas7bdat'
-        + `reportTitleLevel`: integer with section level, e.g. 2
-        + (optional) template-specific parameters, accessed in the template
+
+* multiple Rmd files, one for each chapter (or template for multiple
+  chapters)
+
+**Config files**
+
+There should be a `config` directory containing:
+
+* a general configuration file: _config.yml_ with:
+    
+    + `pathDataFolder`: path to a directory containing input data in
+  _sas7bdat_       or _xpt_ format
+    + `patientProfilesPath`(optional) : path to a directory containing the patient profiles
+    + `study` (optional): study name
+    + `version` (optional): data version, e.g. batch
+    
+* a configuration file for each chapter, as: _config-[chapterName].yml_ containing:
+    + `template`: filename of the _Rmd_ file to consider for this chapter
+    + `reportTitle`: chapter title, used for section header
+    + `dataFileName`: filename of the dataset of interest for this chapter, e.g.: 'adae.sas7bdat'
+    + `reportTitleLevel`: integer with section level, e.g. 2
+    + (optional) template-specific parameters, accessed in the template
         via `params$`
         
 #### Output
 
-The medical monitoring report output consists of:
+The medical monitoring report output consists of a final output and a set of
+intermidiary results.
 
-* a final output folder ('report' by default) containing the:
-    + final medical monitoring report, in a set of
+**Final output**
+
+A final output folder ('report' by default) containing the:
+
+* final medical monitoring report, in a set of
 multiple HTML files
-    + required _Javascript_ libraries in the subfolder: _'libs'_
-    + any extra directories created during report execution, by
+* required _Javascript_ libraries in the subfolder: _'libs'_
+* any extra directories created during report execution, by
     default: 'tables' and 'figures' (`extraDirs` parameter)
-    + (optionally) directory with patient profiles
-* a folder of intermediary results ('interim' by default)
-    + _Markdown_ file for each report part (one per config file)
-    + associated _rds_ file containing specification of the
+* (optionally) directory with patient profiles
+
+**Intermidiary results**
+
+A folder of intermediary results ('interim' by default)
+
+* _Markdown_ file for each report part (one per config file)
+*  associated _rds_ file containing specification of the
     _Javascript_ libraries required for each report part (`knit_meta`)
     
 ## Template reports
@@ -777,7 +797,6 @@ reportTitle: "Title for a chapter"
 reportTitleLevel: 1
 ```
 
-
 ## Render a medical monitoring report
 
 ### Production mode
@@ -786,7 +805,9 @@ The function **`render_medicalMonitoringReport` renders a medical monitoring rep
 for production**.
 
 ```{r render_medicalMonitoringReport, eval = FALSE}
+
 medicalMonitoring::render_medicalMonitoringReport()
+
 ```
 
 ### Development mode
@@ -837,11 +858,11 @@ if(params$templatePackage == "medicalMonitoring"){
   file.copy(from = pathTemplate, to = ".")
 }
 
-# run a current chapter (without medical monitoring Js libraries and GLPG style)
+# run a current chapter (without medical monitoring Js libraries)
 # Note that Js library to have the functionality to download patient profiles is not imported
 rmarkdown::render(input = params$template)
 
-# preview a specific chapter (with medical monitoring Js libraries and GLPG style)
+# preview a specific chapter (with medical monitoring Js libraries)
 bookdown::render_book(input = params$template, preview = TRUE)
 # include the index file:
 bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)
