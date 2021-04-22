@@ -1,6 +1,6 @@
 ---
 title: "Introduction to the `medicalMonitoring` package"
-author: "Laure Cougnaud"
+author: "Laure Cougnaud and Michela Pasetto"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 params:
   createPatientProfiles: false
@@ -40,6 +40,9 @@ heightLineIn  <- 0.2
 The package `medicalMonitoring` contains visualizations/reporting
 functionalities for medical monitoring.
 
+This vignette is introductory, and will refer to the dedicated vignettes for
+specific subtopics.
+
 ```{r loadPackages, message = FALSE}
 
 library(medicalMonitoring)
@@ -48,7 +51,7 @@ library(plotly)
 
 ```
 
-## Data format
+# Data format
 
 The input dataset for the workflow should be a `data.frame`, 
 usually loaded from a _SAS_ data file (`sas7bdat` format).
@@ -83,94 +86,14 @@ dataAE <- dataADaMCDISCP01$ADAE
 
 # Data pre-processing
 
-Utility functions to automate standard pre-processing steps of the data
-are available in the package.
+A vignette for the pre-processing of data in `medicalMonitoring is available
+[here](../doc/medicalMonitoring-dataPreprocessingVignette.html).
 
-Note that these functions are mainly useful in combination
-with the specification of the parameters in 'config' file
-in the medical monitoring reports (see section \@ref(renderReport)).
+Alternatively, the vignette can be reached with 
 
-## Annotate data
+```{r dataPreProcesVignette, eval = FALSE}
 
-The `annotateData` enables to add metadata for a specific domain/dataset.
-
-```{r annotateData, message = TRUE, warning = TRUE}
-
-dataLBAnnot <- annotateData(
-    data = dataLB, 
-    annotations = list(data = dataDM, vars = c("ETHNIC", "ARM")), 
-    verbose = TRUE
-)
-pander(
-    head(dataLBAnnot), 
-    caption = paste("Laboratory parameters annotated with",
-        "demographics information with the `annotatedData` function"
-    )
-)
-```
-
-## Filter data
-
-The `filterData` enables to filter a dataset.
-
-```{r filterData, message = TRUE, warning = TRUE}
-
-dataLBAnnotTreatment <- filterData(
-    data = dataLBAnnot, 
-    filters = list(var = "ARM", value = "Placebo", rev = TRUE), 
-    verbose = TRUE
-)
-pander(
-    unique(dataLBAnnotTreatment[, c("USUBJID", "ARM")]), 
-    caption = paste("Subset of laboratory parameters filtered",
-        "with placebo patients"
-    )
-)
-```
-
-## Transform data
-
-The `transformData` enables to convert data to a different format.
-
-For example, the laboratory data is converted from a long format, containing
-one record per endpoint * visit * subject to a wide format containing
-one record per visit * subject. The endpoints are included in different
-columns.
-
-```{r transformData, message = TRUE, warning = TRUE}
-
-eDishData <- transformData(
-    data = subset(dataLB, PARAMCD %in% c("ALT", "BILI")),
-    transformations = list(
-        type = "pivot_wider",
-        varsID = c("USUBJID", "VISIT"), 
-        varsValue = c("LBSTRESN", "LBNRIND"),
-        varPivot = "PARAMCD"
-    ),
-    verbose = TRUE,
-    labelVars = labelVars
-)
-pander(head(eDishData))
-
-```
-
-## Process data
-
-The `processData` function executes all the pre-processing steps described in the previous section
-at once.
-
-```{r processData}
-
-dataLBAnnotTreatment2 <- processData(
-    data = dataLB,
-    processing = list(
-        list(annotate = list(data = dataDM, vars = c("ETHNIC", "ARM"))),
-        list(filter = list(var = "ARM", value = "Placebo", rev = TRUE))
-    ),
-    verbose = TRUE
-)
-
-identical(dataLBAnnotTreatment, dataLBAnnotTreatment2)
+vignette("medicalMonitoring-dataPreprocessingVignette", package = "medicalMonitoring")
 
 ```
 
@@ -192,7 +115,7 @@ vignette("medicalMonitoring-dataVisualizationVignette", package = "medicalMonito
 # Medical monitoring report
 
 A vignette for reporting with the `medicalMonitoring is available
-[here](`r vignette("medicalMonitoring-reportingVignette", package = "medicalMonitoring")`).
+[here](../doc/medicalMonitoring-reportingVignette.html).
 
 Alternatively, the vignette can be reached with 
 
@@ -202,8 +125,7 @@ vignette("medicalMonitoring-reportingVignette", package = "medicalMonitoring")
 
 ```
 
-
-# Advanced user: tester/developer
+# Advanced users: tester/developer
 
 To run the different tests in the package (e.g. with `R CMD check`),
 the [orca](https://github.com/plotly/orca) tool is required.
@@ -212,7 +134,7 @@ https://github.com/plotly/orca#installation
 
 # Appendix
 
-## Session information
+## Session info
 
 ```{r includeSessionInfo, echo = FALSE}
 

@@ -602,8 +602,11 @@ options(medicalMonitoring.shapes = shapesDefault)
 
 # Appendix
 
+## Session info
+
 ```{r sessionInfo, echo = FALSE}
 
 pander(sessionInfo())
 
 ```
+

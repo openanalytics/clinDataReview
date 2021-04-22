@@ -217,8 +217,11 @@ bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)
 
 # Appendix
 
+## Session info
+
 ```{r sessionInfo, echo = FALSE}
 
 pander(sessionInfo())
 
 ```
+
