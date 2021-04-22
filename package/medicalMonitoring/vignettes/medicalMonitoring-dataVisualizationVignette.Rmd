@@ -19,7 +19,6 @@ vignette: >
 ```{r options, echo = FALSE, message = FALSE}
 
 library(knitr)
-library(plotly)
 opts_chunk$set(
     echo = TRUE, 
     results = 'asis', 
@@ -33,6 +32,14 @@ options(width = 170)#, stringsAsFactors = FALSE
 options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
 
 heightLineIn  <- 0.2
+
+```
+
+```{r loadLibraries}
+
+library(medicalMonitoring)
+library(pander)
+library(plotly)
 
 ```
 

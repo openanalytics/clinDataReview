@@ -21,7 +21,6 @@ vignette: >
 ```{r options, echo = FALSE, message = FALSE}
 
 library(knitr)
-library(plotly)
 opts_chunk$set(
     echo = TRUE, 
     results = 'asis', 
@@ -45,6 +44,7 @@ functionalities for medical monitoring.
 
 library(medicalMonitoring)
 library(pander)
+library(plotly)
 
 ```
 
