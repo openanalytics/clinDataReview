@@ -176,7 +176,7 @@ identical(dataLBAnnotTreatment, dataLBAnnotTreatment2)
 
 # Visualizations
 
-[vignette]((medicalMonitoring-dataVisualizationVignette.html))
+[vignette](`r vignette("medicalMonitoring-vignette", "medicalMonitoring")`)
 
 ## Patient profiles
 
