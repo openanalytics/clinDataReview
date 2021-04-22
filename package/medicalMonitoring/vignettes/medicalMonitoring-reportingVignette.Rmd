@@ -16,6 +16,25 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
+```{r options, echo = FALSE, message = FALSE}
+
+library(knitr)
+library(pander)
+opts_chunk$set(
+    echo = TRUE, 
+    results = 'asis', 
+    warning = FALSE, 
+    error = FALSE, message = FALSE, cache = FALSE,
+    fig.width = 8, fig.height = 7,
+    fig.path = "./figures_vignette/",
+    #out.width = '0.7\\textwidth', 
+    fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
+options(width = 170)#, stringsAsFactors = FALSE
+options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
+
+heightLineIn  <- 0.2
+
+```
 
 Utility functions are provided to run a standard medical monitoring report.
 Please note that the examples in this section are only informative, and not

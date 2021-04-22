@@ -196,7 +196,7 @@ A vignette for reporting with the `medicalMonitoring is available
 
 Alternatively, the vignette can be reached with 
 
-```{r dataVisVignette, eval = FALSE}
+```{r reportingVignette, eval = FALSE}
 
 vignette("medicalMonitoring-reportingVignette", "medicalMonitoring")
 
