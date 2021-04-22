@@ -126,7 +126,7 @@ colleagues within the team.
 
 Once a report has been rendered, the user can call
 
-```{r render_medicalMonitoringReport, eval = FALSE}
+```{r zipmedicalMonitoring, eval = FALSE}
 
 medicalMonitoring::zipMedicalMonitoring()
 
