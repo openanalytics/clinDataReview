@@ -176,6 +176,8 @@ identical(dataLBAnnotTreatment, dataLBAnnotTreatment2)
 
 # Visualizations
 
+[vignette]((medicalMonitoring-dataVisualizationVignette.html))
+
 ## Patient profiles
 
 The interactive visualizations of the medical monitoring package include
