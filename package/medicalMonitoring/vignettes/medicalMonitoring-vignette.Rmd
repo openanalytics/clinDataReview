@@ -178,7 +178,7 @@ identical(dataLBAnnotTreatment, dataLBAnnotTreatment2)
 
 A vignette for the visualizations of `medicalMonitoring is
 available
-[here](`r vignette("medicalMonitoring-dataVisualizationVignette", package = "medicalMonitoring")`).
+[here](../doc/help.html/medicalMonitoring-dataVisualizationVignette.html).
 
 Alternatively, the vignette can be reached with 
 
