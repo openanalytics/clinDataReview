@@ -71,13 +71,9 @@ A few `sdtm` datasets are included in the
 ```{r loadData}	
 
 library(clinUtils)
-#library(glpgUtilityFct)
 
 data(dataADaMCDISCP01)
 labelVars <- attr(dataADaMCDISCP01, "labelVars")
-
-data(SDTMDataPelican)
-data(labelVarsSDTMPelican)
 
 dataLB <- dataADaMCDISCP01$ADLBC
 dataDM <- dataADaMCDISCP01$ADSL
@@ -190,6 +186,8 @@ Such patient profiles can be created via a config file,
 with a dedicated template report available in the `medicalMonitoring`
 package.
 
+Plase, continue the documentation below to know how to set up a config file.
+
 ## Data visualization
 
 ### Visualization of individual profiles
@@ -208,9 +206,9 @@ patient profile is opened in a new window in the browser.
 ```{r timeProfiles}
 
 labParam <- "ALT"
-dataPlot <- subset(dataLB, LBTESTCD == labParam)
+dataPlot <- subset(dataLB, PARAMCD == labParam)
 dataPlot <- annotateData(dataPlot, annotations = list(data = dataDM))
-visitLab <- with(dataPlot, tapply(LBDY, VISIT, median))
+visitLab <- with(dataPlot, tapply(ADY, VISIT, median))
 names(visitLab) <- sub("-", "\n", names(visitLab))
 
 # link to patient profiles
@@ -221,15 +219,17 @@ dataPlot$patientProfilePath <- paste0(
 
 scatterplotMonitoring(
     data = dataPlot, 
-    xVar = "LBDY", yVar = "LBSTRESN",
-    aesPointVar = list(color = "ACTARM"),
-    aesLineVar = list(group = "USUBJID", color = "ACTARM"),
-    hoverVars = c("USUBJID", "VISIT", "LBDY", "LBSTRESN", "COUNTRY", "ACTARM"),
+    xVar = "ADY",
+    yVar = "LBSTRESN",
+    aesPointVar = list(color = "ARM"),
+    aesLineVar = list(group = "USUBJID", color = "ARM"),
+    hoverVars = c("USUBJID", "VISIT", "ADY", "LBSTRESN", "ARM"),
     labelVars = labelVars,
     xPars = list(breaks = visitLab, labels = names(visitLab)),
-#	themePars = list(legend.position = "none"),
     title = paste("Actual value of", 
-        getLabelParamcd(paramcd = labParam, data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+        getLabelParamcd(
+            paramcd = labParam, data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
+        )
     ),
     # include link to patient profiles:
     pathVar = "patientProfilePath",
@@ -244,12 +244,12 @@ scatterplotMonitoring(
 ```{r scatterplot}
 
 # format data long -> wide format (one column per lab param)
-dataPlot <- subset(dataLB, LBTESTCD %in% c("ALT", "ALB"))
+dataPlot <- subset(dataLB, PARAMCD %in% c("ALT", "ALB"))
 dataPlot <- annotateData(dataPlot, annotations = list(data = dataDM))
 library(reshape2)
 dataPlotWide <- dcast(
     data = dataPlot,
-    formula = USUBJID + VISIT + VISITNUM ~ LBTESTCD, 
+    formula = USUBJID + VISIT + VISITNUM ~ PARAMCD, 
     value.var = "LBSTRESN",
     fun.aggregate = mean
 )
@@ -264,10 +264,13 @@ dataPlotWide$patientProfilePath <- paste0(
 scatterplotMonitoring(
     data = dataPlotWide, 
     xVar = "ALT", yVar = "ALB",
-    xLab = getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
-    yLab = getLabelParamcd(paramcd = "ALB", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
+    xLab = getLabelParamcd(
+        paramcd = "ALT", data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
+    ),
+    yLab = getLabelParamcd(
+        paramcd = "ALB", data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
+    ),
     aesPointVar = list(color = "USUBJID"),
-#	themePars = list(legend.position = "none"),
     facetPars = list(facets = ~ VISIT),
     labelVars = labelVars,
     pathVar = "patientProfilePath",
@@ -282,8 +285,8 @@ scatterplotMonitoring(
 ```{r eDishPlot}
 
 dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
-dataALT <- subset(dataLB, LBTESTCD == "ALT")
-dataBILI <- subset(dataLB, LBTESTCD == "BILI")
+dataALT <- subset(dataLB, PARAMCD == "ALT")
+dataBILI <- subset(dataLB, PARAMCD == "BILI")
 byVar <- c("USUBJID", "VISIT")
 dataPlot <- merge(
     x = dataALT, y = dataBILI[, c(byVar, "LBSTRESN")], 
@@ -294,7 +297,9 @@ dataPlot <- merge(
 labelVars[paste0("LBSTRESN.", c("ALT", "BILI"))] <-
     paste(
         "Actual value of", 
-        getLabelParamcd(paramcd = c("ALT", "BILI"), data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+        getLabelParamcd(
+            paramcd = c("ALT", "BILI"), data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
+        )
     )
 
 # link to patient profiles
@@ -307,9 +312,13 @@ dataPlot$patientProfilePath <- paste0(
 scatterplotMonitoring(
     data = dataPlot, 
     xVar = "LBSTRESN.ALT", yVar = "LBSTRESN.BILI",
-    xLab = getLabelParamcd(paramcd = "ALT", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
-    yLab = getLabelParamcd(paramcd = "BILI", data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST"),
-    aesPointVar = list(color = "VISIT", shape = "ACTARM"),
+    xLab = getLabelParamcd(
+        paramcd = "ALT", data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
+    ),
+    yLab = getLabelParamcd(
+        paramcd = "BILI", data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
+    ),
+    aesPointVar = list(color = "VISIT", shape = "ARM"),
     xTrans = "log10", yTrans = "log10",
     hoverVars = c("USUBJID"),
     themePars = list(legend.position = "bottom"),
@@ -336,13 +345,13 @@ timeProfileIntervalPlot(
     data = dataAE,
     paramVar = "USUBJID",
     # time-variables
-    timeStartVar = "AESTDY",
-    timeEndVar = "AEENDY",
+    timeStartVar = "ASTDY",
+    timeEndVar = "ASTDY",
     colorVar = "AESEV",
-    hoverVars = c("USUBJID", "AEDECOD", "AESTDY", "AEENDY", "AESEV"),
+    hoverVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV"),
     labelVars = labelVars,
     table = TRUE, pathVar = "patientProfilePath",
-    tableVars = c("USUBJID", "AEDECOD", "AESTDY", "AEENDY", "AESEV"),
+    tableVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV"),
     verbose = TRUE
 )
 
@@ -355,8 +364,8 @@ can be used to represent such cases:
 ```{r timeProfileIntervalPlot-shapeVariables}
 
 # create variable to indicate status of start/end date
-dataAE$AESTFLG <- ifelse(is.na(dataAE$AESTDY), "Missing start", "Complete")
-dataAE$AEENFLG <- ifelse(is.na(dataAE$AEENDY), "Missing end", "Complete")
+dataAE$AESTFLG <- ifelse(is.na(dataAE$ASTDY), "Missing start", "Complete")
+dataAE$AEENFLG <- ifelse(is.na(dataAE$AENDY), "Missing end", "Complete")
 shapePalette <- c(
     `Missing start` = "triangle-left", 
     `Complete` = "square-open", 
@@ -365,9 +374,9 @@ shapePalette <- c(
 
 # 'simple'-imputation:
 # if start is missing, 'Missing' symbol displayed at end interval
-dataAE$AESTDYIMP <- with(dataAE, ifelse(is.na(AESTDY), AEENDY, AESTDY))
+dataAE$AESTDYIMP <- with(dataAE, ifelse(is.na(ASTDY), AENDY, ASTDY))
 # if end is missing, 'Missing' symbol displayed at start interval
-dataAE$AEENDYIMP <- with(dataAE, ifelse(is.na(AEENDY), AESTDY, AEENDY))
+dataAE$AEENDYIMP <- with(dataAE, ifelse(is.na(AENDY), ASTDY, AENDY))
 
 timeProfileIntervalPlot(
     data = dataAE,
@@ -376,13 +385,15 @@ timeProfileIntervalPlot(
     timeStartVar = "AESTDYIMP", timeStartLab = "Start day",
     timeEndVar = "AEENDYIMP", timeEndLab = "End day",
     # shape variables
-    timeStartShapeVar = "AESTFLG", timeStartShapeLab = "Status of start date",
-    timeEndShapeVar = "AEENFLG", timeEndShapeLab = "Status of end date",
+    timeStartShapeVar = "AESTFLG",
+    timeStartShapeLab = "Status of start date",
+    timeEndShapeVar = "AEENFLG",
+    timeEndShapeLab = "Status of end date",
     shapePalette = shapePalette,
-    hoverVars = c("USUBJID", "AEDECOD", "AESEV", "AESTDY", "AESTFLG", "AEENDY", "AEENFLG"),
+    hoverVars = c("USUBJID", "AEDECOD", "AESEV", "ASTDY", "AESTFLG", "AENDY", "AEENFLG"),
     labelVars = labelVars,
     table = TRUE, 
-    tableVars = c("USUBJID", "AEDECOD", "AESEV", "AESTDY", "AESTFLG", "AEENDY", "AEENFLG"),
+    tableVars = c("USUBJID", "AEDECOD", "AESEV", "ASTDY", "AESTFLG", "AENDY", "AEENFLG"),
     pathVar = "patientProfilePath"
 )
 
@@ -415,7 +426,7 @@ for each subgroup are extracted and combined.
 library(inTextSummaryTable)
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
-dataTotal <- subset(dataDM, RFXSTDTC != "")
+dataTotal <- subset(dataDM, RFSTDTC != "")
 
 ## patient profiles report
 
@@ -501,7 +512,8 @@ sunburstMonitoring(
     data = dataSunburst,
     vars = c("AESOC", "AEDECOD"),
     valueVar = "n", valueLab = "Number of patients with adverse events",
-    pathVar = "patientProfileLink", pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
+    pathVar = "patientProfileLink",
+    pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = TRUE,
     verbose = TRUE,
     labelVars = labelVars
@@ -526,7 +538,8 @@ treemapMonitoring(
     data = dataTreemap,
     vars = c("AESOC", "AEDECOD"),
     valueVar = "n", valueLab = "Number of patients with adverse events",
-    pathVar = "patientProfileLink", pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
+    pathVar = "patientProfileLink",
+    pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = TRUE,
     verbose = TRUE,
     labelVars = labelVars
@@ -548,9 +561,11 @@ dataPlot$n <- as.numeric(dataPlot$n)
 barplotMonitoring(
     data = dataPlot,
     xVar = "AESOC", colorVar = "AEDECOD",
-    yVar = "n", yLab = "Number of patients with adverse events",
+    yVar = "n",
+    yLab = "Number of patients with adverse events",
     labelVars = labelVars,
-    pathVar = "patientProfileLink", pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
+    pathVar = "patientProfileLink",
+    pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = TRUE,
     verbose = TRUE,
     barmode = "stack"
@@ -561,14 +576,14 @@ barplotMonitoring(
 ### Multiple visualizations in a loop
 
 To include multiple medical monitoring visualizations (with or without attached table)
-in a loop (a.k.a in the same _Rmarkdown_ chunk), the list of visualizations
+in a loop (in the same _Rmarkdown_ chunk), the list of visualizations
 should be passed to the `knitPrintListObjects` function of the `clinUtils`
 package.
 
 ```{r lab-profile-loop, results = "asis"}
 
 # consider only restricted set of lab parameters
-dataPlot <- subset(dataLB, LBCAT == "SPECIAL CHEMISTRY")
+dataPlot <- subset(dataLB, PARAMCD %in% c("SODIUM", "K"))
 
 # link to patient profiles
 dataPlot$patientProfilePath <- paste0(
@@ -578,18 +593,21 @@ dataPlot$patientProfilePath <- paste0(
 
 # 1) create plot+table for each laboratory parameter:
 library(plyr) # for ddply
-plotsLab <- dlply(dataPlot, "LBTESTCD", function(dataLBParam){
+plotsLab <- dlply(dataPlot, "PARAMCD", function(dataLBParam){
       
-      paramcd <- unique(dataLBParam$LBTESTCD)
+      paramcd <- unique(dataLBParam$PARAMCD)
       
       scatterplotMonitoring(
           data = dataLBParam, 
-          xVar = "LBDY", yVar = "LBSTRESN",
-          aesPointVar = list(color = "ACTARM"),
-          aesLineVar = list(group = "USUBJID", color = "ACTARM"),
+          xVar = "ADY",
+          yVar = "LBSTRESN",
+          aesPointVar = list(color = "TRT01P"),
+          aesLineVar = list(group = "USUBJID", color = "TRT01P"),
           labelVars = labelVars,
           title = paste("Actual value of", 
-              getLabelParamcd(paramcd = paramcd, data = dataLBParam, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+              getLabelParamcd(
+                  paramcd = paramcd, data = dataLBParam, paramcdVar = "PARAMCD", paramVar = "PARAM"
+              )
           ),
           # include link to patient profiles:
           pathVar = "patientProfilePath",
@@ -603,8 +621,9 @@ plotsLab <- dlply(dataPlot, "LBTESTCD", function(dataLBParam){
     })
 
 # include this output in the report:
-library(clinUtils)
-listLabels <- getLabelParamcd(paramcd = names(plotsLab), data = dataLB, paramcdVar = "LBTESTCD", paramVar = "LBTEST")
+listLabels <- getLabelParamcd(
+    paramcd = names(plotsLab), data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
+)
 clinUtils::knitPrintListObjects(
     xList = plotsLab, 
     titles = listLabels, titleLevel = 4
@@ -621,7 +640,7 @@ can be set for all medical monitoring visualizations at once by
 setting the `medicalMonitoring.colors` and `medicalMonitoring.shapes` 
 options at the start of the R session.
 
-Please see the `clinUtils` package for the default options.
+Please see the `clinUtils` package for the default colors and shapes.
 
 ```{r palettes-default-get}
 
@@ -639,8 +658,8 @@ timeProfileIntervalPlot(
     data = dataAE,
     paramVar = "USUBJID",
     # time-variables
-    timeStartVar = "AESTDY",
-    timeEndVar = "AEENDY",
+    timeStartVar = "ASTDY",
+    timeEndVar = "AENDY",
     colorVar = "AESEV",
     timeStartShapeVar = "AESTFLG",
     timeEndShapeVar = "AEENFLG",
@@ -668,8 +687,8 @@ timeProfileIntervalPlot(
     data = dataAE,
     paramVar = "USUBJID",
     # time-variables
-    timeStartVar = "AESTDY",
-    timeEndVar = "AEENDY",
+    timeStartVar = "ASTDY",
+    timeEndVar = "AENDY",
     colorVar = "AESEV",
     timeStartShapeVar = "AESTFLG",
     timeEndShapeVar = "AEENFLG",
