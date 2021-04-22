@@ -221,11 +221,3 @@ RUN R -e "remotes::install_version('ggrepel', version = '0.9.1', upgrade = FALSE
 # inTextSummaryTable
 COPY inTextSummaryTable_*.tar.gz /tmp/inTextSummaryTable.tar.gz
 RUN R -e "install.packages('/tmp/inTextSummaryTable.tar.gz', repos = NULL, dependencies = FALSE)"
-
-# glpgStyle
-COPY glpgStyle_*.tar.gz /tmp/glpgStyle.tar.gz
-RUN R -e "install.packages('/tmp/glpgStyle.tar.gz', repos = NULL, dependencies = FALSE)"
- 
-# glpgUtilityFct
-COPY glpgUtilityFct_*.tar.gz /tmp/glpgUtilityFct.tar.gz
-RUN R -e "install.packages('/tmp/glpgUtilityFct.tar.gz', repos = NULL, dependencies = FALSE)"

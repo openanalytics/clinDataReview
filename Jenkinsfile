@@ -27,9 +27,7 @@ pipeline {
                 }
             }
             steps {
-                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/glpgStyle/master', selector: lastSuccessful()
-                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGUtilityFct/master', selector: lastSuccessful()
-				        copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/clinUtils/master', selector: lastSuccessful()   
+                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/clinUtils/master', selector: lastSuccessful()   
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGPatientProfiles/dev-openSource', selector: lastSuccessful()
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGInTextSummaryTable/dev-openSource', selector: lastSuccessful()   
                 withOARegistry {
