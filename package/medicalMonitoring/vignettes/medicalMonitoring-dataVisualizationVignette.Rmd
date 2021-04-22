@@ -56,7 +56,7 @@ dataAE <- dataADaMCDISCP01$ADAE
 
 ```
 
-## Patient profiles
+# Patient profiles
 
 The interactive visualizations of the medical monitoring package include
 functionalities to link a plot to patient-specific report, e.g. patient profiles
@@ -67,9 +67,9 @@ template report available in the `medicalMonitoring` package.
 
 Plase, continue the documentation below to know how to set up a config file.
 
-## Data visualization
+# Data visualization
 
-### Visualization of individual profiles
+## Visualization of individual profiles
 
 Visualization of individual profiles is available via the function
 `scatterplotMonitoring`.
@@ -79,7 +79,7 @@ Subject-specific report (e.g. patient profiles) can be linked to each profile
 plot, or click on the specific subject in the attached table, the specific
 patient profile is opened in a new window in the browser.
 
-#### Spaghetti plot of time profile
+### Spaghetti plot of time profile
 
 ```{r timeProfiles}
 
@@ -117,7 +117,7 @@ scatterplotMonitoring(
 
 ```
 
-#### Scatterplot
+### Scatterplot
 
 ```{r scatterplot}
 
@@ -158,7 +158,7 @@ scatterplotMonitoring(
 
 ```
 
-#### eDish plot
+### eDish plot
 
 ```{r eDishPlot}
 
@@ -208,7 +208,7 @@ scatterplotMonitoring(
 
 ```
 
-#### Visualization of time-intervals
+### Visualization of time-intervals
 
 Time-intervals are displayed with the `timeProfileIntervalPlot` function:
 
@@ -277,7 +277,7 @@ timeProfileIntervalPlot(
 
 ```
 
-### Visualization of summary statistics
+## Visualization of summary statistics
 
 Summary statistics can also be visualized with the package, via different types
 of visualizations: sunburst, treemap and barplot.
@@ -368,7 +368,7 @@ pander(head(tableAE),
 
 ```
 
-#### Sunburst
+### Sunburst
 
 The `sunburstMonitoring` function visualizes the counts of hierarchical data in
 nested circles.
@@ -398,7 +398,7 @@ sunburstMonitoring(
 
 ```
 
-#### Treemap
+### Treemap
 
 A treemap visualizes the counts of the hierarchical data in nested rectangles.
 The area of each rectangle is proportional to the counts of the respective
@@ -423,7 +423,7 @@ treemapMonitoring(
 
 ```
 
-#### Barplot
+### Barplot
 
 A barplot visualizes the counts for one single variable in a specific order.
 
@@ -449,7 +449,7 @@ barplotMonitoring(
 
 ```
 
-### Multiple visualizations in a loop
+## Multiple visualizations in a loop
 
 To include multiple medical monitoring visualizations (with or without attached
 table) in a loop (in the same _Rmarkdown_ chunk), the list of visualizations
@@ -507,9 +507,9 @@ clinUtils::knitPrintListObjects(
 
 ```
 
-### Palettes
+## Palettes
 
-#### Set palette for the entire session
+### Set palette for the entire session
 
 Palette for the colors and shapes associated with specific variables can be set
 for all medical monitoring visualizations at once by setting the
