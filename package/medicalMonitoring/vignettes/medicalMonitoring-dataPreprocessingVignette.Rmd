@@ -55,9 +55,26 @@ package.
 
 library(medicalMonitoring)
 library(pander)
-library(plotly)
 
 ```
+
+# Data format
+
+The input dataset for the workflow should be a `data.frame`, usually loaded from
+a _SAS_ data file (`sas7bdat` format). The label of the variables stored in the
+`SAS` datasets is also used for title/captions. 
+
+The function `loadDataADaMSDTM` can be used to load your custom `SAS` dataset(s)
+of interest. This function returns two objects:
+
+* a list of `data.frame`s containing the data for each _SAS_ dataset(s), stored
+  in the `$data` slot
+* a vector containing the labels for each column of the data (used e.g. for
+  default titles of the figures), stored as _attributes_ of the list.
+
+A few `sdtm` datasets are included in the `clinUtils` package for the
+demonstration, via the dataset `dataADaMCDISCP01` and corresponding variable
+labels.
 
 ```{r loadData}	
 
