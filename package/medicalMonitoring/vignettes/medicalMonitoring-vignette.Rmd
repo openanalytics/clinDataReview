@@ -178,13 +178,13 @@ identical(dataLBAnnotTreatment, dataLBAnnotTreatment2)
 
 A vignette for the visualizations of `medicalMonitoring is
 available
-[here](`r vignette("medicalMonitoring-dataVisualizationVignette", "medicalMonitoring")`).
+[here](`r vignette("medicalMonitoring-dataVisualizationVignette", package = "medicalMonitoring")`).
 
 Alternatively, the vignette can be reached with 
 
 ```{r dataVisVignette, eval = FALSE}
 
-vignette("medicalMonitoring-dataVisualizationVignette", "medicalMonitoring")
+vignette("medicalMonitoring-dataVisualizationVignette", package = "medicalMonitoring")
 
 ```
 
@@ -192,13 +192,13 @@ vignette("medicalMonitoring-dataVisualizationVignette", "medicalMonitoring")
 # Medical monitoring report
 
 A vignette for reporting with the `medicalMonitoring is available
-[here](`r vignette("medicalMonitoring-reportingVignette", "medicalMonitoring")`).
+[here](`r vignette("medicalMonitoring-reportingVignette", package = "medicalMonitoring")`).
 
 Alternatively, the vignette can be reached with 
 
 ```{r reportingVignette, eval = FALSE}
 
-vignette("medicalMonitoring-reportingVignette", "medicalMonitoring")
+vignette("medicalMonitoring-reportingVignette", package = "medicalMonitoring")
 
 ```
 
