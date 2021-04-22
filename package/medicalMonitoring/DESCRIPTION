@@ -32,7 +32,6 @@ Imports:
 License: file LICENSE
 Suggests: 
     countrycode,
-    glpgUtilityFct,
     haven,
     inTextSummaryTable (>= 2.19.0),
     pander,
