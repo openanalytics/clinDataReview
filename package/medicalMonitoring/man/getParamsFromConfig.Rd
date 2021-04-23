@@ -32,7 +32,12 @@ Parameters with YAML type 'r-lazy' are imported as character,
 with this additional class.
 }
 \description{
-Get parameters from a config file
+Please note that the information from this config file
+and the general config file: \code{config.yml}
+are considered.\cr
+In case parameters are defined both in the general
+and specific config files, the parameter from the
+general config file is ignored.
 }
 \seealso{
 \link{forceParams}

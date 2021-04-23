@@ -65,6 +65,9 @@ if(!exists("parentVar"))	parentVar <- NULL
 
 ```
 
+```{r countsVisualizationTemplate-startUpCode, code = params$before}
+```
+
 ```{r countsVisualizationTemplate-loadPackages}
 
 library(medicalMonitoring)

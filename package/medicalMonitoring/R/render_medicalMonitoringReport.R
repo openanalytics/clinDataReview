@@ -341,6 +341,13 @@ getMdFromConfig <- function(
 }
 
 #' Get parameters from a config file
+#' 
+#' Please note that the information from this config file
+#' and the general config file: \code{config.yml}
+#' are considered.\cr
+#' In case parameters are defined both in the general
+#' and specific config files, the parameter from the
+#' general config file is ignored.
 #' @param configFile String with filename of the config
 #' file of interest in YAML format.
 #' @inheritParams medicalMonitoring-common-args-report
@@ -404,6 +411,19 @@ getParamsFromConfig <- function(
           "or the file is saved in the directory with the other config files."
       )
     }
+	
+	paramsDuplicated <- intersect(names(configGeneralParams), names(configParams))
+	if(length(paramsDuplicated) > 0){
+		message(paste(
+			"Parameter(s):", toString(shQuote(paramsDuplicated)), "are",
+			"both defined in the general and chapter-specific config",
+			"file.\nThe parameter(s) from the chapter-specific config file are considered."
+		))
+		configGeneralParams <- configGeneralParams[
+			-which(names(configGeneralParams) %in% paramsDuplicated)
+		]
+	}
+	
     params <- c(configGeneralParams, configParams)
     
   } else {

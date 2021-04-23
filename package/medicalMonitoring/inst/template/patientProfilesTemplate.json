@@ -88,7 +88,13 @@
          }
       },
       "required": ["dataFileName"]   
-    } 
+    },
+    
+    "before": {
+      "type": ["array", "string"],
+      "doc": "R commands that should be run at the start of the report"
+    }
+     
   },
   
   "required": ["template", "templatePackage", "reportTitle", "patientProfilesParams"],

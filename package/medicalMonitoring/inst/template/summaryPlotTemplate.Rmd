@@ -53,6 +53,10 @@ if(!exists("loopingVar")) loopingVar <- NULL
 if(!exists("loopingTotal"))	loopingTotal <- TRUE
 ```
 
+```{r summaryPlotTemplate-startUpCode, code = params$before}
+```
+
+
 ```{r summaryPlotTemplate-loadPackages}
 
 library(medicalMonitoring)

@@ -54,6 +54,9 @@ attach(params)
 if(!exists("createPatientProfiles"))	createPatientProfiles <- TRUE
 ```
 
+```{r patientProfilesTemplate-startUpCode, code = params$before}
+```
+
 ```{r patientProfilesTemplate-loadPackages}
 
 library(medicalMonitoring)
