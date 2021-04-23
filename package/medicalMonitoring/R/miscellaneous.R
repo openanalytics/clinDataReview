@@ -185,8 +185,6 @@ getJsDepMedicalMonitoring <- function(
 #' @param input Object to be collapse, e.g.
 #' datatable.
 #' @param title String with button title.
-#' @param color String with color for the collapsible object.
-#' @param borderColor String with border color for the collapsible object.
 #' @return \code{\link[htmltools]{tag}} object
 #' @author Laure Cougnaud
 #' @importFrom htmltools tags div tagList br
@@ -195,14 +193,10 @@ getJsDepMedicalMonitoring <- function(
 #' @export
 collapseHtmlContent <- function(
 	input, 
-	title = "Click to show or hide",
-	color = getColorPalette(n = 1), 
-	borderColor = getColorPalette(n = 1)
+	title = "Click to show or hide"
 	){
 	
 	btnStyle <- paste0(
-		"color:", color, ";",
-		"border-color:", borderColor, ";",
 		#"border: none;",
 		"background-color: transparent"
 	)
