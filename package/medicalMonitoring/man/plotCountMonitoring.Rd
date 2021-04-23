@@ -12,6 +12,7 @@ plotCountMonitoring(
   valueLab = getLabelVar(valueVar, labelVars = labelVars),
   colorVar = NULL,
   colorLab = getLabelVar(valueVar, labelVars = labelVars),
+  colorPalette = getOption("medicalMonitoring.colors"),
   colorRange = NULL,
   valueType = "total",
   titleExtra = NULL,
@@ -54,6 +55,9 @@ and associated label.}
 By default, the treemap is colored based by section.}
 
 \item{colorLab}{(optional) String with label for \code{colorVar}.}
+
+\item{colorPalette}{palette for colors. By default, the color blind palette. 
+See \code{\link[clinUtils]{clinColors}}.}
 
 \item{colorRange}{(optional) Numeric vector of length 2 with range 
 for the color variable, in case it is a numeric variable.}
