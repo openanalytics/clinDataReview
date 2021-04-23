@@ -30,7 +30,7 @@ This report compute counts of variable(s) of interest (with the \code{inTextSumm
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
 \item{\code{typePlot}: }{(optional) array or string of string(s)}
-\item{\code{before}: }{(optional) array or string , R commands that should be run at the start of the report}
+\item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
 }
 \section{Medical monitoring template to create a report division : divisionTemplate}{
@@ -78,7 +78,7 @@ This report creates the specified patient profiles (with the \code{patientProfil
 } , parameters for each patient profile module}
 \item{\code{patientProfilesCreateReportParams}: }{(optional) object , parameters for the creation of the patient profile report(s), passed to \link[patientProfilesVis]{createSubjectProfileReport}}
 \item{\code{tableParams}: }{(optional) object , parameters specifying a table containing data of interest and links to created patient profiles}
-\item{\code{before}: }{(optional) array or string , R commands that should be run at the start of the report}
+\item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
 }
 \section{Medical monitoring generic template for visualization : plotTemplate}{
@@ -96,7 +96,7 @@ This report visualizes input data with a function of the medical monitoring pack
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
-\item{\code{before}: }{(optional) array or string , R commands that should be run at the start of the report}
+\item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
 }
 \section{Medical monitoring template for visualization of summarized data : summaryPlotTemplate}{
@@ -117,7 +117,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
-\item{\code{before}: }{(optional) array or string , R commands that should be run at the start of the report}
+\item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
 }
 \section{Medical monitoring template for a summary table of the data : summaryTableTemplate}{

@@ -2,8 +2,8 @@
 % Please edit documentation in R/render_medicalMonitoringReport.R
 \name{getMdFromConfig}
 \alias{getMdFromConfig}
-\title{This function is mainly based from:
-\code{bookdown:::insert_chapter_script}}
+\title{Get path of the \code{Markdown} file corresponding
+to a specific config file.}
 \usage{
 getMdFromConfig(
   configFiles,
@@ -21,20 +21,11 @@ getMdFromConfig(
 by default), where
 markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 each sub report are stored.}
-
-\item{rCmd}{Character vector with R command(s)
-to be included in the Rmd document.}
-
-\item{where}{String with position where the R cmd should be included.\cr
-Currently, only 'before' is supported.}
 }
 \value{
-No returned value, the Rmd document is updated
-such as the command provided in \code{rCmd} 
-is included as the first chunk.
-Get path of the \code{Markdown} file corresponding
-to a specific config file.
-
+String with path to the
+}
+\description{
 The name of the \code{Markdown} file is based on:
 \itemize{
 \item{for the general \code{config.yml} file: }{
@@ -43,12 +34,6 @@ the basename of the specified \code{indexPath}}
 the name of the config file, after removal of the
 '\code{config-}' part.}
 }
-
-String with path to the
-}
-\description{
-This function is mainly based from:
-\code{bookdown:::insert_chapter_script}
 }
 \seealso{
 Other medical monitoring reporting: 

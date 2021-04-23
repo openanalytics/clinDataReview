@@ -63,15 +63,15 @@ if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 
 ```
 
-```{r plotTemplate-startUpCode, code = params$before}
-```
-
 ```{r plotTemplate-loadPackages}
 
 library(medicalMonitoring)
 library(clinUtils)
 library(plyr)
 
+```
+
+```{r plotTemplate-startUpCode, code = params$startup}
 ```
 
 ```{r plotTemplate-setTitle}

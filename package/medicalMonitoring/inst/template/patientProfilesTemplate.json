@@ -90,7 +90,7 @@
       "required": ["dataFileName"]   
     },
     
-    "before": {
+    "startup": {
       "type": ["array", "string"],
       "doc": "R commands that should be run at the start of the report"
     }
