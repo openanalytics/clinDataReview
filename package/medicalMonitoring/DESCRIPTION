@@ -23,6 +23,7 @@ Imports:
   plotly, 
   plyr,
   rmarkdown,
+  stats,
   stringr,
   rvest,
   utils,
