@@ -40,6 +40,12 @@ This vignette focuses on the visualization functionalities of the
 
 We will use example data sets from the `clinUtils` package.
 
+If you have doubts on the data format, first check out the vignette on data
+preprocessing avaialable
+[here](../doc/medicalMonitoring-dataPreprocessingVignette.html)).
+
+If everything is clear on that side, let's get started!
+
 ```{r loadLibraries}
 
 library(medicalMonitoring)
@@ -63,9 +69,9 @@ dataAE <- dataADaMCDISCP01$ADAE
 
 # Patient profiles
 
-The interactive visualizations of the medical monitoring package include
-functionalities to link a plot to patient-specific report, e.g. patient profiles
-created with the `patientProfilesVis` package.
+**The interactive visualizations of the medical monitoring package include
+functionalities to link a plot to patient-specific report**, e.g. patient
+profiles created with the `patientProfilesVis` package.
 
 Such patient profiles can be created via a config file, with a dedicated
 template report available in the `medicalMonitoring` package.
@@ -73,8 +79,9 @@ template report available in the `medicalMonitoring` package.
 The documentation on how to set up a config file is available in the vignette
 about reporting.
 
-You can directly go skip to this vignette with 
-
+You can directly skip to reporting vignette, which is available
+[here](../doc/medicalMonitoring-reportingVignette.html) or run in your
+console the command below.
 
 ```{r reportingVignette, eval = FALSE}
 
@@ -87,12 +94,16 @@ vignette("medicalMonitoring-reportingVignette", "medicalMonitoring")
 ## Visualization of individual profiles
 
 Visualization of individual profiles is available via the function
-`scatterplotMonitoring`.
+**`scatterplotMonitoring`**.
 
-Subject-specific report (e.g. patient profiles) can be linked to each profile
-(`pathVar` parameter). If the user clicks on the 'P' key while hovering on the
-plot, or click on the specific subject in the attached table, the specific
-patient profile is opened in a new window in the browser.
+### Link with patient profiles
+
+Subject-specific report (e.g. patient profiles) can be linked to each
+profile (**`pathVar`** parameter).
+
+If the user clicks on the **'P' key while
+hovering on the plot**, or **click on the specific subject in the attached
+table, the specific patient profile is opened in a new window in the browser**.
 
 ### Spaghetti plot of time profile
 
@@ -225,7 +236,7 @@ scatterplotMonitoring(
 
 ### Visualization of time-intervals
 
-Time-intervals are displayed with the `timeProfileIntervalPlot` function:
+Time-intervals are displayed with the **`timeProfileIntervalPlot`** function:
 
 ```{r timeProfileIntervalPlot}
 
@@ -297,15 +308,19 @@ timeProfileIntervalPlot(
 Summary statistics can also be visualized with the package, via different types
 of visualizations: sunburst, treemap and barplot.
 
-Subject-specific report (e.g. patient profiles) can be linked to each profile 
-(`pathVar` parameter). If the user clicks on the 'P' key while hovering on the
-plot, a zip file containing the reports for all corresponding patients is
-downloaded. If the attached table is display, each row can be extended to
-display the links of the respective patient profile reports.
-
 These functions take as input a table of summary statistics, especially counts.
 Such table can e.g. computed with the `inTextSummaryTable` R package (see
 corresponding package vignette for more information).
+
+### Link with patient profiles
+
+Subject-specific report (e.g. patient profiles) can be linked to each profile 
+(**`pathVar`** parameter). If the user clicks on the **'P' key while hovering on
+the plot, a zip file containing the reports for all corresponding patients is
+downloaded**. If the attached table is display, each row can be extended to
+display the links of the respective patient profile reports.
+
+### Compute count statistics
 
 In this example, counts of adverse events are extracted for each
 `r labelVars["AESOC"]` and `r labelVars["AEDECOD"]`. Besides the counts of the
@@ -385,8 +400,8 @@ pander(head(tableAE),
 
 ### Sunburst
 
-The `sunburstMonitoring` function visualizes the counts of hierarchical data in
-nested circles.
+The **`sunburstMonitoring`** function visualizes the counts of hierarchical data
+in nested circles.
 
 The different groups are visualized from the biggest class (root node) in the
 center of the visualization to the smallest sub-groups (leaves) on the outside
@@ -419,6 +434,11 @@ A treemap visualizes the counts of the hierarchical data in nested rectangles.
 The area of each rectangle is proportional to the counts of the respective
 group.
 
+Note, that a treemap can also be colored accordingly to a meaningful
+variable. For instance, if we show adverse events, we might **color the plot by
+severity**. This can be achieved with the **colorVar** parameter.
+
+
 ```{r treemap}
 
 dataTreemap <- tableAE
@@ -428,7 +448,8 @@ dataTreemap$n <- as.numeric(dataTreemap$n)
 treemapMonitoring(
     data = dataTreemap,
     vars = c("AESOC", "AEDECOD"),
-    valueVar = "n", valueLab = "Number of patients with adverse events",
+    valueVar = "n",
+    valueLab = "Number of patients with adverse events",
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = TRUE,
@@ -522,9 +543,9 @@ clinUtils::knitPrintListObjects(
 
 ```
 
-## Palettes
+# Palettes
 
-### Set palette for the entire session
+## Set palette for the entire session
 
 Palette for the colors and shapes associated with specific variables can be set
 for all medical monitoring visualizations at once by setting the
@@ -533,7 +554,7 @@ of the R session.
 
 Please see the `clinUtils` package for the default colors and shapes.
 
-```{r palettes-default-get}
+```{r palettes-default-get, results = 'markup'}
 
 # display default palettes
 colorsDefault <- getOption("medicalMonitoring.colors")
