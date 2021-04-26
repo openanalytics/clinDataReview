@@ -8,7 +8,7 @@ tmpYamlFile <- tempfile(
 )
 listArgs <- list(
     pathSDTMs = "pathSDTMs",
-    pathMeMoADs = "pathMeMoADs",
+    pathNewSDTM = "pathNewSDTM",
     dateTimeMeMorun = "20200101",
     datasetInfo = list(
         list(
@@ -79,14 +79,14 @@ test_that("Warning in get metadata when more than one file is provided", {
       expect_equal(
           class(resMetadata1), c("medicalMonitoringMetadata", "list")
       )
-      expect_named(resMetadata1, c("pathsInfo", "datasetInfo"))
+      expect_named(resMetadata1, c("summaryInfo", "datasetInfo"))
       
-      pathsInfos <- resMetadata1$pathsInfo
+      summaryInfos <- resMetadata1$summaryInfo
       expect_identical(
-          rownames(pathsInfos),
-          c("pathSDTMs", "pathMeMoADs", "dateTimeMeMorun")
+          rownames(summaryInfos),
+          c("paths", "dateTime")
       )
-      expect_identical(pathsInfos[1], "Not available")
+      expect_identical(summaryInfos[2], "Not available")
       
     })
 
@@ -97,7 +97,7 @@ test_that("Not available metadata inputs", {
       )
       listArgsNA <- list(
           path1 = "pathSDTMs",
-          path2 = "pathMeMoADs",
+          path2 = "pathNewSDTMs",
           date = "20200101"
       )
       write_yaml(
@@ -111,7 +111,7 @@ test_that("Not available metadata inputs", {
       expect_equal(
           class(resMetadataNA), c("medicalMonitoringMetadata", "list")
       )
-      expect_named(resMetadataNA, c("pathsInfo", "datasetInfo"))
+      expect_named(resMetadataNA, c("summaryInfo", "datasetInfo"))
       
       expect_identical(
           colnames(resMetadataNA$datasetInfo),
@@ -129,15 +129,15 @@ test_that("Get metadata", {
       expect_equal(
           class(resMetadata), c("medicalMonitoringMetadata", "list")
       )
-      expect_named(resMetadata, c("pathsInfo", "datasetInfo"))
-      expect_is(resMetadata$pathsInfo, "matrix")
+      expect_named(resMetadata, c("summaryInfo", "datasetInfo"))
+      expect_is(resMetadata$summaryInfo, "matrix")
       expect_is(resMetadata$datasetInfo, "data.table")
       expect_is(resMetadata$datasetInfo, "data.frame")
       
-      pathsInfo <- resMetadata$pathsInfo
+      summaryInfo <- resMetadata$summaryInfo
       expect_identical(
-          rownames(pathsInfo),
-          c("pathSDTMs", "pathMeMoADs", "dateTimeMeMorun")
+          rownames(summaryInfo),
+          c("pathSDTMs", "pathNewSDTM", "dateTime")
       )
       
       dfInfo <- resMetadata$datasetInfo
@@ -153,17 +153,26 @@ test_that("Rename metadata paths info", {
       expect_silent(
           resMetadata <- getMetadata(filePath = tmpYamlFile)
       )
-      pathsInfo <- resMetadata$pathsInfo
+      summaryInfo <- resMetadata$summaryInfo
+      
+      namesInfo <- setNames(rownames(summaryInfo), rownames(summaryInfo))
+      
       expect_silent(
-          resRename <- renamePathDateInfoMetadata(pathsInfo)
+          resRename <- renamePathDateInfoMetadata(summaryInfo, namesInfo)
       )
       expect_identical(
           rownames(resRename),
-          c(
-              "Original data (SDTM) path:",
-              "Medical Monitoring Analysis Dataset (MeMo-AD) path:",
-              "MeMo-AD creation date:"
-          )
+          rownames(summaryInfo)
+      )
+      
+      namesInfo <- setNames(c("Name 1", "Name 2", "Name 3"), rownames(summaryInfo))
+      
+      expect_silent(
+          resRename <- renamePathDateInfoMetadata(summaryInfo, namesInfo)
+      )
+      expect_identical(
+          rownames(resRename),
+          c("Name 1", "Name 2", "Name 3")
       )
       
     })
@@ -173,13 +182,13 @@ test_that("Add date of report running", {
       expect_silent(
           resMetadata <- getMetadata(filePath = tmpYamlFile)
       )
-      pathsInfo <- resMetadata$pathsInfo
+      summaryInfo <- resMetadata$summaryInfo
       
       expect_silent(
-          resDate <- addDateOfReportRun(pathsInfo)
+          resDate <- addDateOfReportRun(summaryInfo)
       )
       expect_equal(
-          nrow(resDate), nrow(pathsInfo) + 1
+          nrow(resDate), nrow(summaryInfo) + 1
       )
       expect_identical(
           rownames(resDate)[nrow(resDate)],
@@ -193,9 +202,10 @@ test_that("Format output of paths info", {
       expect_silent(
           resMetadata <- getMetadata(filePath = tmpYamlFile)
       )
-      pathsInfo <- resMetadata$pathsInfo
+      summaryInfo <- resMetadata$summaryInfo
+      namesInfo <- setNames(rownames(summaryInfo), rownames(summaryInfo))
       expect_silent(
-          kableFormat <- formatPathDateInfoMetadata(pathsInfo)
+          kableFormat <- formatPathDateInfoMetadata(summaryInfo, namesInfo)
       )
       expect_is(kableFormat, "knitr_kable")
       
@@ -205,18 +215,18 @@ test_that("Print metadata", {
       
       resMetadata <- getMetadata(tmpYamlFile)
       
-      resPrintWithoutOptions <- medicalMonitoring:::knit_print.medicalMonitoringMetadata(
+      resPrintWithoutOptions <- knit_print.medicalMonitoringMetadata(
           getMetadata(tmpYamlFile)
       )
       expect_is(resPrintWithoutOptions, "knit_asis")
       
-      resPrintWithDate <- medicalMonitoring:::knit_print.medicalMonitoringMetadata(
+      resPrintWithDate <- knit_print.medicalMonitoringMetadata(
           getMetadata(tmpYamlFile),
           options = list(dateReportRun = TRUE)
       )
       expect_is(resPrintWithDate, "knit_asis")
       
-      resPrintWithoutDate <- medicalMonitoring:::knit_print.medicalMonitoringMetadata(
+      resPrintWithoutDate <- knit_print.medicalMonitoringMetadata(
           getMetadata(tmpYamlFile),
           options = list(dateReportRun = FALSE)
       )

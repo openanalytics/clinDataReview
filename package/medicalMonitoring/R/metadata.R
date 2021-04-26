@@ -5,25 +5,30 @@
 #' Currently, this function checks for existance of the following inputs 
 #' provided in yaml:
 #' \itemize{
-#' \item{\code{pathSDTMs}}{ Path to the SDTM data}
-#' \item{\code{pathMeMoADs}}{ Path to the Medical Monitoring Analysis Data sets}
-#' \item{\code{dateTimeMeMorun}}{ Date and time of MeMoADs generation}
+#' \item{\code{pathSDTMs}}{ Path to the SDTM data.}
+#' \item{\code{pathMeMoADs}}{ Path to the Medical Monitoring Analysis Data sets.}
+#' \item{\code{dateTime}}{ Date and time, usually of the SDTM data creation. 
+#' No need to add the date and time of the report generation, which will be added by default.}
 #' \item{\code{datasetInfo}}{ General information about the data sets.}
 #' }
+#' 
+#' Note that the input names do not necessarly have to match the exact names above mentioned. 
+#' For instance, the user can also write "dataTimeMySDTMData", 
+#' and the function will parse for existance of the string "dataTime". 
 #' 
 #' @param filePath String of path to file. Currently only one file path is supported. 
 #' If more than one paths are provided, a warning will be printed and 
 #' the first path will be used.
 #' @return A list of:
 #' \itemize{
-#' \item{\code{pathsInfo}}{ Information extracted from the inputs 
-#' \code{pathSDTMs}, \code{pathMeMoADs} and \code{dateTimeMeMorun}.}
+#' \item{\code{summaryInfo}}{ Information extracted from the inputs 
+#' \code{pathSDTMs}, \code{pathMeMoADs} and \code{dateTime}.}
 #' \item{\code{datasetInfo}}{ Information extracted from \code{datasetInfo}.}
 #' }
 #' @importFrom data.table rbindlist
 #' @importFrom yaml read_yaml
 #' @export 
-getMetadata <- function(filePath) {
+getMetadata <- function(filePath, namesInfo) {
   
   if(! is.character(filePath)) stop("'filePath' argument should be a character.")
   if(length(filePath) > 1) {
@@ -34,25 +39,29 @@ getMetadata <- function(filePath) {
   
   paramsList <- read_yaml(filePath)
   
-  pathSDTMs <- checkAvailabilityMetadata(paramsList, "pathSDTMs")
-  pathMeMoADs <- checkAvailabilityMetadata(paramsList, "pathMeMoADs")
-  dateTimeMeMorun <- checkAvailabilityMetadata(paramsList, "dateTimeMeMorun")
+  paths <- checkAvailabilityMetadata(paramsList, "path")
+  dateTime <- checkAvailabilityMetadata(paramsList, "dateTime")
   datasetInfoFromList <- checkAvailabilityMetadata(paramsList, "datasetInfo")
   
   if(is.list(datasetInfoFromList)) {
     datasetInfoTable <- rbindlist(datasetInfoFromList, use.names = TRUE, fill = TRUE)
   } else datasetInfoTable <- data.frame("Not Available" = datasetInfoFromList)
   
-  pathsInfoTable <- rbind(
-      pathSDTMs = pathSDTMs,
-      pathMeMoADs = pathMeMoADs,
-      dateTimeMeMorun = dateTimeMeMorun  
+  summaryInfoTable <- rbind(
+      paths = paths,
+      dateTime = dateTime  
   )
   
   resList <- list(
-      pathsInfo = pathsInfoTable,
+      summaryInfo = summaryInfoTable,
       datasetInfo = datasetInfoTable
   )
+  
+  if(missing(namesInfo)) namesInfo <- setNames(
+        rownames(summaryInfoTable), rownames(summaryInfoTable)
+  )
+  
+  attr(resList, "namesInfo") <- namesInfo
   
   class(resList) <- c("medicalMonitoringMetadata",  class(resList))
   
@@ -67,13 +76,13 @@ getMetadata <- function(filePath) {
 #' prints them in a format for an Rmd report.
 #' In general, any list could be called as long as it is composed by two elements:
 #' \itemize{
-#' \item{\code{pathsInfo}}{ an R object.}
+#' \item{\code{summaryInfo}}{ an R object.}
 #' \item{\code{datasetInfo}}{ a data.frame or a matrix.}
 #' }
-#' The first (\code{pathsInfo}) is printed as \code{\link[knitr]{kable}} object 
+#' The first (\code{summaryInfo}) is printed as \code{\link[knitr]{kable}} object 
 #' and the second (\code{datasetInfo}) is printed as hide/show html button with 
 #' the function \code{\link{collapseHtmlContent}}.
-#' @param x List of two elements named \code{pathsInfo} and 
+#' @param x List of two elements named \code{summaryInfo} and 
 #' \code{datasetInfo}.
 #' @param options List of extra options to be passed as chunk options.
 #' @param ... Extra arguments to be passed.
@@ -89,14 +98,18 @@ knit_print.medicalMonitoringMetadata <- function(
   datasetInfoTable <- x$datasetInfo
   datasetInfoDT <- getClinDT(datasetInfoTable)
   
+  namesInfo <- attr(x, "namesInfo")
+  
   if(! is.null(options$dateReportRun)) {
     if (options$dateReportRun) {
-      pathsInfoWithDate <- addDateOfReportRun(x$pathsInfo)
-      print(formatPathDateInfoMetadata(pathsInfoWithDate))
+      summaryInfoWithDate <- addDateOfReportRun(x$summaryInfo)
+      print(
+          formatPathDateInfoMetadata(summaryInfo = summaryInfoWithDate, namesInfo = namesInfo)
+      )
     } else {
-      print(formatPathDateInfoMetadata(x$pathsInfo))
+      print(formatPathDateInfoMetadata(summaryInfo = x$summaryInfo, namesInfo = namesInfo))
     }
-  } else print(formatPathDateInfoMetadata(x$pathsInfo))
+  } else print(formatPathDateInfoMetadata(summaryInfo = x$summaryInfo, namesInfo = namesInfo))
   
   
   cat("\n\n")
@@ -110,53 +123,64 @@ knit_print.medicalMonitoringMetadata <- function(
 
 #' Format the info on paths from metadata
 #' 
-#' @param pathsInfo  matrix, see output from \code{\link{getMetadata}}.
+#' @param summaryInfo  matrix, see output from \code{\link{getMetadata}}.
 #' @return A kable object, to be printed.
 #' @importFrom knitr kable
-formatPathDateInfoMetadata <- function(pathsInfo) {
+formatPathDateInfoMetadata <- function(summaryInfo, namesInfo) {
   
-  pathsInfoRenamed <- renamePathDateInfoMetadata(pathsInfo)
-  pathsInfoToPrint <- kable(pathsInfoRenamed, col.names = c(""))
+  summaryInfoRenamed <- renamePathDateInfoMetadata(summaryInfo, namesInfo)
+  summaryInfoToPrint <- kable(summaryInfoRenamed, col.names = c(""))
   
-  return(pathsInfoToPrint)
+  return(summaryInfoToPrint)
 }
 
 #' Add date of report running
 #' 
 #' Add the today's date of when the report runs to the info of the metadata.
-#' @param pathsInfo  matrix, see output from \code{\link{getMetadata}}.
-#' @return A matrix, same as input \code{pathsInfo} with an extra row with the date 
+#' @param summaryInfo  matrix, see output from \code{\link{getMetadata}}.
+#' @return A matrix, same as input \code{summaryInfo} with an extra row with the date 
 #' of today.
-addDateOfReportRun <- function(pathsInfo) {
+addDateOfReportRun <- function(summaryInfo) {
   
   dateToday <- as.character(Sys.Date())
-  pathsInfoWithDate <- rbind(pathsInfo, dateToday)
+  summaryInfoWithDate <- rbind(summaryInfo, dateToday)
   
-  return(pathsInfoWithDate)
+  return(summaryInfoWithDate)
 }
 
 #' Rename variable names of metadata info
 #' 
 #' Rename variable names referring to the paths and the date.
-#' @param pathsInfo A matrix, see output from \code{\link{getMetadata}}.
-#' @return A matrix, same as input \code{pathsInfo} with renamed variable names.
-renamePathDateInfoMetadata <- function(pathsInfo) {
+#' @param summaryInfo A matrix, see output from \code{\link{getMetadata}}.
+#' @return A matrix, same as input \code{summaryInfo} with renamed variable names.
+renamePathDateInfoMetadata <- function(summaryInfo, namesInfo) {
+ 
+  idxTimeName <- grepl("time", names(namesInfo), ignore.case = TRUE)
+  namesInfoWithoutTime <- namesInfo[- which(idxTimeName)]
   
-  rownames(pathsInfo) <- gsub("pathSDTMs",
-      "Original data (SDTM) path:",
-      gsub("pathMeMoADs",
-          "Medical Monitoring Analysis Dataset (MeMo-AD) path:",
-          gsub("dateTimeMeMorun",
-              "MeMo-AD creation date:",
-              gsub("dateToday",
-                  "Report & patient profiles creation date:",
-                  rownames(pathsInfo)
-              )
-          )
-      )
+  
+  for(i in 1 : length(namesInfoWithoutTime)) {
+    
+    rowShortName <- rownames(summaryInfo)[
+        grepl(names(namesInfo)[i], rownames(summaryInfo), ignore.case = TRUE)
+    ]
+    rowLongName <- namesInfo[i]
+    rownames(summaryInfo) <- gsub(rowShortName, rowLongName, rownames(summaryInfo))
+    
+  }
+  
+  rownames(summaryInfo) <- gsub(
+      rownames(summaryInfo)[grepl("time", rownames(summaryInfo), ignore.case = TRUE)],
+      namesInfo[which(idxTimeName)],
+      rownames(summaryInfo)
   )
   
-  return(pathsInfo)
+  rownames(summaryInfo) <- gsub(
+      "dateToday", "Report & patient profiles creation date:", 
+      rownames(summaryInfo)
+  )
+  
+  return(summaryInfo)
   
 }
 
@@ -169,11 +193,41 @@ renamePathDateInfoMetadata <- function(pathsInfo) {
 #' @return The content of the sublist. If not available, returns "Not Available".
 checkAvailabilityMetadata <- function(paramsList, subListName) {
   
-  if(is.null(paramsList[[subListName]])) {
-    subListName <- "Not available" 
-  } else subListName <- paramsList[[subListName]]
+  subListIdx <- grepl(
+      subListName, names(paramsList), ignore.case = TRUE
+  )
   
-  return(subListName)
+  if(! any(as.logical(subListIdx))) {
+    
+    subListToReturn <- "Not available" 
+    
+  } else {
+    
+    subListToReturn <- extractNamesOfMetadata(
+        paramsList = paramsList,
+        subListIdx = subListIdx
+    )
+  }
+  
+  return(subListToReturn)
   
 }
 
+extractNamesOfMetadata <- function(paramsList, subListIdx) {
+  
+  nameToExtract <- names(paramsList)[subListIdx]
+  
+  if(length(nameToExtract) > 1) {
+    
+    subLists <- unlist(sapply(nameToExtract, function(i) paramsList[[i]]))
+    subListToReturn <- matrix(subLists, nrow = length(nameToExtract))
+    rownames(subListToReturn) <- nameToExtract
+    
+  } else {
+    
+    subListToReturn <- paramsList[[nameToExtract]]
+  }
+  
+  return(subListToReturn)
+  
+}
