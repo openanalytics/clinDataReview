@@ -2,29 +2,33 @@
 #' Read metadata file
 #' 
 #' Read the metadata file from a yaml format.
-#' Currently, this function checks for existance of the following inputs 
-#' provided in yaml:
+#' This function checks for existance of the metadata file and its content.
+#' In particular, within the yaml file matches the following strings:
 #' \itemize{
-#' \item{\code{pathSDTMs}}{ Path to the SDTM data.}
-#' \item{\code{pathMeMoADs}}{ Path to the Medical Monitoring Analysis Data sets.}
+#' \item{\code{path}}{ Path to the data. More than one path is allowed.}
 #' \item{\code{dateTime}}{ Date and time, usually of the SDTM data creation. 
-#' No need to add the date and time of the report generation, which will be added by default.}
+#' When printing the metadata in Rmd document, there is the possibility to add
+#'  the date and time of the report generation. 
+#' See \code{\link{knit_print.medicalMonitoringMetadata}}. }
 #' \item{\code{datasetInfo}}{ General information about the data sets.}
 #' }
 #' 
-#' Note that the input names do not necessarly have to match the exact names above mentioned. 
+#' Note that the input names do not necessarly have to match the exact names. 
 #' For instance, the user can also write "dataTimeMySDTMData", 
-#' and the function will parse for existance of the string "dataTime". 
+#' and the function will parse for existance of the string "dataTime".
 #' 
 #' @param filePath String of path to file. Currently only one file path is supported. 
 #' If more than one paths are provided, a warning will be printed and 
 #' the first path will be used.
+#' @param namesInfo Named vector to rename the final output when printed in Rmd. 
+#' The renaming happens only if the metadata info are printed in Rmd and not in the console.
 #' @return A list of:
 #' \itemize{
 #' \item{\code{summaryInfo}}{ Information extracted from the inputs 
-#' \code{pathSDTMs}, \code{pathMeMoADs} and \code{dateTime}.}
+#' \code{path}, and \code{dateTime}.}
 #' \item{\code{datasetInfo}}{ Information extracted from \code{datasetInfo}.}
 #' }
+#' @example inst/examples/metadata-example.R
 #' @importFrom data.table rbindlist
 #' @importFrom yaml read_yaml
 #' @export 
@@ -80,7 +84,8 @@ getMetadata <- function(filePath, namesInfo) {
 #' the function \code{\link{collapseHtmlContent}}.
 #' @param x List of two elements named \code{summaryInfo} and 
 #' \code{datasetInfo}.
-#' @param options List of extra options to be passed as chunk options.
+#' @param options List of extra options to be passed as chunk options. 
+#' The option \code{dateReportRun} sets to true prints the date and time of the report creation.
 #' @param ... Extra arguments to be passed.
 #' @return Nothing. The tables are ready to be printed in Rmd.
 #' @importFrom knitr knit_print
@@ -126,6 +131,7 @@ knit_print.medicalMonitoringMetadata <- function(
 #' Format the info on paths from metadata
 #' 
 #' @param summaryInfo  matrix, see output from \code{\link{getMetadata}}.
+#' @param namesInfo Named vector to rename the final output. 
 #' @return A kable object, to be printed.
 #' @importFrom knitr kable
 formatPathDateInfoMetadata <- function(summaryInfo, namesInfo) {
@@ -154,6 +160,7 @@ addDateOfReportRun <- function(summaryInfo) {
 #' 
 #' Rename variable names referring to the paths and the date.
 #' @param summaryInfo A matrix, see output from \code{\link{getMetadata}}.
+#' @param namesInfo Named vector to rename the final output. 
 #' @return A matrix, same as input \code{summaryInfo} with renamed variable names.
 renamePathDateInfoMetadata <- function(summaryInfo, namesInfo) {
   

@@ -4,13 +4,13 @@
 \alias{addDateOfReportRun}
 \title{Add date of report running}
 \usage{
-addDateOfReportRun(pathsInfo)
+addDateOfReportRun(summaryInfo)
 }
 \arguments{
-\item{pathsInfo}{matrix, see output from \code{\link{getMetadata}}.}
+\item{summaryInfo}{matrix, see output from \code{\link{getMetadata}}.}
 }
 \value{
-A matrix, same as input \code{pathsInfo} with an extra row with the date 
+A matrix, same as input \code{summaryInfo} with an extra row with the date 
 of today.
 }
 \description{
