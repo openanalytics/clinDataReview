@@ -125,7 +125,7 @@ scatterplotMonitoring(
     data = dataPlot, 
     xVar = "ADY",
     yVar = "LBSTRESN",
-    aesPointVar = list(color = "ARM"),
+    aesPointVar = list(color = "ARM", fill = "ARM"),
     aesLineVar = list(group = "USUBJID", color = "ARM"),
     hoverVars = c("USUBJID", "VISIT", "ADY", "LBSTRESN", "ARM"),
     labelVars = labelVars,
@@ -174,7 +174,7 @@ scatterplotMonitoring(
     yLab = getLabelParamcd(
         paramcd = "ALB", data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
     ),
-    aesPointVar = list(color = "USUBJID"),
+    aesPointVar = list(color = "USUBJID", fill = "USUBJID"),
     facetPars = list(facets = ~ VISIT),
     labelVars = labelVars,
     pathVar = "patientProfilePath",
@@ -222,7 +222,7 @@ scatterplotMonitoring(
     yLab = getLabelParamcd(
         paramcd = "BILI", data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
     ),
-    aesPointVar = list(color = "VISIT", shape = "ARM"),
+    aesPointVar = list(color = "VISIT", fill = "VISIT", shape = "ARM"),
     xTrans = "log10", yTrans = "log10",
     hoverVars = c("USUBJID"),
     themePars = list(legend.position = "bottom"),

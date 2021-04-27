@@ -62,5 +62,8 @@
 #' If not specified, a random id, as 'plotMonitoring[X]' is used.
 #' @param title String with title for the plot.
 #' @param titleExtra String with extra title for the plot (appended after \code{title}).
+#' @param colorPalette (optional) Named character vector with color palette.
+#' If not specified, the viridis color palette is used.\cr
+#' See \code{\link[clinUtils]{clinColors}}.
 #' @name medicalMonitoring-common-args
 NULL

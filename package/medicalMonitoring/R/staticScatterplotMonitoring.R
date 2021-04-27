@@ -9,10 +9,6 @@
 #' e.g. \code{list(group = "USUBJID")}.
 #' @param lineInclude Logical, if TRUE (by default if \code{aesLineVar} is specified)
 #' include a scatterplot.
-#' @param scalePars List with parameters to customize
-#' scales. Each sublist should contains a set of parameters
-#' passed to the \code{\link[ggplot2]{scale_discrete_manual}}
-#' function.
 #' @param aesLab Named character vector with labels for each aesthetic variable.
 #' @param xTrans,yTrans Transformation for the x/y- variables,
 #' passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
@@ -99,29 +95,52 @@ staticScatterplotMonitoring <- function(
 		names(aesLab) <- names(aesVar)
 		aesLab <- aesLab[!duplicated(names(aesLab))]
 	}
-
-	# base plot
+	
+	# get default palettes
+	geomAes <- list()
+	for(aesType in c("color", "fill", "linetype", "shape")){
+		aesOpt <- ifelse(aesType == "fill", "color", aesType)
+		aesTypeVar <- if(aesType == "color"){c("color", "colour")}else{aesType}
+		aesVar <- unique(unlist(c(aesPointVar[aesTypeVar], aesLineVar[aesTypeVar])))
+		resPalette <- setPaletteStaticScatterplotMonitoring(
+			data = dataContent,
+			var = aesVar, aes = aesType, 
+			palette = getOption(paste0("medicalMonitoring.", aesOpt, "s")),
+			scalePars = scalePars, geomAes = geomAes
+		)
+		scalePars <- resPalette$scalePars
+		geomAes <- resPalette$geomAes
+	}
+	
+	## base plot
 	# specify data in 'ggplot' call, e.g. to have line from variable correctly facetted
 	aesBase <- list(x = sym(xVar), y = sym(yVar))
 	gg <- ggplot(data = data, mapping = do.call(aes, aesBase))
 	
-	# line
+	## line plot
 	if(lineInclude){
 #		if(!"group" %in% names(aesLineVar)){
 #			warning("'group' should be specified in the 'aesLineVar'; no line is created.")
 #		}else{
 			aesLineVar <- sapply(aesLineVar, sym, simplify = FALSE)
-			argsGeomLine <- list(mapping = do.call(aes, aesLineVar))
+			argsGeomLine <- c(
+				list(mapping = do.call(aes, aesLineVar)),
+				geomAes[c("color", "linetype")]
+			)
+			argsGeomLine <- Filter(Negate(is.null), argsGeomLine)
 			gg <- gg + do.call(geom_line, argsGeomLine)
 #		}
 	}
 	
-	# scatter
+	## scatterplot
 	if(length(aesPointVar) > 0)
 		aesPointVar <- sapply(aesPointVar, sym, simplify = FALSE)
-	
 	aesGeom <- c(aesPointVar, if(!is.null(hoverVars))	list(text = sym("hover")))
-	argsGeom <- list(mapping = do.call(aes, aesGeom))
+	argsGeom <- c(
+		list(mapping = do.call(aes, aesGeom)),
+		geomAes[c("color", "fill", "shape")]
+	)
+	argsGeom <- Filter(Negate(is.null), argsGeom)
 	geomFct <- match.fun(paste("geom", geomType, sep = "_"))
 	gg <- gg + do.call(geomFct, argsGeom)
 	
@@ -186,5 +205,77 @@ staticScatterplotMonitoring <- function(
 	)
 	
 	return(gg)
+	
+}
+
+#' Get standard palette for the \code{staticScatterplotMonitoring}
+#' function.
+#' @param data Data.frame with data for the plot.
+#' @param var Character vector with variable(s) to consider.
+#' If multiple, currently only the first one is considered.
+#' @param aes String with aesthetic, either:
+#' 'color', 'shape' or 'linetype'.
+#' @param scalePars List with parameters to customize
+#' scales. Each sublist should contains a set of parameters
+#' passed to the \code{\link[ggplot2]{scale_discrete_manual}}
+#' function.\cr
+#' If palette(s) are not specified, default palettes are used
+#' (see \link[clinUtils]{getColorPalette}, 
+#' \link[clinUtils]{getShapePalette}, 
+#' \link[clinUtils]{getLinetypePalette}
+#' )
+#' @param geomAes List with aesthetic for each geom.
+#' @param ... Any extra parameters than \code{x} and \code{n}
+#' for the default palette fcts.
+#' @return List with: \code{scalePars} and \code{geomAes},
+#' each of those potentially updated with default palette(s).
+#' @importFrom clinUtils getColorPalette getShapePalette getLinetypePalette
+#' @author Laure Cougnaud
+setPaletteStaticScatterplotMonitoring <- function(
+	data, var, aes, 
+	scalePars, geomAes,
+	...){
+
+	isAes <- sapply(scalePars, function(x)
+		aes %in% x[["aesthetic"]]
+	)
+
+	isPaletteSpecified <- if(!is.null(scalePars) && any(isAes)){
+		any(hasName(scalePars[[which(isAes)]], c("palette", "values")))	
+	}else	hasName(geomAes, aes)
+
+	# if palette not specified by the user
+	if(!isPaletteSpecified){
+	
+		if(length(var) > 1){
+			warning(paste("Multiple variables for the", aes, "aesthetic",
+				"the first one is considered to set default palette."))
+			var <- var[1]
+		}
+		
+		getAesPalette <- switch(aes,
+			color = getColorPalette,
+			fill = getColorPalette,
+			shape = getShapePalette,
+			linetype = getLinetypePalette			
+		)
+		
+		# aesthetic is mapped to a variable:
+		if(!is.null(var)){
+			
+			palette <- getAesPalette(x = data[[var]], ...)
+			if(any(isAes)){
+				scalePars[[which(isAes)]][["values"]] <- palette
+			}else	scalePars <- c(scalePars, list(list(aesthetic = aes, values = palette)))
+			
+		
+		}else{
+			palette <- getAesPalette(n = 1, ...)
+			geomAes <- c(geomAes, setNames(list(palette), aes))
+		}
+		
+	}
+	
+	return(list(scalePars = scalePars, geomAes = geomAes))
 	
 }

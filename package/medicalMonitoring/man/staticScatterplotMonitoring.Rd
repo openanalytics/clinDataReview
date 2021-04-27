@@ -89,11 +89,6 @@ Please note that the same limits are set for all facets.}
 \item{'grid': }{\code{\link[ggplot2]{facet_grid}}}
 }}
 
-\item{scalePars}{List with parameters to customize
-scales. Each sublist should contains a set of parameters
-passed to the \code{\link[ggplot2]{scale_discrete_manual}}
-function.}
-
 \item{themePars}{List with general theme parameters 
 (see \code{\link[ggplot2]{theme}}).}
 

@@ -3,8 +3,6 @@
 #' @param colorLab String with label for \code{colorVar}.
 #' @param barmode String with type of barplot, either:
 #' 'group' or 'stack' (see parameter in \code{\link[plotly]{layout}}).
-#' @param colorPalette (optional) Named character vector with color palette.
-#' If not specified, the viridis color palette is used.
 #' @inheritParams medicalMonitoring-common-args-summaryStatsVis
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring

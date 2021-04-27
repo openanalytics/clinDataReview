@@ -21,7 +21,6 @@
 #' @param xLab,yLab (optional) String with labels for the x/y-axis.
 #' @param colorVar (optional) String with color variable.
 #' @param colorLab (optional) String with label for \code{colorVar}.
-#' @param colorPalette (optional) Named character vector with color palette.
 #' @param alpha (optional) Numeric with transparency, 1 by default.
 #' @inheritParams medicalMonitoring-common-args
 #' @inheritParams tableMonitoring
