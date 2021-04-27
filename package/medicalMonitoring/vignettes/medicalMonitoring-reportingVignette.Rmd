@@ -137,6 +137,35 @@ report for production**.
 medicalMonitoring::render_medicalMonitoringReport()
 
 ```
+The `render_medicalMonitoringReport` creates several html files, one per
+section/subsection.
+
+To open the full report, the user should open the _introduction.html_ file.
+
+However, if several files are available, it might be boring to look for the
+_introduction.html_ among many files. In such a case, it can be created a
+landing page, as described in the next section. 
+
+## Create redirect page
+
+A convenient way to store all html files into one location, and have only one
+page to look for to open the report is the function 
+
+```{r createRedirectPage, eval = FALSE}
+
+medicalMonitoring::createRedirectPage()
+
+```
+
+This function
+
+* stores all html files into a folder
+* create a landing page next to the folder that allows the user to navigate
+  through the report.
+  
+The default names of the folder and landing page are _report_dependencies_
+and _report.html_. The names can be changed by the user.
+
 
 ## Zip and send the report to collaborators
 
@@ -157,6 +186,21 @@ attachement in a mail/uploaded to a shared drive.
 If the folder is not unzipped before opening the reports, a message in the
 browser reminds to unzip the documents.
 
+
+## Add metadata
+
+Metadata can be added in the landing page, containing information concerning
+the data set creation time, the path to the original data etc.
+
+A metadata file should be in yaml format.
+
+The metadata function can be directly called in a Rmd documents with
+
+```{r metadata, eval = FALSE}
+
+medicalMonitoring::getMetadata()
+
+```
 
 ## Development mode
 
