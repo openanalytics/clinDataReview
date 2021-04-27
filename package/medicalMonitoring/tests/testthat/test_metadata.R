@@ -9,7 +9,7 @@ tmpYamlFile <- tempfile(
 listArgs <- list(
     pathSDTMs = "pathSDTMs",
     pathNewSDTM = "pathNewSDTM",
-    dateTimedateTimerun = "20200101",
+    dateTime = "20200101",
     datasetInfo = list(
         list(
             column1 = "ex.xpt",
