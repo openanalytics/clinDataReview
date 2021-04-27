@@ -47,10 +47,7 @@ getMetadata <- function(filePath, namesInfo) {
     datasetInfoTable <- rbindlist(datasetInfoFromList, use.names = TRUE, fill = TRUE)
   } else datasetInfoTable <- data.frame("Not Available" = datasetInfoFromList)
   
-  summaryInfoTable <- rbind(
-      paths = paths,
-      dateTime = dateTime  
-  )
+  summaryInfoTable <- rbind(paths, dateTime)
   
   resList <- list(
       summaryInfo = summaryInfoTable,
@@ -59,10 +56,9 @@ getMetadata <- function(filePath, namesInfo) {
   
   if(missing(namesInfo)) namesInfo <- setNames(
         rownames(summaryInfoTable), rownames(summaryInfoTable)
-  )
+    )
   
-  attr(resList, "namesInfo") <- namesInfo
-  
+  attr(resList, "namesInfo") <- namesInfo  
   class(resList) <- c("medicalMonitoringMetadata",  class(resList))
   
   return(resList)
@@ -104,12 +100,18 @@ knit_print.medicalMonitoringMetadata <- function(
     if (options$dateReportRun) {
       summaryInfoWithDate <- addDateOfReportRun(x$summaryInfo)
       print(
-          formatPathDateInfoMetadata(summaryInfo = summaryInfoWithDate, namesInfo = namesInfo)
+          formatPathDateInfoMetadata(
+              summaryInfo = summaryInfoWithDate, namesInfo = namesInfo
+          )
       )
     } else {
-      print(formatPathDateInfoMetadata(summaryInfo = x$summaryInfo, namesInfo = namesInfo))
+      print(
+          formatPathDateInfoMetadata(summaryInfo = x$summaryInfo, namesInfo = namesInfo)
+      )
     }
-  } else print(formatPathDateInfoMetadata(summaryInfo = x$summaryInfo, namesInfo = namesInfo))
+  } else print(
+        formatPathDateInfoMetadata(summaryInfo = x$summaryInfo, namesInfo = namesInfo)
+  )
   
   
   cat("\n\n")
@@ -154,26 +156,9 @@ addDateOfReportRun <- function(summaryInfo) {
 #' @param summaryInfo A matrix, see output from \code{\link{getMetadata}}.
 #' @return A matrix, same as input \code{summaryInfo} with renamed variable names.
 renamePathDateInfoMetadata <- function(summaryInfo, namesInfo) {
- 
-  idxTimeName <- grepl("time", names(namesInfo), ignore.case = TRUE)
-  namesInfoWithoutTime <- namesInfo[- which(idxTimeName)]
   
-  
-  for(i in 1 : length(namesInfoWithoutTime)) {
-    
-    rowShortName <- rownames(summaryInfo)[
-        grepl(names(namesInfo)[i], rownames(summaryInfo), ignore.case = TRUE)
-    ]
-    rowLongName <- namesInfo[i]
-    rownames(summaryInfo) <- gsub(rowShortName, rowLongName, rownames(summaryInfo))
-    
-  }
-  
-  rownames(summaryInfo) <- gsub(
-      rownames(summaryInfo)[grepl("time", rownames(summaryInfo), ignore.case = TRUE)],
-      namesInfo[which(idxTimeName)],
-      rownames(summaryInfo)
-  )
+  idx <- match(names(namesInfo), rownames(summaryInfo))  
+  rownames(summaryInfo)[idx] <- namesInfo
   
   rownames(summaryInfo) <- gsub(
       "dateToday", "Report & patient profiles creation date:", 
@@ -217,7 +202,7 @@ extractNamesOfMetadata <- function(paramsList, subListIdx) {
   
   nameToExtract <- names(paramsList)[subListIdx]
   
-  if(length(nameToExtract) > 1) {
+  if(! any(grepl("datasetInfo", nameToExtract, ignore.case = TRUE))) {
     
     subLists <- unlist(sapply(nameToExtract, function(i) paramsList[[i]]))
     subListToReturn <- matrix(subLists, nrow = length(nameToExtract))

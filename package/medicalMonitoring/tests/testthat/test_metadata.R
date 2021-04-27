@@ -9,7 +9,7 @@ tmpYamlFile <- tempfile(
 listArgs <- list(
     pathSDTMs = "pathSDTMs",
     pathNewSDTM = "pathNewSDTM",
-    dateTimeMeMorun = "20200101",
+    dateTimedateTimerun = "20200101",
     datasetInfo = list(
         list(
             column1 = "ex.xpt",
@@ -165,7 +165,7 @@ test_that("Rename metadata paths info", {
           rownames(summaryInfo)
       )
       
-      namesInfo <- setNames(c("Name 1", "Name 2", "Name 3"), rownames(summaryInfo))
+      namesInfo <- setNames(c("pathSDTMs" = "Name 1", "Name 2", "Name 3"), rownames(summaryInfo))
       
       expect_silent(
           resRename <- renamePathDateInfoMetadata(summaryInfo, namesInfo)
@@ -173,6 +173,19 @@ test_that("Rename metadata paths info", {
       expect_identical(
           rownames(resRename),
           c("Name 1", "Name 2", "Name 3")
+      )
+      
+      namesInfoUnordered <- c(
+          "pathSDTMs" = "Name 1",
+          "dateTime" = "Name 3",
+          "pathNewSDTM" = "Name 2"
+      )
+      expect_silent(
+          resRenameUnordered <- renamePathDateInfoMetadata(summaryInfo, namesInfoUnordered)
+      )
+      expect_identical(
+          rownames(resRenameUnordered),
+          rownames(resRename)
       )
       
     })
