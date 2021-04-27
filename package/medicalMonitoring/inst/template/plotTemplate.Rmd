@@ -71,7 +71,7 @@ library(plyr)
 
 ```
 
-```{r plotTemplate-startUpCode, code = params$startup}
+```{r plotTemplate-startUpCode, code = as.character(params$startup)}
 ```
 
 ```{r plotTemplate-setTitle}

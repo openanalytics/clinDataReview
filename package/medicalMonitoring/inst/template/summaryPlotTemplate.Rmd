@@ -63,7 +63,7 @@ library(plyr)
 
 ```
 
-```{r summaryPlotTemplate-startUpCode, code = params$startup}
+```{r summaryPlotTemplate-startUpCode, code = as.character(params$startup)}
 ```
 
 ```{r summaryPlotTemplate-setTitle}

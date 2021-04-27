@@ -75,7 +75,7 @@ library(htmltools)
 
 ```
 
-```{r countsVisualizationTemplate-startUpCode, code = params$startup}
+```{r countsVisualizationTemplate-startUpCode, code = as.character(params$startup)}
 ```
 
 ```{r countsVisualizationTemplate-setTitle}

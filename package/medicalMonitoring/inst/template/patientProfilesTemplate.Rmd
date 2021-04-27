@@ -63,7 +63,7 @@ library(ggplot2) # in case 'timeTrans'/'timeExpand' is specified
 
 ```
 
-```{r patientProfilesTemplate-startUpCode, code = params$startup}
+```{r patientProfilesTemplate-startUpCode, code = as.character(params$startup)}
 ```
 
 ```{r patientProfilesTemplate-setTitle}
