@@ -4,10 +4,12 @@
 \alias{formatPathDateInfoMetadata}
 \title{Format the info on paths from metadata}
 \usage{
-formatPathDateInfoMetadata(pathsInfo)
+formatPathDateInfoMetadata(summaryInfo, namesInfo)
 }
 \arguments{
-\item{pathsInfo}{matrix, see output from \code{\link{getMetadata}}.}
+\item{summaryInfo}{matrix, see output from \code{\link{getMetadata}}.}
+
+\item{namesInfo}{Named vector to rename the final output.}
 }
 \value{
 A kable object, to be printed.

@@ -7,10 +7,11 @@
 \method{knit_print}{medicalMonitoringMetadata}(x, options = list(), ...)
 }
 \arguments{
-\item{x}{List of two elements named \code{pathsInfo} and 
+\item{x}{List of two elements named \code{summaryInfo} and 
 \code{datasetInfo}.}
 
-\item{options}{List of extra options to be passed as chunk options.}
+\item{options}{List of extra options to be passed as chunk options. 
+The option \code{dateReportRun} sets to true prints the date and time of the report creation.}
 
 \item{...}{Extra arguments to be passed.}
 }
@@ -22,10 +23,10 @@ This function receives the metadata information from \code{\link{getMetadata}} a
 prints them in a format for an Rmd report.
 In general, any list could be called as long as it is composed by two elements:
 \itemize{
-\item{\code{pathsInfo}}{ an R object.}
+\item{\code{summaryInfo}}{ an R object.}
 \item{\code{datasetInfo}}{ a data.frame or a matrix.}
 }
-The first (\code{pathsInfo}) is printed as \code{\link[knitr]{kable}} object 
+The first (\code{summaryInfo}) is printed as \code{\link[knitr]{kable}} object 
 and the second (\code{datasetInfo}) is printed as hide/show html button with 
 the function \code{\link{collapseHtmlContent}}.
 }

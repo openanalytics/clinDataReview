@@ -4,13 +4,15 @@
 \alias{renamePathDateInfoMetadata}
 \title{Rename variable names of metadata info}
 \usage{
-renamePathDateInfoMetadata(pathsInfo)
+renamePathDateInfoMetadata(summaryInfo, namesInfo)
 }
 \arguments{
-\item{pathsInfo}{A matrix, see output from \code{\link{getMetadata}}.}
+\item{summaryInfo}{A matrix, see output from \code{\link{getMetadata}}.}
+
+\item{namesInfo}{Named vector to rename the final output.}
 }
 \value{
-A matrix, same as input \code{pathsInfo} with renamed variable names.
+A matrix, same as input \code{summaryInfo} with renamed variable names.
 }
 \description{
 Rename variable names referring to the paths and the date.

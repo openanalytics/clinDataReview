@@ -4,29 +4,72 @@
 \alias{getMetadata}
 \title{Read metadata file}
 \usage{
-getMetadata(filePath)
+getMetadata(filePath, namesInfo)
 }
 \arguments{
 \item{filePath}{String of path to file. Currently only one file path is supported. 
 If more than one paths are provided, a warning will be printed and 
 the first path will be used.}
+
+\item{namesInfo}{Named vector to rename the final output when printed in Rmd. 
+The renaming happens only if the metadata info are printed in Rmd and not in the console.}
 }
 \value{
 A list of:
 \itemize{
-\item{\code{pathsInfo}}{ Information extracted from the inputs 
-\code{pathSDTMs}, \code{pathMeMoADs} and \code{dateTimeMeMorun}.}
+\item{\code{summaryInfo}}{ Information extracted from the inputs 
+\code{path}, and \code{dateTime}.}
 \item{\code{datasetInfo}}{ Information extracted from \code{datasetInfo}.}
 }
 }
 \description{
 Read the metadata file from a yaml format.
-Currently, this function checks for existance of the following inputs 
-provided in yaml:
+This function checks for existance of the metadata file and its content.
+In particular, within the yaml file matches the following strings:
 \itemize{
-\item{\code{pathSDTMs}}{ Path to the SDTM data}
-\item{\code{pathMeMoADs}}{ Path to the Medical Monitoring Analysis Data sets}
-\item{\code{dateTimeMeMorun}}{ Date and time of MeMoADs generation}
+\item{\code{path}}{ Path to the data. More than one path is allowed.}
+\item{\code{dateTime}}{ Date and time, usually of the SDTM data creation. 
+When printing the metadata in Rmd document, there is the possibility to add
+ the date and time of the report generation. 
+See \code{\link{knit_print.medicalMonitoringMetadata}}. }
 \item{\code{datasetInfo}}{ General information about the data sets.}
 }
+}
+\details{
+Note that the input names do not necessarly have to match the exact names. 
+For instance, the user can also write "dataTimeMySDTMData", 
+and the function will parse for existance of the string "dataTime".
+}
+\examples{
+# Create temporary yaml file
+tmpdir <- tempdir()
+library(yaml)
+
+tmpYamlFile <- tempfile(
+    pattern = "file", tmpdir = tempdir(), fileext = ".yml"
+)
+listArgs <- list(
+    pathSDTMs = "path/To/SDTM",
+    pathSDTMReformat = "path/To/SDTMReformat",
+    dateTime = "20200101",
+    datasetInfo = list(
+        list(
+            column1 = "ex.xpt",
+            column2 = "20200101"
+        ),
+        list(
+            column1 = "sl.xpt",
+            column2 = "20200101",
+            column3 = "OK"
+        )
+    )
+)
+write_yaml(
+    listArgs,
+    file = tmpYamlFile
+)
+
+# Run metadata
+# Note: the 'datasetInfo' can also contain empty elements
+getMetadata(filePath = tmpYamlFile)
 }
