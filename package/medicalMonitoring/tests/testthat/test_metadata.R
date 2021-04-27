@@ -31,9 +31,12 @@ test_that("Check availability of metadata", {
       
       listName <- list(A = c(1, 2))
       
+      expectation <- matrix(listName$A, nrow = 1)
+      rownames(expectation) <- "A"
+      
       expect_identical(
           checkAvailabilityMetadata(listName, subListName = "A"),
-          listName$A
+          expectation
       )
       
       expect_identical(
@@ -84,7 +87,7 @@ test_that("Warning in get metadata when more than one file is provided", {
       summaryInfos <- resMetadata1$summaryInfo
       expect_identical(
           rownames(summaryInfos),
-          c("paths", "dateTime")
+          c("path1", "dateTime")
       )
       expect_identical(summaryInfos[2], "Not available")
       
