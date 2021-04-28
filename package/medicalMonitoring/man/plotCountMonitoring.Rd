@@ -56,7 +56,8 @@ By default, the treemap is colored based by section.}
 
 \item{colorLab}{(optional) String with label for \code{colorVar}.}
 
-\item{colorPalette}{palette for colors. By default, the color blind palette. 
+\item{colorPalette}{(optional) Named character vector with color palette.
+If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}
 
 \item{colorRange}{(optional) Numeric vector of length 2 with range 

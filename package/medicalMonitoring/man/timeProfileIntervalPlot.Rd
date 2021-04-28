@@ -83,7 +83,9 @@ of the end of the time interval.}
 
 \item{colorLab}{(optional) String with label for \code{colorVar}.}
 
-\item{colorPalette}{(optional) Named character vector with color palette.}
+\item{colorPalette}{(optional) Named character vector with color palette.
+If not specified, the viridis color palette is used.\cr
+See \code{\link[clinUtils]{clinColors}}.}
 
 \item{alpha}{(optional) Numeric with transparency, 1 by default.}
 

@@ -3,7 +3,11 @@
 #' @param facetPars List with facetting parameters, passed to the facetting function.
 #' @param aesPointVar List with specification of aesthetic variable(s),
 #' for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
-#' e.g. \code{list(color = "TRTP")}.
+#' e.g. \code{list(color = "TRTP")}.\cr
+#' Please note by default symbols with fill and color are used.
+#' Color is used for the outside of the points, fill for the inside
+#' and the hover. Usually, you might want to specify both
+#' filling and coloring.
 #' @param aesLineVar List with specification of aesthetic variable(s),
 #' for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
 #' e.g. \code{list(group = "USUBJID")}.
@@ -125,7 +129,7 @@ staticScatterplotMonitoring <- function(
 			aesLineVar <- sapply(aesLineVar, sym, simplify = FALSE)
 			argsGeomLine <- c(
 				list(mapping = do.call(aes, aesLineVar)),
-				geomAes[c("color", "linetype")]
+				geomAes[c("color", "colour", "linetype")]
 			)
 			argsGeomLine <- Filter(Negate(is.null), argsGeomLine)
 			gg <- gg + do.call(geom_line, argsGeomLine)
@@ -138,7 +142,7 @@ staticScatterplotMonitoring <- function(
 	aesGeom <- c(aesPointVar, if(!is.null(hoverVars))	list(text = sym("hover")))
 	argsGeom <- c(
 		list(mapping = do.call(aes, aesGeom)),
-		geomAes[c("color", "fill", "shape")]
+		geomAes[c("color", "colour", "fill", "shape")]
 	)
 	argsGeom <- Filter(Negate(is.null), argsGeom)
 	geomFct <- match.fun(paste("geom", geomType, sep = "_"))
@@ -236,13 +240,15 @@ setPaletteStaticScatterplotMonitoring <- function(
 	scalePars, geomAes,
 	...){
 
+	aesType <- if(aes %in% c("color", "colour")){c("color", "colour")}else{aes}
+
 	isAes <- sapply(scalePars, function(x)
-		aes %in% x[["aesthetic"]]
+		any(aesType %in% x[["aesthetic"]])
 	)
 
 	isPaletteSpecified <- if(!is.null(scalePars) && any(isAes)){
 		any(hasName(scalePars[[which(isAes)]], c("palette", "values")))	
-	}else	hasName(geomAes, aes)
+	}else	any(hasName(geomAes, aesType))
 
 	# if palette not specified by the user
 	if(!isPaletteSpecified){
@@ -255,6 +261,7 @@ setPaletteStaticScatterplotMonitoring <- function(
 		
 		getAesPalette <- switch(aes,
 			color = getColorPalette,
+			colour = getColorPalette,
 			fill = getColorPalette,
 			shape = getShapePalette,
 			linetype = getLinetypePalette			

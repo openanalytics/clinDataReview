@@ -89,6 +89,10 @@ If not specified, a random id, as 'plotMonitoring[X]' is used.}
 \item{title}{String with title for the plot.}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
+
+\item{colorPalette}{(optional) Named character vector with color palette.
+If not specified, the viridis color palette is used.\cr
+See \code{\link[clinUtils]{clinColors}}.}
 }
 \description{
 Common arguments for the functions of the medicalMonitoring package

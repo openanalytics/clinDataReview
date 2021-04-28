@@ -19,7 +19,12 @@ If multiple, currently only the first one is considered.}
 \item{scalePars}{List with parameters to customize
 scales. Each sublist should contains a set of parameters
 passed to the \code{\link[ggplot2]{scale_discrete_manual}}
-function.}
+function.\cr
+If palette(s) are not specified, default palettes are used
+(see \link[clinUtils]{getColorPalette}, 
+\link[clinUtils]{getShapePalette}, 
+\link[clinUtils]{getLinetypePalette}
+)}
 
 \item{geomAes}{List with aesthetic for each geom.}
 

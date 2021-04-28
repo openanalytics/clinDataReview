@@ -48,7 +48,8 @@ barplotMonitoring(
 \item{colorLab}{String with label for \code{colorVar}.}
 
 \item{colorPalette}{(optional) Named character vector with color palette.
-If not specified, the viridis color palette is used.}
+If not specified, the viridis color palette is used.\cr
+See \code{\link[clinUtils]{clinColors}}.}
 
 \item{barmode}{String with type of barplot, either:
 'group' or 'stack' (see parameter in \code{\link[plotly]{layout}}).}

@@ -331,7 +331,7 @@ test_that("custom color palette is specified", {
                 x = as.numeric(x$x),
                 y = as.numeric(x$y),
                 NRIND = as.character(x$name),
-                color = as.character(x$marker$color),
+                color = as.character(x$marker$line$color),
                 stringsAsFactors = FALSE
             )
           })

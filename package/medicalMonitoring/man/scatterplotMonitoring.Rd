@@ -60,7 +60,11 @@ scatterplotMonitoring(
 
 \item{aesPointVar}{List with specification of aesthetic variable(s),
 for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
-e.g. \code{list(color = "TRTP")}.}
+e.g. \code{list(color = "TRTP")}.\cr
+Please note by default symbols with fill and color are used.
+Color is used for the outside of the points, fill for the inside
+and the hover. Usually, you might want to specify both
+filling and coloring.}
 
 \item{aesLineVar}{List with specification of aesthetic variable(s),
 for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
