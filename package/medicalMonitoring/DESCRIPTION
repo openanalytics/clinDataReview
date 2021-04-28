@@ -18,18 +18,15 @@ Imports:
   knitr,
   jsonlite,
   jsonvalidate,
-  magrittr,
   methods,
   plotly, 
   plyr,
   rmarkdown,
   stats,
   stringr,
-  rvest,
   utils,
   tools,
-  yaml,
-  xml2
+  yaml
 License: file LICENSE
 Suggests: 
     countrycode,
@@ -39,6 +36,7 @@ Suggests:
     patientProfilesVis (>= 0.12.0), 
     reshape2,
     testthat,
-    vdiffr
+    vdiffr,
+    xml2
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1

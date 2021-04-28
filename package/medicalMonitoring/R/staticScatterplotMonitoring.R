@@ -41,6 +41,7 @@
 #' \item{'col': }{barplot with \code{\link[ggplot2]{geom_col}} is created}
 #' }
 #' @inheritParams medicalMonitoring-common-args
+#' @inheritParams setPaletteStaticScatterplotMonitoring
 #' @return \code{\link[ggplot2]{ggplot}} object
 #' @import ggplot2
 #' @importFrom clinUtils getLabelVar
@@ -234,6 +235,7 @@ staticScatterplotMonitoring <- function(
 #' @return List with: \code{scalePars} and \code{geomAes},
 #' each of those potentially updated with default palette(s).
 #' @importFrom clinUtils getColorPalette getShapePalette getLinetypePalette
+#' @importFrom utils hasName
 #' @author Laure Cougnaud
 setPaletteStaticScatterplotMonitoring <- function(
 	data, var, aes, 
