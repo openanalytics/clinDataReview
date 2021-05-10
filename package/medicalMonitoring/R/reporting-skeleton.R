@@ -24,7 +24,7 @@ createExampleMetadata <- function(dirName) {
   
   write_yaml(
       list(
-          pathSDTMs = "divisionTemplate.Rmd",
+          pathSDTMs = dirName,
           dateTimeSDTMcreation = "20210101",
           datasetInfo = list(
               list(
