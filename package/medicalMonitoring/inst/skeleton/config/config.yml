@@ -1,0 +1,13 @@
+study: "Example study"
+version: "Version 1"
+title: "Clinical data review for the example study"
+contactPerson: "Pippo"
+currentDataTransfer: "2021-01-01"
+previousDataTransfer: "2020-12-01"
+pathDataFolder: "data"
+patientProfilePath: patientProfiles
+config:
+   - config-patientProfiles.yml
+   - config-adverseEvents-division.yml
+   - config-adverseEvents-all-countsVisualization.yml
+
