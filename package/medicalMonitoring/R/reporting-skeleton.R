@@ -15,7 +15,7 @@
 #' the skeleton should be created.
 #' @return The files to run a report are written in the specified 
 #' directory. To run the report, the user can call the 
-#' \link{\code{render_medicalMonitoringReport}}.
+#' \code{\link{render_medicalMonitoringReport}}.
 #' @export 
 reportSkeleton <- function(dirName) {
   
@@ -39,6 +39,8 @@ reportSkeleton <- function(dirName) {
 
 
 #' @import clinUtils
+#' @importFrom utils data
+#' @importFrom haven write_xpt
 writeXpt <- function(dirName) {
   
   data(dataADaMCDISCP01)

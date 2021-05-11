@@ -13,6 +13,7 @@ Imports:
   crosstalk,
   data.table,
   ggplot2,
+  haven,
   htmltools,
   htmlwidgets,
   knitr,
@@ -30,7 +31,6 @@ Imports:
 License: file LICENSE
 Suggests: 
     countrycode,
-    haven,
     inTextSummaryTable (>= 2.19.0),
     pander,
     patientProfilesVis (>= 0.12.0), 
