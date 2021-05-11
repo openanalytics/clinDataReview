@@ -1,3 +1,5 @@
+#'@importFrom utils globalVariables
+utils::globalVariables("dataADaMCDISCP01")
 
 #' Create the skeleton of a report
 #' 
@@ -23,14 +25,17 @@ reportSkeleton <- function(dirName) {
   preexistingFiles <- list.files(dirName)
   if(length(preexistingFiles) > 0) warning("'", dirName, "' is not empty. Files might be overwritten.")
   
-  # create data folder
   dirData <- file.path(dirName, "data")
-  if(length(preexistingFiles) == 0 || ! any(grepl("data", preexistingFiles))) dir.create(dirData)
+  dirConfig <- file.path(dirName, "config")
+  if(length(preexistingFiles) == 0) {
+    if(! any(grepl("data", preexistingFiles))) dir.create(dirData)
+    if(! any(grepl("config", preexistingFiles))) dir.create(dirConfig)
+  }
   
-  writeXpt(dirData)
-  
+  writeXpt(dirData)  
   createExampleMetadata(dirData)
   
+  createMainConfigSkeleton(dirName = dirConfig, dirData = dirData)
   moveSkeletonFiles(dirName)
   
   message("The skeleton of the report is ready!")
@@ -47,13 +52,13 @@ writeXpt <- function(dirName) {
   
   sapply(names(dataADaMCDISCP01), function(nameI) {
         
-    dataI <- dataADaMCDISCP01[[nameI]]
-    pathI <- file.path(dirName, nameI)
-    
-    write_xpt(dataI, pathI)
-       
-  })
- 
+        dataI <- dataADaMCDISCP01[[nameI]]
+        pathI <- sprintf("%s.xpt", file.path(dirName, nameI))
+        
+        write_xpt(dataI, pathI)
+        
+      })
+  
 }
 
 
@@ -97,6 +102,38 @@ moveSkeletonFiles <- function(dirName) {
       to = dirName,
       overwrite = TRUE, recursive = TRUE
   )
+   
+}
+
+#' @importFrom yaml write_yaml
+createMainConfigSkeleton <- function(dirName, dirData) {
   
+  fileName <- file.path(dirName, "config.yml")
+  
+#  configFilesSkeleton <- list.files(
+#      system.file("skeleton", "config", package = "medicalMonitoring")
+#  )
+  
+  write_yaml(
+      list(
+          study = "Example study",
+          version = "Version 1",
+          title = "Clinical data review for the example study",
+          contactPerson = "Pippo",
+          currentDataTransfer = "2021-01-01",
+          previousDataTransfer = "2020-12-01",
+          pathDataFolder = dirData,
+          patientProfilePath = "patientProfiles",
+          config = c(
+              "config-patientProfiles.yml",
+              "config-adverseEvents-division.yml"
+          )
+      ),
+      fileName
+  )
   
 }
+
+
+
+
