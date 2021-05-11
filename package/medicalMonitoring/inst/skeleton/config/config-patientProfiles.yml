@@ -21,21 +21,21 @@ patientProfilesParams:
       paramValueVar: ["SEX", "RACE", "ETHNIC", "SITEID", "AGE", "TRTSDT", "ARM"]
       title: Demography
       label: DM
-        
+              
   - typePlot: text
     dataFileName: adae.xpt
     plotParams:
-      paramValueVar: ["AEDECOD", "AESER" ,"AESEV", "AEREL", "ASTDT", "AENDT"]
+      paramValueVar: ["AEDECOD", "AESER" ,"AESEV", "AEREL", "ASTDY", "AENDY"]
       table: true
       title: Adverse events listing
       label: AEtext
-
+      
   - typePlot: interval
     dataFileName: adae.xpt
     dataProcessing:
       - annotate:
         - vars: AESEVN
-          varFct: "as.numeric(as.factor(dataAE$AESEV))"
+          varFct: "as.numeric(as.factor(AESEV))"
         - vars: AESEV
           varFct: "reorder(AESEV, AESEVN)"
     plotParams:
@@ -57,55 +57,32 @@ patientProfilesParams:
       alpha: 0.6
       title: Adverse events graph
       label: AE
-
-  - typePlot: interval
-    dataFileName: adcm.xpt
-    plotParams:
-      paramVar: [CMDECOD]
-      paramGroupVar: CMCLAS
-      timeStartVar: ASTDY
-      timeEndVar: AENDY
+      
+#  - typePlot: interval
+#    dataFileName: adcm.xpt
+#    plotParams:
+#      paramVar: [CMDECOD]
+#      paramGroupVar: CMCLAS
+#      timeStartVar: ASTDY
+#      timeEndVar: AENDY
  #     timeStartShapeVar: ASTFLG
  #     timeEndShapeVar: AENFLG
-      colorVar: ACMATC1T
-      timeTrans: 'getTimeTrans(type = "asinh-neg")'
-      timeExpand: "expansion(mult = 0.01)"
-      shapePalette:
-        Complete: "\u25A0"
-        Partial: "\u25CB"
-        Missing start: "\u25C4"
-        Missing end: "\u25BA"
-        Ongoing: "\u25BA"
-        'NA': "+"
-      shapeLab: Date status
-      shapeSize: 4
-      timeAlign: false
-      alpha: 0.6
-      title: Concomitant medications
-      label: CM
-
- # - typePlot: interval
- #   dataFileName: adex.sas7bdat
- #   plotParams:
- #     paramVar: TREAT
- #     timeStartVar: ASTDY
- #     timeEndVar: AENDY
- #     timeStartShapeVar: ASTFLG
- #     timeEndShapeVar: AENFLG
- #     #colorVar: EXDOSFRM
- #     shapePalette:
- #       Complete: "\u25A0"
- #       Partial: "\u25CB"
- #       Missing start: "\u25C4"
- #       Missing end: "\u25BA"
- #       Ongoing: "\u25BA"
- #       'NA': "+"
- #     shapeLab: Date status
- #     shapeSize: 4
- #     timeAlign: false
- #     alpha: 0.6
- #     title: Treatment exposure
- #     label: EX
+#      colorVar: ACMATC1T
+#      timeTrans: 'getTimeTrans(type = "asinh-neg")'
+#      timeExpand: "expansion(mult = 0.01)"
+#      shapePalette:
+#        Complete: "\u25A0"
+#        Partial: "\u25CB"
+#        Missing start: "\u25C4"
+#        Missing end: "\u25BA"
+#        Ongoing: "\u25BA"
+#        'NA': "+"
+#      shapeLab: Date status
+#      shapeSize: 4
+#      timeAlign: false
+#      alpha: 0.6
+#      title: Concomitant medications
+#      label: CM
 
   - typePlot: line
     dataFileName: adlbc.xpt
@@ -166,37 +143,6 @@ patientProfilesParams:
       title: Vital signs
       label: VS
 
- # - typePlot: line
- #   dataFileName: adeg.sas7bdat
- #   dataProcessing:
- #     - annotate:
- #       - vars: ANRIND
- #         varFct: 'factor(ANRIND)'
- #   plotParams:
- #     paramValueVar: AVAL
- #     paramValueRangeVar: [ANRLO, ANRHI] # could ANRLO be in the data and missing?
- #     paramNameVar: PARAM # and EGPOS if available?
- #     timeVar: ADY
- #     colorVar: ANRIND
- #     shapeVar: ANRIND
- #     shapePalette: 
- #       Low Panic: "\u25BC"
- #       Low: "\u25BC"
- #       Low Normal: "\u25BC"
- #       Normal: "\u25CF"
- #       High Normal: "\u25B2"
- #       High: "\u25B2"
- #       High Panic: "\u25B2"
- #       Abnormal: "\u2666"
- #       Unknown: "+"
- #       'NA': "+"
- #     shapeSize: 4
- #     alpha: 0.6
- #     title: Electrocardiogram
- #     label: EG
-      
-      
-
 # Parameters for the 'createSubjectProfileReport' function
 patientProfilesCreateReportParams:
   # export patient profiles first for subjects with AE with higher toxicity grade
@@ -214,4 +160,5 @@ tableParams:
     - filter:
       - var: "SAFFL"
         value: "Y"
-      
+        
+       
