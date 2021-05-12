@@ -3,162 +3,192 @@ template: patientProfilesTemplate.Rmd
 templatePackage: medicalMonitoring
 reportTitle: Patient profiles
 reportTitleLevel: 1
-createPatientProfiles: TRUE
+createPatientProfiles: FALSE
 
 # Parameters used for all modules
-patientProfilesGeneralParams:
-# only create patient profiles for the subjects part of the safety population
-  subsetDataFileName: adsl.sas7bdat
-  subsetVar: SAFFL
-  subsetValue: 'Y'
+# patientProfilesGeneralParams:
+# only create patient profiles for a subset for testing
+#  subjectSubset: "01-701-1015"
+#  subjectSample: 5
 
 # Parameters for the creation of each specific module
 patientProfilesParams:
 
   - typePlot: text
-    dataFileName: adsl.xpt
+    dataFileName: DM.xpt
+    dataProcessing:
+      - filter:
+        # safety analysis set: treated-patients
+        - var: "RFXSTDTC" 
+          value: ""
+          rev: true
     plotParams:
-      paramValueVar: ["SEX", "RACE", "ETHNIC", "SITEID", "AGE", "TRTSDT", "ARM"]
+      paramValueVar: ["SEX", "RACE", "ETHNIC", "ARM", "ACTARM", "COUNTRY", "SITEID", "RFXSTDTC", "RFXENDTC"]
       title: Demography
-      label: DM
-              
+      label: Demography
+
   - typePlot: text
-    dataFileName: adae.xpt
-    plotParams:
-      paramValueVar: ["AEDECOD", "AESER" ,"AESEV", "AEREL", "ASTDY", "AENDY"]
-      table: true
-      title: Adverse events listing
-      label: AEtext
-      
-  - typePlot: interval
-    dataFileName: adae.xpt
+    dataFileName: MH.xpt
     dataProcessing:
       - annotate:
-        - vars: AESEVN
-          varFct: "as.numeric(as.factor(AESEV))"
-        - vars: AESEV
-          varFct: "reorder(AESEV, AESEVN)"
+        - dataset: DM
+          vars: RFXSTDTC
+      - filter:
+        # safety analysis set: treated-patients
+        - var: "RFXSTDTC" 
+          value: ""
+          rev: true
     plotParams:
-      paramVar: AEDECOD
-      timeStartVar: ASTDY
-      timeEndVar: AENDY
- #     timeStartShapeVar: ASTFLG
- #     timeEndShapeVar: AENFLG
-      colorVar: AESEV
-      shapePalette:
-        Complete: "\u25A0"
-        Partial: "\u25CB"
-        Missing start: "\u25C4"
-        Missing end: "\u25BA"
-        Ongoing: "\u25BA"
-        'NA': "+"
+      paramValueVar: ["MHBODSYS", "MHDECOD", "MHSTDTC"]
+      paramGroupVar: MHSTDTC
+      table: true
+      title: Medical history (Start - End)
+      label: Medical history (Start - End)
+
+  - typePlot: interval
+    dataFileName: CM.xpt
+    dataProcessing:
+      - annotate:
+        - dataset: DM
+          vars: RFXSTDTC
+      - filter:
+        # safety analysis set: treated-patients
+        - var: "RFXSTDTC" 
+          value: ""
+          rev: true
+    plotParams:
+      paramVar: [CMDECOD, CMTRT, CMDOSE, CMDOSU, CMDOSFRQ, CMROUTE]
+      paramGroupVar: CMINDC
+      timeStartVar: CMSTDY
+      timeEndVar: CMENDY
+      colorVar: CMCLAS
+      timeTrans: 'getTimeTrans(type = "asinh-neg")'
+      timeExpand: "expansion(mult = 0.01)"
       shapeLab: Date status
       shapeSize: 4
       alpha: 0.6
-      title: Adverse events graph
-      label: AE
-      
-#  - typePlot: interval
-#    dataFileName: adcm.xpt
-#    plotParams:
-#      paramVar: [CMDECOD]
-#      paramGroupVar: CMCLAS
-#      timeStartVar: ASTDY
-#      timeEndVar: AENDY
- #     timeStartShapeVar: ASTFLG
- #     timeEndShapeVar: AENFLG
-#      colorVar: ACMATC1T
-#      timeTrans: 'getTimeTrans(type = "asinh-neg")'
-#      timeExpand: "expansion(mult = 0.01)"
-#      shapePalette:
-#        Complete: "\u25A0"
-#        Partial: "\u25CB"
-#        Missing start: "\u25C4"
-#        Missing end: "\u25BA"
-#        Ongoing: "\u25BA"
-#        'NA': "+"
-#      shapeLab: Date status
-#      shapeSize: 4
-#      timeAlign: false
-#      alpha: 0.6
-#      title: Concomitant medications
-#      label: CM
+      title: Concomitant medications
+      label: Concomitant medications
 
-  - typePlot: line
-    dataFileName: adlbc.xpt
+  - typePlot: interval
+    dataFileName: EX.xpt
     dataProcessing:
       - annotate:
-        - vars: LBNRIND
-          varFct: 'factor(LBNRIND)'
+        - dataset: DM
+          vars: RFXSTDTC
+      - filter:
+        # safety analysis set: treated-patients
+        - var: "RFXSTDTC" 
+          value: ""
+          rev: true
     plotParams:
-      paramValueVar: AVAL
-      paramValueRangeVar: [A1LO, A1HI]
-      paramNameVar: [PARAM]
-      paramGroupVar: [PARCAT1]
-      timeVar: ADY
+      paramVar: [EXTRT, EXDOSE, EXDOSU, EXDOSFRQ, EXDOSFRM, EXROUTE]
+      timeStartVar: EXSTDY
+      timeEndVar: EXENDY
+      colorVar: EXDOSFRM
+      shapeLab: Date status
+      shapeSize: 4
+      timeAlign: false
+      alpha: 0.6
+      title: Treatment exposure
+      label: Treatment exposure
+
+  - typePlot: interval
+    dataFileName: AE.xpt
+    dataProcessing:
+      - annotate:
+        - dataset: DM
+          vars: RFXSTDTC
+      - filter:
+        # safety analysis set: treated-patients
+        - var: "RFXSTDTC" 
+          value: ""
+          rev: true
+      - annotate:
+        - vars: ASEV
+          varFct: 'factor(AESEV, levels = c("MILD", "MODERATE", "SEVERE"))'
+    plotParams:
+      paramVar: AEDECOD
+      timeStartVar: AESTDY
+      timeEndVar: AEENDY
+      colorVar: AESEV
+      colorPalette: 'setNames(glpgStyle::glpgColor()[c("green", "sand", "yellow", "orange", "signalRed", "grey")], c("Mild", "MODERATE", "SEVERE", "LIFE-THREATENING", "FATAL", "NA"))'
+      shapeLab: Date status
+      shapeSize: 4
+      alpha: 0.6
+      title: Adverse events
+      label: Adverse events
+
+  - typePlot: line
+    dataFileName: LB.xpt
+    dataProcessing:
+      - annotate:
+        - dataset: DM
+          vars: RFXSTDTC
+      - filter:
+        # safety analysis set: treated-patients
+        - var: "RFXSTDTC" 
+          value: ""
+          rev: true
+      - annotate:
+        - vars: LBNRIND
+          varFct: 'factor(ifelse(is.na(LBNRIND), "UNKNOWN", LBNRIND), levels = c("LOW", "NORMAL", "HIGH", "ABNORMAL", "UNKNOWN"))'
+    plotParams:
+      paramValueVar: LBSTRESN
+      paramValueRangeVar: [LBSTNRLO, LBSTNRHI]
+      paramNameVar: [LBTEST]
+      paramGroupVar: [LBCAT]
+      timeVar: LBDY
       colorVar: LBNRIND
+      colorPalette: 'setNames(glpgStyle::glpgColor()[c("orange", "green", "orange", "signalRed", "grey")], c("LOW", "NORMAL", "HIGH", "ABNORMAL", "UNKNOWN"))'
       shapeVar: LBNRIND
       shapePalette: 
-        Low Panic: "\u25BC"
-        Low: "\u25BC"
-        Low Normal: "\u25BC"
-        Normal: "\u25CF"
-        High Normal: "\u25B2"
-        High: "\u25B2"
-        High Panic: "\u25B2"
-        Abnormal: "\u2666"
-        Unknown: "+"
-        'NA': "+"
+        LOW: "\u25BC"
+        NORMAL: "\u25CF"
+        HIGH: "\u25B2"
+        ABNORMAL: "\u2605"
+        UNKNOWN: "\u271A"
       shapeSize: 4
       alpha: 0.6
       title: Laboratory test measurements
-      label: LB
+      label: Laboratory test measurements
 
   - typePlot: line
-    dataFileName: advs.xpt
+    dataFileName: VS.xpt
     dataProcessing:
       - annotate:
-        - vars: ANRIND
-          varFct: 'factor(ANRIND)'
+        - dataset: DM
+          vars: RFXSTDTC
+      - filter:
+        # safety analysis set: treated-patients
+        - var: "RFXSTDTC" 
+          value: ""
+          rev: true
     plotParams:
-      paramValueVar: AVAL
-      paramValueRangeVar: [ANRLO, ANRHI]
-      paramNameVar: [PARAM]
-      timeVar: ADY
-      colorVar: ANRIND
-      shapeVar: ANRIND
-      shapePalette: 
-        Low Panic: "\u25BC"
-        Low: "\u25BC"
-        Low Normal: "\u25BC"
-        Normal: "\u25CF"
-        High Normal: "\u25B2"
-        High: "\u25B2"
-        High Panic: "\u25B2"
-        Abnormal: "\u2666"
-        Unknown: "+"
-        'NA': "+"
-      shapeSize: 4
+      paramValueVar: VSSTRESN
+      paramNameVar: [VSTEST]
+      timeVar: VSDY
+      colorVar: VSPOS
+      shapeVar: VSPOS
+      shapeSize: 2
       alpha: 0.6
       title: Vital signs
-      label: VS
+      label: Vital signs
 
 # Parameters for the 'createSubjectProfileReport' function
 patientProfilesCreateReportParams:
-  # export patient profiles first for subjects with AE with higher toxicity grade
-  subjectSortDataFileName: adae.sas7bdat
-  subjectSortVar: AESEV
-  subjectSortDecreasing: TRUE
-  exportBatchSize: 10 # create reports by batch of 10 patients
+  exportBatchSize: 1 # create reports by batch of 1 patients
   timeAlignPerSubject: all
 
 # Parameters for the table
 tableParams:
-  dataFileName: "adsl.xpt"
-  vars: ["SEX", "RACE", "ETHNIC", "SITEID", "AGE", "TRTSDT", "ARM"]
+  dataFileName: DM.xpt
   dataProcessing:
     - filter:
-      - var: "SAFFL"
-        value: "Y"
-        
-       
+      # safety analysis set: treated-patients
+      - var: "RFXSTDTC" 
+        value: ""
+        rev: true
+  vars: ["SEX", "RACE", "ETHNIC", "ARM", "ACTARM", "COUNTRY", "SITEID", "RFXSTDTC", "RFXENDTC"]
+
+      

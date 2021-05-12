@@ -127,7 +127,8 @@ createMainConfigSkeleton <- function(dirName, dirData) {
           config = c(
               "config-patientProfiles.yml",
               "config-adverseEvents-division.yml",
-              "config-adverseEvents-all-countsVisualization.yml"
+              "config-adverseEvents-all-countsVisualization.yml",
+              "config-adverseEvents-timeProfiles.yml"
           )
       ),
       fileName

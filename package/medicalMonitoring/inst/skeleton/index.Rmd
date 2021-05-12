@@ -4,7 +4,9 @@ subtitle: "Study: `r params$study`\n`r params$version`"
 date: "`r Sys.Date()`"
 documentclass: book
 output:   
-  glpgStyle::gitbook_report:
+  medicalMonitoring::gitbook_medicalMonitoring_report:
+    logo: "figures/logoText.svg"
+    logoHeight: "55px"
     split_by: 'section+number'
 editor_options: 
   chunk_output_type: console
