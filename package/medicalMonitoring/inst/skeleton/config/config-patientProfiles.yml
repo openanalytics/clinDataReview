@@ -112,7 +112,6 @@ patientProfilesParams:
       timeStartVar: AESTDY
       timeEndVar: AEENDY
       colorVar: AESEV
-      colorPalette: 'setNames(glpgStyle::glpgColor()[c("green", "sand", "yellow", "orange", "signalRed", "grey")], c("Mild", "MODERATE", "SEVERE", "LIFE-THREATENING", "FATAL", "NA"))'
       shapeLab: Date status
       shapeSize: 4
       alpha: 0.6
@@ -140,7 +139,6 @@ patientProfilesParams:
       paramGroupVar: [LBCAT]
       timeVar: LBDY
       colorVar: LBNRIND
-      colorPalette: 'setNames(glpgStyle::glpgColor()[c("orange", "green", "orange", "signalRed", "grey")], c("LOW", "NORMAL", "HIGH", "ABNORMAL", "UNKNOWN"))'
       shapeVar: LBNRIND
       shapePalette: 
         LOW: "\u25BC"
