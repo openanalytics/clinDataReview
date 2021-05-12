@@ -43,16 +43,16 @@ reportSkeleton <- function(dirName) {
 }
 
 
-#' @import clinUtils
+#' @import clinUtils 
 #' @importFrom utils data
 #' @importFrom haven write_xpt
 writeXpt <- function(dirName) {
   
-  data(dataADaMCDISCP01)
+  dataSkeleton <- clinUtils::dataSDTMCDISCP01
   
-  sapply(names(dataADaMCDISCP01), function(nameI) {
+  sapply(names(dataSkeleton), function(nameI) {
         
-        dataI <- dataADaMCDISCP01[[nameI]]
+        dataI <- dataSkeleton[[nameI]]
         pathI <- sprintf("%s.xpt", file.path(dirName, nameI))
         
         write_xpt(dataI, pathI)
@@ -126,7 +126,8 @@ createMainConfigSkeleton <- function(dirName, dirData) {
           patientProfilePath = "patientProfiles",
           config = c(
               "config-patientProfiles.yml",
-              "config-adverseEvents-division.yml"
+              "config-adverseEvents-division.yml",
+              "config-adverseEvents-all-countsVisualization.yml"
           )
       ),
       fileName
