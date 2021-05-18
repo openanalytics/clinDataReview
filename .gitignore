@@ -37,5 +37,8 @@ package/Meta
 figures_vignette
 *.css
 !package/medicalMonitoring/inst/js/**/*.css
+!package/medicalMonitoring/inst/css/gitbook.css
 
 report/CDISC01/comparisonData
+
+report/TOLEDO/dev/*
