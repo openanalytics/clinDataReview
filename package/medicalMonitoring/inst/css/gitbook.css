@@ -1,0 +1,50 @@
+/*** Increase margins ***/
+.book .book-body .page-wrapper .page-inner {
+  max-width: 1800px !important;
+  margin-left: 150px;
+  margin-right: 150px;
+}
+
+/*** figures ***/
+div.figure p.caption {
+  color: rgb(0, 0, 0);
+  font-style: italic;
+}
+
+/*** tables ***/
+
+table {
+  border: none;
+}
+
+caption {
+  display: table-caption;
+  color: rgb(0, 0, 0);
+  font-style: italic;
+  width: 100%;
+}
+
+/*** DT ***/
+
+/* fix the issue that header is not resized when scrollX = TRUE when clicking on: 'Toggle sidebar' */
+/*.dataTables_scrollHeadInner {width: 100% !important;}*/
+.book .book-body .page-wrapper .page-inner section.normal table {width: 100% !important;}
+
+/* Include a scrolling bar for button collection 
+ otherwise bar removed for DT within a bookdown doc 
+ Note: the maximum height of the table should be specified
+ (might not work for small tables)
+*/
+.dt-button-collection {
+max-height: 400px;
+overflow-y: scroll !important;
+}
+
+/*** links in document ***/
+a, a.uri, a:hover, a:visited, a:active, a:focus {
+  color: rgb(0, 70, 62);
+}
+
+a:hover {
+  text-decoration: underline;
+}
