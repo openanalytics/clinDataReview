@@ -5,9 +5,12 @@
 \title{Medical monitoring format for bookdown report.}
 \usage{
 gitbook_medicalMonitoring_report(
+  logo = NULL,
+  logoHeight = "60px",
   split_by = "section+number",
   config = list(sharing = NULL, toc = list(collapse = "section")),
   extra_dependencies = NULL,
+  css = NULL,
   ...
 )
 }

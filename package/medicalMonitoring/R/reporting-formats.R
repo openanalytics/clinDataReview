@@ -17,21 +17,71 @@
 #' @family medical monitoring reporting
 #' @export
 gitbook_medicalMonitoring_report <- function(
-	split_by = 'section+number',
-	config = list(
-		sharing = NULL, 
-		toc = list(collapse = 'section')
-	), 
-	extra_dependencies = NULL,
-	...){
+    logo = NULL,
+    logoHeight = '60px',
+    split_by = 'section+number',
+    config = list(
+        sharing = NULL, 
+        toc = list(collapse = 'section')
+    ), 
+    extra_dependencies = NULL,
+    css = NULL,
+    ...)
+{
+  
+  if(!is.null(logo)) includes <- addLogoGitbook(
+        logo = logo, logoHeight = logoHeight
+  )
+  
+  file.copy(
+      from = system.file(
+          "css", "gitbook.css", package = "medicalMonitoring"
+      ),
+      to = "./gitbook.css",
+      overwrite = TRUE
+  )
+  
+  bookdown::gitbook(
+      ...,
+      css = c("./gitbook.css", css),
+      split_by = split_by,
+      config = config,
+      extra_dependencies = extra_dependencies,
+      includes = includes
+  )
+  
+}
 
-	bookdown::gitbook(
-		...,
-		split_by = split_by,
-		config = config,
-		extra_dependencies = extra_dependencies
-	)
-	
+#' @importFrom htmltools img
+#' @importFrom knitr image_uri
+addLogoGitbook <- function(logo = NULL, logoHeight = '60px') {
+  
+  height <- sprintf("height:%s;", logoHeight)
+  
+  logoStyle <- paste0(
+      height,
+      "position:absolute;top:50px; right:1%; padding:10px;z-index:200;"
+  )
+  
+  # Create the external file
+  logoText <- img(
+      src = image_uri(logo), 
+      alt = 'logo', 
+      style = logoStyle
+  )
+  
+  logoText <- paste0('<script>document.write(\'<div class="logos">', 
+      logoText, '</div>\')</script>'
+  )
+  
+  logoHtml <- tempfile(fileext = ".html")
+  cat(logoText, file = logoHtml)
+  
+  includes <- list()
+  includes$in_header <- logoHtml
+  
+  return(includes)
+  
 }
 
 
@@ -49,14 +99,14 @@ gitbook_medicalMonitoring_report <- function(
 #' @importFrom rmarkdown html_document
 #' @export
 html_medicalMonitoring_report <- function(
-	extra_dependencies = NULL,
-	...){
-	
-	rmarkdown::html_document(
-		...,
-		extra_dependencies = extra_dependencies
-	)
-	
+    extra_dependencies = NULL,
+    ...){
+  
+  rmarkdown::html_document(
+      ...,
+      extra_dependencies = extra_dependencies
+  )
+  
 }
 
 
