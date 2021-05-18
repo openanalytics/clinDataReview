@@ -1,0 +1,43 @@
+# Report-specific parameters
+template: plotTemplate.Rmd
+templatePackage: medicalMonitoring
+reportTitle: "Lab parameters: time profiles"
+reportTitleLevel: 2
+# Dataset of interest
+dataFileName: LB.xpt
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC"]
+    - vars: LBCAT
+      varFct: 'ifelse(LBCAT == "", "Not Coded", LBCAT)'
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+# Looping parameters
+loopingVar: ["LBTEST"]
+# Plot parameters
+plotFunction: "scatterplotMonitoring"
+plotParams:
+  xVar: "LBDY"
+  yVar: "LBSTRESN"
+  aesPointVar:
+    colour: "USUBJID"
+    shape: "LBNRIND"
+  aesLineVar:
+    group: "USUBJID"
+    colour: "USUBJID"
+  refLinePars:
+    - yintercept: "LBSTNRLO"
+      colour: "lightblue"
+    - yintercept: "LBSTNRHI"
+      colour: "darkblue"
+  themePars:
+      legend.position: "none"
+  hoverVars: ["USUBJID", "VISIT", "LBDY", "LBSTRESN", "LBNRIND", "LBSTNRLO", "LBSTNRHI"]
+  tableVars: ["LBTEST", "USUBJID", "VISIT", "LBDY", "LBSTRESN", "LBNRIND", "LBSTNRLO", "LBSTNRHI"]
+
+
+

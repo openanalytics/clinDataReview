@@ -126,9 +126,17 @@ createMainConfigSkeleton <- function(dirName, dirData) {
           patientProfilePath = "patientProfiles",
           config = c(
               "config-patientProfiles.yml",
+              "config-alert-division.yml",
+              "config-alert-death.yml",
               "config-adverseEvents-division.yml",
+              "config-adverseEvents-summaryTable.yml",
               "config-adverseEvents-all-countsVisualization.yml",
-              "config-adverseEvents-timeProfiles.yml"
+              "config-adverseEvents-timeProfiles.yml",
+              "config-concomitantMedications-division.yml",
+              "config-concomitantMedications-listing.yml",
+              "config-laboratory-division.yml",
+              "config-laboratory-eDISH-ALT.yml",
+              "config-laboratory-spaghettiPlot.yml"
           )
       ),
       fileName
