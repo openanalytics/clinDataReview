@@ -11,6 +11,7 @@
 #' by default: no sharing and collapsed by section.
 #' (see help of the \link[bookdown]{gitbook} function)
 #' @param extra_dependencies NULL by default
+#' @param css String, path to the css.
 #' @param ... Extra parameters passed to the
 #' \link[bookdown]{gitbook} function.
 #' @return R Markdown output format to pass to \code{\link[bookdown]{render_book}}.

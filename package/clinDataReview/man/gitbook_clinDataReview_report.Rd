@@ -28,6 +28,8 @@ by default: no sharing and collapsed by section.
 
 \item{extra_dependencies}{NULL by default}
 
+\item{css}{String, path to the css.}
+
 \item{...}{Extra parameters passed to the
 \link[bookdown]{gitbook} function.}
 }
