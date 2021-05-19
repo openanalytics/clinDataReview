@@ -26,7 +26,7 @@ current knitted file}
 }
 }
 \seealso{
-Other medical monitoring reporting: 
+Other clinical data reporting: 
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdFromConfig}()},
 \code{\link{getParamsFromConfig}()},
@@ -35,4 +35,4 @@ Other medical monitoring reporting:
 \code{\link{knitPrintClinDataReview}()},
 \code{\link{render_clinDataReviewReport}()}
 }
-\concept{medical monitoring reporting}
+\concept{clinical data reporting}

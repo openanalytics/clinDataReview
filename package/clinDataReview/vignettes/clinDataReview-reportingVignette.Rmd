@@ -36,7 +36,7 @@ heightLineIn  <- 0.2
 
 ```
 
-Utility functions are provided to run a standard medical monitoring report.
+Utility functions are provided to run a standard clinical data report.
 Please note that the examples in this section are only informative, and not
 evaluated in the vignette itself.
 
@@ -44,7 +44,7 @@ evaluated in the vignette itself.
 
 ## Input
 
-The input for the medical monitoring report consists of a set of _Rmardown_
+The input for the clinical data report consists of a set of _Rmardown_
 files and a `config` directory. Below more specifications.
 
 **Rmd files**
@@ -82,14 +82,14 @@ There should be a `config` directory containing:
         
 ## Output
 
-The medical monitoring report output consists of a final output and a set of
+The clinical data report output consists of a final output and a set of
 intermidiary results.
 
 **Final output**
 
 A final output folder ('report' by default) containing the:
 
-* final medical monitoring report, in a set of multiple HTML files
+* final clinical data report, in a set of multiple HTML files
 * required _Javascript_ libraries in the subfolder: _'libs'_
 * any extra directories created during report execution, by   default: 'tables'
   and 'figures' (`extraDirs` parameter)
@@ -125,11 +125,11 @@ reportTitle: "Title for a chapter"
 reportTitleLevel: 1
 ```
 
-# Render a medical monitoring report
+# Render a clinical data report
 
 ## Production mode
 
-The function **`render_clinDataReviewReport` renders a medical monitoring
+The function **`render_clinDataReviewReport` renders a clinical data
 report for production**.
 
 ```{r render_clinDataReviewReport, eval = FALSE}
@@ -220,7 +220,7 @@ clinDataReview::render_clinDataReviewReport(configFiles = "config-AE_timeprofile
 clinDataReview::render_clinDataReviewReport(configFiles = list.files(pattern = "listing", "config"))
 ```
 
-#### Create the final medical monitoring report from the Markdown reports
+#### Create the final clinical data report from the Markdown reports
 
 To convert all created _Markdown_ files to HTML, the dedicated function
 `convertMdToHtml` can be used.
@@ -248,11 +248,11 @@ if(params$templatePackage == "clinDataReview"){
   file.copy(from = pathTemplate, to = ".")
 }
 
-# run a current chapter (without medical monitoring Js libraries)
+# run a current chapter (without clinical data Js libraries)
 # Note that Js library to have the functionality to download patient profiles is not imported
 rmarkdown::render(input = params$template)
 
-# preview a specific chapter (with medical monitoring Js libraries)
+# preview a specific chapter (with clinical data Js libraries)
 bookdown::render_book(input = params$template, preview = TRUE)
 # include the index file:
 bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)

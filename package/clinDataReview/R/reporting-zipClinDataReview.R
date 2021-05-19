@@ -1,14 +1,14 @@
 
-#' Zip the medical monitoring report
+#' Zip the clinical data report
 #' 
-#' Create a zip folder of medical monitoring reports with a redirect page.
-#' The medical monitoring report out of the 
+#' Create a zip folder of clinical data reports with a redirect page.
+#' The clinical data report out of the 
 #' \code{\link{render_clinDataReviewReport}} is copied into a new folder.
 #' A redirect html page is created to enable the user to navigate the report
 #' without needing to look into the new directory.
 #' 
 #' @param reportDir String for the path to the directory where
-#' the medical monitoring reports are stored
+#' the clinical data reports are stored
 #' @param newDir String for the path where the files from
 #' \code{reportDir} should be copied to.
 #' @param redirectPage String with the path of the html file that redirects
@@ -54,7 +54,7 @@ zipClinDataReview <- function(
 #' Create a redirect page
 #' 
 #' Create an html page that redirects to the 
-#' "1-introduction.html" page of the medical monitoring report available in 
+#' "1-introduction.html" page of the clinical data report available in 
 #' a directory.
 #' See output from \code{\link{render_clinDataReviewReport}}.
 #' @param redirectPage String with the path of the html file that redirects

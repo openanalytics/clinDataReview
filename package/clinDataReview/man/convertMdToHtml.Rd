@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-render_clinDataReviewReport.R
 \name{convertMdToHtml}
 \alias{convertMdToHtml}
-\title{Convert medical monitoring Markdown files to HTML}
+\title{Convert clinical data Markdown files to HTML}
 \usage{
 convertMdToHtml(
   outputDir = "./report",
@@ -37,7 +37,7 @@ in \code{configDir} are ignored.}
 }
 \value{
 String with path to the front page of the 
-medical monitoring report.
+clinical data report.
 }
 \description{
 This consists of:
@@ -52,7 +52,7 @@ checking if the associated \code{Markdown} and \code{rds} file
 }
 }
 \seealso{
-Other medical monitoring reporting: 
+Other clinical data reporting: 
 \code{\link{getMdFromConfig}()},
 \code{\link{getMdHeader}()},
 \code{\link{getParamsFromConfig}()},
@@ -64,4 +64,4 @@ Other medical monitoring reporting:
 \author{
 Laure Cougnaud
 }
-\concept{medical monitoring reporting}
+\concept{clinical data reporting}

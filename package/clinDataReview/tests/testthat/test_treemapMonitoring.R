@@ -1,4 +1,4 @@
-context("Treemap monitoring")
+context("Treemap for clinical data")
 
 # load example data
 library(clinUtils)
@@ -77,7 +77,7 @@ dataPlot$n <- as.numeric(dataPlot$n)
 
 test_that("plotting function runs properly", {
 			
-	pl <- treemapMonitoring(
+	pl <- treemapClinData(
 		data = dataPlot,
 		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events"
@@ -91,7 +91,7 @@ test_that("plotting function runs properly", {
 
 test_that("interactive table is created", {
 			
-	res <- sunburstMonitoring(
+	res <- sunburstClinData(
 		data = dataPlot,
 		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
@@ -117,7 +117,7 @@ test_that("plotting function", {
 	tableDM$statN <- as.numeric(tableDM$statN)
 	tableDM <- subset(tableDM, !isTotal)
 	expect_silent({
-		treemapMonitoring(
+		treemapClinData(
 			data = tableDM,
 			vars = c("ARM", "SITEID"), 
 			valueVar = "statN"
@@ -140,7 +140,7 @@ test_that("repeated labels in child and parent variables", {
 	dataParent <- data.frame(parent = unique(parents), child = "Total", count = 100)
 	dataPlot <- rbind(dataChild, dataParent)
 	expect_silent(
-		pl <- treemapMonitoring(
+		pl <- treemapClinData(
 			data = dataPlot,
 			vars = c("parent", "child"), valueVar = "count"
 		)
@@ -190,7 +190,7 @@ test_that("treemap with color variable", {
 	dataPlot$statMean <- as.numeric(dataPlot$statMean)
 			
 	# create plot
-	pl <- treemapMonitoring(
+	pl <- treemapClinData(
 		data = dataPlot,
 		vars = c("AESOC", "AEDECOD"),
 		valueVar = "statN", valueLab = "Number of patients with adverse events",

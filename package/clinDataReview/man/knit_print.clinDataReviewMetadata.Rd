@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-metadata.R
 \name{knit_print.clinDataReviewMetadata}
 \alias{knit_print.clinDataReviewMetadata}
-\title{Print metadata file in the medical monitoring report}
+\title{Print metadata file in the clinical data report}
 \usage{
 \method{knit_print}{clinDataReviewMetadata}(x, options = list(), ...)
 }

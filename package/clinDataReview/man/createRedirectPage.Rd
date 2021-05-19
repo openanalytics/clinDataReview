@@ -17,7 +17,7 @@ The html file is created.
 }
 \description{
 Create an html page that redirects to the 
-"1-introduction.html" page of the medical monitoring report available in 
+"1-introduction.html" page of the clinical data report available in 
 a directory.
 See output from \code{\link{render_clinDataReviewReport}}.
 }

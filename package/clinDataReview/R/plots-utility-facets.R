@@ -63,7 +63,7 @@ getDimGgplot <- function(gg){
 
 }
 
-#' Get dimensions for a medical monitoring plot.
+#' Get dimensions for a clinical data plot
 #' @param gg \code{\link[ggplot2]{ggplot}}
 #' @param legend Logical, if TRUE (by default)
 #' a legend is available in the plot.
@@ -74,7 +74,7 @@ getDimGgplot <- function(gg){
 #' and height ('height') of the plot
 #' in pixels.
 #' @author Laure Cougnaud
-getSizePlotMonitoring <- function(
+getSizePlotClinData <- function(
 	width = NULL, height = NULL,
 	gg = NULL,
 	legend = TRUE, legendPosition = "right"){

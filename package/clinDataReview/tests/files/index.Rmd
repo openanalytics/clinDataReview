@@ -1,5 +1,5 @@
 ---
-title: "Medical monitoring report"
+title: "Clinical data report"
 date: "2020-12-25"
 documentclass: book
 output: clinDataReview::gitbook_clinDataReview_report

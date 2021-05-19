@@ -1,6 +1,6 @@
 context("Test reporting formats")
 
-test_that("Format of gitbook for medical monitoring", {
+test_that("Format of gitbook for clinical data", {
       
       output <- gitbook_clinDataReview_report()
       expect_is(output, "rmarkdown_output_format")

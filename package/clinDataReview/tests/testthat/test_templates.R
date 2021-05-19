@@ -130,7 +130,7 @@ test_that("Creation of plot template", {
           templatePackage = "clinDataReview",
           reportTitle = gsub("(.+)Template[.].+", "\\1 template", templateName),
           dataFileName =  list.files(testPathData, pattern = "xpt"),
-          plotFunction = "scatterplotMonitoring",
+          plotFunction = "scatterplotClinData",
           plotParams = list(xVar = "USUBJID", yVar = "EXDOSE")
       )      
       
@@ -170,7 +170,7 @@ test_that("Creation of summary plot template", {
               var = c("USUBJID", "EXDOSE"),
               stats = "getStats(type = 'n')"
           ),
-          plotFunction = "barplotMonitoring",
+          plotFunction = "barplotClinData",
           plotParams = list(xVar = "variableGroup", yVar = "statN")
       )      
       

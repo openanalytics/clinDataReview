@@ -48,7 +48,7 @@ test_that("Set facetting layout for for not specified nrow", {
 test_that("Get dimentions of plot when width is not specified", {
       
       expect_silent(
-          res <- getSizePlotMonitoring(
+          res <- getSizePlotClinData(
               width = NULL,
               height = 700
           )
@@ -69,7 +69,7 @@ test_that("Get dimentions of plot when width is not specified", {
 test_that("Get dimentions of plot when width is not specified and legend is FALSE", {
       
       expect_silent(
-          res <- getSizePlotMonitoring(
+          res <- getSizePlotClinData(
               width = NULL,
               height = 700,
               legend = FALSE
@@ -85,7 +85,7 @@ test_that("Get dimentions of plot when width is not specified and legend is FALS
 test_that("Get dimentions of plot when height is not specified and legend is top", {
       
       expect_silent(
-          res <- getSizePlotMonitoring(
+          res <- getSizePlotClinData(
               width = 700,
               height = NULL,
               legendPosition = "top"
@@ -107,7 +107,7 @@ test_that("Get dimentions of plot when height is not specified and legend is top
 test_that("Get dimentions of plot when height is not specified and legend is FALSE", {
       
       expect_silent(
-          res <- getSizePlotMonitoring(
+          res <- getSizePlotClinData(
               width = 700,
               height = NULL,
               legend = FALSE

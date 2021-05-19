@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-templates.R
 \name{createTemplateDoc}
 \alias{createTemplateDoc}
-\title{Create documentation for medical monitoring template reports
+\title{Create documentation for clinical data template reports
 available in the 'template' folder of the package.}
 \usage{
 createTemplateDoc(

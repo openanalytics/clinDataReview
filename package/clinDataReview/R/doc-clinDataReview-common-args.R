@@ -59,7 +59,7 @@
 #' \item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
 #' \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 #' }
-#' If not specified, a random id, as 'plotMonitoring[X]' is used.
+#' If not specified, a random id, as 'plotClinData[X]' is used.
 #' @param title String with title for the plot.
 #' @param titleExtra String with extra title for the plot (appended after \code{title}).
 #' @param colorPalette (optional) Named character vector with color palette.

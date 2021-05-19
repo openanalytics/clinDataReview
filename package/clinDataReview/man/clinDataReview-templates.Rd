@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-templates.R
 \name{clinDataReview-templates}
 \alias{clinDataReview-templates}
-\title{Rmarkdown templates for medical monitoring}
+\title{Rmarkdown templates for clinical data}
 \description{
 Template reports with standard visualizations/tables
 available in the package are described here.
@@ -11,7 +11,7 @@ available in the package are described here.
 For each template, required parameters are indicated in \strong{bold}.
 }
 \section{Parameter type}{Please note that the type mentioned below corresponds to the type in the config file (in YAML/JSON format).The mapping to R data type is as followed:\itemize{\item{string: }{character vector of length 1}\item{integer: }{integer vector of length 1}\item{array: }{vector/list without names}\item{object: }{list with names}}}
-\section{Medical monitoring template for a visualization of count data : countsVisualizationTemplate}{
+\section{Clinical data template for a visualization of count data : countsVisualizationTemplate}{
 This report compute counts of variable(s) of interest (with the \code{inTextSummaryTable} package) and visualize them with a treemap and/or sunburst.
 \cr The following parameters are available: \itemize{
 \item{\strong{\code{template}}: }{string set to: 'countsVisualizationTemplate.Rmd' , name of the template report}
@@ -33,7 +33,7 @@ This report compute counts of variable(s) of interest (with the \code{inTextSumm
 \item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
 }
-\section{Medical monitoring template to create a report division : divisionTemplate}{
+\section{Clinical data template to create a report division : divisionTemplate}{
 This report includes a division, i.e. extra chapter, section of subsection in the report.
 \cr The following parameters are available: \itemize{
 \item{\strong{\code{template}}: }{string set to: 'divisionTemplate.Rmd' , name of the template report}
@@ -43,7 +43,7 @@ This report includes a division, i.e. extra chapter, section of subsection in th
 \item{\code{content}: }{(optional) string , any content that should be included after the title}
 }
 }
-\section{Medical monitoring template to create a listing : listingTemplate}{
+\section{Clinical data template to create a listing : listingTemplate}{
 This report displays a listing of the variables and data of interest, displayed in an interactive table. This table can contains comparison with a previous batch ('comparisonTable' parameters).
 \cr The following parameters are available: \itemize{
 \item{\strong{\code{template}}: }{string set to: 'listingTemplate.Rmd' , name of the template report}
@@ -54,14 +54,14 @@ This report displays a listing of the variables and data of interest, displayed 
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
-\item{\code{tableParams}: }{(optional) object , parameters to create the table, passed to \link[clinDataReview]{tableMonitoring}}
+\item{\code{tableParams}: }{(optional) object , parameters to create the table, passed to \link[clinDataReview]{tableClinData}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff-interactive', 'table-comparison-interactive' } , output type of the comparison table}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 }
 }
-\section{Medical monitoring template for the creation of patient profiles : patientProfilesTemplate}{
+\section{Clinical data template for the creation of patient profiles : patientProfilesTemplate}{
 This report creates the specified patient profiles (with the \code{patientProfilesVis} package) by subject, and export them to a specified directory.
 \cr The following parameters are available: \itemize{
 \item{\strong{\code{template}}: }{string set to: 'patientProfilesTemplate.Rmd' , name of the template report}
@@ -81,8 +81,8 @@ This report creates the specified patient profiles (with the \code{patientProfil
 \item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
 }
-\section{Medical monitoring generic template for visualization : plotTemplate}{
-This report visualizes input data with a function of the medical monitoring package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).
+\section{Clinical data generic template for visualization : plotTemplate}{
+This report visualizes input data with a function of the clinical data review package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).
 \cr The following parameters are available: \itemize{
 \item{\strong{\code{template}}: }{string set to: 'plotTemplate.Rmd' , name of the template report}
 \item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
@@ -90,7 +90,7 @@ This report visualizes input data with a function of the medical monitoring pack
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotMonitoring' } , plotting function of the package to consider}
+\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData' } , plotting function of the package to consider}
 \item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !r-lazy [dataI]}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff' } , output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
@@ -99,8 +99,8 @@ This report visualizes input data with a function of the medical monitoring pack
 \item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
 }
-\section{Medical monitoring template for visualization of summarized data : summaryPlotTemplate}{
-This report summarizes the data of interest (with the \code{inTextSummaryTable} package) and visualize it with any medical monitoring plot function.
+\section{Clinical data template for visualization of summarized data : summaryPlotTemplate}{
+This report summarizes the data of interest (with the \code{inTextSummaryTable} package) and visualize it with any clinical data review plot function.
 \cr The following parameters are available: \itemize{
 \item{\strong{\code{template}}: }{string set to: 'summaryPlotTemplate.Rmd' , name of the template report}
 \item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
@@ -112,7 +112,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
 \item{\strong{\code{tableParams}}: }{object , parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}}
 \item{\code{tableProcessing}: }{(optional) array , data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotMonitoring', 'sunburstMonitoring', 'treemapMonitoring', 'barplotMonitoring' } , plotting function to visualize summary data}
+\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'sunburstClinData', 'treemapClinData', 'barplotClinData' } , plotting function to visualize summary data}
 \item{\strong{\code{plotParams}}: }{object , parameters for the plotting function}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
@@ -120,7 +120,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
 }
-\section{Medical monitoring template for a summary table of the data : summaryTableTemplate}{
+\section{Clinical data template for a summary table of the data : summaryTableTemplate}{
 This report summarizes the data of interest (with the \code{inTextSummaryTable} package). This table is displayed with an interactive table in the report, and exported to a docx file. This table can be compared to a summary table of a previous batch ('comparisonTable' parameters).
 \cr The following parameters are available: \itemize{
 \item{\strong{\code{template}}: }{string set to: 'summaryTableTemplate.Rmd' , name of the template report}

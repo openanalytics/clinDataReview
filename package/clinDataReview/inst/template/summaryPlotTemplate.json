@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/schema#",
   
-  "title" : "Medical monitoring template for visualization of summarized data",
+  "title" : "Clinical data template for visualization of summarized data",
   
-  "description" : "This report summarizes the data of interest (with the \\code{inTextSummaryTable} package) and visualize it with any medical monitoring plot function.",
+  "description" : "This report summarizes the data of interest (with the \\code{inTextSummaryTable} package) and visualize it with any clinical data review plot function.",
   
   "type": "object",
   
@@ -54,7 +54,7 @@
     
     "plotFunction": {
       "type": "string",
-      "enum": ["timeProfileIntervalPlot", "scatterplotMonitoring", "sunburstMonitoring", "treemapMonitoring", "barplotMonitoring"],
+      "enum": ["timeProfileIntervalPlot", "scatterplotClinData", "sunburstClinData", "treemapClinData", "barplotClinData"],
       "doc": "plotting function to visualize summary data"
     },
     "plotParams": {

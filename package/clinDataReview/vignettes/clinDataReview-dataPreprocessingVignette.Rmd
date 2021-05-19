@@ -43,7 +43,7 @@ Utility functions to automate standard pre-processing steps of the data are
 available in the package.
 
 Note that these functions are mainly useful in combination with the
-specification of the parameters in 'config' file in the medical monitoring
+specification of the parameters in 'config' file in the clinical data
 reports (see the
 dedicated reporting
 [vignette](../doc/clinDataReview-reportingVignette.html)).

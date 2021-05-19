@@ -42,7 +42,7 @@ general config file is ignored.
 \seealso{
 \link{forceParams}
 
-Other medical monitoring reporting: 
+Other clinical data reporting: 
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdFromConfig}()},
 \code{\link{getMdHeader}()},
@@ -54,4 +54,4 @@ Other medical monitoring reporting:
 \author{
 Laure Cougnaud
 }
-\concept{medical monitoring reporting}
+\concept{clinical data reporting}

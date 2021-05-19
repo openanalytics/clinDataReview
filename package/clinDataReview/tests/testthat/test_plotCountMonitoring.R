@@ -1,4 +1,4 @@
-context("Visualization of count data for medical monitoring")
+context("Visualization of count data for clinical data")
 
 library(plotly)
 library(jsonlite)
@@ -11,7 +11,7 @@ test_that("dataset with missing parent value returns an error", {
 		n = seq.int(3)
 	)
 	expect_error(
-		plotCountMonitoring(data, 
+		plotCountClinData(data, 
 			vars = c("varParent", "varChild"), 
 			valueVar = "n"
 		),
@@ -28,7 +28,7 @@ test_that("parent variable(s) being not the sum of their children is flagged", {
 		n = c(1, 2, 1, 2, 1)
 	)
 	expect_warning(
-		plotCountMonitoring(data, 
+		plotCountClinData(data, 
 			vars = c("varParent", "varChild"), 
 			valueVar = "n"
 		),
@@ -45,7 +45,7 @@ test_that("creation of count visualization for specified one parent variable is 
 		n = c(1, 2, 3, 5, 5)
 	)
 	expect_silent(
-		pl <- plotCountMonitoring(data, 
+		pl <- plotCountClinData(data, 
 			vars = c("varParent", "varChild"), 
 			valueVar = "n"
 		)
@@ -77,7 +77,7 @@ test_that("child and parent variables can contain the same element", {
 		n = c(1, 2, 3, 5, 5)
 	)
 	expect_silent(
-		pl <- plotCountMonitoring(data, 
+		pl <- plotCountClinData(data, 
 			vars = c("varParent", "varChild"), 
 			valueVar = "n"
 		)
@@ -108,7 +108,7 @@ test_that("specification of color categorical variable is successful", {
 		n = c(1, 2, 3, 5, 5)
 	)
 	expect_silent(
-		pl <- plotCountMonitoring(
+		pl <- plotCountClinData(
 			data, 
 			vars = c("varParent", "varChild"), 
 			valueVar = "n",
@@ -145,7 +145,7 @@ test_that("specification of color numerical variable with color range is success
 	)
 	
 	expect_silent(
-		pl <- plotCountMonitoring(
+		pl <- plotCountClinData(
 			data, 
 			vars = c("varParent", "varChild"), 
 			valueVar = "n",
@@ -179,7 +179,7 @@ test_that("table is created with count visualization", {
 	)
 
 	expect_silent(
-		res <- plotCountMonitoring(
+		res <- plotCountClinData(
 			data, 
 			vars = c("varParent", "varChild"), 
 			valueVar = "n",

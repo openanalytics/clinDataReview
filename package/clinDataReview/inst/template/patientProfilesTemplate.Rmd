@@ -319,7 +319,7 @@ of the report
 	)
 	
 	# Create the table
-	tableMonitoring(
+	tableClinData(
 		data = dataTable,
 		tableVars = tableParams$vars,
 		pathVar = "patientProfilePath", pathExpand = FALSE,

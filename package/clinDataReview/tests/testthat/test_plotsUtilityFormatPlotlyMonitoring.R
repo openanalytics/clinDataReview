@@ -1,7 +1,7 @@
-context("Test format plotly monitoring objects")
+context("Test format plotly clinical data objects")
 
 # Seems from 'coverage' report that
-# 'formatPlotlyMonitoring' is also tested through the other plot functionalities?
+# 'formatPlotlyClinData' is also tested through the other plot functionalities?
 # So other tests are skipped
 
 library(plotly)
@@ -17,7 +17,7 @@ plotlyObj <- plot_ly()
 
 test_that("Use 'pathVar' argument", {
       
-      plotlyOut <- formatPlotlyMonitoring(
+      plotlyOut <- formatPlotlyClinData(
           pl = plotlyObj,
           data = data,
           pathVar = "pathVar"
@@ -28,7 +28,7 @@ test_that("Use 'pathVar' argument", {
 
 test_that("Use 'pathVar' in combination with more than one 'idVar'", {
       
-      plotlyOut <- formatPlotlyMonitoring(
+      plotlyOut <- formatPlotlyClinData(
           pl = plotlyObj,
           data = data,
           idVar = c("USUBJID", "IDVAR2"),
@@ -54,7 +54,7 @@ test_that("Error when duplicates in data lead to different paths", {
       )
       
       expect_error(
-          formatPlotlyMonitoring(
+          formatPlotlyClinData(
               pl = plotlyObj,
               data = data,
               idVar = c("USUBJID", "IDVAR2"),

@@ -70,7 +70,7 @@ getMetadata <- function(filePath, namesInfo) {
 }
 
 
-#' Print metadata file in the medical monitoring report
+#' Print metadata file in the clinical data report
 #' 
 #' This function receives the metadata information from \code{\link{getMetadata}} and 
 #' prints them in a format for an Rmd report.

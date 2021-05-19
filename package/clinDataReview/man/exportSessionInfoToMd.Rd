@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-render_clinDataReviewReport.R
 \name{exportSessionInfoToMd}
 \alias{exportSessionInfoToMd}
-\title{Combine all session informations across all medical monitoring reports
+\title{Combine all session informations across all clinical data reports
 and export them into a dedicated Markdown document}
 \usage{
 exportSessionInfoToMd(sessionInfos, mdFiles, intermediateDir = "interim")
@@ -22,7 +22,7 @@ String with path to Markdown file containing the session information,
 NULL if no session information(s) are provided.
 }
 \description{
-Combine all session informations across all medical monitoring reports
+Combine all session informations across all clinical data reports
 and export them into a dedicated Markdown document
 }
 \author{

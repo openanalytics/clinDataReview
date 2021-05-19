@@ -1,4 +1,4 @@
-context("'Knit print' medical monitoring outputs")
+context("'Knit print' clinical data outputs")
 
 library(knitr)
 library(rmarkdown)
@@ -26,7 +26,7 @@ includeCodeInRmdDoc <- function(code, fileRmd, fileInput){
   # create a Rmd document loading specified data and using specified code to include objects
   cat(
       "---",
-      "title: test inclusion medical monitoring output",
+      "title: test inclusion clinical data output",
       "output: rmarkdown::html_document",
       "---",
       '```{r results = "asis", echo = FALSE, warning = FALSE, message = FALSE}',
@@ -48,7 +48,7 @@ includeCodeInRmdDoc <- function(code, fileRmd, fileInput){
 
 test_that("Inclusion of direct med mon output in report", {
       
-      medMonRes <- scatterplotMonitoring(
+      medMonRes <- scatterplotClinData(
           data = data, 
           xVar = "LBDY", yVar = "LBSTRESN",
           table = TRUE
@@ -67,7 +67,7 @@ test_that("Inclusion of direct med mon output in report", {
 test_that("Inclusion of a named list of level 1 in report", {
       
       medMonRes <- dlply(data, c("VISIT", "LBTPT"), function(dataI)
-            scatterplotMonitoring(
+            scatterplotClinData(
                 data = dataI, 
                 xVar = "LBDY", yVar = "LBSTRESN",
                 table = TRUE
@@ -96,7 +96,7 @@ test_that("Inclusion of a named list of level 1 in report", {
 test_that("Inclusion of a nested list in the report", {
       
       medMonRes <- dlply(data, "VISIT", function(dataI)
-            scatterplotMonitoring(
+            scatterplotClinData(
                 data = dataI, 
                 xVar = "LBDY", yVar = "LBSTRESN",
                 table = TRUE
@@ -124,7 +124,7 @@ test_that("Inclusion of a nested list in the report", {
 test_that("Inclusion of list with missing names", {
       
       medMonRes <- dlply(data, NULL, function(dataI)
-            scatterplotMonitoring(
+            scatterplotClinData(
                 data = dataI, 
                 xVar = "LBDY", yVar = "LBSTRESN",
                 table = TRUE
@@ -146,7 +146,7 @@ test_that("Inclusion of list with missing names", {
 test_that("Custom separator", {
       
       medMonRes <- dlply(data, c("VISIT", "LBTPT"), function(dataI)
-            scatterplotMonitoring(
+            scatterplotClinData(
                 data = dataI, 
                 xVar = "LBDY", yVar = "LBSTRESN",
                 table = TRUE
@@ -189,7 +189,7 @@ test_that("Inclusion of a list with empty element", {
       idxEmpty <- which(dataWithEmptyEl$VISIT == dataWithEmptyEl[1, "VISIT"])
       dataWithEmptyEl[idxEmpty , "LBSTRESN"] <- NA
       medMonRes <- dlply(dataWithEmptyEl, "VISIT", function(dataI)
-            scatterplotMonitoring(
+            scatterplotClinData(
                 data = dataI, 
                 xVar = "LBDY", yVar = "LBSTRESN",
                 table = TRUE

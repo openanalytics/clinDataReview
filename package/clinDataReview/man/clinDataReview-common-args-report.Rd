@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-render_clinDataReviewReport.R
 \name{clinDataReview-common-args-report}
 \alias{clinDataReview-common-args-report}
-\title{Common parameters for the medical monitoring reporting function}
+\title{Common parameters for the clinical data reporting function}
 \arguments{
 \item{indexPath}{String with path to the index file,
 ('index.Rmd' by default).}
@@ -23,5 +23,5 @@ markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 each sub report are stored.}
 }
 \description{
-Common parameters for the medical monitoring reporting function
+Common parameters for the clinical data reporting function
 }

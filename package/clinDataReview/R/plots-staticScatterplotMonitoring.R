@@ -1,4 +1,4 @@
-#' Scatterplot of variables of interest for medical monitoring.
+#' Scatterplot of variables of interest for clinical data visualization
 #' @param data Data.frame with input data.
 #' @param facetPars List with facetting parameters, passed to the facetting function.
 #' @param aesPointVar List with specification of aesthetic variable(s),
@@ -41,13 +41,13 @@
 #' \item{'col': }{barplot with \code{\link[ggplot2]{geom_col}} is created}
 #' }
 #' @inheritParams clinDataReview-common-args
-#' @inheritParams setPaletteStaticScatterplotMonitoring
+#' @inheritParams setPaletteStaticScatterplotClinData
 #' @return \code{\link[ggplot2]{ggplot}} object
 #' @import ggplot2
 #' @importFrom clinUtils getLabelVar
 #' @importFrom stats setNames
 #' @author Laure Cougnaud
-staticScatterplotMonitoring <- function(
+staticScatterplotClinData <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
@@ -107,7 +107,7 @@ staticScatterplotMonitoring <- function(
 		aesOpt <- ifelse(aesType == "fill", "color", aesType)
 		aesTypeVar <- if(aesType == "color"){c("color", "colour")}else{aesType}
 		aesVar <- unique(unlist(c(aesPointVar[aesTypeVar], aesLineVar[aesTypeVar])))
-		resPalette <- setPaletteStaticScatterplotMonitoring(
+		resPalette <- setPaletteStaticScatterplotClinData(
 			data = dataContent,
 			var = aesVar, aes = aesType, 
 			palette = getOption(paste0("clinDataReview.", aesOpt, "s")),
@@ -202,7 +202,7 @@ staticScatterplotMonitoring <- function(
 		gg <- gg + do.call(theme, themePars)
 	
 	# add reference lines (if any)
-	gg <- addReferenceLinesMonitoringPlot(
+	gg <- addReferenceLinesClinDataPlot(
 		gg = gg, 
 		data = dataContent, 
 		xVar = xVar, yVar = yVar, 
@@ -213,7 +213,7 @@ staticScatterplotMonitoring <- function(
 	
 }
 
-#' Get standard palette for the \code{staticScatterplotMonitoring}
+#' Get standard palette for the \code{staticScatterplotClinData}
 #' function.
 #' @param data Data.frame with data for the plot.
 #' @param var Character vector with variable(s) to consider.
@@ -237,7 +237,7 @@ staticScatterplotMonitoring <- function(
 #' @importFrom clinUtils getColorPalette getShapePalette getLinetypePalette
 #' @importFrom utils hasName
 #' @author Laure Cougnaud
-setPaletteStaticScatterplotMonitoring <- function(
+setPaletteStaticScatterplotClinData <- function(
 	data, var, aes, 
 	scalePars, geomAes,
 	...){

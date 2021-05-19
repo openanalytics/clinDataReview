@@ -1,4 +1,4 @@
-#' Format data for interactive plot for medical monitoring.
+#' Format data for interactive plot for clinical data
 #' @param hoverByVar Character vector with variables identifying
 #' unique elements in the plot, usually x, y, facet variables.
 #' These variables are used to identify records with the same position
@@ -14,13 +14,13 @@
 #' @importFrom plyr ddply
 #' @importFrom crosstalk SharedData
 #' @export
-formatDataForPlotMonitoring <- function(
+formatDataForPlotClinData <- function(
 	data, 
 	hoverVars = NULL,
 	hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
 	hoverByVar = NULL,
 	keyVar = NULL,
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	labelVars = NULL){
 
 	if(length(keyVar) > 1)

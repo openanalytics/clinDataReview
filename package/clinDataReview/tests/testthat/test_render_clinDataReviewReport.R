@@ -262,7 +262,7 @@ test_that("Export of session infos", {
       
     })
 
-test_that("Test render medical monitoring report", {
+test_that("Test render clinical data report", {
       
       output <- render_clinDataReviewReport(
           configFiles = configFiles,
@@ -293,7 +293,7 @@ test_that("Test render medical monitoring report", {
       
     })
 
-test_that("Test render medical monitoring report with log file", {
+test_that("Test render clinical data report with log file", {
       
       logFile <- file.path(testPathBase, "log.txt")
       
@@ -324,7 +324,7 @@ test_that("Test render medical monitoring report with log file", {
       
     })
 
-test_that("Test render medical monitoring report for all config files", {
+test_that("Test render clinical data report for all config files", {
       
       output <- render_clinDataReviewReport(
           configFiles = NULL,

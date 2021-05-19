@@ -69,7 +69,7 @@ dataAE <- dataADaMCDISCP01$ADAE
 
 # Patient profiles
 
-**The interactive visualizations of the medical monitoring package include
+**The interactive visualizations of the clinical data package include
 functionalities to link a plot to patient-specific report**, e.g. patient
 profiles created with the `patientProfilesVis` package.
 
@@ -94,7 +94,7 @@ vignette("clinDataReview-reportingVignette", "clinDataReview")
 ## Visualization of individual profiles
 
 Visualization of individual profiles is available via the function
-**`scatterplotMonitoring`**.
+**`scatterplotClinData`**.
 
 ### Link with patient profiles
 
@@ -121,7 +121,7 @@ dataPlot$patientProfilePath <- paste0(
     sub("/", "-", dataPlot$USUBJID), ".pdf"
 )
 
-scatterplotMonitoring(
+scatterplotClinData(
     data = dataPlot, 
     xVar = "ADY",
     yVar = "LBSTRESN",
@@ -165,7 +165,7 @@ dataPlotWide$patientProfilePath <- paste0(
 )
 
 # scatterplot per visit
-scatterplotMonitoring(
+scatterplotClinData(
     data = dataPlotWide, 
     xVar = "ALT", yVar = "ALB",
     xLab = getLabelParamcd(
@@ -213,7 +213,7 @@ dataPlot$patientProfilePath <- paste0(
 )
 
 # scatterplot per visit
-scatterplotMonitoring(
+scatterplotClinData(
     data = dataPlot, 
     xVar = "LBSTRESN.ALT", yVar = "LBSTRESN.BILI",
     xLab = getLabelParamcd(
@@ -400,7 +400,7 @@ pander(head(tableAE),
 
 ### Sunburst
 
-The **`sunburstMonitoring`** function visualizes the counts of hierarchical data
+The **`sunburstClinData`** function visualizes the counts of hierarchical data
 in nested circles.
 
 The different groups are visualized from the biggest class (root node) in the
@@ -415,7 +415,7 @@ dataSunburst <- tableAE
 
 dataSunburst$n <- as.numeric(dataSunburst$n)
 
-sunburstMonitoring(
+sunburstClinData(
     data = dataSunburst,
     vars = c("AESOC", "AEDECOD"),
     valueVar = "n", valueLab = "Number of patients with adverse events",
@@ -445,7 +445,7 @@ dataTreemap <- tableAE
 
 dataTreemap$n <- as.numeric(dataTreemap$n)
 
-treemapMonitoring(
+treemapClinData(
     data = dataTreemap,
     vars = c("AESOC", "AEDECOD"),
     valueVar = "n",
@@ -470,7 +470,7 @@ dataPlot <- subset(tableAE, AEDECOD != "Total")
 dataPlot$n <- as.numeric(dataPlot$n)
 
 # create plot
-barplotMonitoring(
+barplotClinData(
     data = dataPlot,
     xVar = "AESOC", colorVar = "AEDECOD",
     yVar = "n",
@@ -487,7 +487,7 @@ barplotMonitoring(
 
 ## Multiple visualizations in a loop
 
-To include multiple medical monitoring visualizations (with or without attached
+To include multiple clinical data visualizations (with or without attached
 table) in a loop (in the same _Rmarkdown_ chunk), the list of visualizations
 should be passed to the `knitPrintListObjects` function of the `clinUtils`
 package.
@@ -509,7 +509,7 @@ plotsLab <- dlply(dataPlot, "PARAMCD", function(dataLBParam){
       
       paramcd <- unique(dataLBParam$PARAMCD)
       
-      scatterplotMonitoring(
+      scatterplotClinData(
           data = dataLBParam, 
           xVar = "ADY",
           yVar = "LBSTRESN",
@@ -548,7 +548,7 @@ clinUtils::knitPrintListObjects(
 ## Set palette for the entire session
 
 Palette for the colors and shapes associated with specific variables can be set
-for all medical monitoring visualizations at once by setting the
+for all clinical data visualizations at once by setting the
 `clinDataReview.colors` and `clinDataReview.shapes` options at the start
 of the R session.
 

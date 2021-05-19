@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-zipClinDataReview.R
 \name{zipClinDataReview}
 \alias{zipClinDataReview}
-\title{Zip the medical monitoring report}
+\title{Zip the clinical data report}
 \usage{
 zipClinDataReview(
   reportDir = "report",
@@ -13,7 +13,7 @@ zipClinDataReview(
 }
 \arguments{
 \item{reportDir}{String for the path to the directory where
-the medical monitoring reports are stored}
+the clinical data reports are stored}
 
 \item{newDir}{String for the path where the files from
 \code{reportDir} should be copied to.}
@@ -27,8 +27,8 @@ to the "1-introduction.html" page of the report.}
 The zip folder is created in the specified location.
 }
 \description{
-Create a zip folder of medical monitoring reports with a redirect page.
-The medical monitoring report out of the 
+Create a zip folder of clinical data reports with a redirect page.
+The clinical data report out of the 
 \code{\link{render_clinDataReviewReport}} is copied into a new folder.
 A redirect html page is created to enable the user to navigate the report
 without needing to look into the new directory.

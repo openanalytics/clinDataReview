@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-templates.R
 \name{getPathTemplate}
 \alias{getPathTemplate}
-\title{Get path of template medical monitoring report}
+\title{Get path of template clinical data report}
 \usage{
 getPathTemplate(file, package = "clinDataReview")
 }
@@ -17,7 +17,7 @@ String with path to the template in the installed \code{clinDataReview}
 package
 }
 \description{
-Get path of template medical monitoring report
+Get path of template clinical data report
 }
 \examples{
 \dontrun{

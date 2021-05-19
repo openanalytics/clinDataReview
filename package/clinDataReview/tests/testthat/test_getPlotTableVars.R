@@ -33,9 +33,9 @@ test_that("variable and labels are extracted from table variables", {
 	)
 	
 	plotFctNames <- c(
-		"scatterplotMonitoring", "barplotMonitoring",
+		"scatterplotClinData", "barplotClinData",
 		"timeProfileIntervalPlot",
-		"plotCountMonitoring", "treemapMonitoring", "sunburstMonitoring"
+		"plotCountClinData", "treemapClinData", "sunburstClinData"
 	)
 	
 	for(fctName in plotFctNames){
@@ -65,7 +65,7 @@ test_that("value variable displayed as a bar in table for count plot(s)", {
 	)
 	
 	plotFctNames <- c(
-		"plotCountMonitoring", "treemapMonitoring", "sunburstMonitoring"
+		"plotCountClinData", "treemapClinData", "sunburstClinData"
 	)
 	
 	for(fctName in plotFctNames){
@@ -101,7 +101,7 @@ test_that("variable/labels are extracted from scatterplot parameters", {
 	)
 	expect_silent(
 		res <- getPlotTableVars(
-			"scatterplotMonitoring", 
+			"scatterplotClinData", 
 			plotArgs
 		)
 	)
@@ -141,7 +141,7 @@ test_that("variable/labels are extracted from barplot parameters", {
 	))	
 	expect_silent(
 		res <- getPlotTableVars(
-			"barplotMonitoring", 
+			"barplotClinData", 
 			plotArgsParLab
 		)
 	)	
@@ -157,7 +157,7 @@ test_that("variable/labels are extracted from barplot parameters", {
 	)
 	expect_silent(
 		res <- getPlotTableVars(
-			"barplotMonitoring", 
+			"barplotClinData", 
 			plotArgsLab
 		)
 	)
@@ -189,7 +189,7 @@ test_that("variable/labels are extracted from count plot(s) parameters", {
 	)
 			
 	plotFctNames <- c(
-		"plotCountMonitoring", "treemapMonitoring", "sunburstMonitoring"
+		"plotCountClinData", "treemapClinData", "sunburstClinData"
 	)
 
 	for(fctName in plotFctNames){

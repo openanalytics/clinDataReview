@@ -10,16 +10,16 @@
 #' for the color variable, in case it is a numeric variable.
 #' @inheritParams clinDataReview-common-args-summaryStatsVis
 #' @inheritParams clinDataReview-common-args
-#' @inheritParams tableMonitoring
-#' @inherit scatterplotMonitoring return
-#' @family visualizations of summary statistics for medical monitoring
+#' @inheritParams tableClinData
+#' @inherit scatterplotClinData return
+#' @family visualizations of summary statistics for clinical data
 #' @import plotly
 #' @importFrom stats as.formula
 #' @importFrom utils head tail
 #' @importFrom clinUtils getColorPalette
 #' @author Laure Cougnaud
 #' @export
-plotCountMonitoring <- function(
+plotCountClinData <- function(
     data, 
     # plot variables:
     vars, varsLab = getLabelVar(vars, labelVars = labelVars),
@@ -44,7 +44,7 @@ plotCountMonitoring <- function(
     tableVars,
     tableLab,
     tableButton = TRUE, tablePars = list(),
-    id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+    id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
     verbose = FALSE,
     typePlot = c("sunburst", "treemap"))
 {
@@ -81,7 +81,7 @@ plotCountMonitoring <- function(
   )
   
   # format data to: 'SharedData' object
-  dataSharedData <- formatDataForPlotMonitoring(
+  dataSharedData <- formatDataForPlotClinData(
       data = dataPlot,
       keyVar = varID, 
       id = id,
@@ -91,7 +91,7 @@ plotCountMonitoring <- function(
   )
   
   # get plot dim
-  dimPlot <- getSizePlotMonitoring(
+  dimPlot <- getSizePlotClinData(
       width = width, height = height,
       legend = FALSE
   )
@@ -161,8 +161,8 @@ plotCountMonitoring <- function(
   
   # current hovered element identified by d.points[0].label
   
-  # specific formatting for medical monitoring
-  pl <- formatPlotlyMonitoring(
+  # specific formatting for clinical data
+  pl <- formatPlotlyClinData(
       data = dataPlot, pl = pl,
       idVar = varID, pathVar = pathVar,
       # extract ID from 'id' column in the plot output object directly
@@ -180,13 +180,13 @@ plotCountMonitoring <- function(
   if(table) {
     
     tableVars <- getPlotTableVars(
-        plotFunction = "plotCountMonitoring", 
+        plotFunction = "plotCountClinData", 
         plotArgs = plotArgs
     )
     tableLab <- attr(tableVars, "tableLab")
     tablePars <- attr(tableVars, "tablePars")
     
-    table <- tableMonitoring(
+    table <- tableClinData(
         data = dataPlot, 
         idVar = varID, keyVar = varID,
         pathVar = pathVar, pathLab = pathLab,

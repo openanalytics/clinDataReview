@@ -30,7 +30,7 @@
 #' file containing patient report.
 #' If not specified, the label are extracted based on the \code{idVarPlot}
 #' of the selected plot element.
-#' @inheritParams formatDataForPlotMonitoring
+#' @inheritParams formatDataForPlotClinData
 #' @inheritParams clinDataReview-common-args
 #' @return Updated \code{\link[plotly]{plotly}} object.
 #' @author Laure Cougnaud
@@ -38,7 +38,7 @@
 #' @importFrom htmlwidgets onRender JS
 #' @importFrom htmlwidgets prependContent
 #' @export
-formatPlotlyMonitoring <- function(
+formatPlotlyClinData <- function(
 	pl, data,
 	idVar = "USUBJID", 
 	pathVar = NULL, pathDownload = TRUE,
@@ -46,7 +46,7 @@ formatPlotlyMonitoring <- function(
 	idVarPlot = "key", labelVarPlot = NULL,
 	highlightOn = "plotly_click",
 	highlightOff = "plotly_doubleclick",
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
 	idVarInit <- idVar

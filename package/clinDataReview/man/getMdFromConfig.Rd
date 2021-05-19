@@ -36,7 +36,7 @@ the name of the config file, after removal of the
 }
 }
 \seealso{
-Other medical monitoring reporting: 
+Other clinical data reporting: 
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdHeader}()},
 \code{\link{getParamsFromConfig}()},
@@ -48,4 +48,4 @@ Other medical monitoring reporting:
 \author{
 Laure Cougnaud
 }
-\concept{medical monitoring reporting}
+\concept{clinical data reporting}

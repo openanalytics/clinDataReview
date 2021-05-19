@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema#",
   
-  "title" : "Medical monitoring template to create a report division",
+  "title" : "Clinical data template to create a report division",
   
   "description" : "This report includes a division, i.e. extra chapter, section of subsection in the report.",
   

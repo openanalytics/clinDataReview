@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema#",
   
-  "title" : "Medical monitoring template for a summary table of the data",
+  "title" : "Clinical data template for a summary table of the data",
   
   "description" : "This report summarizes the data of interest (with the \\code{inTextSummaryTable} package). This table is displayed with an interactive table in the report, and exported to a docx file. This table can be compared to a summary table of a previous batch ('comparisonTable' parameters).",
   

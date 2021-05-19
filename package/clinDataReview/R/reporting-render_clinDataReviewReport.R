@@ -1,4 +1,4 @@
-#' Render a medical monitoring report.
+#' Render a clinical data report.
 #' 
 #' @section Framework: 
 #' This function is based on the \link[bookdown]{render_book}
@@ -33,7 +33,7 @@
 #' in case the report succeeds.
 #' @section Available template report:
 #' see \strong{\code{? `clinDataReview-templates`}} for list of 
-#' medical monitoring template report available in the package.
+#' clinical data template report available in the package.
 #' @param extraDirs Character vector with extra directories required by
 #' the report, directory with external images  .
 #' By default, the directories: 'figures', 'tables' and 
@@ -60,7 +60,7 @@
 #' @inherit convertMdToHtml return
 #' @author Laure Cougnaud
 #' @importFrom rmarkdown render
-#' @family medical monitoring reporting
+#' @family clinical data reporting
 #' @export
 render_clinDataReviewReport <- function(
 	configFiles = NULL,  configDir = "./config", 
@@ -324,7 +324,7 @@ render_clinDataReviewReport <- function(
 #' @inheritParams clinDataReview-common-args-report
 #' @return String with path to the 
 #' @importFrom tools file_path_sans_ext
-#' @family medical monitoring reporting
+#' @family clinical data reporting
 #' @author Laure Cougnaud
 getMdFromConfig <- function(
     configFiles, indexPath = "index.Rmd", 
@@ -366,7 +366,7 @@ getMdFromConfig <- function(
 #' @seealso \link{forceParams}
 #' @author Laure Cougnaud
 #' @importFrom yaml read_yaml
-#' @family medical monitoring reporting
+#' @family clinical data reporting
 #' @export
 getParamsFromConfig <- function(
     configFile, configDir = "./config"){
@@ -478,7 +478,7 @@ forceParams <- function(params){
 	
 }
 
-#' Convert medical monitoring Markdown files to HTML
+#' Convert clinical data Markdown files to HTML
 #' 
 #' This consists of:
 #' \enumerate{
@@ -495,10 +495,10 @@ forceParams <- function(params){
 #' in \code{configDir} are ignored.
 #' @inheritParams clinDataReview-common-args-report
 #' @return String with path to the front page of the 
-#' medical monitoring report.
+#' clinical data report.
 #' @author Laure Cougnaud
 #' @importFrom rmarkdown render
-#' @family medical monitoring reporting
+#' @family clinical data reporting
 #' @export
 convertMdToHtml <- function(
     outputDir = "./report", intermediateDir = "./interim",
@@ -816,7 +816,7 @@ merge.sessionInfo <- function(...){
   
 }
 
-#' Combine all session informations across all medical monitoring reports
+#' Combine all session informations across all clinical data reports
 #' and export them into a dedicated Markdown document
 #' @param sessionInfos List with \code{\link{sessionInfo}} objects
 #' @param mdFiles Character vector with Markdown files
@@ -856,7 +856,7 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
   
 }
 
-#' Common parameters for the medical monitoring reporting function
+#' Common parameters for the clinical data reporting function
 #' @param indexPath String with path to the index file,
 #' ('index.Rmd' by default).
 #' @param configDir String with directory with config files,

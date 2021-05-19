@@ -2,13 +2,13 @@
 % Please edit documentation in R/reporting-utility.R
 \name{knitPrintClinDataReview}
 \alias{knitPrintClinDataReview}
-\title{Include output from medical monitoring, or list 
+\title{Include output from clinical data, or list 
 of such outputs in a Rmarkdown report, with an appropriate title.}
 \usage{
 knitPrintClinDataReview(list, sep = ".", level = 1)
 }
 \arguments{
-\item{list}{Named list of medical monitoring plots,
+\item{list}{Named list of clinical data plots,
 the names are used for the section header.
 If several section header should be created, either:
 \itemize{
@@ -34,11 +34,11 @@ If a element in the list are empty (NULL), these elements
 (and the associated sections) are not included in the report.
 }
 \description{
-Include output from medical monitoring, or list 
+Include output from clinical data, or list 
 of such outputs in a Rmarkdown report, with an appropriate title.
 }
 \seealso{
-Other medical monitoring reporting: 
+Other clinical data reporting: 
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdFromConfig}()},
 \code{\link{getMdHeader}()},
@@ -50,4 +50,4 @@ Other medical monitoring reporting:
 \author{
 Laure Cougnaud
 }
-\concept{medical monitoring reporting}
+\concept{clinical data reporting}

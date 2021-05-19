@@ -1,4 +1,4 @@
-context("Scatterplot monitoring")
+context("Scatterplot for clinical data")
 
 library(plotly)
 
@@ -46,7 +46,7 @@ dataPlot$VISIT <- with(dataPlot, reorder(VISIT, VISITNUM))
 
 test_that("plotting function aesthetic testing", {
       
-      pl <- scatterplotMonitoring(
+      pl <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL",
           xLab = paste(labelVars["LBSTRESN"], "for last screening visit"),
@@ -117,7 +117,7 @@ test_that("plotting function: reference lines", {
       
       xLine <- mean(dataPlot$LBSTRESNBL)
       yLine <- mean(dataPlot$LBSTRESN)
-      pl <- scatterplotMonitoring(
+      pl <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           aesPointVar = list(color = "USUBJID"),
@@ -166,7 +166,7 @@ test_that("plotting function: labels", {
       
       xLab <- paste("Baseline", labelVars["LBSTRESN"])
       title <- "Actual value of lab parameter at each visit vs baseline"
-      pl <- scatterplotMonitoring(
+      pl <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           xLab = xLab, # custom label
@@ -203,7 +203,7 @@ test_that("plotting function: labels", {
 
 test_that("interactive table is created", {
       
-      res <- scatterplotMonitoring(
+      res <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           table = TRUE
@@ -214,7 +214,7 @@ test_that("interactive table is created", {
 
 test_that("facetting", {
       
-      plNoFacet <- scatterplotMonitoring(
+      plNoFacet <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           aesPointVar = list(color = "USUBJID"),
@@ -222,7 +222,7 @@ test_that("facetting", {
       )
       
       # facet_wrap: character test high number of facets
-      plWrapSt <- scatterplotMonitoring(
+      plWrapSt <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           aesPointVar = list(color = "USUBJID"),
@@ -232,7 +232,7 @@ test_that("facetting", {
       )
       
       # facet_wrap: formula
-      plWrapFm <- scatterplotMonitoring(
+      plWrapFm <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           aesPointVar = list(color = "USUBJID"),
@@ -247,7 +247,7 @@ test_that("Specified limits expanded with data limits", {
       xLim <- c(min(dataPlot$LBSTRESNBL) + diff(range(dataPlot$LBSTRESNBL))/2, max(dataPlot$LBSTRESNBL))
       yLim <- c(min(dataPlot$LBSTRESN) + diff(range(dataPlot$LBSTRESN))/2, max(dataPlot$LBSTRESN))
       
-      plNoExpandLim <- scatterplotMonitoring(
+      plNoExpandLim <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           aesPointVar = list(color = "USUBJID"),
@@ -258,7 +258,7 @@ test_that("Specified limits expanded with data limits", {
       )
       
       
-      plExpandLim <- scatterplotMonitoring(
+      plExpandLim <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           aesPointVar = list(color = "USUBJID"),
@@ -282,7 +282,7 @@ test_that("Specified limits expanded with data limits", {
 
 test_that("Scatterplot with hoverVars without label", {
       
-      plOutput <- scatterplotMonitoring(
+      plOutput <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           hoverVars = c("LBSTRESNBL", "USUBJID")
@@ -293,7 +293,7 @@ test_that("Scatterplot with hoverVars without label", {
 
 test_that("No legend", {
       
-      plOutput <- scatterplotMonitoring(
+      plOutput <- scatterplotClinData(
           data = dataPlot, 
           xVar = "LBSTRESNBL", yVar = "LBSTRESN",
           themePars = list(legend.position = "none")
@@ -316,7 +316,7 @@ test_that("custom color palette is specified", {
           Normal = "green", 
           High = "blue"
       )
-      pl <- scatterplotMonitoring(
+      pl <- scatterplotClinData(
           data = data, 
           xVar = "DY", 
           yVar = "AVAL", 

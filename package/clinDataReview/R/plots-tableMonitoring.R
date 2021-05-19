@@ -1,4 +1,4 @@
-#' Create a 'monitoring table', associated to a plot.
+#' Create a 'clinical data table', associated to a plot.
 #' 
 #' Interactive table is created, with the possibility to have
 #' clickeable link to patient-specific report, and included
@@ -14,7 +14,7 @@
 #' \code{\link[clinUtils]{getClinDT}} function.
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' in the current console.
-#' @inheritParams formatDataForPlotMonitoring
+#' @inheritParams formatDataForPlotClinData
 #' @inheritParams clinDataReview-common-args
 #' @inheritParams clinDataReview-common-args-summaryStatsVis
 #' @return \code{\link[DT]{datatable}}
@@ -23,7 +23,7 @@
 #' @importFrom crosstalk SharedData
 #' @importFrom stats as.formula
 #' @export
-tableMonitoring <- function(
+tableClinData <- function(
 	data, 
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	keyVar = NULL, keyLab = getLabelVar(keyVar, labelVars = labelVars),
@@ -32,7 +32,7 @@ tableMonitoring <- function(
 	tableVars = colnames(data),
 	tableLab = getLabelVar(tableVars, labelVars = labelVars),
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	labelVars = NULL,
 	verbose = FALSE){
 	

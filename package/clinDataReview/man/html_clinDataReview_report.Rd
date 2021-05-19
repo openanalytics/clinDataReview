@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-formats.R
 \name{html_clinDataReview_report}
 \alias{html_clinDataReview_report}
-\title{Medical monitoring format for rmarkdown report.}
+\title{Clinical data format for rmarkdown report.}
 \usage{
 html_clinDataReview_report(extra_dependencies = NULL, ...)
 }
@@ -21,7 +21,7 @@ This function only kept for back-compatibility,
 can be used instead.
 }
 \seealso{
-Other medical monitoring reporting: 
+Other clinical data reporting: 
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdFromConfig}()},
 \code{\link{getMdHeader}()},
@@ -33,4 +33,4 @@ Other medical monitoring reporting:
 \author{
 Laure Cougnaud
 }
-\concept{medical monitoring reporting}
+\concept{clinical data reporting}

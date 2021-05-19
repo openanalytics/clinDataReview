@@ -29,7 +29,7 @@ checkConfigFile <- function(configFile, configSpecFile){
 	
 }
 
-#' Get path of template medical monitoring report
+#' Get path of template clinical data report
 #' @param file String with name of the template Rmd document
 #' @param package String, which package the template should be extracted from,
 #' by default the \code{clinDataReview} package.
@@ -51,7 +51,7 @@ getPathTemplate <- function(file, package = "clinDataReview"){
 	return(pathTemplate)
 }
 
-#' Create documentation for medical monitoring template reports
+#' Create documentation for clinical data template reports
 #' available in the 'template' folder of the package.
 #' 
 #' If a JSON schema file available, the information relative
@@ -262,7 +262,7 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 	
 }
 
-#' Rmarkdown templates for medical monitoring
+#' Rmarkdown templates for clinical data
 #' 
 #' Template reports with standard visualizations/tables
 #' available in the package are described here.

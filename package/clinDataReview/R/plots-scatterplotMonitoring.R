@@ -1,4 +1,4 @@
-#' Scatterplot of variables of interest for medical monitoring.
+#' Scatterplot of variables of interest for clinical data visualization.
 #' @param pathVar String with variable of \code{data} containing
 #' path to a subject-specific report. The report info should be unique 
 #' for each element of \code{idVar}.
@@ -14,9 +14,9 @@
 #' This should be set to TRUE only if multiple paths 
 #' are included for each row in \code{pathVar}
 #' (e.g. in case of summary table).
-#' @inheritParams staticScatterplotMonitoring
+#' @inheritParams staticScatterplotClinData
 #' @inheritParams clinDataReview-common-args
-#' @inheritParams tableMonitoring
+#' @inheritParams tableClinData
 #' @return Either:
 #' \itemize{
 #' \item{if \code{table} is requested}{
@@ -25,13 +25,13 @@
 #' (\code{\link[DT]{datatable}} object)}
 #' \item{otherwise: }{\code{\link[plotly]{plotly}} object}
 #' }
-#' @example inst/examples/scatterplotMonitoring-example.R
+#' @example inst/examples/scatterplotClinData-example.R
 #' @importFrom clinUtils getLabelVar
 #' @import plotly
 #' @author Laure Cougnaud
-#' @family Medical monitoring visualization of individual profile
+#' @family Clinical data visualization of individual profiles.
 #' @export
-scatterplotMonitoring <- function(
+scatterplotClinData <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
@@ -63,7 +63,7 @@ scatterplotMonitoring <- function(
 	tableVars,
 	tableLab,
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
 	if(missing(aesLab)){
@@ -111,7 +111,7 @@ scatterplotMonitoring <- function(
 	}
 	data <- data[idxNonMissing, ]
 	
-	dataSharedData <- formatDataForPlotMonitoring(
+	dataSharedData <- formatDataForPlotClinData(
 		data = data, 
 		keyVar = idVar, id = id,
 		labelVars = labelVars,
@@ -120,7 +120,7 @@ scatterplotMonitoring <- function(
 	)
 	
 	# create static plot:
-	gg <- staticScatterplotMonitoring(
+	gg <- staticScatterplotClinData(
 		data = dataSharedData, 
 		# x/y variables:
 		xVar = xVar, yVar = yVar, 
@@ -149,7 +149,7 @@ scatterplotMonitoring <- function(
 	# set plot dimensions:
 	legPos <- themePars$legend.position
 	if(is.null(legPos)) 	legPos <- "right"
-	dimPlot <- getSizePlotMonitoring(
+	dimPlot <- getSizePlotClinData(
 		width = width, 
 		height = height, 
 		gg = gg,
@@ -188,7 +188,7 @@ scatterplotMonitoring <- function(
 	}
 
 	# convert static to interactive plot
-	pl <- formatPlotlyMonitoring(
+	pl <- formatPlotlyClinData(
 		data = data, pl = pl,
 		idVar = idVar, pathVar = pathVar,
 		id = id, verbose = verbose,
@@ -201,11 +201,11 @@ scatterplotMonitoring <- function(
 	if(table){
 		
 		tableVars <- getPlotTableVars(
-			plotFunction = "scatterplotMonitoring", 
+			plotFunction = "scatterplotClinData", 
 			plotArgs = plotArgs
 		)
 		tableLab <- attr(tableVars, "tableLab")
-		table <- tableMonitoring(
+		table <- tableClinData(
 			data = data, 
 			idVar = idVar, idLab = idLab,
 			keyVar = idVar, keyLab = idLab,

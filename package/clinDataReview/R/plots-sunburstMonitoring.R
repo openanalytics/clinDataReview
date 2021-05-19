@@ -1,14 +1,14 @@
 #' Sunburst interactive plot.
 #' 
 #' Note: the table and plot are not (yet) linked.
-#' @inheritDotParams plotCountMonitoring -typePlot
-#' @inherit plotCountMonitoring return
-#' @example inst/examples/sunburstMonitoring-example.R
-#' @family visualizations of summary statistics for medical monitoring
+#' @inheritDotParams plotCountClinData -typePlot
+#' @inherit plotCountClinData return
+#' @example inst/examples/sunburstClinData-example.R
+#' @family visualizations of summary statistics for clinical data
 #' @author Laure Cougnaud
 #' @export
-sunburstMonitoring <- function(...){
+sunburstClinData <- function(...){
 
-	plotCountMonitoring(..., typePlot = "sunburst")
+	plotCountClinData(..., typePlot = "sunburst")
 	
 }

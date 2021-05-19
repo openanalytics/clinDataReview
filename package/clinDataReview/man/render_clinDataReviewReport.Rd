@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-render_clinDataReviewReport.R
 \name{render_clinDataReviewReport}
 \alias{render_clinDataReviewReport}
-\title{Render a medical monitoring report.}
+\title{Render a clinical data report.}
 \usage{
 render_clinDataReviewReport(
   configFiles = NULL,
@@ -62,10 +62,10 @@ in the console (see \code{\link[rmarkdown]{render}}).}
 }
 \value{
 String with path to the front page of the 
-medical monitoring report.
+clinical data report.
 }
 \description{
-Render a medical monitoring report.
+Render a clinical data report.
 }
 \section{Framework}{
  
@@ -104,11 +104,11 @@ in case the report succeeds.
 \section{Available template report}{
 
 see \strong{\code{? `clinDataReview-templates`}} for list of 
-medical monitoring template report available in the package.
+clinical data template report available in the package.
 }
 
 \seealso{
-Other medical monitoring reporting: 
+Other clinical data reporting: 
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdFromConfig}()},
 \code{\link{getMdHeader}()},
@@ -120,4 +120,4 @@ Other medical monitoring reporting:
 \author{
 Laure Cougnaud
 }
-\concept{medical monitoring reporting}
+\concept{clinical data reporting}

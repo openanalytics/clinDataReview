@@ -23,8 +23,8 @@
 #' @param colorLab (optional) String with label for \code{colorVar}.
 #' @param alpha (optional) Numeric with transparency, 1 by default.
 #' @inheritParams clinDataReview-common-args
-#' @inheritParams tableMonitoring
-#' @inherit scatterplotMonitoring return
+#' @inheritParams tableClinData
+#' @inherit scatterplotClinData return
 #' @author Laure Cougnaud
 #' @import plotly
 #' @importFrom clinUtils formatVarForPlotLabel getColorPalette getShapePalette
@@ -59,7 +59,7 @@ timeProfileIntervalPlot <- function(data,
 	table = FALSE, 
 	tableVars, tableLab,
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
 	# store input parameter values for further use
@@ -144,7 +144,7 @@ timeProfileIntervalPlot <- function(data,
 	
 	## Convert to SharedData
 	convertToSharedDataIntPlot <- function(data)
-		formatDataForPlotMonitoring(
+		formatDataForPlotClinData(
 			data = data, 
 			id = id,
 			keyVar = keyVar,
@@ -282,8 +282,8 @@ timeProfileIntervalPlot <- function(data,
 		margin = layoutMargin
 	)
 	
-	# specific formatting for medical monitoring
-	pl <- formatPlotlyMonitoring(
+	# specific formatting for clinical data
+	pl <- formatPlotlyClinData(
 		data = data, pl = pl,
 		# extract patient profile based on the 'key' variable
 		# (not yVar because different records could be grouped in the same yVar)
@@ -307,7 +307,7 @@ timeProfileIntervalPlot <- function(data,
 		)
 		tableLab <- attr(tableVars, "tableLab")
 		
-		table <- tableMonitoring(
+		table <- tableClinData(
 			data = data, 
 			keyVar = keyVar, idVar = idVar, 
 			pathVar = pathVar, pathLab = pathLab,

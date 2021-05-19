@@ -1,7 +1,7 @@
 context("Test static scatter plot")
 
 # Seems from 'coverage' report that
-# 'staticScatterplotMonitoring' is also tested in the scatterplotMonitoring
+# 'staticScatterplotClinData' is also tested in the scatterplotClinData
 # So other tests are skipped
 
 
@@ -16,7 +16,7 @@ labelVars <- c(A = "var1", B = "var2", C = "colorVar")
 test_that("Missing aesLab without labels", {
       
       expect_silent(
-          gPlot <- staticScatterplotMonitoring(
+          gPlot <- staticScatterplotClinData(
               data = data,
               xVar = "A", yVar = "B",
               aesPointVar = list(color = "C")
@@ -33,7 +33,7 @@ test_that("Missing aesLab without labels", {
 test_that("Missing aesLab with labels", {
       
       expect_silent(
-          gPlot <- staticScatterplotMonitoring(
+          gPlot <- staticScatterplotClinData(
               data = data,
               xVar = "A", yVar = "B",
               aesPointVar = list(color = "C"),
@@ -51,7 +51,7 @@ test_that("Missing aesLab with labels", {
 test_that("Warning of transformation of axis", {
       
       expect_warning(
-          staticScatterplotMonitoring(
+          staticScatterplotClinData(
               data = data,
               xVar = "A", yVar = "B",
               aesPointVar = list(color = "C"),

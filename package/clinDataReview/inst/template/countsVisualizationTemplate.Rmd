@@ -327,7 +327,7 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 			# create plot
 			colorLab <- toString(clinUtils::getLabelVar(colorVar[countVar], data = dataI, labelVars = labelVars))
 			pathLab <- unname(clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars))
-			plotCountMonitoring(
+			plotCountClinData(
 				data = dataI,
 				vars = c(parentVar, countVar),
 				valueVar = "statm", valueLab = "Number of events",

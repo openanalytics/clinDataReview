@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/schema#",
   
-  "title" : "Medical monitoring template to create a listing",
+  "title" : "Clinical data template to create a listing",
   
   "description" : "This report displays a listing of the variables and data of interest, displayed in an interactive table. This table can contains comparison with a previous batch ('comparisonTable' parameters).",
   
@@ -43,7 +43,7 @@
     },
     "tableParams": {
       "type": "object",
-      "doc": "parameters to create the table, passed to \\link[clinDataReview]{tableMonitoring}"
+      "doc": "parameters to create the table, passed to \\link[clinDataReview]{tableClinData}"
     },
     "comparisonTableType": {
       "type": "string",

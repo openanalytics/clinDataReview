@@ -19,7 +19,7 @@ dataProcessing:
 # Looping parameters
 loopingVar: ["LBTEST"]
 # Plot parameters
-plotFunction: "scatterplotMonitoring"
+plotFunction: "scatterplotClinData"
 plotParams:
   xVar: "LBDY"
   yVar: "LBSTRESN"

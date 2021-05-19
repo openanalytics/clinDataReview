@@ -3,7 +3,7 @@
 \name{getJsDepClinDataReview}
 \alias{getJsDepClinDataReview}
 \title{Get Javascript custom scripts required for specific
-medical monitoring functionalities.}
+clinical data functionalities.}
 \usage{
 getJsDepClinDataReview(
   type = c("collapsibleButton", "patientProfiles"),
@@ -28,7 +28,7 @@ output_format = rmarkdown::html_document(extra_dependencies = dep))
 }
 \description{
 Get Javascript custom scripts required for specific
-medical monitoring functionalities.
+clinical data functionalities.
 }
 \author{
 Laure Cougnaud

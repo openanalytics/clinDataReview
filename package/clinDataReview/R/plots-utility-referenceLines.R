@@ -1,12 +1,12 @@
 #' Add reference (horizontal/vertical/diagonal) lines
-#' to a medical monitoring plot.
+#' to a clinical data plot
 #' @inheritParams clinDataReview-common-args
 #' @return Updated \code{\link[ggplot2]{ggplot}} object.
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
 #' @importFrom stats setNames
 #' @export
-addReferenceLinesMonitoringPlot <- function(
+addReferenceLinesClinDataPlot <- function(
 	gg, data, 
 	xVar, yVar, xLim = NULL, yLim = NULL,
 	refLinePars = NULL, 

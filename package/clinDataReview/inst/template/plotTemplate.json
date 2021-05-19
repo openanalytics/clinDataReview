@@ -1,9 +1,9 @@
 {
   "$schema": "http://json-schema.org/schema#",
   
-  "title" : "Medical monitoring generic template for visualization",
+  "title" : "Clinical data generic template for visualization",
   
-  "description" : "This report visualizes input data with a function of the medical monitoring package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).",
+  "description" : "This report visualizes input data with a function of the clinical data review package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).",
   
   "type": "object",
   
@@ -37,7 +37,7 @@
     
     "plotFunction": {
       "type": "string",
-      "enum": ["timeProfileIntervalPlot", "scatterplotMonitoring"],
+      "enum": ["timeProfileIntervalPlot", "scatterplotClinData"],
       "doc": "plotting function of the package to consider"
     },
     "plotParams": {

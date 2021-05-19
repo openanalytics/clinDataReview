@@ -1,7 +1,7 @@
-context("Test table monitoring")
+context("Test table for clinical data")
 
 # Seems from 'coverage' report that
-# 'tableMonitoring' is also tested through the other plot functionalities?
+# 'tableClinData' is also tested through the other plot functionalities?
 # So other tests are skipped
 
 data <- data.frame(
@@ -11,11 +11,11 @@ data <- data.frame(
     stringsAsFactors = FALSE
 )
 
-test_that("Table monitoring in the default application", {
+test_that("Table in the default application", {
       
       expect_silent(
           tableMon <- 
-              tableMonitoring(
+              tableClinData(
                   data
               )
       )
@@ -27,7 +27,7 @@ test_that("Table monitoring in the default application", {
 test_that("Have warning for 'pathVar' argument", {
       
       expect_warning(
-          tableMonitoring(
+          tableClinData(
               data,
               pathVar = "varName"
           ),
@@ -39,7 +39,7 @@ test_that("Have warning for 'pathVar' argument", {
 test_that("Use 'pathVar' argument", {
       
       expect_silent(
-          tableMon <- tableMonitoring(
+          tableMon <- tableClinData(
               data,
               pathVar = "pathVar"
           )
@@ -52,7 +52,7 @@ test_that("Use 'pathVar' argument", {
 test_that("Use 'pathExpand' argument", {
       
       expect_silent(
-          tableMon <- tableMonitoring(
+          tableMon <- tableClinData(
               data,
               pathVar = "pathVar",
               pathExpand = TRUE

@@ -1,7 +1,7 @@
 #' Run specified data processing steps.
 #' 
 #' This function is intended to automate all data processing
-#' steps for use in the medical monitoring reports using config files.
+#' steps for use in the 'clinDataReview' reports using config files.
 #' @param processing List with details of the steps to process the data.
 #' Each element in the list should be a named list containing the parameters
 #' for the specific processing function. The name specifies which processing

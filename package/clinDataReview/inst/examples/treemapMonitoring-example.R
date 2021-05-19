@@ -37,7 +37,7 @@ dataPlot <- tableAE
 dataPlot$n <- as.numeric(dataPlot$n)
 
 # create plot
-treemapMonitoring(
+treemapClinData(
 	data = dataPlot,
 	vars = c("AESOC", "AEDECOD"),
 	valueVar = "n",
@@ -84,7 +84,7 @@ dataPlot$statN <- as.numeric(dataPlot$statN)
 dataPlot$statMean <- as.numeric(dataPlot$statMean)
 
 # create plot
-treemapMonitoring(
+treemapClinData(
 	data = dataPlot,
 	vars = c("AESOC", "AEDECOD"),
 	valueVar = "statN", valueLab = "Number of patients with adverse events",

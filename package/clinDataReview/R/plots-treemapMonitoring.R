@@ -1,14 +1,14 @@
 #' Treemap interactive plot.
 #' 
 #' Note: the table and plot are not (yet) linked.
-#' @inheritDotParams plotCountMonitoring -typePlot
-#' @inherit plotCountMonitoring return
-#' @example inst/examples/treemapMonitoring-example.R
-#' @family visualizations of summary statistics for medical monitoring
+#' @inheritDotParams plotCountClinData -typePlot
+#' @inherit plotCountClinData return
+#' @example inst/examples/treemapClinData-example.R
+#' @family visualizations of summary statistics for clinical data
 #' @author Laure Cougnaud
 #' @export
-treemapMonitoring <- function(...){
+treemapClinData <- function(...){
 	
-	plotCountMonitoring(..., typePlot = "treemap")
+	plotCountClinData(..., typePlot = "treemap")
 	
 }

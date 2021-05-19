@@ -17,7 +17,7 @@
 # #' }
 #' @return String with Markdown header,
 #' to be included in R within \code{cat}.
-#' @family medical monitoring reporting
+#' @family clinical data reporting
 #' @export
 getMdHeader <- function(
     title, level = 1
@@ -76,9 +76,9 @@ knit_print.clinDataReview <- function(x, ...){
   
 }
 
-#' Include output from medical monitoring, or list 
+#' Include output from clinical data, or list 
 #' of such outputs in a Rmarkdown report, with an appropriate title.
-#' @param list Named list of medical monitoring plots,
+#' @param list Named list of clinical data plots,
 #' the names are used for the section header.
 #' If several section header should be created, either:
 #' \itemize{
@@ -101,7 +101,7 @@ knit_print.clinDataReview <- function(x, ...){
 #' @author Laure Cougnaud
 #' @importFrom clinUtils knitPrintListObjects
 #' @importFrom stringr str_split fixed
-#' @family medical monitoring reporting
+#' @family clinical data reporting
 #' @export
 knitPrintClinDataReview <- function(
     list, sep = ".", level = 1){

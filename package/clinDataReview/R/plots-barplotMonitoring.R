@@ -5,16 +5,16 @@
 #' 'group' or 'stack' (see parameter in \code{\link[plotly]{layout}}).
 #' @inheritParams clinDataReview-common-args-summaryStatsVis
 #' @inheritParams clinDataReview-common-args
-#' @inheritParams tableMonitoring
-#' @inherit scatterplotMonitoring return
-#' @example inst/examples/barplotMonitoring-example.R
-#' @family visualizations of summary statistics for medical monitoring
+#' @inheritParams tableClinData
+#' @inherit scatterplotClinData return
+#' @example inst/examples/barplotClinData-example.R
+#' @family visualizations of summary statistics for clinical data
 #' @import plotly
 #' @importFrom stats as.formula
 #' @importFrom clinUtils getColorPalette
 #' @author Laure Cougnaud
 #' @export
-barplotMonitoring <- function(
+barplotClinData <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
@@ -35,7 +35,7 @@ barplotMonitoring <- function(
 	table = FALSE, 
 	tableVars, tableLab,
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotMonitoring", sample.int(n = 1000, size = 1)),
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
 	# store input parameter values for further use
@@ -52,7 +52,7 @@ barplotMonitoring <- function(
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
 	hoverVars <- unique(hoverVars)
-	dataSharedData <- formatDataForPlotMonitoring(
+	dataSharedData <- formatDataForPlotClinData(
 		data = data, 
 		hoverVars = hoverVars, hoverLab = hoverLab,
 		hoverByVar = "idEl",
@@ -61,7 +61,7 @@ barplotMonitoring <- function(
 	)
 	
 	# get plot dim
-	dimPlot <- getSizePlotMonitoring(
+	dimPlot <- getSizePlotClinData(
 		width = width, height = height,
 		legend = !is.null(colorVar),
 		legendPosition = "bottom"
@@ -141,8 +141,8 @@ barplotMonitoring <- function(
 		)
 	)
 		
-	# specific formatting for medical monitoring
-	pl <- formatPlotlyMonitoring(
+	# specific formatting for clinical data
+	pl <- formatPlotlyClinData(
 		data = data, pl = pl,
 		idVar = "idEl", pathVar = pathVar,
 		# extract ID from 'label' column directly the plot output object
@@ -157,12 +157,12 @@ barplotMonitoring <- function(
 	if(table){
 		
 		tableVars <- getPlotTableVars(
-			plotFunction = "barplotMonitoring", 
+			plotFunction = "barplotClinData", 
 			plotArgs = plotArgs
 		)
 		tableLab <- attr(tableVars, "tableLab")
 		
-		table <- tableMonitoring(
+		table <- tableClinData(
 			data = data, 
 			keyVar = "idEl", idVar = xVar,
 			pathVar = pathVar, pathLab = pathLab,

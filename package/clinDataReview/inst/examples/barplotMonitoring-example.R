@@ -28,7 +28,7 @@ dataPlot <- subset(tableAE, AEDECOD != "Total")
 dataPlot$n <- as.numeric(dataPlot$n)
 
 # create plot
-barplotMonitoring(
+barplotClinData(
 	data = dataPlot,
 	xVar = "AEDECOD", 
 	yVar = "n", yLab = "Number of patients with adverse events",
@@ -46,7 +46,7 @@ dataPlot <- computeSummaryStatisticsTable(
 	dataTotalPerc = dataAE,
 	rowVarTotalPerc = "AEDECOD"
 )
-barplotMonitoring(
+barplotClinData(
 	data = dataPlot,
 	xVar = "AEDECOD", 
 	yVar = "statPercm", yLab = "Percentage of adverse events",

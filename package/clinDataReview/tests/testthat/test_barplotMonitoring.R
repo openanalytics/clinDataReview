@@ -1,4 +1,4 @@
-context("Barplot monitoring")
+context("Barplot for clinical data")
 
 library(clinUtils)
 library(inTextSummaryTable)
@@ -76,7 +76,7 @@ dataPlot$n <- as.numeric(dataPlot$n)
 test_that("plotting function runs properly", {
 			
 	# create plot
-	pl <- barplotMonitoring(
+	pl <- barplotClinData(
 		data = dataPlot,
 		xVar = "AEDECOD", colorVar = "AESOC",
 		yVar = "n", yLab = "Number of patients with adverse events",
@@ -109,7 +109,7 @@ test_that("plotting function runs properly", {
 
 test_that("interactive table is created", {
 			
-	res <- barplotMonitoring(
+	res <- barplotClinData(
 		data = dataPlot,
 		xVar = "AEDECOD", yVar = "n",
 		table = TRUE
@@ -121,7 +121,7 @@ test_that("interactive table is created", {
 
 test_that("Barplot with hoverVars without label", {
       
-      plOutput <- barplotMonitoring(
+      plOutput <- barplotClinData(
           data = dataPlot, 
           xVar = "AEDECOD", yVar = "n",
           hoverVars = c("AEDECOD", "n")
@@ -139,7 +139,7 @@ test_that("x-variable non nested in color variable is created with success for a
 	)
 	# create plot
 	expect_warning(
-		pl <- barplotMonitoring(
+		pl <- barplotClinData(
 			data = data,
 			xVar = "AEDECOD", colorVar = "ANRIND",
 			yVar = "n",

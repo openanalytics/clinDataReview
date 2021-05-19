@@ -1,5 +1,5 @@
 #' Extract variables displayed in the attached table, for
-#' each available plotting function of the medical monitoring package.
+#' each available plotting function of the clinDataReview package.
 #' 
 #' This function is used in each plotting function of the package 
 #' to extract the variable(s) displayed in the table associated to the
@@ -14,7 +14,7 @@
 #' are selected, based on the plot arguments.\cr
 #'  For example: the variables
 #' displayed in the x and y axis and for coloring are extracted
-#' for the \code{\link{scatterplotMonitoring}} plotting function.\cr
+#' for the \code{\link{scatterplotClinData}} plotting function.\cr
 #' Label for these variable(s) are extracted from the associated parameter 
 #' (e.g. \code{xLab} for \code{xVar} and so on) or the general
 #' parameter for the variable labels (\code{labelVars}) if not specified.
@@ -25,14 +25,14 @@
 #' parameter (\code{tableLab}) or the general
 #' parameter for the variable labels (\code{labelVars}) if not specified.}
 #' }
-#' For the functions: \code{\link{plotCountMonitoring}}, 
-#' \code{\link{treemapMonitoring}}, \code{\link{sunburstMonitoring}}:
+#' For the functions: \code{\link{plotCountClinData}}, 
+#' \code{\link{treemapClinData}}, \code{\link{sunburstClinData}}:
 #' value to represent are included in the table and colored with a bar.
 #' @param plotFunction String with name of the plotting function,
 #' be available in the \code{clinDataReview package}.
 #' @param plotArgs List with parameters passed to the plotting function.
 #' @return Character vector with variable to include in the table,
-#' with extra attributes (passed to \code{\link{tableMonitoring}}): 
+#' with extra attributes (passed to \code{\link{tableClinData}}): 
 #' \itemize{
 #' \item{'tableLab': }{Named character vector with labels 
 #' for the table variables}
@@ -45,9 +45,9 @@
 #' @export
 getPlotTableVars <- function(plotFunction, plotArgs){
 
-	# exception: default args for treemap/sunburst extracted from plotCountMonitoring
-	if(plotFunction %in% c("treemapMonitoring", "sunburstMonitoring"))
-		plotFunction <- "plotCountMonitoring"
+	# exception: default args for treemap/sunburst extracted from plotCountClinData
+	if(plotFunction %in% c("treemapClinData", "sunburstClinData"))
+		plotFunction <- "plotCountClinData"
 	
 	# in case only a subset of the pars are provided
 	# add default values of parameters
@@ -73,7 +73,7 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 		return(el)
 	}
 	
-	if(plotFunction == "scatterplotMonitoring"){
+	if(plotFunction == "scatterplotClinData"){
 			
 		if(tableVarsNotSpec){
 			
@@ -95,7 +95,7 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			)
 		}
 			
-	}else	if(plotFunction == "barplotMonitoring"){
+	}else	if(plotFunction == "barplotClinData"){
 			
 		if(tableVarsNotSpec){
 			tableVars <- with(plotArgs, c(xVar, colorVar, yVar))
@@ -114,7 +114,7 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			)
 		}
 		
-	}else	if(plotFunction %in% c("plotCountMonitoring", "treemapMonitoring", "sunburstMonitoring")){
+	}else	if(plotFunction %in% c("plotCountClinData", "treemapClinData", "sunburstClinData")){
 			
 		valueVar <- plotArgs$valueVar
 		if(tableVarsNotSpec){

@@ -31,7 +31,7 @@ with extra attribute: \code{labelVars}.
 }
 \description{
 This function is intended to automate all data processing
-steps for use in the medical monitoring reports using config files.
+steps for use in the 'clinDataReview' reports using config files.
 }
 \author{
 Laure Cougnaud

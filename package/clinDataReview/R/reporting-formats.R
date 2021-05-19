@@ -1,4 +1,4 @@
-#' Medical monitoring format for bookdown report.
+#' Clinical data format for bookdown report.
 #' 
 #' This function is only meant to set sensitive
 #' defaults for gitbook.\cr
@@ -14,7 +14,7 @@
 #' @return R Markdown output format to pass to \code{\link[bookdown]{render_book}}.
 #' @importFrom bookdown gitbook
 #' @author Laure Cougnaud
-#' @family medical monitoring reporting
+#' @family clinical data reporting
 #' @export
 gitbook_clinDataReview_report <- function(
     logo = NULL,
@@ -85,7 +85,7 @@ addLogoGitbook <- function(logo = NULL, logoHeight = '60px') {
 }
 
 
-#' Medical monitoring format for rmarkdown report.
+#' Clinical data format for rmarkdown report.
 #' 
 #' This function only kept for back-compatibility, 
 #' \code{\link[rmarkdown]{html_document}}
@@ -95,7 +95,7 @@ addLogoGitbook <- function(logo = NULL, logoHeight = '60px') {
 #' \link[rmarkdown]{html_document} function.
 #' @return R Markdown output format to pass to \code{\link[rmarkdown]{render}}.
 #' @author Laure Cougnaud
-#' @family medical monitoring reporting
+#' @family clinical data reporting
 #' @importFrom rmarkdown html_document
 #' @export
 html_clinDataReview_report <- function(

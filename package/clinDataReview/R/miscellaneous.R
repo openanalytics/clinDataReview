@@ -101,7 +101,7 @@ formatHoverText <- function(x, label, width = 50){
 }
 
 #' Get Javascript custom scripts required for specific
-#' medical monitoring functionalities.
+#' clinical data functionalities.
 #' @param dep (optional) Character vector with names of Javascript dependencies 
 #' By default, all dependencies are included.
 #' @param type (optional) Character vector with type of dependencies,

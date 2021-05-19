@@ -1,4 +1,4 @@
-context("Sunburst monitoring")
+context("Sunburst for clinical data")
 
 library(clinUtils)
 library(inTextSummaryTable)
@@ -74,7 +74,7 @@ dataSunburst$n <- as.numeric(dataSunburst$n)
 
 test_that("plotting function runs properly", {
 			
-	pl <- sunburstMonitoring(
+	pl <- sunburstClinData(
 		data = dataSunburst,
 		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events"
@@ -88,7 +88,7 @@ test_that("plotting function runs properly", {
 
 test_that("interactive table is created", {
 			
-	res <- sunburstMonitoring(
+	res <- sunburstClinData(
 		data = dataSunburst,
 		vars = c("AESOC", "AEDECOD"),
 		valueVar = "n", valueLab = "Number of patients with adverse events",
@@ -103,7 +103,7 @@ test_that("plotting function - total", {
 			
 	# returns a warning: valueType: 'total' -> 'relative'
 	expect_warning(
-		pl <- sunburstMonitoring(
+		pl <- sunburstClinData(
 			data = dataSunburst,
 			vars = c("AESOC", "AEDECOD"), valueVar = "n", 
 			valueType = "total"
@@ -126,7 +126,7 @@ test_that("plotting function - total", {
 	
 	tableDM$statN <- as.numeric(tableDM$statN)
 	expect_silent({
-		sunburstMonitoring(
+		sunburstClinData(
 			data = tableDM,
 			vars = c("ARM", "SITEID"), valueVar = "statN", 
 			valueType = "total"

@@ -3,7 +3,7 @@
 \name{getPlotTableVars}
 \alias{getPlotTableVars}
 \title{Extract variables displayed in the attached table, for
-each available plotting function of the medical monitoring package.}
+each available plotting function of the clinDataReview package.}
 \usage{
 getPlotTableVars(plotFunction, plotArgs)
 }
@@ -15,7 +15,7 @@ be available in the \code{clinDataReview package}.}
 }
 \value{
 Character vector with variable to include in the table,
-with extra attributes (passed to \code{\link{tableMonitoring}}): 
+with extra attributes (passed to \code{\link{tableClinData}}): 
 \itemize{
 \item{'tableLab': }{Named character vector with labels 
 for the table variables}
@@ -39,7 +39,7 @@ are not specified:\cr}{all variables displayed in the plot
 are selected, based on the plot arguments.\cr
  For example: the variables
 displayed in the x and y axis and for coloring are extracted
-for the \code{\link{scatterplotMonitoring}} plotting function.\cr
+for the \code{\link{scatterplotClinData}} plotting function.\cr
 Label for these variable(s) are extracted from the associated parameter 
 (e.g. \code{xLab} for \code{xVar} and so on) or the general
 parameter for the variable labels (\code{labelVars}) if not specified.
@@ -50,8 +50,8 @@ The associated label(s) are extracted from the associated
 parameter (\code{tableLab}) or the general
 parameter for the variable labels (\code{labelVars}) if not specified.}
 }
-For the functions: \code{\link{plotCountMonitoring}}, 
-\code{\link{treemapMonitoring}}, \code{\link{sunburstMonitoring}}:
+For the functions: \code{\link{plotCountClinData}}, 
+\code{\link{treemapClinData}}, \code{\link{sunburstClinData}}:
 value to represent are included in the table and colored with a bar.
 }
 \author{

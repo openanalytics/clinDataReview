@@ -35,7 +35,7 @@ dataSunburst <- tableAE
 dataSunburst$n <- as.numeric(dataSunburst$n)
 
 # create plot
-sunburstMonitoring(
+sunburstClinData(
 	data = dataSunburst,
 	vars = c("AESOC", "AEDECOD"),
 	valueVar = "n",
@@ -57,7 +57,7 @@ tableDM <- getSummaryStatisticsTable(
 tableDM$statN <- as.numeric(tableDM$statN)
 
 # create the plot
-sunburstMonitoring(
+sunburstClinData(
 	data = tableDM,
 	vars = c("ARM", "SITEID"),
 	valueVar = "statN", valueLab = "Counts of patients",

@@ -20,7 +20,7 @@ dataPlotWide <- dcast(
 )
 
 # scatterplot per visit
-scatterplotMonitoring(
+scatterplotClinData(
 	data = dataPlotWide, 
 	xVar = "ALT", yVar = "AST",
 	aesPointVar = list(color = "USUBJID"),
@@ -34,7 +34,7 @@ xLab <- getLabelParamcd(paramcd = "ALT", data = dataLB,
 	paramcdVar = "PARAMCD", paramVar = "PARAM")
 yLab <- getLabelParamcd(paramcd = "AST", data = dataLB, 
 	paramcdVar = "PARAMCD", paramVar = "PARAM")
-scatterplotMonitoring(
+scatterplotClinData(
 	data = dataPlotWide, 
 	xVar = "ALT", yVar = "AST",
 	xLab = xLab,
@@ -60,7 +60,7 @@ xLab <- paste(labelVars["LBSTRESN"], "for last screening visit")
 yLab <- paste(labelVars["LBSTRESN"], "at visit X")
 paramLab <- getLabelParamcd(paramcd = "ALT", data = dataLB, 
 	paramcdVar = "PARAMCD", paramVar = "PARAM")
-scatterplotMonitoring(
+scatterplotClinData(
 	data = dataPlot, 
 	xVar = "LBSTRESNBL", xLab = xLab,
 	yVar = "LBSTRESN", yLab = yLab,

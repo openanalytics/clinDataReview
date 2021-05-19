@@ -2,7 +2,7 @@
 % Please edit documentation in R/reporting-formats.R
 \name{gitbook_clinDataReview_report}
 \alias{gitbook_clinDataReview_report}
-\title{Medical monitoring format for bookdown report.}
+\title{Clinical data format for bookdown report.}
 \usage{
 gitbook_clinDataReview_report(
   logo = NULL,
@@ -36,7 +36,7 @@ defaults for gitbook.\cr
 \code{\link[bookdown]{gitbook}} can be used instead.
 }
 \seealso{
-Other medical monitoring reporting: 
+Other clinical data reporting: 
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdFromConfig}()},
 \code{\link{getMdHeader}()},
@@ -48,4 +48,4 @@ Other medical monitoring reporting:
 \author{
 Laure Cougnaud
 }
-\concept{medical monitoring reporting}
+\concept{clinical data reporting}
