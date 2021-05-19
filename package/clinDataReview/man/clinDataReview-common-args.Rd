@@ -84,7 +84,7 @@ of the diagonal line is displayed.
 \item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
 \item{'button:[id]' is used as button ID if \code{table} is TRUE}
 }
-If not specified, a random id, as 'plotMonitoring[X]' is used.}
+If not specified, a random id, as 'plotClinData[X]' is used.}
 
 \item{title}{String with title for the plot.}
 
