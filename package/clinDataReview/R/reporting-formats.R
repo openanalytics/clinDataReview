@@ -3,6 +3,8 @@
 #' This function is only meant to set sensitive
 #' defaults for gitbook.\cr
 #' \code{\link[bookdown]{gitbook}} can be used instead.
+#' @param logo String, path to the logo. No logo is printed by default.
+#' @param logoHeight String, indicating the logo height; 60px height by default.
 #' @param split_by String, how the reports should be split,
 #' (see help of the \link[bookdown]{gitbook} function)
 #' @param config List with config parameters,

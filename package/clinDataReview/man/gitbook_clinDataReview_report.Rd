@@ -15,6 +15,10 @@ gitbook_clinDataReview_report(
 )
 }
 \arguments{
+\item{logo}{String, path to the logo. No logo is printed by default.}
+
+\item{logoHeight}{String, indicating the logo height; 60px height by default.}
+
 \item{split_by}{String, how the reports should be split,
 (see help of the \link[bookdown]{gitbook} function)}
 
