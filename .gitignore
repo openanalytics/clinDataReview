@@ -1,18 +1,18 @@
 *.Rcheck
 .project
 *.html
-!package/medicalMonitoring/tests/files/htmlScraping/3-3-demographics.html
+!package/clinDataReview/tests/files/htmlScraping/3-3-demographics.html
 /tests
 *.tar.gz
 # comments all js folder, excepted in the package
 js
-!package/medicalMonitoring/inst/js
+!package/clinDataReview/inst/js
 *.Rproj
 .Rproj.user/
 testPackage/lib
 *.sas7bdat
 patientProfiles
-!package/medicalMonitoring/inst/template/patientProfiles
+!package/clinDataReview/inst/template/patientProfiles
 *.pdf
 *cache*
 MOMP
@@ -21,23 +21,23 @@ data/
 *.Rhistory
 documentation
 *.md
-!package/medicalMonitoring/tests/**/*.md
+!package/clinDataReview/tests/**/*.md
 *.rds
-!package/medicalMonitoring/tests/**/*.rds
+!package/clinDataReview/tests/**/*.rds
 _main.Rmd
 *.docx
 libs
 
 tests
-!/package/medicalMonitoring/tests
+!/package/clinDataReview/tests
 
 package/doc
 package/Meta
 
 figures_vignette
 *.css
-!package/medicalMonitoring/inst/js/**/*.css
-!package/medicalMonitoring/inst/css/gitbook.css
+!package/clinDataReview/inst/js/**/*.css
+!package/clinDataReview/inst/css/gitbook.css
 
 report/CDISC01/comparisonData
 
