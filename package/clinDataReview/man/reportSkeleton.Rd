@@ -13,7 +13,7 @@ the skeleton should be created.}
 \value{
 The files to run a report are written in the specified 
 directory. To run the report, the user can call the 
-\code{\link{render_medicalMonitoringReport}}.
+\code{\link{render_clinDataReviewReport}}.
 }
 \description{
 Creates the skeleton of a report to start running the analyses.

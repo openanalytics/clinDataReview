@@ -83,7 +83,7 @@ the table is included within an HTML button.}
 Either:
 \itemize{
 \item{if \code{table} is requested}{
-a \code{medicalMonitoring} object, a.k.a a list with the 
+a \code{clinDataReview} object, a.k.a a list with the 
 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
 (\code{\link[DT]{datatable}} object)}
 \item{otherwise: }{\code{\link[plotly]{plotly}} object}

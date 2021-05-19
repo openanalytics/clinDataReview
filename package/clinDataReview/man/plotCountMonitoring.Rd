@@ -12,7 +12,7 @@ plotCountMonitoring(
   valueLab = getLabelVar(valueVar, labelVars = labelVars),
   colorVar = NULL,
   colorLab = getLabelVar(valueVar, labelVars = labelVars),
-  colorPalette = getOption("medicalMonitoring.colors"),
+  colorPalette = getOption("clinDataReview.colors"),
   colorRange = NULL,
   valueType = "total",
   titleExtra = NULL,
@@ -135,7 +135,7 @@ of subject-specific report are displayed in the browser console.}
 Either:
 \itemize{
 \item{if \code{table} is requested}{
-a \code{medicalMonitoring} object, a.k.a a list with the 
+a \code{clinDataReview} object, a.k.a a list with the 
 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
 (\code{\link[DT]{datatable}} object)}
 \item{otherwise: }{\code{\link[plotly]{plotly}} object}

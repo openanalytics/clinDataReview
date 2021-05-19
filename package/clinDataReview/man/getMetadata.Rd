@@ -31,7 +31,7 @@ In particular, within the yaml file matches the following strings:
 \item{\code{dateTime}}{ Date and time, usually of the SDTM data creation. 
 When printing the metadata in Rmd document, there is the possibility to add
  the date and time of the report generation. 
-See \code{\link{knit_print.medicalMonitoringMetadata}}. }
+See \code{\link{knit_print.clinDataReviewMetadata}}. }
 \item{\code{datasetInfo}}{ General information about the data sets.}
 }
 }

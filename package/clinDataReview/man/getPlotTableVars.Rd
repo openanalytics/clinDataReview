@@ -9,7 +9,7 @@ getPlotTableVars(plotFunction, plotArgs)
 }
 \arguments{
 \item{plotFunction}{String with name of the plotting function,
-be available in the \code{medicalMonitoring package}.}
+be available in the \code{clinDataReview package}.}
 
 \item{plotArgs}{List with parameters passed to the plotting function.}
 }

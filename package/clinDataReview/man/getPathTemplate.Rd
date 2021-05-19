@@ -4,16 +4,16 @@
 \alias{getPathTemplate}
 \title{Get path of template medical monitoring report}
 \usage{
-getPathTemplate(file, package = "medicalMonitoring")
+getPathTemplate(file, package = "clinDataReview")
 }
 \arguments{
 \item{file}{String with name of the template Rmd document}
 
 \item{package}{String, which package the template should be extracted from,
-by default the \code{medicalMonitoring} package.}
+by default the \code{clinDataReview} package.}
 }
 \value{
-String with path to the template in the installed \code{medicalMonitoring}
+String with path to the template in the installed \code{clinDataReview}
 package
 }
 \description{

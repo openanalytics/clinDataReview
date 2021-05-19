@@ -30,9 +30,9 @@ Other medical monitoring reporting:
 \code{\link{convertMdToHtml}()},
 \code{\link{getMdFromConfig}()},
 \code{\link{getParamsFromConfig}()},
-\code{\link{gitbook_medicalMonitoring_report}()},
-\code{\link{html_medicalMonitoring_report}()},
-\code{\link{knitPrintMedicalMonitoring}()},
-\code{\link{render_medicalMonitoringReport}()}
+\code{\link{gitbook_clinDataReview_report}()},
+\code{\link{html_clinDataReview_report}()},
+\code{\link{knitPrintClinDataReview}()},
+\code{\link{render_clinDataReviewReport}()}
 }
 \concept{medical monitoring reporting}

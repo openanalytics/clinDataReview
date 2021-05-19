@@ -6,7 +6,7 @@
 available in the 'template' folder of the package.}
 \usage{
 createTemplateDoc(
-  templatePath = system.file("template", package = "medicalMonitoring")
+  templatePath = system.file("template", package = "clinDataReview")
 )
 }
 \arguments{
