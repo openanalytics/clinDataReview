@@ -1,6 +1,3 @@
-#'@importFrom utils globalVariables
-utils::globalVariables("dataADaMCDISCP01")
-
 #' Create the skeleton of a report
 #' 
 #' Creates the skeleton of a report to start running the analyses.
@@ -32,7 +29,8 @@ reportSkeleton <- function(dirName) {
     if(! any(grepl("config", preexistingFiles))) dir.create(dirConfig)
   }
   
-  writeXpt(dirData)  
+  #writeXpt(dirData)  
+  moveXpt(dirData)
   createExampleMetadata(dirData)
   
   createMainConfigSkeleton(dirName = dirConfig, dirData = dirData)
@@ -43,21 +41,39 @@ reportSkeleton <- function(dirName) {
 }
 
 
-#' @import clinUtils 
-#' @importFrom utils data
-#' @importFrom haven write_xpt
-writeXpt <- function(dirName) {
+# #' @import clinUtils 
+# #' @importFrom utils data
+# #' @importFrom haven write_xpt
+#writeXpt <- function(dirName) {
+#  
+#  dataSkeleton <- clinUtils::dataSDTMCDISCP01
+#  
+#  sapply(names(dataSkeleton), function(nameI) {
+#        
+#        dataI <- dataSkeleton[[nameI]]
+#        pathI <- sprintf("%s.xpt", file.path(dirName, nameI))
+#        
+#        write_xpt(dataI, pathI)
+#        
+#      })
+#  
+#}
+
+moveXpt <- function(dirName) {
   
-  dataSkeleton <- clinUtils::dataSDTMCDISCP01
+  pathToFiles <- system.file(
+      "extdata", "cdiscpilot01",
+      "SDTM",
+      package = "clinUtils"
+  )
+  fileNames <- list.files(pathToFiles, full.names = TRUE)
+  file.copy(
+      from = fileNames,
+      to = dirName,
+      overwrite = TRUE,
+      recursive = TRUE
+  )
   
-  sapply(names(dataSkeleton), function(nameI) {
-        
-        dataI <- dataSkeleton[[nameI]]
-        pathI <- sprintf("%s.xpt", file.path(dirName, nameI))
-        
-        write_xpt(dataI, pathI)
-        
-      })
   
 }
 
@@ -102,7 +118,7 @@ moveSkeletonFiles <- function(dirName) {
       to = dirName,
       overwrite = TRUE, recursive = TRUE
   )
-   
+  
 }
 
 #' @importFrom yaml write_yaml

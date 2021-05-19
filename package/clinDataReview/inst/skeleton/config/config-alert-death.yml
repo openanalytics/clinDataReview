@@ -4,10 +4,10 @@ templatePackage: clinDataReview
 reportTitleLevel: 2
 reportTitle: "Death"
 # Dataset of interest
-dataFileName: AE.xpt
+dataFileName: ae.xpt
 dataProcessing:
   - annotate:
-    - dataset: DM
+    - dataset: dm
       vars: ["RFXSTDTC", "ACTARM"] 
   - filter:
     # safety analysis set: treated-patients
@@ -15,7 +15,7 @@ dataProcessing:
       value: ""
       rev: true
 # Total dataset
-dataTotalFileName: DM.xpt
+dataTotalFileName: dm.xpt
 dataTotalProcessing:
   - filter:
     # safety analysis set: treated-patients

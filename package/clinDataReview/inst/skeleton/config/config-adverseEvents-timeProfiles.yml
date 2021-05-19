@@ -4,7 +4,7 @@ templatePackage: clinDataReview
 reportTitle: "Adverse events: treatment-emergent time intervals"
 reportTitleLevel: 2
 # Dataset of interest
-dataFileName: AE.xpt
+dataFileName: ae.xpt
 dataProcessing:
   - annotate:
     - dataset: DM

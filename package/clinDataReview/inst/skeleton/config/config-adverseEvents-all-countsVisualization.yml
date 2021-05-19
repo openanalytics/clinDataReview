@@ -4,7 +4,7 @@ templatePackage: clinDataReview
 reportTitle: "All adverse events: counts"
 reportTitleLevel: 2
 # Dataset of interest
-dataFileName: AE.xpt
+dataFileName: ae.xpt
 dataProcessing:
   - annotate:
     - dataset: dm
@@ -31,7 +31,7 @@ dataProcessing:
       value: ""
       rev: true
 # Total dataset:
-dataTotalFileName: DM.xpt
+dataTotalFileName: dm.xpt
 dataTotalProcessing:
   - filter:
     # safety analysis set: treated-patients

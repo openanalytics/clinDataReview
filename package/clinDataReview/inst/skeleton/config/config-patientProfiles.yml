@@ -15,7 +15,7 @@ createPatientProfiles: FALSE
 patientProfilesParams:
 
   - typePlot: text
-    dataFileName: DM.xpt
+    dataFileName: dm.xpt
     dataProcessing:
       - filter:
         # safety analysis set: treated-patients
@@ -28,10 +28,10 @@ patientProfilesParams:
       label: Demography
 
   - typePlot: text
-    dataFileName: MH.xpt
+    dataFileName: mh.xpt
     dataProcessing:
       - annotate:
-        - dataset: DM
+        - dataset: dm
           vars: RFXSTDTC
       - filter:
         # safety analysis set: treated-patients
@@ -46,10 +46,10 @@ patientProfilesParams:
       label: Medical history (Start - End)
 
   - typePlot: interval
-    dataFileName: CM.xpt
+    dataFileName: cm.xpt
     dataProcessing:
       - annotate:
-        - dataset: DM
+        - dataset: dm
           vars: RFXSTDTC
       - filter:
         # safety analysis set: treated-patients
@@ -71,10 +71,10 @@ patientProfilesParams:
       label: Concomitant medications
 
   - typePlot: interval
-    dataFileName: EX.xpt
+    dataFileName: ex.xpt
     dataProcessing:
       - annotate:
-        - dataset: DM
+        - dataset: dm
           vars: RFXSTDTC
       - filter:
         # safety analysis set: treated-patients
@@ -94,10 +94,10 @@ patientProfilesParams:
       label: Treatment exposure
 
   - typePlot: interval
-    dataFileName: AE.xpt
+    dataFileName: ae.xpt
     dataProcessing:
       - annotate:
-        - dataset: DM
+        - dataset: dm
           vars: RFXSTDTC
       - filter:
         # safety analysis set: treated-patients
@@ -119,10 +119,10 @@ patientProfilesParams:
       label: Adverse events
 
   - typePlot: line
-    dataFileName: LB.xpt
+    dataFileName: lb.xpt
     dataProcessing:
       - annotate:
-        - dataset: DM
+        - dataset: dm
           vars: RFXSTDTC
       - filter:
         # safety analysis set: treated-patients
@@ -152,10 +152,10 @@ patientProfilesParams:
       label: Laboratory test measurements
 
   - typePlot: line
-    dataFileName: VS.xpt
+    dataFileName: vs.xpt
     dataProcessing:
       - annotate:
-        - dataset: DM
+        - dataset: dm
           vars: RFXSTDTC
       - filter:
         # safety analysis set: treated-patients
@@ -180,7 +180,7 @@ patientProfilesCreateReportParams:
 
 # Parameters for the table
 tableParams:
-  dataFileName: DM.xpt
+  dataFileName: dm.xpt
   dataProcessing:
     - filter:
       # safety analysis set: treated-patients

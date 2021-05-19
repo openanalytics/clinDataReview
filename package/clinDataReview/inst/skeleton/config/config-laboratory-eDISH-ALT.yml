@@ -4,7 +4,7 @@ templatePackage: clinDataReview
 reportTitle: "eDISH: ALT vs bilirubin"
 reportTitleLevel: 2
 # Dataset of interest
-dataFileName: LB.xpt
+dataFileName: lb.xpt
 dataProcessing:
   - annotate:
     - dataset: dm

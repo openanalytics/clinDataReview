@@ -4,7 +4,7 @@ templatePackage: clinDataReview
 reportTitle: "Concomitant medication: listing"
 reportTitleLevel: 2
 # Dataset of interest
-dataFileName: CM.xpt
+dataFileName: cm.xpt
 dataProcessing:
   - annotate:
     - dataset: dm
