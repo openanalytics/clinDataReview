@@ -31,7 +31,7 @@ gitbook_clinDataReview_report <- function(
   
   if(!is.null(logo)) includes <- addLogoGitbook(
         logo = logo, logoHeight = logoHeight
-  )
+  ) else includes <- list()
   
   file.copy(
       from = system.file(
