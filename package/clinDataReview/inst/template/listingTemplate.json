@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  
+  "title" : "Medical monitoring template to create a listing",
+  
+  "description" : "This report displays a listing of the variables and data of interest, displayed in an interactive table. This table can contains comparison with a previous batch ('comparisonTable' parameters).",
+  
+  "type": "object",
+  
+  "properties": {
+  
+    "template": {
+      "const": "listingTemplate.Rmd",
+      "doc": "name of the template report"
+    },
+    "templatePackage": {
+      "const": "clinDataReview",
+      "doc": "package from which the template should be extracted"
+     },
+    "reportTitle": {
+      "type": "string",
+      "doc": "header title"
+    },
+    "reportTitleLevel": {
+      "type": "integer",
+      "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    },
+    "dataFileName" : {
+      "type": "string",
+      "doc": "name of the data file of interest"
+    },
+    "dataProcessing": {
+      "type": "array",
+      "doc": "data processing parameters, passed to \\link[clinDataReview]{processData}"
+    },
+    "dataTotalFileName": {
+      "type": "string",
+      "doc": "filename of the total dataset"
+    },
+    "dataTotalProcessing": {
+      "type": "array",
+      "doc": "data processing parameters for 'dataTotalFileName', passed to \\link[clinDataReview]{processData}"
+    },
+    "tableParams": {
+      "type": "object",
+      "doc": "parameters to create the table, passed to \\link[clinDataReview]{tableMonitoring}"
+    },
+    "comparisonTableType": {
+      "type": "string",
+      "doc": "output type of the comparison table",
+      "enum": ["none", "newData-diff-interactive", "table-comparison-interactive"]
+    },
+    "comparisonTableParams": {
+      "type": "object",
+      "doc": "parameters for the comparison table, passed to \\link[clinUtils]{compareTables}"
+    },
+    "loopingVar": {
+      "type": ["array", "string"],
+      "doc": "data variable(s) to loop over, for which each output should be created"
+    },
+    "loopingNMax": {
+      "type": "integer",
+      "doc": "maximum number of elements of \\code{loopingVar} to include in the report"
+    }
+  },
+  
+  "required": ["template", "templatePackage", "reportTitle", "dataFileName"],
+  
+/*   doesn't allow extra parameters in the config files */
+  "additionalProperties": false 
+  
+}

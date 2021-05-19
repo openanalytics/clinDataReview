@@ -1,0 +1,61 @@
+
+<!--- 
+This report include a division in the report, i.e. an extra chapter, section, subsection title.
+
+Input parameters:
+ 
+* Report-specific
+- reportTitle: string with report title
+- reportTitleLevel (optional): integer with level of the report title, 1 for chapter, 2 for section, ...
+- content (optional): text with content to include in this report
+-->
+
+
+```{r divisionTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
+
+library(knitr)
+knitr::opts_chunk$set(
+	echo = FALSE, 
+	warning = FALSE, error = FALSE, message = FALSE, 
+	results = "asis"
+)
+
+knitr::knit_hooks$set(
+	message = function(x, options) {
+		paste('\n\n<div class="alert alert-info">',
+			gsub('##', '\n', x),
+			'</div>', sep = '\n')
+	}
+)
+
+# print warnings where they occur (warn = 0 by default)
+options(warn = 1)
+	
+```
+
+```{r divisionTemplate-attachParameters}
+
+attach(params)
+
+```
+
+```{r divisionTemplate-loadPackages}
+
+library(clinDataReview)
+
+```
+
+```{r divisionTemplate-setTitle}
+
+if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
+
+# Create a header at the wanted depth
+cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
+
+```
+
+```{r divisionTemplate-text, eval = exists("content")}
+
+cat(content)
+
+```

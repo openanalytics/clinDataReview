@@ -1,0 +1,25 @@
+context("Test reporting formats")
+
+test_that("Format of gitbook for medical monitoring", {
+      
+      output <- gitbook_clinDataReview_report()
+      expect_is(output, "rmarkdown_output_format")
+      #expect_length(output, 13)
+      
+      output <- gitbook_clinDataReview_report(
+          split_by = 'section',
+      )
+      expect_is(output, "rmarkdown_output_format")
+
+    })
+
+test_that("Format html report", {
+      
+      res <- html_clinDataReview_report()
+      expect_is(res, "rmarkdown_output_format")
+      expect_identical(
+          res$pandoc$to,
+          "html"
+      )
+      
+    })

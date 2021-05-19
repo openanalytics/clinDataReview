@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  
+  "title" : "Medical monitoring template for visualization of summarized data",
+  
+  "description" : "This report summarizes the data of interest (with the \\code{inTextSummaryTable} package) and visualize it with any medical monitoring plot function.",
+  
+  "type": "object",
+  
+  "properties": {
+  
+    "template": {
+      "const": "summaryPlotTemplate.Rmd",
+      "doc": "name of the template report"
+    },
+    "templatePackage": {
+      "const": "clinDataReview",
+      "doc": "package from which the template should be extracted"
+     },
+    
+    "reportTitle": {
+      "type": "string",
+      "doc": "header title"
+    },
+    "reportTitleLevel": {
+      "type": "integer",
+      "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
+    },
+    "dataFileName" : {
+      "type": "string",
+      "doc": "name of the data file of interest"
+    },
+    "dataProcessing": {
+      "type": "array",
+      "doc": "data processing parameters, passed to \\link[clinDataReview]{processData}"
+    },
+    "dataTotalFileName": {
+      "type": "string",
+      "doc": "filename of the total dataset"
+    },
+    "dataTotalProcessing": {
+      "type": "array",
+      "doc": "data processing parameters for 'dataTotalFileName', passed to \\link[clinDataReview]{processData}"
+    },
+    
+    "tableParams": {
+      "type": "object",
+      "doc": "parameters to summarize the data in a table, passed to \\link[inTextSummaryTable]{computeSummaryStatisticsTable}"
+    },
+    "tableProcessing": {
+      "type": "array",
+      "doc": "data processing parameters for the summary table, passed to \\link[clinDataReview]{processData}"
+    },
+    
+    "plotFunction": {
+      "type": "string",
+      "enum": ["timeProfileIntervalPlot", "scatterplotMonitoring", "sunburstMonitoring", "treemapMonitoring", "barplotMonitoring"],
+      "doc": "plotting function to visualize summary data"
+    },
+    "plotParams": {
+      "type": "object",
+      "doc": "parameters for the plotting function"
+    },
+    "loopingVar": {
+      "type": ["array", "string"],
+      "doc": "data variable(s) to loop over, for which each output should be created"
+    },
+    "loopingNMax": {
+      "type": "integer",
+      "doc": "maximum number of elements of \\code{loopingVar} to include in the report"
+    },
+    "loopingTotal": {
+      "type": "boolean",
+      "doc": "should the total also be computed by \\code{loopingVar} (TRUE by default)?"
+    },
+    
+    "startup": {
+      "type": ["array", "string"],
+      "doc": "R commands that should be run at the start of the report"
+    }
+    
+  },
+  
+  "required": ["template", "templatePackage", "reportTitle", "dataFileName", "tableParams", "plotFunction", "plotParams"],
+  
+  /*   doesn't allow extra parameters in the config files */
+  "additionalProperties": false
+  
+}

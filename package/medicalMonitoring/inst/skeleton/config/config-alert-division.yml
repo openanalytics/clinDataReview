@@ -1,5 +1,0 @@
-# Report-specific parameters
-template: divisionTemplate.Rmd
-templatePackage: medicalMonitoring
-reportTitle: Alerts
-reportTitleLevel: 1

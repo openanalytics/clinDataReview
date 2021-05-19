@@ -1,0 +1,46 @@
+# Report-specific parameters
+template: summaryTableTemplate.Rmd
+templatePackage: clinDataReview
+reportTitleLevel: 2
+reportTitle: "Death"
+# Dataset of interest
+dataFileName: AE.xpt
+dataProcessing:
+  - annotate:
+    - dataset: DM
+      vars: ["RFXSTDTC", "ACTARM"] 
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+# Total dataset
+dataTotalFileName: DM.xpt
+dataTotalProcessing:
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+# Table parameters
+tableParams:
+  var: "AESDTH"
+  varFlag: "AESDTH"
+  colVar: ACTARM
+  varInclude0: TRUE
+  varGeneralLab: "Subjects with, n (%)"
+  stats: 'getStats(type = c("n", "%", "n (%)"))'
+  varSubgroupLab: Group
+# for docx export (optional):
+tableParamsDocx:
+  statsVar: "n (%)"
+  file: alertDeath.docx
+  footer: "The percentages are calculated over the safety analysis set"
+tableParamsDT:
+  statsVar: ["n", "%"]
+  statsLayout: rowInSepCol # col by default for DT output
+  pageLength: Inf
+  searchBox: TRUE 
+  footer: "The percentages are calculated over the safety analysis set"
+   
+

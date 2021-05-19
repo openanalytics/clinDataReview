@@ -1,0 +1,36 @@
+# Report-specific parameters
+template: plotTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: "Adverse events: treatment-emergent time intervals"
+reportTitleLevel: 2
+# Dataset of interest
+dataFileName: AE.xpt
+dataProcessing:
+  - annotate:
+    - dataset: DM
+      vars: ["RFXSTDTC"] 
+    - vars: TRTEMFL
+      varFct: ifelse(is.na(AESTDY), "", ifelse(AESTDY >= 0, "Y", "N"))
+      varLabel: Treatment-emergent adverse event
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+    - var: TRTEMFL
+      value: 'Y'
+# Looping parameters
+loopingVar: ["AEBODSYS", "AEDECOD"]
+#loopingNMax: 5
+# Plot parameters
+plotFunction: "timeProfileIntervalPlot"
+plotParams:
+  paramVar: ["USUBJID"]
+  paramGroupVar: "AESTDY"
+  timeStartVar: "AESTDY"
+  timeEndVar: "AEENDY"
+  #timeStartShapeVar: "AEENDY"
+  #timeEndShapeVar: "AENFLG"
+  colorVar: "AESEV"
+  tableVars: ["USUBJID", "AEBODSYS", "AEDECOD", "AESEV", "AESTDY", "AEENDY"]
+

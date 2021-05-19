@@ -1,0 +1,322 @@
+
+<!--- 
+This report display a listing table for a dataset and variables of interest.
+
+Input parameters:
+ 
+* Report-specific:
+- reportTitle: string with report title
+- reportTitleLevel: integer with level of the report title, 1 for chapter, 2 for section, ...
+- dataFileName: string with name of the file of interest
+- dataProcessing (optional): list with parameters for data processing, see ? clinDataReview::processData
+- tableParams: list with any parameters for the table, see ? clinDataReview::tableMonitoring
+(besides data/labelVars/pathVar/pathLab)
+- comparisonTableType (optional): string with type of comparison table, either: 'none' (by default), 'newData-diff-interactive' or 'table-comparison-interactive'
+- comparisonTableParams (optional): list with parameters for the comparison table, see ? clinUtils::compareTables
+- loopingVar (optional): character vector with variables to loop over, a listing will be created for each combination of groups of this variable
+- loopingNMax (optional): integer with maximal number of groups to consider (all by default)
+
+* General:
+- pathDataFolder: string with path to the data folder
+- pathDataFolderOld (optional): string with path to the folder for old data
+- patientProfilePath: string with relative path where patient profiles are stored
+
+-->
+
+
+```{r listingTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
+
+library(knitr)
+knitr::opts_chunk$set(
+	echo = FALSE, 
+	warning = FALSE, error = FALSE, message = FALSE, 
+	results = "asis"
+)
+
+knitr::knit_hooks$set(
+	message = function(x, options) {
+		paste('\n\n<div class="alert alert-info">',
+			gsub('##', '\n', x),
+			'</div>', sep = '\n')
+	}
+)
+
+# print warnings where they occur (warn = 0 by default)
+options(warn = 1)
+
+```
+
+```{r listingTemplate-attachParameters}
+
+attach(params)
+
+if(!exists("comparisonTableType"))	comparisonTableType <- "none"
+if(comparisonTableType != "none" & 
+	(!exists("pathDataFolderOld") || !file.exists(file.path(pathDataFolderOld, dataFileName)))
+){
+	warning("No comparison table is included because data from previous batch is not available.")
+	comparisonTableType <- "none"
+}
+
+if(!exists("patientProfilePath"))	patientProfilePath <- NULL
+if(!exists("loopingVar")) loopingVar <- NULL
+if(!exists("loopingTotal"))	loopingTotal <- TRUE
+
+```
+
+```{r listingTemplate-loadPackages}
+
+library(clinUtils)
+library(inTextSummaryTable)
+library(clinDataReview)
+library(plyr)
+
+```
+
+```{r listingTemplate-setTitle}
+
+if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
+
+# Create a header at the wanted depth
+cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
+
+```
+
+```{r listingTemplate-getData}
+
+if(comparisonTableType != "none") {
+	
+	pathsData <- c(
+		"currentData" = pathDataFolder,
+		"previousData" = pathDataFolderOld
+	)	
+	
+} else pathsData <- c("currentData" = pathDataFolder)
+
+dataList <- sapply(names(pathsData), function(dataBatch) {
+			
+	# Load data
+	pathData <- file.path(pathsData[[dataBatch]], dataFileName)
+	
+	dataAll <- clinUtils::loadDataADaMSDTM(pathData, verbose = FALSE)
+	data <- dataAll[[1]]
+	
+	# Extract label information
+	labelVars <- attr(dataAll, "labelVars")
+	
+	# Data processing 
+	if(exists("dataProcessing")){
+		data <- processData(
+			data = data, 
+			dataPath = pathDataFolder,
+			processing = dataProcessing,
+			verbose = TRUE,
+			labelVars = labelVars
+		)
+		# Labels updated with extra annotation:
+		labelVars <- attr(data, "labelVars")
+	}
+	
+	# Create URL to patient profiles
+	if(!is.null(patientProfilePath))
+		data <- createPatientProfileVar(
+			data = data, 
+			patientProfilePath = patientProfilePath,
+			checkExist = FALSE
+		)
+	
+	# only subset of the data if requested
+	if(!is.null(loopingVar) && exists("loopingNMax") &&	is.integer(loopingNMax)){
+		
+		data <- merge(
+			x = data,
+			y = unique(data[, loopingVar, drop = FALSE])[seq_len(loopingNMax), , drop = FALSE],
+			all = FALSE
+		)
+		
+	}
+	
+    attr(data, "labelVars") <- labelVars
+	data
+	
+}, simplify = FALSE)
+
+dataPrevious <- dataList$previousData
+dataCurrent <- dataList$currentData
+labelVars <- attr(dataCurrent, "labelVars")
+
+```
+
+```{r listingTemplate-getListingTable, eval = (comparisonTableType  == "none"), message = TRUE}	
+
+data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
+			
+	argsTable <- c(
+		list(
+			data = dataCurrentI, 
+			labelVars = labelVars,
+			pathVar = if(!is.null(patientProfilePath))	"patientProfilePath",
+			pathLab = labelVars["USUBJID"]
+		),
+		tableParams
+	)
+	do.call("tableMonitoring", argsTable)
+	
+})
+
+knitPrintClinDataReview(data, level = reportTitleLevel + 1)
+
+```
+
+```{r listingTemplate-getListingComparisonTable, eval = (comparisonTableType %in% c("newData-diff-interactive", "table-comparison-interactive")), message = TRUE}	
+
+data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
+
+	# get comparison table
+	if(!is.null(loopingVar)){
+		dataPreviousI <- merge(
+			x = unique(dataCurrentI[, loopingVar, drop = FALSE]),
+			y = dataPrevious,
+			by = loopingVar,
+			all = FALSE
+		)
+	}else	dataPreviousI <- dataPrevious
+
+	## input parameters for compareTables function:
+	argsCompTable <- comparisonTableParams
+	
+	## input parameters for exportDiffData function:
+	argsExportDiff <- list()
+			
+	# extract variables to display in the table + and labels 
+	tableVars <- tableParams$tableVars
+	if(is.null(tableVars))	tableVars <- colnames(dataCurrentI)
+	tableLab <- clinUtils::getLabelVar(var = tableVars, labelVars = labelVars, label = tableParams$tableLab)
+	if(!is.null(patientProfilePath)){
+		tableVars <- c(tableVars, "patientProfileLink")
+		tableLab <- c(tableLab, setNames(tableLab["USUBJID"], "patientProfileLink"))
+	}
+	dataCurrentI <- subset(dataCurrentI, select = tableVars)
+	dataPreviousI <- subset(dataPreviousI, select = tableVars)
+	
+	# set columns to labels (if available)
+	argsExportDiff$colnames <- setNames(names(tableLab), tableLab)
+	
+	# formatting for patient profiles
+	getArgsExportDiffPatientProfiles <- function(data, argsExportDiff){
+		argsExportDiff <- c(argsExportDiff,
+			list(
+				# escape it in the table	
+				escape = match("patientProfileLink", colnames(data))-1,
+				# doesn't display USUBJID
+				nonVisibleVar = "USUBJID"
+			)
+		)
+		return(argsExportDiff)
+	}
+	
+	# convert character columns as factor (as requested)
+	convertColToFact <- function(data){
+		idxColChar <- which(sapply(data, is.character))
+		idxColChar <- setdiff(idxColChar, match("patientProfileLink", colnames(data)))
+		if(length(idxColChar) > 0)
+			data[, idxColChar] <- lapply(data[, idxColChar], as.factor)
+		return(data)
+	}
+	
+	switch(comparisonTableType, 
+			
+		`newData-diff-interactive` = {
+					
+			# convert character columns as factor (as requested)
+			dataCurrentI <- convertColToFact(dataCurrentI)
+			dataPreviousI <- convertColToFact(dataPreviousI)
+			
+			# formatting for patient profiles:
+			if(!is.null(patientProfilePath)){
+				
+				# set patient profile link column just after USUBJID
+				dataCurrentI <- reorderColumns(
+					data = dataCurrentI, 
+					vars = c("patientProfileLink" = match("USUBJID", colnames(dataCurrentI))+1)
+				)
+				# getClinDT params-specific for patient profile
+				argsExportDiff <- getArgsExportDiffPatientProfiles(
+					data = dataCurrentI, 
+					argsExportDiff = argsExportDiff
+				)
+				
+			}
+			
+			argsCompTable <- c(
+				argsCompTable,
+				 list(
+					outputType = "newData-diff-interactive",
+				 	newData = dataCurrentI,
+				 	oldData = dataPreviousI
+				 ),
+				 argsExportDiff
+		 	)
+			
+			tableComparisonDT <- do.call(clinUtils::compareTables, argsCompTable)
+			
+		},
+		
+		`table-comparison-interactive` = {
+			
+			## extract comparison table
+			argsCompTable <- c(
+				argsCompTable,
+				list(
+					outputType = "table-comparison",
+					newData = dataCurrentI,
+					oldData = dataPreviousI
+				)
+			)
+			tableComparison <- do.call(clinUtils::compareTables, argsCompTable)
+			tableCompAttr <- attributes(tableComparison)[c("referenceVars", "changeableVars")]
+			
+			## export to DT
+		
+			# convert character columns as factor (as requested)
+			tableComparison <- convertColToFact(tableComparison)
+			
+			# formatting for patient profiles:
+			if(!is.null(patientProfilePath)){
+				
+				# add patient profiles to diff table:
+				tableComparison$patientProfileLink <- dataCurrentI[
+					match(tableComparison$USUBJID, dataCurrentI$USUBJID),
+					"patientProfileLink"
+				]
+			
+				# set patient profile link column just after USUBJID
+				tableComparison <- reorderColumns(
+					data = tableComparison, 
+					vars = c("patientProfileLink" = match("USUBJID", colnames(tableComparison))+1)
+				)
+				
+				# getClinDT params-specific for patient profile
+				argsExportDiff <- getArgsExportDiffPatientProfiles(
+					data = tableComparison, 
+					argsExportDiff = argsExportDiff
+				)
+				
+			}
+			
+			argsExportDiff <- c(
+				list(diffData = tableComparison), 
+				tableCompAttr,
+				argsExportDiff
+			)
+			tableComparisonDT <- do.call(exportDiffData, argsExportDiff)
+			
+		}
+		
+	)
+	
+})
+
+knitPrintClinDataReview(data, level = reportTitleLevel + 1)
+
+```

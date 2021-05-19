@@ -1,0 +1,98 @@
+0.9.2.999
+    o new 'startup' config param for all visualizations template
+    o remove color specification for collapsible button
+    o new 'reportSkeleton' functionality
+    o change name to "clinDataReview"
+0.9.2
+    o fix for highlight_key -> crosstalk::SharedData
+    o barplotMonitoring: fix link legend <-> x-axis in case color/x variables are nested
+0.9.1
+    o listing template: format columns as factor for table comparison interactive
+0.9.0
+    o get metadata functionality
+    o unit tests
+    o add 'zipMedicalMonitoring' function
+    o getPlotTableVars:
+        - fix issues vars label scatterplot, time profile interval plot
+        - extract lab from tableLab + labelVars if tableVars is specified
+        - extra doc, tests
+    o Js FileSaver library: remove reference to FileSaver.min.js.map
+    o help page 'medicalMonitoring-templates' properly created in pkg built + tests
+    o fix issue DT header not aligned upon first click on shared plot
+    o include metadata MeMo ADs in report
+    o scatterplotMonitoring: scale params
+    o config params import extension:
+        - standard evaluation with '!r'
+        - lazy evaluation with '!r-lazy' + use for 'plotParams' in plot/patient profile template
+0.8.0
+    o fix extraction of labels for 'getPlotTableVars' when 'valueVar' not in 'tableVars'
+    o remove 'settings' argument in 'getMdHeader'
+    o filterData: fix for returnAll <-> varNew
+    o scrapeHtml: minor changes in extracting the path
+    o countsVisualizationTemplate: fix when colorVar not specified for all parent vars
+    o patient profiles template: Windows shape palette: u25C0 -> u25C4, u25B6 -> u25BA, u271A -> +, u2605 (star) -> u2666 (diamond)
+    o patient profiles template: shape palette for aesthetic: u25AA -> u25A0, u25CF -> u25CB
+    o unit tests
+    o comparison table functionality based on data.table
+0.7.0
+    o fix MOMP -> report in vignette
+    o fix createTemplateDoc
+    o add space in 'getParamsFromConfig' in two error messages
+    o fix in 'render_medicalMonitoringReport' when calling 'checkReportTitles': add configDir as argument
+    o add unit tests
+    o formatToHierarchicalData: fix for more than two vars (multiple parentVars)
+    o timeProfileIntervalPlot: fix overlap x-axis title and legend when few y elements
+    o timeProfileIntervalPlot: fix overlap top plot and modebar (no hover issue)
+    o barplotMonitoring: fix link legend <-> x-axis selection, legend on top
+    o minify/update JS dep: FileSaver, JSZip, JSZipUtils
+    o updates for compareTable data.table implementation
+    o getPlotTableVars: fixes
+    o scatterplotMonitoring: fix in case x/y/aesVar are not standard R names (e.g. contain space)
+0.6.0
+    o checkReportTitles: write error when config file does not exist
+    o listingTemplate: add labelVars in sapply call to extract the labelVars even when no dataProcessing exists
+    o countsVisualizationTemplate/plotCountMonitoring: fix in case no parent variable
+    o annotateData: export filter dataset in xpt format
+    o tableMonitoring: pathVar/idVar optional + warning
+    o countsVisualization json: allow multiple typePlot
+    o scatterplotMonitoring(Static): fix to extract labels for aes var
+    o checkTemplateNames/checkReportTitles/render_medicalMonitoringReport: include warning if import failed
+    o patientProfilesTemplate: extend to xpt
+    o countsVisualizationTemplate JSON sch: fix for typePlot of length 1
+    o plotTemplate/summaryTableTemplate/summaryPlotTemplate: use labels in comparison table
+    o render_medicalMonitoringReport: copy extraDirs before report rendering
+0.5.0
+    o knitPrintListMedicalMonitoring: fix inclusion list with empty element
+    o tableMonitoring: keep order idVar in tableVars if specified
+    o listingTemplate: fix when loopingVar and comparisonType are specified, comparison type as first col table
+    o if comparisonTableType and no previous dataset available: warning + no comparison
+    o barplotMonitoring: colorPalette and barmode
+    o move spec of tableVars for all plot fct in getPlotTableVars, plotTemplate: comparisonTableType
+    o patient profile template: fix to use labels in columns table
+0.4.0
+    o render_medicalMonitoringReport: logFile, runFctInNewSession, export combined sessionInfo
+    o scrape html files
+    o include template reports in the package
+    o document templates with JSON schema + utility functions to convert to Rd
+0.3.0
+    o collapseHtmlContent: custom 'hideshow' button
+    o alertData function
+    o render med mon: modular approach (convertMdToHtml, getParamsFromConfig), render in new R session
+    o timeProfileIntervalPlot: fix height plot + fix in case start and end value are the same
+    o filterData: filter of missing values only, valueFct can be string
+    o scatterplotMonitoring: pathExpand, lineInclude
+    o processData: group all data processing step in one param
+0.2.0
+    o formatToHierarchicalData: fix in case same values in different vars
+    o annotateData: varFct
+    o new 'transformData' function
+    o staticScatterplotMonitoring: [x/y]LimExpandData
+    o includeInButton -> collapseHtmlContent, remove bootstrap/jquery dep
+    o plotCountMonitoring: colorVar
+    o getPathHyperlink: works for input factor
+    o annotateData: function can be specified as string via varFct
+    o timeProfileIntervalPlot
+    o patientProfiles.js: fix for one selected ID
+    o render_medicalMonitoringReport
+0.1.0
+    o initial commit

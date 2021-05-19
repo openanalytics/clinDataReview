@@ -1,0 +1,271 @@
+---
+title: "Reporting with the `clinDataReview` package"
+author: "Laure Cougnaud"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+params:
+  createPatientProfiles: false
+output: 
+  rmarkdown::html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 5
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Reporting with the clinDataReview package}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r options, echo = FALSE, message = FALSE}
+
+library(knitr)
+library(pander)
+opts_chunk$set(
+    echo = TRUE, 
+    results = 'asis', 
+    warning = FALSE, 
+    error = FALSE, message = FALSE, cache = FALSE,
+    fig.width = 8, fig.height = 7,
+    fig.path = "./figures_vignette/",
+    #out.width = '0.7\\textwidth', 
+    fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
+options(width = 170)#, stringsAsFactors = FALSE
+options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
+
+heightLineIn  <- 0.2
+
+```
+
+Utility functions are provided to run a standard medical monitoring report.
+Please note that the examples in this section are only informative, and not
+evaluated in the vignette itself.
+
+# File structure
+
+## Input
+
+The input for the medical monitoring report consists of a set of _Rmardown_
+files and a `config` directory. Below more specifications.
+
+**Rmd files**
+
+A set of _Rmarkdown_ files in the working directory should be
+
+* _index.Rmd_ file, containing the front page of the document.  
+This file should be formatted as a _Rmarkdown_ report with _YAML_ header, with
+  `output` set to: `clinDataReview::gitbook_clinDataReview_report`
+
+* multiple Rmd files, one for each chapter (or template for multiple chapters)
+
+**Config files**
+
+There should be a `config` directory containing:
+
+* a general configuration file: _config.yml_ with:
+    
+    + `pathDataFolder`: path to a directory containing input data in _sas7bdat_
+           or _xpt_ format
+    + `patientProfilesPath`(optional) : path to a directory containing the
+      patient profiles
+    + `study` (optional): study name
+    + `version` (optional): data version, e.g. batch
+    
+* a configuration file for each chapter, as: _config-[chapterName].yml_
+  containing:
+    + `template`: filename of the _Rmd_ file to consider for this chapter
+    + `reportTitle`: chapter title, used for section header
+    + `dataFileName`: filename of the dataset of interest for this chapter,
+      e.g.: 'adae.sas7bdat'
+    + `reportTitleLevel`: integer with section level, e.g. 2
+    + (optional) template-specific parameters, accessed in the template   via
+      `params$`
+        
+## Output
+
+The medical monitoring report output consists of a final output and a set of
+intermidiary results.
+
+**Final output**
+
+A final output folder ('report' by default) containing the:
+
+* final medical monitoring report, in a set of multiple HTML files
+* required _Javascript_ libraries in the subfolder: _'libs'_
+* any extra directories created during report execution, by   default: 'tables'
+  and 'figures' (`extraDirs` parameter)
+* (optionally) directory with patient profiles
+
+**Intermidiary results**
+
+A folder of intermediary results ('interim' by default)
+
+* _Markdown_ file for each report part (one per config file)
+*  associated _rds_ file containing specification of the  _Javascript_ libraries
+   required for each report part (`knit_meta`)
+    
+# Template reports
+
+A set of template reports are available in the `clinDataReview` package
+itself.
+
+**The full list of the reports and the corresponding input parameters is
+available at: `? `clinDataReview-templates` `**.
+
+To use a template available in the package for one of your report, your config
+file should contain the corresponding name of the template via the `template`
+tag and the `templatePackage` set to 'clinDataReview'.
+
+For example, to include a division in the report, your YAML config file should
+be formatted as:
+
+```{yaml, eval = FALSE}
+template: divisionTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: "Title for a chapter"
+reportTitleLevel: 1
+```
+
+# Render a medical monitoring report
+
+## Production mode
+
+The function **`render_clinDataReviewReport` renders a medical monitoring
+report for production**.
+
+```{r render_clinDataReviewReport, eval = FALSE}
+
+clinDataReview::render_clinDataReviewReport()
+
+```
+The `render_clinDataReviewReport` creates several html files, one per
+section/subsection.
+
+To open the full report, the user should open the _introduction.html_ file.
+
+However, if several files are available, it might be boring to look for the
+_introduction.html_ among many files. In such a case, it can be created a
+landing page, as described in the next section. 
+
+## Create redirect page
+
+A convenient way to store all html files into one location, and have only one
+page to look for to open the report is the function 
+
+```{r createRedirectPage, eval = FALSE}
+
+clinDataReview::createRedirectPage()
+
+```
+
+This function
+
+* stores all html files into a folder
+* create a landing page next to the folder that allows the user to navigate
+  through the report.
+  
+The default names of the folder and landing page are _report_dependencies_
+and _report.html_. The names can be changed by the user.
+
+
+## Zip and send the report to collaborators
+
+A dedicated functionality is available to zip the report and send it to
+colleagues within the team.
+
+Once a report has been rendered, the user can call
+
+```{r zipclinDataReview, eval = FALSE}
+
+clinDataReview::zipClinDataReview()
+
+```
+
+This function zips the report, so that the analyses can be easily put as
+attachement in a mail/uploaded to a shared drive.
+
+If the folder is not unzipped before opening the reports, a message in the
+browser reminds to unzip the documents.
+
+
+## Add metadata
+
+Metadata can be added in the landing page, containing information concerning
+the data set creation time, the path to the original data etc.
+
+A metadata file should be in yaml format.
+
+The metadata function can be directly called in a Rmd documents with
+
+```{r metadata, eval = FALSE}
+
+clinDataReview::getMetadata()
+
+```
+
+## Development mode
+
+### Modular framework
+
+#### (Re-)run part(s) of the report
+
+In case the creation of the entire report is time-consuming, and only part(s) of
+the report have been updated, it might be interesting to only re-run some parts
+of the report. Config files associated to the parts of the report that should be
+rerun can be specified via the `configFiles` parameter.
+
+```{r render_clinDataReviewReport-configFiles, eval = FALSE}
+# run one specific report
+clinDataReview::render_clinDataReviewReport(configFiles = "config-AE_timeprofile.yml")
+# only run the listings:
+clinDataReview::render_clinDataReviewReport(configFiles = list.files(pattern = "listing", "config"))
+```
+
+#### Create the final medical monitoring report from the Markdown reports
+
+To convert all created _Markdown_ files to HTML, the dedicated function
+`convertMdToHtml` can be used.
+
+```{r convertMdToHtml, eval = FALSE}
+
+convertMdToHtml()
+
+```
+
+### Debug a sub-report
+
+To debug a sub-report, it might be interesting to run only one specific R report
+in the current R session, with the parameters provided by the associated config
+file. This can be achieved as followed:
+
+```{r render_clinDataReviewReport-devel, eval = FALSE}
+
+# get parameters from the general 'config.yml' and the specified config file
+params <- getParamsFromConfig(configFile = "config-AE_timeprofile.yml")
+
+# extract template from package if specified
+if(params$templatePackage == "clinDataReview"){
+  pathTemplate <- clinDataReview::getPathTemplate(file = params$template)
+  file.copy(from = pathTemplate, to = ".")
+}
+
+# run a current chapter (without medical monitoring Js libraries)
+# Note that Js library to have the functionality to download patient profiles is not imported
+rmarkdown::render(input = params$template)
+
+# preview a specific chapter (with medical monitoring Js libraries)
+bookdown::render_book(input = params$template, preview = TRUE)
+# include the index file:
+bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)
+
+```
+
+# Appendix
+
+## Session info
+
+```{r sessionInfo, echo = FALSE}
+
+pander(sessionInfo())
+
+```
+

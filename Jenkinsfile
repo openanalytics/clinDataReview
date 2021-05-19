@@ -60,33 +60,33 @@ pipeline {
                 }
             }
             stages {
-                stage('medicalMonitoring') {
+                stage('clinDataReview') {
                     stages {
                         stage('Roxygen') {
                             steps {
-                                sh 'R -q -e \'roxygen2::roxygenize("package/medicalMonitoring")\''
+                                sh 'R -q -e \'roxygen2::roxygenize("package/clinDataReview")\''
                             }
                         }
                         stage('Build') {
                             steps {
-                                sh 'R CMD build package/medicalMonitoring'
+                                sh 'R CMD build package/clinDataReview'
                             }
                         }
                         stage('Check (no tests)') {
                             steps {
-                                sh 'ls medicalMonitoring_*.tar.gz && R CMD check medicalMonitoring_*.tar.gz --no-manual --no-tests'
+                                sh 'ls clinDataReview_*.tar.gz && R CMD check clinDataReview_*.tar.gz --no-manual --no-tests'
                             }
                         }
                         stage('Install') {
                             steps {
-                                  sh 'R -q -e \'install.packages(list.files(".", "medicalMonitoring_.*.tar.gz"), repos = NULL) \''
+                                  sh 'R -q -e \'install.packages(list.files(".", "clinDataReview_.*.tar.gz"), repos = NULL) \''
                             }
                         }
                         stage('Test and coverage') {
                             steps {
                               sh '''
                                 R -q -e \'
-                                pc <- covr::package_coverage("package/medicalMonitoring", type = "none", code = "testthat::test_package(\\"medicalMonitoring\\", reporter = testthat::JunitReporter$new(file = file.path(Sys.getenv(\\"WORKSPACE\\"), \\"results.xml\\")))")
+                                pc <- covr::package_coverage("package/clinDataReview", type = "none", code = "testthat::test_package(\\"clinDataReview\\", reporter = testthat::JunitReporter$new(file = file.path(Sys.getenv(\\"WORKSPACE\\"), \\"results.xml\\")))")
                                 covr::report(x = pc, file = paste0("testCoverage-", attr(pc, "package")$package, "-", attr(pc, "package")$version, ".html"))
                                 covr::to_cobertura(pc)
                                 \'

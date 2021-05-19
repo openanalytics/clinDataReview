@@ -1,0 +1,42 @@
+Package: clinDataReview
+Type: Package
+Title: Medical Monitoring Reporting Tool
+Version: 0.9.2.999
+Date: 2021-03-31
+Author: Arne De Roeck, Laure Cougnaud, Michela Pasetto
+Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
+Description: Creation of semi-automated report for medical monitoring
+  during a clinical trial.
+Imports: 
+  bookdown,
+  clinUtils,
+  crosstalk,
+  data.table,
+  ggplot2,
+  haven,
+  htmltools,
+  htmlwidgets,
+  knitr,
+  jsonlite,
+  jsonvalidate,
+  methods,
+  plotly, 
+  plyr,
+  rmarkdown,
+  stats,
+  stringr,
+  utils,
+  tools,
+  yaml
+License: file LICENSE
+Suggests: 
+    countrycode,
+    inTextSummaryTable (>= 2.19.0),
+    pander,
+    patientProfilesVis (>= 0.12.0), 
+    reshape2,
+    testthat,
+    vdiffr,
+    xml2
+VignetteBuilder: knitr
+RoxygenNote: 7.1.1

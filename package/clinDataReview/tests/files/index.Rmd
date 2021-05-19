@@ -1,0 +1,53 @@
+---
+title: "Medical monitoring report"
+date: "2020-12-25"
+documentclass: book
+output: clinDataReview::gitbook_clinDataReview_report
+editor_options: 
+  chunk_output_type: console
+---
+
+# Introduction
+
+```{r runDocument, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
+
+	rm(list = ls())
+	library(clinDataReview)
+	
+    system.time(
+        bookdown::render_book(
+            input = "index.Rmd", 
+            clean_envir = FALSE,
+            # during template development, these options are set to FALSE:
+            new_session = TRUE, clean = FALSE,
+            params = yaml::read_yaml("./_bookdown.yml")[c("study", "version")],
+        )
+    )
+	
+```
+
+
+```{r options, echo = FALSE, message = FALSE, warning = FALSE}
+	
+	library(knitr)
+	opts_chunk$set(
+		echo = FALSE, 
+		warning = FALSE, error = FALSE, message = FALSE, 
+		results = "asis",
+		cache = FALSE,
+		fig.width = 8, fig.height = 7,
+		fig.path = "./figures/",
+		fig.align = 'center'
+	)
+	
+	# print warnings where they occur (warn = 0 by default)
+	options(warn = 1)
+	
+```
+
+```{r loadPackages}
+
+	library(clinUtils)
+	library(inTextSummaryTable)
+
+```

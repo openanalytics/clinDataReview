@@ -1,0 +1,50 @@
+# Report-specific parameters
+template: countsVisualizationTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: "All adverse events: counts"
+reportTitleLevel: 2
+# Dataset of interest
+dataFileName: AE.xpt
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC"] 
+    - vars: AESEVN
+      varFct: as.numeric(factor(AESEV, levels = c("MILD", "MODERATE", "SEVERE")))
+    - vars: WORST_AEDECOD
+      varFct: "function(data){
+        with(data, ave(AESEVN, USUBJID, AEBODSYS, AEDECOD, FUN = function(x){
+          if(all(is.na(x))) NA  else  max(x, na.rm = TRUE)
+        }))
+      }"
+      varLabel: "Worst-case severity by AE term"
+    - vars: "WORST_AEBODSYS"
+      varFct: "function(data){
+        with(data, ave(AESEVN, USUBJID, AEBODSYS, FUN = function(x){
+          if(all(is.na(x))) NA  else  max(x, na.rm = TRUE)
+        }))
+      }"
+      varLabel: "Worst-case severity by system organ class"
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+# Total dataset:
+dataTotalFileName: DM.xpt
+dataTotalProcessing:
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+# Parameters to define counts of interest
+countVar: "AEDECOD"
+parentVar: "AEBODSYS"
+# Parameters for the visualization
+colorVar:
+   AEDECOD: "WORST_AEDECOD"
+   AEBODSYS: "WORST_AEBODSYS"
+colorRange: [1,3]
+typePlot: ["treemap", "sunburst"]
+

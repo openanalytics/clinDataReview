@@ -1,0 +1,237 @@
+<!--- 
+This report create a scatterplot of a dataset and variables of interest.
+
+Input parameters:
+ 
+* Report-specific
+- reportTitle: string with report title
+- reportTitleLevel: integer with level of the report title, 1 for chapter, 2 for section, ...
+- dataFileName: string with name of the file of interest
+- dataProcessing (optional): list with parameters for data processing, see ? clinDataReview::processData
+- loopingVar (optional): character vector with variables to loop over, a plot will be created for each combination of groups of this variable
+- loopingNMax (optional): integer with maximal number of groups to consider (all by default)
+- plotFunction: string with name of a plotting function of interest, available in the clinDataReview package
+- plotParams: list with plotting parameters passed to the 'plotFunction' function
+(excepted: 'data', 'labelVars', 'table', 'pathVar', 'id' and 'verbose')
+
+* General:
+- pathDataFolder: string with path to the data folder
+- patientProfilePath: string with relative path where patient profiles are stored
+
+-->
+
+```{r plotTemplate-options, echo = FALSE, warning = FALSE, message = FALSE}
+
+library(knitr)
+knitr::opts_chunk$set(
+	echo = FALSE, 
+	warning = FALSE, error = FALSE, message = FALSE, 
+	results = "asis"
+)
+
+knitr::knit_hooks$set(
+	message = function(x, options) {
+		paste('\n\n<div class="alert alert-info">',
+			gsub('##', '\n', x),
+			'</div>', sep = '\n')
+	}
+)
+
+# print warnings where they occur (warn = 0 by default)
+options(warn = 1)
+
+```
+
+```{r plotTemplate-attachParameters}
+
+# Note: find a way to specify defaults for variables
+attach(params)
+if(!exists("loopingVar")) loopingVar <- NULL
+if(!exists("comparisonTableType"))	comparisonTableType <- "none"
+if(comparisonTableType != "none" & 
+		(!exists("pathDataFolderOld") || !file.exists(file.path(pathDataFolderOld, dataFileName)))
+		){
+	warning("No comparison table is included because data from previous batch is not available.")
+	comparisonTableType <- "none"
+}
+if(!comparisonTableType %in% c("none", "newData-diff")){
+	warning("Option:", comparisonTableType, "is not available for the plot template",
+		"no comparison is included.")
+	comparisonTableType <- "none"
+}
+if(!exists("patientProfilePath"))	patientProfilePath <- NULL
+
+```
+
+```{r plotTemplate-loadPackages}
+
+library(clinDataReview)
+library(clinUtils)
+library(plyr)
+
+```
+
+```{r plotTemplate-startUpCode, code = as.character(params$startup)}
+```
+
+```{r plotTemplate-setTitle}
+
+if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
+
+# Create a header at the wanted depth
+cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
+
+```
+
+
+```{r plotTemplate-getData}
+
+# Load data
+if(comparisonTableType != "none") {
+	
+	pathsData <- c(
+		"currentData" = pathDataFolder,
+		"previousData" = pathDataFolderOld
+	)	
+	
+} else pathsData <- c("currentData" = pathDataFolder)
+
+dataList <- sapply(names(pathsData), function(dataBatch) {
+			
+	pathData <- file.path(
+		pathsData[[dataBatch]],
+		dataFileName
+	)
+	
+	dataAll <- loadDataADaMSDTM(pathData, verbose = FALSE)
+	data <- dataAll[[1]]
+	
+	# Extract label information
+	labelVars <- attr(dataAll, "labelVars")
+	
+	# Data processing 
+	if(exists("dataProcessing")){
+		data <- processData(
+			data = data, 
+			dataPath = pathDataFolder,
+			processing = dataProcessing,
+			verbose = TRUE,
+			labelVars = labelVars
+		)
+		# Labels updated with extra annotation:
+		labelVars <- attr(data, "labelVars")
+	}
+	
+	# Create URL to patient profiles
+	if(!is.null(patientProfilePath))
+		data <- createPatientProfileVar(
+			data = data, 
+			patientProfilePath = patientProfilePath,
+			checkExist = FALSE
+		)
+	
+	data
+	
+}, simplify = FALSE)
+
+data <- dataList$currentData
+labelVars <- attr(dataList$currentData, "labelVars")
+
+```
+
+```{r plotTemplate-createTable, eval = (comparisonTableType == "newData-diff")}
+
+dataPrevious <- dataList$previousData
+dataCurrent <- dataList$currentData
+if(!exists("comparisonTableParams"))	comparisonTableParams <- NULL
+
+# By default, reference variables are the variables displayed by default 
+# in the table attached to the plot
+if(is.null(comparisonTableParams$referenceVars)){
+	
+	argsPlot <- plotParams
+	argsPlot$labelVars <- labelVars
+	referenceVars <- getPlotTableVars(plotFunction, plotArgs = argsPlot)
+	
+	# add looping var (in case e.g. replicated records across looping vars)
+	referenceVars <- c(referenceVars, loopingVar)
+	
+	referenceVars <- setdiff(referenceVars, "Comparison type")
+	
+	comparisonTableParams$referenceVars <- referenceVars
+	comparisonTableParams$changeableVars <- NULL
+	
+}
+
+argsCompTable <- c(
+	list(
+		newData = dataCurrent,
+		oldData = dataPrevious,
+		outputType = comparisonTableType
+	),
+	comparisonTableParams
+)
+outputComparison <- do.call(clinUtils::compareTables, argsCompTable)
+
+if(!is.null(outputComparison)){
+	
+	data <- outputComparison
+	
+	tableVars <- plotParams$tableVars
+	if(is.null(tableVars)){
+		tableVars <- c(argsCompTable$referenceVars, argsCompTable$changeableVars)
+		tableVars <- setdiff(tableVars, loopingVar)
+	}
+
+	tableVars <- c("Comparison type", tableVars)
+	plotParams$tableVars <- tableVars
+	
+}
+
+```
+
+```{r plotTemplate-createPlot}
+
+if(!is.null(loopingVar)){
+	
+	data[, loopingVar] <- colwise(function(x) gsub("\\.", "", x))(data[, loopingVar, drop = FALSE])
+	
+	# only subset of the data if requested in _bookdown.yml
+	if(exists("loopingNMax") &&	is.integer(loopingNMax)){
+		
+		data <- merge(
+			x = data,
+			y = unique(data[, loopingVar, drop = FALSE])[seq_len(loopingNMax), , drop = FALSE],
+			all = FALSE
+		)
+		
+	}
+	
+}
+listPlots <- dlply(data, loopingVar, function(dataI){
+			
+	# Create plot unique ID
+	argsLabel <- c(
+		list("plotTemplate"),
+		if(!is.null(loopingVar))	unique(dataI[, loopingVar, drop = FALSE])
+	)		
+	id <- do.call(formatLabel, argsLabel)
+	
+	# Create the plot
+	argsPlot <- forceParams(plotParams)
+	argsPlot$data <- dataI
+	argsPlot$labelVars <- labelVars
+	argsPlot$table <- TRUE
+	argsPlot$pathVar = if(!is.null(patientProfilePath))	"patientProfilePath"
+	argsPlot$id <- id
+	
+	do.call(plotFunction, argsPlot)	
+	
+})
+
+knitPrintClinDataReview(
+	list = listPlots,
+	level = reportTitleLevel + 1
+)
+
+```
