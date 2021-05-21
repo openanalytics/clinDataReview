@@ -59,6 +59,12 @@ reportSkeleton <- function(dirName) {
 #  
 #}
 
+#' Move data sets from clinUtils
+#' 
+#' Move SDTM data sets available in \code{clinUtils} into a 
+#' specified local directory.
+#' @param dirName String, path to the directory.
+#' @return Nothing, the data are saved in the dedicated location.
 moveXpt <- function(dirName) {
   
   pathToFiles <- system.file(
@@ -77,7 +83,12 @@ moveXpt <- function(dirName) {
   
 }
 
-
+#' Create an example metadata file
+#' 
+#' Create an example of metadata file for the \code{\link{reportSkeleton}}.
+#' @param dirName String, path to the directory.
+#' @return Nothing, the example metadata file is created in the specified 
+#' directory.
 #' @importFrom yaml write_yaml
 createExampleMetadata <- function(dirName) {
   
@@ -106,7 +117,13 @@ createExampleMetadata <- function(dirName) {
   
 }
 
-
+#' Move skeleton files from the package to a directory
+#' 
+#' This function moves the files used to create the skeleton from the 
+#' package to a specified directory.
+#' @param dirName String, path to the directory.
+#' @return Nothing, the files are available in the specified 
+#' directory.
 moveSkeletonFiles <- function(dirName) {
   
   skeletonFiles <- list.files(
@@ -121,6 +138,12 @@ moveSkeletonFiles <- function(dirName) {
   
 }
 
+#' Create the config file for the skeleton
+#' 
+#' This function creates the main config file for the \code{\link{reportSkeleton}} 
+#' with the directory where the data are stored.
+#' @param dirName String, path to the directory.
+#' @param dirData String, path to the directory of the data.
 #' @importFrom yaml write_yaml
 createMainConfigSkeleton <- function(dirName, dirData) {
   
