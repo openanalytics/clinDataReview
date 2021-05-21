@@ -1,0 +1,43 @@
+# Report-specific parameters
+template: listingTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: "Adverse events: listing: comparison with previous data transfer"
+reportTitleLevel: 2
+# Dataset of interest
+dataFileName: ae.xpt
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC", "COUNTRY"] 
+    - vars: TRTEMFL
+      varFct: ifelse(is.na(AESTDY), "", ifelse(AESTDY >= 0, "Y", "N"))
+      varLabel: Treatment-emergent adverse event
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+tableParams:
+  tableVars:
+    - "USUBJID"
+    - "COUNTRY"
+    - "AEBODSYS"
+    - "AEDECOD"
+    - "AESER"
+    - "TRTEMFL"
+    - "AESTDTC"
+    - "AESTDY"
+    - "AEENDTC"
+    - "AEENDY"
+    - "AESEV"
+    - "AEREL"
+    #- "AEACN"
+    - "AEOUT"
+# Comparison with previous batch
+comparisonTableType: "table-comparison-interactive"
+comparisonTableParams:
+  referenceVars: ["USUBJID", "AEBODSYS", "AEDECOD"]
+  changeableVars: ["AESER", "TRTEMFL", "AESTDTC", "AESTDY","AEENDTC","AEENDY","AESEV", "AEREL","AEOUT"]
+
+
+

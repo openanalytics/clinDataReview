@@ -23,15 +23,18 @@ reportSkeleton <- function(dirName) {
   if(length(preexistingFiles) > 0) warning("'", dirName, "' is not empty. Files might be overwritten.")
   
   dirData <- file.path(dirName, "data")
+  dirComparisonData <- file.path(dirData, "comparisonData")
   dirConfig <- file.path(dirName, "config")
   if(length(preexistingFiles) == 0) {
     if(! any(grepl("data", preexistingFiles))) dir.create(dirData)
+    if(! any(grepl("comparisonData", preexistingFiles))) dir.create(dirComparisonData)
     if(! any(grepl("config", preexistingFiles))) dir.create(dirConfig)
   }
   
   #writeXpt(dirData)  
   moveXpt(dirData)
   createExampleMetadata(dirData)
+  createComparisonData(dirComparisonData)
   
   createMainConfigSkeleton(dirName = dirConfig, dirData = dirData)
   moveSkeletonFiles(dirName)
@@ -117,6 +120,26 @@ createExampleMetadata <- function(dirName) {
   
 }
 
+#' @importFrom haven write_xpt
+#' @clinUtils loadDataADaMSDTM
+createComparisonData <- function(dirName) {
+  
+  pathToFile <- system.file(
+      "extdata", "cdiscpilot01",
+      "SDTM", "ae.xpt",
+      package = "clinUtils"
+  )
+  data <- suppressMessages(
+      loadDataADaMSDTM(files = pathToFile)
+  )
+  dataAE <- data[[1]]
+  idx <- which(dataAE$USUBJID == "01-701-1148")
+  dataAE$AESER[idx] <- "Y"
+  dataAE$AESEV[idx] <- "SEVERE"
+  write_xpt(dataAE, file.path(dirName, "ae.xpt"))
+  
+}
+
 #' Move skeleton files from the package to a directory
 #' 
 #' This function moves the files used to create the skeleton from the 
@@ -162,6 +185,7 @@ createMainConfigSkeleton <- function(dirName, dirData) {
           currentDataTransfer = "2021-01-01",
           previousDataTransfer = "2020-12-01",
           pathDataFolder = dirData,
+          pathDataFolderOld = file.path(dirData, "comparisonData"),
           patientProfilePath = "patientProfiles",
           config = c(
               "config-patientProfiles.yml",
@@ -171,6 +195,7 @@ createMainConfigSkeleton <- function(dirName, dirData) {
               "config-adverseEvents-summaryTable.yml",
               "config-adverseEvents-all-countsVisualization.yml",
               "config-adverseEvents-timeProfiles.yml",
+              "config-adverseEvents-listing-comparison.yml",
               "config-concomitantMedications-division.yml",
               "config-concomitantMedications-listing.yml",
               "config-laboratory-division.yml",
