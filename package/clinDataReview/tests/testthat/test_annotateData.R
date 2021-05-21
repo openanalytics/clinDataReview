@@ -142,7 +142,9 @@ test_that("Annotation based on demographics", {
       varsDM <- c("AGE", "SEX", "SITEID")
       dataLB_annot <- annotateData(
           dataLB,
-          dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
+          dataPath = system.file(
+              "extdata", "cdiscpilot01", "SDTM", package = "clinUtils"
+          ),
           annotations = "demographics"
       )
       expect_is(dataLB_annot, "data.frame")
@@ -151,7 +153,9 @@ test_that("Annotation based on demographics", {
       expect_message(
           annotateData(
               dataLB,
-              dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
+              dataPath = system.file(
+                  "extdata", "cdiscpilot01", "SDTM", package = "clinUtils"
+              ),
               annotations = "demographics",
               verbose = TRUE
           )
@@ -199,21 +203,27 @@ test_that("Annotation with 'dataset' custom annotation", {
       expect_warning(
           annotateData(
               dataLB,
-              dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
+              dataPath = system.file(
+                  "extdata", "cdiscpilot01", "SDTM", package = "clinUtils"
+              ),
               annotations = list(dataset = "dm")
           ),
           "Data is not annotated with variable"
       )
       dataAnnot <- annotateData(
           dataLB,
-          dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
+          dataPath = system.file(
+              "extdata", "cdiscpilot01", "SDTM",package = "clinUtils"
+          ),
           annotations = list(dataset = "dm")
       )
       expect_is(dataAnnot, "data.frame")
       
       dataAnnotVars <- annotateData(
           dataLB,
-          dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
+          dataPath = system.file(
+              "extdata", "cdiscpilot01", "SDTM", package = "clinUtils"
+          ),
           annotations = list(
               dataset = "dm",
               vars = "AGE"
@@ -228,7 +238,9 @@ test_that("Annotation with 'dataset' custom annotation", {
       # Variable already present should not be added
       dataAnnotVars <- annotateData(
           dataLB,
-          dataPath = system.file("extdata", "cdiscpilot01", package = "clinUtils"),
+          dataPath = system.file(
+              "extdata", "cdiscpilot01", "SDTM",package = "clinUtils"
+          ),
           annotations = list(
               dataset = "dm",
               vars = "USUBJID"
