@@ -1,9 +1,7 @@
 ---
-title: "Data visualization of the `clinDataReview` package"
-author: "Laure Cougnaud"
+title: "Visualization of clinical data"
+author: "Laure Cougnaud, Michela Pasetto"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-params:
-  createPatientProfiles: false
 output: 
   rmarkdown::html_document:
     toc: true
@@ -11,7 +9,7 @@ output:
     toc_depth: 5
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Data visualization of the clinDataReview package}
+  %\VignetteIndexEntry{Visualization of clinical data}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -26,23 +24,20 @@ opts_chunk$set(
     error = FALSE, message = FALSE, cache = FALSE,
     fig.width = 8, fig.height = 7,
     fig.path = "./figures_vignette/",
-    #out.width = '0.7\\textwidth', 
-    fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
+    fig.align = 'center')
 options(width = 170)#, stringsAsFactors = FALSE
 options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
 
-heightLineIn  <- 0.2
-
 ```
 
-This vignette focuses on the visualization functionalities of the
+This vignette focuses on the visualizations available in the 
 `clinDataReview` package.
 
 We will use example data sets from the `clinUtils` package.
 
-If you have doubts on the data format, first check out the vignette on data
-preprocessing avaialable
-[here](../doc/clinDataReview-dataPreprocessingVignette.html)).
+If you have doubts on the data format, please check first the vignette on data
+preprocessing available at:
+[here](../doc/clinDataReview-dataPreprocessing.html)).
 
 If everything is clear on that side, let's get started!
 
@@ -80,12 +75,12 @@ The documentation on how to set up a config file is available in the vignette
 about reporting.
 
 You can directly skip to reporting vignette, which is available
-[here](../doc/clinDataReview-reportingVignette.html) or run in your
+[here](../doc/clinDataReview-reporting.html) or run in your
 console the command below.
 
 ```{r reportingVignette, eval = FALSE}
 
-vignette("clinDataReview-reportingVignette", "clinDataReview")
+vignette("clinDataReview-reporting", "clinDataReview")
 
 ```
 

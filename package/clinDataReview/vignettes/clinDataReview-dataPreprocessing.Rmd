@@ -1,9 +1,7 @@
 ---
-title: "Data pre-processing for the `clinDataReview` package"
-author: "Laure Cougnaud"
+title: "Pre-processing of clinical data for clinical data review report"
+author: "Laure Cougnaud, Michela Pasetto"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-params:
-  createPatientProfiles: false
 output: 
   rmarkdown::html_document:
     toc: true
@@ -11,7 +9,7 @@ output:
     toc_depth: 5
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Data pre-processing for the clinDataReview package}
+  %\VignetteIndexEntry{Pre-processing of clinical data for clinical data review report}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -27,8 +25,7 @@ opts_chunk$set(
     error = FALSE, message = FALSE, cache = FALSE,
     fig.width = 8, fig.height = 7,
     fig.path = "./figures_vignette/",
-    #out.width = '0.7\\textwidth', 
-    fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
+    fig.align = 'center')
 options(width = 170)#, stringsAsFactors = FALSE
 options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
 
@@ -46,7 +43,7 @@ Note that these functions are mainly useful in combination with the
 specification of the parameters in 'config' file in the clinical data
 reports (see the
 dedicated reporting
-[vignette](../doc/clinDataReview-reportingVignette.html)).
+[vignette](../doc/clinDataReview-reporting.html)).
 
 For this vignette, we will use example data available in the `clinUtils`
 package.
@@ -60,19 +57,16 @@ library(pander)
 
 # Data format
 
-The input dataset for the workflow should be a `data.frame`, usually loaded from
-a _SAS_ data file (`sas7bdat` format). The label of the variables stored in the
+The input dataset for the clinical data review should be a `data.frame`
+with clinical data. Such data is typically imported
+from _SAS_ data file or _xpt_ data file.  
+Such dataset can be imported for multiple files at once via the 
+`clinUtils::loadDataADaMSDTM` function.
+
+The label of the variables stored in the
 `SAS` datasets is also used for title/captions. 
 
-The function `loadDataADaMSDTM` can be used to load your custom `SAS` dataset(s)
-of interest. This function returns two objects:
-
-* a list of `data.frame`s containing the data for each _SAS_ dataset(s), stored
-  in the `$data` slot
-* a vector containing the labels for each column of the data (used e.g. for
-  default titles of the figures), stored as _attributes_ of the list.
-
-A few `sdtm` datasets are included in the `clinUtils` package for the
+A few `ADaM` datasets are included in the `clinUtils` package for the
 demonstration, via the dataset `dataADaMCDISCP01` and corresponding variable
 labels.
 

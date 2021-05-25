@@ -1,9 +1,7 @@
 ---
-title: "Reporting with the `clinDataReview` package"
-author: "Laure Cougnaud"
+title: "Creation of a clinical data review report"
+author: "Laure Cougnaud, Michela Pasetto"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-params:
-  createPatientProfiles: false
 output: 
   rmarkdown::html_document:
     toc: true
@@ -11,7 +9,7 @@ output:
     toc_depth: 5
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Reporting with the clinDataReview package}
+  %\VignetteIndexEntry{Creation of a clinical data review report}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -27,16 +25,13 @@ opts_chunk$set(
     error = FALSE, message = FALSE, cache = FALSE,
     fig.width = 8, fig.height = 7,
     fig.path = "./figures_vignette/",
-    #out.width = '0.7\\textwidth', 
-    fig.align = 'center')#, out.height = 0.5\\textwidth', fig.path = 'graphs/') 
-options(width = 170)#, stringsAsFactors = FALSE
+    fig.align = 'center')
+options(width = 170)
 options(warn = 1)#instead of warn = 0 by default -> to have place where warnings occur in the call to Sweave function
-
-heightLineIn  <- 0.2
 
 ```
 
-Utility functions are provided to run a standard clinical data report.
+Utility functions are provided to create a standard clinical data review report.
 Please note that the examples in this section are only informative, and not
 evaluated in the vignette itself.
 
@@ -45,7 +40,7 @@ evaluated in the vignette itself.
 ## Input
 
 The input for the clinical data report consists of a set of _Rmardown_
-files and a `config` directory. Below more specifications.
+files and a `config` directory. 
 
 **Rmd files**
 
@@ -55,7 +50,8 @@ A set of _Rmarkdown_ files in the working directory should be
 This file should be formatted as a _Rmarkdown_ report with _YAML_ header, with
   `output` set to: `clinDataReview::gitbook_clinDataReview_report`
 
-* multiple Rmd files, one for each chapter (or template for multiple chapters)
+* multiple Rmd files, one for each chapter (or template for multiple chapters).
+These files can be included in a R package.
 
 **Config files**
 
@@ -70,20 +66,28 @@ There should be a `config` directory containing:
     + `study` (optional): study name
     + `version` (optional): data version, e.g. batch
     
-* a configuration file for each chapter, as: _config-[chapterName].yml_
+* a configuration file for each chapter, as: _config-[chapterName].yml_.
+This file should contain input parameters
   containing:
     + `template`: filename of the _Rmd_ file to consider for this chapter
-    + `reportTitle`: chapter title, used for section header
-    + `dataFileName`: filename of the dataset of interest for this chapter,
+    + `templatePackage`: name of the R package where the _Rmd_ should be extracted from
+    + template-specific parameters:  
+    For the template reports available in the `clinDataReview` package, these include:
+        + `reportTitle`: chapter title, used for section header
+        + `dataFileName`: filename of the dataset of interest for this chapter,
       e.g.: 'adae.sas7bdat'
-    + `reportTitleLevel`: integer with section level, e.g. 2
-    + (optional) template-specific parameters, accessed in the template   via
+        + `reportTitleLevel`: integer with section level, e.g. 2
+        +  extra parameters, accessed inside the template via
       `params$`
+      
+Please see the `? clinDataReview-templates` documentation for further information
+on the template reports available in the `clinDataReview` package, and their
+input parameters.
         
 ## Output
 
-The clinical data report output consists of a final output and a set of
-intermidiary results.
+The clinical data report consists of a final report output and a set of
+intermediary results.
 
 **Final output**
 
@@ -91,17 +95,19 @@ A final output folder ('report' by default) containing the:
 
 * final clinical data report, in a set of multiple HTML files
 * required _Javascript_ libraries in the subfolder: _'libs'_
-* any extra directories created during report execution, by   default: 'tables'
+* any extra directories created during report execution, by default: 'tables'
   and 'figures' (`extraDirs` parameter)
-* (optionally) directory with patient profiles
+* (optionally) a directory with patient profiles
 
-**Intermidiary results**
+**Intermediary results**
 
-A folder of intermediary results ('interim' by default)
+A folder of intermediary results ('interim' by default) containing:
 
-* _Markdown_ file for each report part (one per config file)
-*  associated _rds_ file containing specification of the  _Javascript_ libraries
-   required for each report part (`knit_meta`)
+* _Markdown_ file(s) for each report part  
+(one per `template`/`templatePackage` combination of the config file(s))
+*  associated _rds_ file containing specification of 
+the  _Javascript_ libraries (via `knit_meta` object) and
+session information required for each report part
     
 # Template reports
 
@@ -127,7 +133,7 @@ reportTitleLevel: 1
 
 # Render a clinical data report
 
-## Production mode
+## Creation of the report for production
 
 The function **`render_clinDataReviewReport` renders a clinical data
 report for production**.
@@ -142,9 +148,8 @@ section/subsection.
 
 To open the full report, the user should open the _introduction.html_ file.
 
-However, if several files are available, it might be boring to look for the
-_introduction.html_ among many files. In such a case, it can be created a
-landing page, as described in the next section. 
+In case a lot of different html chapters are created, a landing page can be created
+to guide the end-user to the opening of the report.
 
 ## Create redirect page
 
@@ -157,7 +162,7 @@ clinDataReview::createRedirectPage()
 
 ```
 
-This function
+This function:
 
 * stores all html files into a folder
 * create a landing page next to the folder that allows the user to navigate
@@ -172,7 +177,7 @@ and _report.html_. The names can be changed by the user.
 A dedicated functionality is available to zip the report and send it to
 colleagues within the team.
 
-Once a report has been rendered, the user can call
+Once a report has been rendered, the user can call:
 
 ```{r zipclinDataReview, eval = FALSE}
 
@@ -202,7 +207,7 @@ clinDataReview::getMetadata()
 
 ```
 
-## Development mode
+## Creation of the report during development
 
 ### Modular framework
 
