@@ -121,7 +121,7 @@ createExampleMetadata <- function(dirName) {
 }
 
 #' @importFrom haven write_xpt
-#' @clinUtils loadDataADaMSDTM
+#' @importFrom clinUtils loadDataADaMSDTM
 createComparisonData <- function(dirName) {
   
   pathToFile <- system.file(
