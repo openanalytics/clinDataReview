@@ -14,27 +14,6 @@ editor_options:
 
 # Introduction
 
-```{r runDocument, echo = FALSE, eval = FALSE, message = FALSE, warning = FALSE}
-
-library(clinDataReview)
-
-# currently Js dep for plotly/table should be included manually when rendering the document
-rm(list = ls())
-system.time(
-    bookdown::render_book(
-        input = "index.Rmd", 
-        clean_envir = FALSE,
-        # during template development, these options are set to FALSE:
-        new_session = TRUE, clean = FALSE,
-        # TODO: find a more generic way to pass params
-        # if params are present but not in header, error: 'render params not declared in YAML'
-        params = yaml::read_yaml("./_bookdown.yml")[c("study", "version")],
-    )
-)
-
-```
-
-
 ```{r options, echo = FALSE, message = FALSE, warning = FALSE}
 
 library(knitr)
