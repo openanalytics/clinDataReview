@@ -1,5 +1,4 @@
 context("Test miscellaneous functions")
-library(DT)
 
 test_that("createPatientProfileVar", {
 			
