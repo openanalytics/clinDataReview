@@ -1,12 +1,23 @@
 Package: clinDataReview
 Type: Package
-Title: Clinical Data Reporting Tool
-Version: 0.9.2.999
-Date: 2021-03-31
-Author: Arne De Roeck, Laure Cougnaud, Michela Pasetto
-Maintainer: Laure Cougnaud <laure.cougnaud@openanalytics.eu>
-Description: Creation of semi-automated report for clinical data
-  during a clinical trial.
+Title: Clinical Data Review Tool
+Version: 1.0.0
+Date: 2021-03-25
+Authors@R: c(
+  person(given = "Laure", family = "Cougnaud", role = "aut",
+  email = "laure.cougnaud@openanalytics.eu"),
+  person(given = "Michela", family = "Pasetto", role = c("aut", "cre"),
+  email = "michela.pasetto@openanalytics.eu"),
+  person(given = "Arne", family = "De Roeck", role = "ctb"  
+  )
+Description: Creation of interactive TLFs and associated report for 
+  exploratory analysis of data in a clinical trial, e.g. for clinical oversight activity.
+  Interactive figures include sunburst, treemap, scatterplot, line plot and
+  barplot of counts data. Interactive tables include table of summary statistics
+  (as counts of adverse events, enrollment table) and listings.
+  Data (summary table or listing) is possibly compared across two successive data batches.
+  A clinical data review report is created via study-specific configuration 
+  file and template Rmarkdown reports contained in the package.
 Imports: 
   bookdown,
   clinUtils,
@@ -28,7 +39,7 @@ Imports:
   utils,
   tools,
   yaml
-License: file LICENSE
+License: GPL-3
 Suggests: 
     countrycode,
     inTextSummaryTable (>= 2.19.0),
