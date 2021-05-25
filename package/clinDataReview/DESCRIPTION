@@ -2,13 +2,13 @@ Package: clinDataReview
 Type: Package
 Title: Clinical Data Review Tool
 Version: 1.0.0
-Date: 2021-03-25
+Date: 2021-05-25
 Authors@R: c(
   person(given = "Laure", family = "Cougnaud", role = "aut",
   email = "laure.cougnaud@openanalytics.eu"),
   person(given = "Michela", family = "Pasetto", role = c("aut", "cre"),
   email = "michela.pasetto@openanalytics.eu"),
-  person(given = "Arne", family = "De Roeck", role = "ctb"  
+  person(given = "Arne", family = "De Roeck", role = "ctb")
   )
 Description: Creation of interactive TLFs and associated report for 
   exploratory analysis of data in a clinical trial, e.g. for clinical oversight activity.
