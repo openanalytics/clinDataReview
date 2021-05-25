@@ -10,14 +10,17 @@ Authors@R: c(
   email = "michela.pasetto@openanalytics.eu"),
   person(given = "Arne", family = "De Roeck", role = "ctb")
   )
-Description: Creation of interactive TLFs and associated report for 
-  exploratory analysis of data in a clinical trial, e.g. for clinical oversight activity.
+Description: Creation of interactive tables, listings and figures (TLFs) 
+  and associated report for exploratory analysis of data in a clinical trial, 
+  e.g. for clinical oversight activities.
   Interactive figures include sunburst, treemap, scatterplot, line plot and
-  barplot of counts data. Interactive tables include table of summary statistics
+  barplot of counts data. 
+  Interactive tables include table of summary statistics
   (as counts of adverse events, enrollment table) and listings.
-  Data (summary table or listing) is possibly compared across two successive data batches.
+  Data (summary table or listing) is possibly compared across 
+  two successive data batches.
   A clinical data review report is created via study-specific configuration 
-  file and template Rmarkdown reports contained in the package.
+  files and template Rmarkdown reports contained in the package.
 Imports: 
   bookdown,
   clinUtils,
