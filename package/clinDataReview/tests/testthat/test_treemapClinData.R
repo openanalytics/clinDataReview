@@ -5,8 +5,6 @@ library(clinUtils)
 library(inTextSummaryTable)
 library(plyr)
 library(plotly)
-library(vdiffr)
-
 
 data(dataADaMCDISCP01)
 labelVars <- attr(dataADaMCDISCP01, "labelVars")
