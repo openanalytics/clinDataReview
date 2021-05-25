@@ -42,7 +42,7 @@ Imports:
   utils,
   tools,
   yaml
-License: GPL-3
+License: MIT + file LICENSE
 Suggests: 
     countrycode,
     inTextSummaryTable (>= 2.19.0),
