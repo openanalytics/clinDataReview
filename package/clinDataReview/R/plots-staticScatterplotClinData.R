@@ -43,7 +43,9 @@
 #' @inheritParams clinDataReview-common-args
 #' @inheritParams setPaletteStaticScatterplotClinData
 #' @return \code{\link[ggplot2]{ggplot}} object
-#' @import ggplot2
+#' @importFrom ggplot2 sym ggplot aes geom_point geom_col geom_line 
+#' scale_discrete_manual scale_x_continuous scale_y_continuous 
+#' labs ggtitle facet_wrap facet_grid theme_bw theme
 #' @importFrom clinUtils getLabelVar
 #' @importFrom stats setNames
 #' @author Laure Cougnaud
@@ -65,7 +67,8 @@ staticScatterplotClinData <- function(
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
-	facetPars = list(), facetType = c("wrap", "grid"),
+	facetPars = list(), 
+	facetType = c("wrap", "grid"),
 	scalePars = list(),
 	themePars = list(legend.position = "bottom"),
 	refLinePars = NULL,
@@ -146,7 +149,7 @@ staticScatterplotClinData <- function(
 		geomAes[c("color", "colour", "fill", "shape")]
 	)
 	argsGeom <- Filter(Negate(is.null), argsGeom)
-	geomFct <- match.fun(paste("geom", geomType, sep = "_"))
+	geomFct <- switch(geomType, point = geom_point, col = geom_col)
 	gg <- gg + do.call(geomFct, argsGeom)
 	
 	# aesthetic scales
@@ -169,7 +172,10 @@ staticScatterplotClinData <- function(
 			pars$limits <- lims
 		}
 		if(length(pars) > 0){
-			scaleFct <- get(paste("scale", axis, "continuous", sep = "_"))
+			scaleFct <- switch(axis,
+				x = scale_x_continuous,
+				y = scale_y_continuous
+			)
 			gg <- gg + do.call(scaleFct, pars)
 		}
 		return(gg)
@@ -192,7 +198,10 @@ staticScatterplotClinData <- function(
 		if(facetType == "wrap")
 			facetPars <- setFacetLayoutWrap(data = dataContent, facetPars = facetPars)
 		
-		facetFct <- get(paste("facet", facetType, sep = "_"))
+		facetFct <- switch(facetType,
+			wrap = facet_wrap,
+			grid = facet_grid
+		)
 		gg <- gg + do.call(facetFct, facetPars)
 	}
 	

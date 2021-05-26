@@ -5,6 +5,7 @@
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
 #' @importFrom stats setNames
+#' @importFrom ggplot2 geom_text geom_vline geom_hline geom_abline aes_string
 #' @export
 addReferenceLinesClinDataPlot <- function(
 	gg, data, 
@@ -53,7 +54,11 @@ addReferenceLinesClinDataPlot <- function(
 					list(mapping = lineAes, data = lineData, show.legend = FALSE), 
 					lineParOther
 				)
-				geomLineFct <- paste("geom", lineFct, sep = "_")
+				geomLineFct <- switch(lineFct,
+					vline = geom_vline, 
+					hline = geom_hline,
+					abline = geom_abline
+				)
 				gg <- gg + do.call(geomLineFct, lineArgs)
 				
 				## annotate lines
