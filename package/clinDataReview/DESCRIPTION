@@ -41,16 +41,18 @@ Imports:
   utils,
   tools,
   yaml
-License: MIT + file LICENSE
 Suggests: 
-    countrycode,
-    inTextSummaryTable (>= 2.19.0),
-    pander,
-    patientProfilesVis (>= 0.12.0), 
-    reshape2,
-    testthat,
-    vdiffr,
-    xml2,
-    DT
+  countrycode,
+  inTextSummaryTable (>= 2.19.0),
+  pander,
+  patientProfilesVis (>= 0.12.0), 
+  reshape2,
+  testthat,
+  vdiffr,
+  xml2,
+  DT
+URL: https://github.com/openanalytics/clinDataReview
+BugReports: https://github.com/openanalytics/clinDataReview/issues
+License: MIT + file LICENSE
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
