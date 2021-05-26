@@ -1,8 +1,6 @@
 *.Rcheck
 .project
 *.html
-!package/clinDataReview/tests/files/htmlScraping/3-3-demographics.html
-/tests
 *.tar.gz
 # comments all js folder, excepted in the package
 js
@@ -15,13 +13,10 @@ patientProfiles
 !package/clinDataReview/inst/template/patientProfiles
 *.pdf
 *cache*
-MOMP
 *.zip
 data/
 *.Rhistory
 documentation
-*.md
-!package/clinDataReview/tests/**/*.md
 *.rds
 !package/clinDataReview/tests/**/*.rds
 _main.Rmd
@@ -39,7 +34,4 @@ figures_vignette
 !package/clinDataReview/inst/js/**/*.css
 !package/clinDataReview/inst/css/gitbook.css
 
-report/CDISC01/comparisonData
-
-report/TOLEDO/dev/*
 report/
