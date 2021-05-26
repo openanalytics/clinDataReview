@@ -19,7 +19,7 @@
 #' @export 
 createClinDataReviewReportSkeleton <- function(dir = ".") {
   
-	if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
+  if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
   preexistingFiles <- list.files(dir)
   if(length(preexistingFiles) > 0) warning("'", dir, "' is not empty. Files might be overwritten.")
   
@@ -57,6 +57,7 @@ moveXpt <- function(dir) {
       package = "clinUtils"
   )
   fileNames <- list.files(pathToFiles, full.names = TRUE)
+  if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
   file.copy(
       from = fileNames,
       to = dir,
@@ -76,6 +77,7 @@ moveXpt <- function(dir) {
 #' @importFrom yaml write_yaml
 createExampleMetadata <- function(dir) {
   
+  if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
   fileName <- file.path(dir, "metadata.yml")
   
   write_yaml(
@@ -129,6 +131,8 @@ createComparisonData <- function(dir) {
 #' @return Nothing, the files are available in the specified 
 #' directory.
 moveSkeletonFiles <- function(dir) {
+	
+  if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
   
   skeletonFiles <- list.files(
       system.file("skeleton", package = "clinDataReview"),
@@ -151,6 +155,8 @@ moveSkeletonFiles <- function(dir) {
 #' @importFrom yaml write_yaml
 createMainConfigSkeleton <- function(dir, dirData) {
   
+  if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
+	
   fileName <- file.path(dir, "config.yml")
   
   write_yaml(
@@ -168,6 +174,10 @@ createMainConfigSkeleton <- function(dir, dirData) {
               "config-patientProfiles.yml",
               "config-alert-division.yml",
               "config-alert-death.yml",
+			  "config-subjectDisposition-division.yml",
+			  "config-enrollment-countsVisualization.yml",
+			  "config-cumulativeEnrollment.yml",
+			  "config-demographics-summaryTable.yml",
               "config-adverseEvents-division.yml",
               "config-adverseEvents-summaryTable.yml",
               "config-adverseEvents-all-countsVisualization.yml",
@@ -175,7 +185,7 @@ createMainConfigSkeleton <- function(dir, dirData) {
               "config-adverseEvents-listing-comparison.yml",
               "config-concomitantMedications-division.yml",
               "config-concomitantMedications-listing.yml",
-              "config-laboratory-division.yml",
+			  "config-laboratory-summaryBarplot.yml",
               "config-laboratory-eDISH-ALT.yml",
               "config-laboratory-spaghettiPlot.yml"
           )
