@@ -50,6 +50,7 @@ Suggests:
     reshape2,
     testthat,
     vdiffr,
-    xml2
+    xml2,
+    DT
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1

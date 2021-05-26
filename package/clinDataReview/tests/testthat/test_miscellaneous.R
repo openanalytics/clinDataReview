@@ -1,5 +1,7 @@
 context("Test miscellaneous functions")
 
+library(DT)
+
 test_that("createPatientProfileVar", {
 			
 	data <- data.frame(USUBJID = c("subj1", "subj2", "subj3"))		
@@ -103,7 +105,7 @@ test_that("Get JS dependencies", {
 test_that("Collapse Html content", {
       
       x <- matrix(LETTERS[1 : 10])
-      button <- collapseHtmlContent(datatable(x))
+      button <- collapseHtmlContent(DT::datatable(x))
       expect_is(button, "shiny.tag.list")
       expect_is(button, "list")
       names <- sapply(button, function(x) x$name)
