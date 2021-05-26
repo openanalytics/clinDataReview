@@ -35,6 +35,12 @@ Utility functions are provided to create a standard clinical data review report.
 Please note that the examples in this section are only informative, and not
 evaluated in the vignette itself.
 
+```{r loadLibraries}
+
+library(clinDataReview)
+
+```
+
 # Create an example report
 
 To create your clinical data review report, we advise to start from a skeleton
