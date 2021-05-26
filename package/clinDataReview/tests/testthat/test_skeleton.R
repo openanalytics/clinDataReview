@@ -2,18 +2,14 @@ context("Test skeleton")
 
 dirName <- tempdir()
 dirSubfunctions <- file.path(dirName, "testSubfunctions")
-dir.create(dirSubfunctions)
 dirData <- file.path(dirSubfunctions, "data")
-dir.create(dirData)
 dirSkeletonFiles <- file.path(dirSubfunctions, "files")
-dir.create(dirSkeletonFiles)
 dirSkeleton <- file.path(dirName, "skeleton")
-dir.create(dirSkeleton)
 
 test_that("Move data from clinUtils to folder", {
       
       expect_silent(
-          moveXpt(dirData)
+          clinDataReview:::moveXpt(dirData)
       )
       res <- list.files(dirData)
       expect_length(res, 8)
@@ -24,7 +20,7 @@ test_that("Move data from clinUtils to folder", {
 test_that("Create example metadata file", {
       
       expect_silent(
-          createExampleMetadata(dirData)
+          clinDataReview:::createExampleMetadata(dirData)
       )
       res <- list.files(dirData)
       expect_length(res, 9)
@@ -35,7 +31,7 @@ test_that("Create example metadata file", {
 test_that("Move skeleton files", {
       
       expect_silent(
-          moveSkeletonFiles(dirSkeletonFiles)
+          clinDataReview:::moveSkeletonFiles(dirSkeletonFiles)
       )
       res <- list.files(dirSkeletonFiles)
       expect_identical(
@@ -53,7 +49,7 @@ test_that("Move skeleton files", {
 test_that("Create example config file", {
       
       expect_silent(
-          createMainConfigSkeleton(
+          clinDataReview:::createMainConfigSkeleton(
               dirSkeletonFiles,
               dirData
           )
@@ -86,5 +82,38 @@ test_that("Warning of skeleton creation", {
       )
       
     })
+
+test_that("skeleton report is successfully executed", {
+		
+	unlink(dirSkeleton, recursive = TRUE)
+	createClinDataReviewReportSkeleton(dirSkeleton)
+	
+	# Track warnings during execution of example report:
+	warn <- NULL
+	resReport <- withCallingHandlers(
+		render_clinDataReviewReport(
+			configDir = file.path(dirSkeleton, "config"), 
+			indexPath = file.path(dirSkeleton, "index.Rmd"), 
+			outputDir = file.path(dirSkeleton, "report"), 
+			intermediateDir = file.path(dirSkeleton, "interim"),
+			extraDirs = file.path(dirSkeleton, c("figures", "tables")),
+			quiet = TRUE
+		),
+		warning = function(w){
+			warn <<- append(warn, conditionMessage(w))
+			invokeRestart("muffleWarning")
+		}
+	)
+	expect_true(file.exists(resReport))
+	
+	# check that import parameters is successful & all chapters are successfully created
+	expect_false(any(
+		grepl(
+			"Extraction of the parameters.*failed|Rendering of the.*report failed",
+			warn
+		)
+	))
+			
+})
 
 
