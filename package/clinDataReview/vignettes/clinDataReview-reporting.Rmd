@@ -35,6 +35,28 @@ Utility functions are provided to create a standard clinical data review report.
 Please note that the examples in this section are only informative, and not
 evaluated in the vignette itself.
 
+# Create an example report
+
+To create your clinical data review report, we advise to start from a skeleton
+of such report, via:
+
+```{r exampleReport-createClinDataReviewReportSkeleton, eval = FALSE}
+createClinDataReviewReportSkeleton()
+```
+
+This report is based on an example dataset (subset of the CDISC Pilot 01 dataset), available
+in the `clinUtils` package.
+
+The report is created via:
+```{r exampleReport-render_clinDataReviewReport, eval = FALSE}
+render_clinDataReviewReport()
+```
+
+You can further tailor the report to your dataset(s) of interest
+and sections of interest.
+
+See the next sections for further informations.
+
 # File structure
 
 ## Input
@@ -61,8 +83,8 @@ There should be a `config` directory containing:
     
     + `pathDataFolder`: path to a directory containing input data in _sas7bdat_
            or _xpt_ format
-    + `patientProfilesPath`(optional) : path to a directory containing the
-      patient profiles
+    + `patientProfilesPath`(optional) : path to a directory that will contain
+    patient profiles (if they are created with the `patientProfilesTemplate.Rmd` template report)
     + `study` (optional): study name
     + `version` (optional): data version, e.g. batch
     
@@ -131,9 +153,11 @@ reportTitle: "Title for a chapter"
 reportTitleLevel: 1
 ```
 
-# Render a clinical data report
+# Render a clinical data review report
 
-## Creation of the report for production
+## Production
+
+### Create a report for production
 
 The function **`render_clinDataReviewReport` renders a clinical data
 report for production**.
@@ -151,7 +175,7 @@ To open the full report, the user should open the _introduction.html_ file.
 In case a lot of different html chapters are created, a landing page can be created
 to guide the end-user to the opening of the report.
 
-## Create redirect page
+### Create redirect page
 
 A convenient way to store all html files into one location, and have only one
 page to look for to open the report is the function 
@@ -172,7 +196,7 @@ The default names of the folder and landing page are _report_dependencies_
 and _report.html_. The names can be changed by the user.
 
 
-## Zip and send the report to collaborators
+### Zip and send the report to collaborators
 
 A dedicated functionality is available to zip the report and send it to
 colleagues within the team.
@@ -192,7 +216,7 @@ If the folder is not unzipped before opening the reports, a message in the
 browser reminds to unzip the documents.
 
 
-## Add metadata
+### Add metadata
 
 Metadata can be added in the landing page, containing information concerning
 the data set creation time, the path to the original data etc.
@@ -207,7 +231,10 @@ clinDataReview::getMetadata()
 
 ```
 
-## Creation of the report during development
+## Development
+
+To facilitate the creation of the report, a few utility functions &
+dedicated parameters are available.
 
 ### Modular framework
 
