@@ -81,7 +81,7 @@ test_that("Zip reports", {
           )
       )
       
-      expect_identical(
+      expect_setequal(
           list.files(tmpZip),
           c(
               basename(newDir),
@@ -90,7 +90,7 @@ test_that("Zip reports", {
               basename(zipFolder)
           )
       )
-      expect_identical(
+      expect_setequal(
           list.files(newDir),
           basename(medMonFile)
       )

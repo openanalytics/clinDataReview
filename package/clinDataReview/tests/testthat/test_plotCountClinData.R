@@ -51,7 +51,7 @@ test_that("creation of count visualization for specified one parent variable is 
 		)
 	)
 	expect_s3_class(pl, "plotly")
-	plotData <- plotly_data(pl)
+	plotData <- as.data.frame(plotly_data(pl))
 	
 	# all records being retained?
 	plotDataInput <- plotData[, colnames(data)]
@@ -66,11 +66,11 @@ test_that("creation of count visualization for specified one parent variable is 
 		hierarLabel = c("a", "b", "A", "c", "B"),
 		stringsAsFactors = FALSE
 	)
+	# orders df the same
 	dataHierarOrder <- dataHierar[do.call(order, dataHierar), ]
 	plotDataInternal <- plotData[, colnames(dataHierar)]
 	plotDataInternalOrder <- plotDataInternal[do.call(order, plotDataInternal), ]
-	# orders df the same
-	expect_identical(plotDataInternalOrder, dataHierarOrder, check.attributes = FALSE)
+	expect_equal(plotDataInternalOrder, dataHierarOrder, check.attributes = FALSE)
 			
 })
 
@@ -88,7 +88,7 @@ test_that("child and parent variables can contain the same element", {
 		)
 	)
 	
-	plotData <- plotly_data(pl)
+	plotData <- as.data.frame(plotly_data(pl))
 	
 	# check extraction of hierarchical data
 	dataHierar <- data.frame(
@@ -102,7 +102,7 @@ test_that("child and parent variables can contain the same element", {
 	dataHierarOrder <- dataHierar[do.call(order, dataHierar), ]
 	plotData <- plotData[,  colnames(dataHierar)]
 	plotDataOrder <- plotData[do.call(order, plotData), ]
-	expect_identical(plotDataOrder, dataHierarOrder, check.attributes = FALSE)
+	expect_equal(plotDataOrder, dataHierarOrder, check.attributes = FALSE)
 	
 })
 
