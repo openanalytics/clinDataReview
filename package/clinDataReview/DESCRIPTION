@@ -17,8 +17,7 @@ Description: Creation of interactive tables, listings and figures (TLFs)
   barplot of counts data. 
   Interactive tables include table of summary statistics
   (as counts of adverse events, enrollment table) and listings.
-  Data (summary table or listing) is possibly compared across 
-  two successive data batches.
+  Possibility to compare data (summary table or listing) across two data batches/sets.
   A clinical data review report is created via study-specific configuration 
   files and template Rmarkdown reports contained in the package.
 Imports: 
