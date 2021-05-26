@@ -1,14 +1,14 @@
 # Report-specific parameters
 template: plotTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: "Lab parameters: time profiles"
-reportTitleLevel: 2
+reportTitle: "Laboratory parameters: time profiles"
+reportTitleLevel: 1
 # Dataset of interest
 dataFileName: lb.xpt
 dataProcessing:
   - annotate:
     - dataset: dm
-      vars: ["RFXSTDTC"]
+      vars: ["RFXSTDTC", "ARM"]
     - vars: LBCAT
       varFct: 'ifelse(LBCAT == "", "Not Coded", LBCAT)'
   - filter:
@@ -24,20 +24,23 @@ plotParams:
   xVar: "LBDY"
   yVar: "LBSTRESN"
   aesPointVar:
-    colour: "USUBJID"
+    colour: "ARM"
+    fill: "ARM"
     shape: "LBNRIND"
   aesLineVar:
     group: "USUBJID"
-    colour: "USUBJID"
   refLinePars:
     - yintercept: "LBSTNRLO"
       colour: "lightblue"
     - yintercept: "LBSTNRHI"
       colour: "darkblue"
+  scalePars:
+    - aesthetic: shape
+      values: !r-lazy clinUtils::getPaletteCDISC(x = dataI$LBNRIND, var = "NRIND", type = "shape")
   themePars:
       legend.position: "none"
   hoverVars: ["USUBJID", "VISIT", "LBDY", "LBSTRESN", "LBNRIND", "LBSTNRLO", "LBSTNRHI"]
-  tableVars: ["LBTEST", "USUBJID", "VISIT", "LBDY", "LBSTRESN", "LBNRIND", "LBSTNRLO", "LBSTNRHI"]
+  tableVars: ["LBCAT", "LBTEST", "USUBJID", "VISIT", "LBDY", "LBSTRESN", "LBNRIND", "LBSTNRLO", "LBSTNRHI"]
 
 
 

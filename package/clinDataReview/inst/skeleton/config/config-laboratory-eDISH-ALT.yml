@@ -1,8 +1,8 @@
 # Report-specific parameters
 template:  plotTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: "eDISH: ALT vs bilirubin"
-reportTitleLevel: 2
+reportTitle: Hepatoxicity (eDISH)
+reportTitleLevel: 1
 # Dataset of interest
 dataFileName: lb.xpt
 dataProcessing:
@@ -37,6 +37,7 @@ plotParams:
   yLab: "Bilirubin in multiples of ULN"
   aesPointVar:
     colour: "VISIT"
+    fill: "VISIT"
   refLinePars:
     - xintercept: 3
       linetype: "dashed"

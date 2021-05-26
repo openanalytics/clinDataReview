@@ -1,0 +1,39 @@
+# Report-specific parameters
+template: summaryPlotTemplate.Rmd
+templatePackage: clinDataReview
+reportTitleLevel: 2
+reportTitle: "Enrollment: cumulative number of randomizations"
+# Dataset of interest
+dataFileName: "dm.xpt"
+dataProcessing:
+  - filter:
+     # safety analysis set: treated-patients
+    - var: "RFXSTDTC"
+      value: ""
+      rev: true
+# Table parameters
+tableParams:
+  var: RFXSTDTC
+  rowOrder: total
+  varInclude0: TRUE
+  stats: 'getStats("n")' 
+  varGeneralLab: "Subjects with, n (%)"
+  varSubgroupLab: Group
+tableProcessing:
+  - annotate:
+    - vars: cumSum
+      varFct: 'cumsum(n)'
+      varLabel: "Cumulative number of randomizations"
+    - vars: RFXSTDTCDate
+      varFct: 'as.Date(variableGroup)'
+      varLabel: "Treatment Start Date"
+plotFunction: scatterplotClinData
+plotParams:
+  xVar: "RFXSTDTCDate"
+  yVar: "cumSum"
+  lineInclude: TRUE
+  themePars:
+    legend.position: "none"
+
+    
+

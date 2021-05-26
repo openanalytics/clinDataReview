@@ -1,0 +1,38 @@
+# Report-specific parameters
+template: summaryTableTemplate.Rmd
+templatePackage: clinDataReview
+reportTitleLevel: 2
+reportTitle: Demographics
+# Dataset of interest
+dataFileName: "dm.xpt"
+dataProcessing:
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+# Table parameters
+tableParams:
+  var: ["AGE", "SEX", "RACE", "ETHNIC"]
+  varInclude0: TRUE
+  colVar: ARM
+  stats: 'getStatsData(
+    data = data, 
+    var = tableParams$var, 
+    type = c(cont = "n", cont = "median (range)", cont = "Median", cont = "Min", cont = "Max", cat = "n (%)", cat = "n", cat = "%")
+   )
+  ' 
+  varGeneralLab: "Parameter"
+  varSubgroupLab: Group
+# for docx export (optional):
+tableParamsDocx:
+  file: summaryDemographics.docx
+  statsVar: ['Median (range)', 'n (%)']
+tableParamsDT:
+  statsVar: ['n', '%', 'Min', 'Max', 'Median'] 
+  statsLayout: rowInSepCol # col by default for DT output
+  pageLength: Inf
+  searchBox: TRUE
+    
+    
+

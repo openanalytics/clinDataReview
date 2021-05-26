@@ -3,12 +3,12 @@ template: patientProfilesTemplate.Rmd
 templatePackage: clinDataReview
 reportTitle: Patient profiles
 reportTitleLevel: 1
-createPatientProfiles: FALSE
+createPatientProfiles: TRUE
 
 # Parameters used for all modules
 # patientProfilesGeneralParams:
 # only create patient profiles for a subset for testing
-#  subjectSubset: "01-701-1015"
+#  subjectSubset: "01-701-1148"
 #  subjectSample: 5
 
 # Parameters for the creation of each specific module
@@ -62,8 +62,8 @@ patientProfilesParams:
       timeStartVar: CMSTDY
       timeEndVar: CMENDY
       colorVar: CMCLAS
-      timeTrans: 'getTimeTrans(type = "asinh-neg")'
-      timeExpand: "expansion(mult = 0.01)"
+      timeTrans: !r patientProfilesVis::getTimeTrans(type = "asinh-neg")
+      timeExpand: !r ggplot2::expansion(mult = 0.01)
       shapeLab: Date status
       shapeSize: 4
       alpha: 0.6
@@ -139,13 +139,9 @@ patientProfilesParams:
       paramGroupVar: [LBCAT]
       timeVar: LBDY
       colorVar: LBNRIND
+      colorPalette: !r-lazy clinUtils::getPaletteCDISC(x = dataI$LBNRIND, var = "NRIND", type = "color")
       shapeVar: LBNRIND
-      shapePalette: 
-        LOW: "\u25BC"
-        NORMAL: "\u25CF"
-        HIGH: "\u25B2"
-        ABNORMAL: "\u2605"
-        UNKNOWN: "\u271A"
+      shapePalette: !r-lazy clinUtils::getPaletteCDISC(x = dataI$LBNRIND, var = "NRIND", type = "shape")
       shapeSize: 4
       alpha: 0.6
       title: Laboratory test measurements
@@ -175,7 +171,7 @@ patientProfilesParams:
 
 # Parameters for the 'createSubjectProfileReport' function
 patientProfilesCreateReportParams:
-  exportBatchSize: 1 # create reports by batch of 1 patients
+  exportBatchSize: 3 # create reports by batch of 3 patients
   timeAlignPerSubject: all
 
 # Parameters for the table

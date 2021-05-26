@@ -2,7 +2,7 @@
 template: plotTemplate.Rmd
 templatePackage: clinDataReview
 reportTitle: "Adverse events: treatment-emergent time intervals"
-reportTitleLevel: 2
+reportTitleLevel: 1
 # Dataset of interest
 dataFileName: ae.xpt
 dataProcessing:

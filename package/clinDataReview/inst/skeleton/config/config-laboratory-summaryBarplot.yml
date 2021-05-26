@@ -1,0 +1,36 @@
+# Report-specific parameters
+template: summaryPlotTemplate.Rmd
+templatePackage: clinDataReview
+reportTitleLevel: 1
+reportTitle: "Laboratory abnormalities: post-baseline patient counts per (ab)normality"
+# Dataset of interest
+dataFileName: lb.xpt
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC"]
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+    - var: "LBDY"
+      value: 1
+      op: ">="
+    - var: 'LBNRIND'
+      value: ''
+      rev: TRUE
+# Table parameters
+tableParams:
+  rowVar: ['LBTEST', 'LBNRIND']
+  stats: 'getStats("count")' 
+plotFunction: barplotClinData
+plotParams:
+  xVar: "LBTEST"
+  xLab: 'Laboratory parameter'
+  yVar: "statN"
+  yLab: 'Number of patients with (ab)normality'
+  colorVar: 'LBNRIND'
+  barmode: 'stack'
+  width: 1000
+  height: 700
