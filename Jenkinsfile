@@ -4,8 +4,8 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '3'))
     }
     environment {
-        IMAGE = 'glpgmedicalmonitoring'
-        NS = 'glpgmedicalmonitoring'
+        IMAGE = 'clindatareview'
+        NS = 'clindatareview'
         REG = '196229073436.dkr.ecr.eu-west-1.amazonaws.com'
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         DOCKER_BUILDKIT = '1'
@@ -28,8 +28,8 @@ pipeline {
             }
             steps {
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/clinUtils/master', selector: lastSuccessful()   
-                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGPatientProfiles/dev-openSource', selector: lastSuccessful()
-                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/GLPGInTextSummaryTable/dev-openSource', selector: lastSuccessful()   
+                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/patientProfilesVis/master', selector: lastSuccessful()
+                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/inTextSummaryTable/master', selector: lastSuccessful()   
                 withOARegistry {
                     sh "docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:${env.TAG} --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:master -t ${env.NS}/${env.IMAGE}:${env.TAG} -f Dockerfile ."
                 }
