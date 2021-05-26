@@ -68,7 +68,7 @@ createRedirectPage <- function(
 ) {
   
   linkToPage <- file.path(dir, "1-introduction.html")
-  linkToFigure <- file.path(dir, "figures/subjectPlots.png")
+  linkToFigure <- file.path(dir, "figures/summaryTables.png")
   
   htmlPage <- c(
       sprintf(

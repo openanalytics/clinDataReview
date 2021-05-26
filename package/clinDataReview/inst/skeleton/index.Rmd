@@ -112,12 +112,17 @@ be found in the screenshots below.
 
 ### Scatter plots and spaghetti plots
 
-![](figures/subjectPlots.png)
+In the scatter and spaghetti plots of the reports, points are selectable
+and associated patient profiles (if available) are downloaded by pressing the 'P'
+key on your keyboard.
+
+Records selected on the visualizations are filtered on the interactive table
+available at the bottom of the visualization.
 
 ### Linked tables
 
-![](figures/subjectTables.png)
-
+Patients profiles are downloaded when clicking on the
+subject identifier hyperlink in the table (if available).
 
 ## Tutorial: Summarized visualizations.
 
