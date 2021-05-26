@@ -29,14 +29,6 @@ check_built(
 	args = paste0("--output=", checkDir)
 )
 
-# compare figures
-#library(glpgUtilityFct)
-## images identical!
-#compareFigOne(
-#	pathFigRef = "../package/medicalMonitoring/tests/figs/sunburst-monitoring/basic.svg",
-#	pathFigNew = "../package/medicalMonitoring.Rcheck/tests/figs/sunburst-monitoring/basic.svg"
-#)
-
 ## check the package coverage:
 
 library(covr)
