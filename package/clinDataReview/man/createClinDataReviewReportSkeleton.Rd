@@ -4,11 +4,12 @@
 \alias{createClinDataReviewReportSkeleton}
 \title{Create the skeleton of a report}
 \usage{
-createClinDataReviewReportSkeleton(dir)
+createClinDataReviewReportSkeleton(dir = ".")
 }
 \arguments{
 \item{dir}{String with the path of the directory where 
-the skeleton should be created.}
+the skeleton should be created. The current working
+directory is used as default.}
 }
 \value{
 The files to run a report are written in the specified 

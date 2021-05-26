@@ -11,12 +11,13 @@
 #' custom data sets and add specific configuration files.
 #' 
 #' @param dir String with the path of the directory where 
-#' the skeleton should be created.
+#' the skeleton should be created. The current working
+#' directory is used as default.
 #' @return The files to run a report are written in the specified 
 #' directory. To run the report, the user can call the 
 #' \code{\link{render_clinDataReviewReport}}.
 #' @export 
-createClinDataReviewReportSkeleton <- function(dir) {
+createClinDataReviewReportSkeleton <- function(dir = ".") {
   
 	if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
   preexistingFiles <- list.files(dir)
