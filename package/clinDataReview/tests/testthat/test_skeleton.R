@@ -10,15 +10,6 @@ dir.create(dirSkeletonFiles)
 dirSkeleton <- file.path(dirName, "skeleton")
 dir.create(dirSkeleton)
 
-test_that("Error in skeleton creation", {
-      
-      expect_error(
-          reportSkeleton(dirName = "ciao"),
-          "Directory .+ does not exist"
-      )
-      
-    })
-
 test_that("Move data from clinUtils to folder", {
       
       expect_silent(
@@ -75,7 +66,7 @@ test_that("Create example config file", {
 test_that("Create skeleton", {
       
       expect_message(
-          reportSkeleton(dirSkeleton),
+          createClinDataReviewReportSkeleton(dirSkeleton),
           "The skeleton of the report is ready!"
       )
       res <- list.files(dirSkeleton)
@@ -90,7 +81,7 @@ test_that("Create skeleton", {
 test_that("Warning of skeleton creation", {
       
       expect_warning(
-          reportSkeleton(dirSkeleton),
+          createClinDataReviewReportSkeleton(dirSkeleton),
           ".+ is not empty."
       )
       

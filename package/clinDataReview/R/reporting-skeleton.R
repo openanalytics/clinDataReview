@@ -10,65 +10,45 @@
 #' substitute the example data with 
 #' custom data sets and add specific configuration files.
 #' 
-#' @param dirName String with the path of the directory where 
+#' @param dir String with the path of the directory where 
 #' the skeleton should be created.
 #' @return The files to run a report are written in the specified 
 #' directory. To run the report, the user can call the 
 #' \code{\link{render_clinDataReviewReport}}.
 #' @export 
-reportSkeleton <- function(dirName) {
+createClinDataReviewReportSkeleton <- function(dir) {
   
-  if(! dir.exists(dirName)) stop("Directory '", dirName, "' does not exist.")
-  preexistingFiles <- list.files(dirName)
-  if(length(preexistingFiles) > 0) warning("'", dirName, "' is not empty. Files might be overwritten.")
+	if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
+  preexistingFiles <- list.files(dir)
+  if(length(preexistingFiles) > 0) warning("'", dir, "' is not empty. Files might be overwritten.")
   
-  dirData <- file.path(dirName, "data")
+  dirData <- file.path(dir, "data")
   dirComparisonData <- file.path(dirData, "comparisonData")
-  dirConfig <- file.path(dirName, "config")
+  dirConfig <- file.path(dir, "config")
   if(length(preexistingFiles) == 0) {
     if(! any(grepl("data", preexistingFiles))) dir.create(dirData)
     if(! any(grepl("comparisonData", preexistingFiles))) dir.create(dirComparisonData)
     if(! any(grepl("config", preexistingFiles))) dir.create(dirConfig)
   }
   
-  #writeXpt(dirData)  
   moveXpt(dirData)
   createExampleMetadata(dirData)
   createComparisonData(dirComparisonData)
   
-  createMainConfigSkeleton(dirName = dirConfig, dirData = dirData)
-  moveSkeletonFiles(dirName)
+  createMainConfigSkeleton(dir = dirConfig, dirData = dirData)
+  moveSkeletonFiles(dir)
   
   message("The skeleton of the report is ready!")
   
 }
 
-
-# #' @import clinUtils 
-# #' @importFrom utils data
-# #' @importFrom haven write_xpt
-#writeXpt <- function(dirName) {
-#  
-#  dataSkeleton <- clinUtils::dataSDTMCDISCP01
-#  
-#  sapply(names(dataSkeleton), function(nameI) {
-#        
-#        dataI <- dataSkeleton[[nameI]]
-#        pathI <- sprintf("%s.xpt", file.path(dirName, nameI))
-#        
-#        write_xpt(dataI, pathI)
-#        
-#      })
-#  
-#}
-
 #' Move data sets from clinUtils
 #' 
 #' Move SDTM data sets available in \code{clinUtils} into a 
 #' specified local directory.
-#' @param dirName String, path to the directory.
+#' @param dir String, path to the directory.
 #' @return Nothing, the data are saved in the dedicated location.
-moveXpt <- function(dirName) {
+moveXpt <- function(dir) {
   
   pathToFiles <- system.file(
       "extdata", "cdiscpilot01",
@@ -78,7 +58,7 @@ moveXpt <- function(dirName) {
   fileNames <- list.files(pathToFiles, full.names = TRUE)
   file.copy(
       from = fileNames,
-      to = dirName,
+      to = dir,
       overwrite = TRUE,
       recursive = TRUE
   )
@@ -88,18 +68,18 @@ moveXpt <- function(dirName) {
 
 #' Create an example metadata file
 #' 
-#' Create an example of metadata file for the \code{\link{reportSkeleton}}.
-#' @param dirName String, path to the directory.
+#' Create an example of metadata file for the \code{\link{createClinDataReviewReportSkeleton}}.
+#' @param dir String, path to the directory.
 #' @return Nothing, the example metadata file is created in the specified 
 #' directory.
 #' @importFrom yaml write_yaml
-createExampleMetadata <- function(dirName) {
+createExampleMetadata <- function(dir) {
   
-  fileName <- file.path(dirName, "metadata.yml")
+  fileName <- file.path(dir, "metadata.yml")
   
   write_yaml(
       list(
-          pathSDTMs = dirName,
+          pathSDTMs = dir,
           dateTimeSDTMcreation = "20210101",
           datasetInfo = list(
               list(
@@ -122,7 +102,7 @@ createExampleMetadata <- function(dirName) {
 
 #' @importFrom haven write_xpt
 #' @importFrom clinUtils loadDataADaMSDTM
-createComparisonData <- function(dirName) {
+createComparisonData <- function(dir) {
   
   pathToFile <- system.file(
       "extdata", "cdiscpilot01",
@@ -136,7 +116,7 @@ createComparisonData <- function(dirName) {
   idx <- which(dataAE$USUBJID == "01-701-1148")
   dataAE$AESER[idx] <- "Y"
   dataAE$AESEV[idx] <- "SEVERE"
-  write_xpt(dataAE, file.path(dirName, "ae.xpt"))
+  write_xpt(dataAE, file.path(dir, "ae.xpt"))
   
 }
 
@@ -144,10 +124,10 @@ createComparisonData <- function(dirName) {
 #' 
 #' This function moves the files used to create the skeleton from the 
 #' package to a specified directory.
-#' @param dirName String, path to the directory.
+#' @param dir String, path to the directory.
 #' @return Nothing, the files are available in the specified 
 #' directory.
-moveSkeletonFiles <- function(dirName) {
+moveSkeletonFiles <- function(dir) {
   
   skeletonFiles <- list.files(
       system.file("skeleton", package = "clinDataReview"),
@@ -155,7 +135,7 @@ moveSkeletonFiles <- function(dirName) {
   )
   file.copy(
       from = skeletonFiles,
-      to = dirName,
+      to = dir,
       overwrite = TRUE, recursive = TRUE
   )
   
@@ -163,18 +143,14 @@ moveSkeletonFiles <- function(dirName) {
 
 #' Create the config file for the skeleton
 #' 
-#' This function creates the main config file for the \code{\link{reportSkeleton}} 
+#' This function creates the main config file for the \code{\link{createClinDataReviewReportSkeleton}} 
 #' with the directory where the data are stored.
-#' @param dirName String, path to the directory.
+#' @param dir String, path to the directory.
 #' @param dirData String, path to the directory of the data.
 #' @importFrom yaml write_yaml
-createMainConfigSkeleton <- function(dirName, dirData) {
+createMainConfigSkeleton <- function(dir, dirData) {
   
-  fileName <- file.path(dirName, "config.yml")
-  
-#  configFilesSkeleton <- list.files(
-#      system.file("skeleton", "config", package = "clinDataReview")
-#  )
+  fileName <- file.path(dir, "config.yml")
   
   write_yaml(
       list(

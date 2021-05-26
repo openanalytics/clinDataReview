@@ -4,14 +4,14 @@
 \alias{createMainConfigSkeleton}
 \title{Create the config file for the skeleton}
 \usage{
-createMainConfigSkeleton(dirName, dirData)
+createMainConfigSkeleton(dir, dirData)
 }
 \arguments{
-\item{dirName}{String, path to the directory.}
+\item{dir}{String, path to the directory.}
 
 \item{dirData}{String, path to the directory of the data.}
 }
 \description{
-This function creates the main config file for the \code{\link{reportSkeleton}} 
+This function creates the main config file for the \code{\link{createClinDataReviewReportSkeleton}} 
 with the directory where the data are stored.
 }

@@ -4,10 +4,10 @@
 \alias{moveSkeletonFiles}
 \title{Move skeleton files from the package to a directory}
 \usage{
-moveSkeletonFiles(dirName)
+moveSkeletonFiles(dir)
 }
 \arguments{
-\item{dirName}{String, path to the directory.}
+\item{dir}{String, path to the directory.}
 }
 \value{
 Nothing, the files are available in the specified 

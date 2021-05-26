@@ -4,10 +4,10 @@
 \alias{moveXpt}
 \title{Move data sets from clinUtils}
 \usage{
-moveXpt(dirName)
+moveXpt(dir)
 }
 \arguments{
-\item{dirName}{String, path to the directory.}
+\item{dir}{String, path to the directory.}
 }
 \value{
 Nothing, the data are saved in the dedicated location.

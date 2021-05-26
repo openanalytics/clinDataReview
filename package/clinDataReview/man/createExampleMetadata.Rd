@@ -4,15 +4,15 @@
 \alias{createExampleMetadata}
 \title{Create an example metadata file}
 \usage{
-createExampleMetadata(dirName)
+createExampleMetadata(dir)
 }
 \arguments{
-\item{dirName}{String, path to the directory.}
+\item{dir}{String, path to the directory.}
 }
 \value{
 Nothing, the example metadata file is created in the specified 
 directory.
 }
 \description{
-Create an example of metadata file for the \code{\link{reportSkeleton}}.
+Create an example of metadata file for the \code{\link{createClinDataReviewReportSkeleton}}.
 }
