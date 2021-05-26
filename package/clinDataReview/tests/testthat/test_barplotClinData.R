@@ -94,7 +94,11 @@ test_that("plotting function runs properly", {
 	
 	plDataBarDf <- do.call(rbind,
 		lapply(plDataBar, function(x) 
-			data.frame(AEDECOD = as.character(x[["x"]]), n = x$y)
+			data.frame(
+				AEDECOD = as.character(x[["x"]]), 
+				n = x$y, 
+				stringsAsFactors = TRUE
+			)
 		)
 	)
 	

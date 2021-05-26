@@ -54,9 +54,10 @@ test_that("creation of count visualization for specified one parent variable is 
 	plotData <- plotly_data(pl)
 	
 	# all records being retained?
-	vars <- c("varParent", "varChild")
-	plotDataOrder <- plotData[do.call(order, plotData[, vars]), ]
-	expect_equal(plotDataOrder[, colnames(data)], data, check.attributes = FALSE)
+	plotDataInput <- plotData[, colnames(data)]
+	plotDataInputOrder <- plotDataInput[do.call(order, plotData), ]
+	dataOrder <- data[do.call(order, data), ]
+	expect_equal(plotDataInputOrder, dataOrder, check.attributes = FALSE)
 		
 	# check extraction of hierarchical data
 	dataHierar <- data.frame(
@@ -65,7 +66,11 @@ test_that("creation of count visualization for specified one parent variable is 
 		hierarLabel = c("a", "b", "A", "c", "B"),
 		stringsAsFactors = FALSE
 	)
-	expect_equal(plotDataOrder[, colnames(dataHierar)], dataHierar, check.attributes = FALSE)
+	dataHierarOrder <- dataHierar[do.call(order, dataHierar), ]
+	plotDataInternal <- plotData[, colnames(dataHierar)]
+	plotDataInternalOrder <- plotDataInternal[do.call(order, plotDataInternal), ]
+	# orders df the same
+	expect_identical(plotDataInternalOrder, dataHierarOrder, check.attributes = FALSE)
 			
 })
 
@@ -86,16 +91,18 @@ test_that("child and parent variables can contain the same element", {
 	plotData <- plotly_data(pl)
 	
 	# check extraction of hierarchical data
-	vars <- c("varParent", "varChild")
-	plotDataOrder <- plotData[do.call(order, plotData[, vars]), ]
-	
 	dataHierar <- data.frame(
 		hierarID = c("A-A", "A-b", "A", "B-c", "B"),
 		hierarParent = c("A", "A", "", "B", ""),
 		hierarLabel = c("A", "b", "A", "c", "B"),
 		stringsAsFactors = FALSE
 	)
-	expect_equal(plotDataOrder[, colnames(dataHierar)], dataHierar, check.attributes = FALSE)
+	
+	# orders df the same
+	dataHierarOrder <- dataHierar[do.call(order, dataHierar), ]
+	plotData <- plotData[,  colnames(dataHierar)]
+	plotDataOrder <- plotData[do.call(order, plotData), ]
+	expect_identical(plotDataOrder, dataHierarOrder, check.attributes = FALSE)
 	
 })
 
@@ -175,7 +182,8 @@ test_that("table is created with count visualization", {
 	data <- data.frame(
 		varParent = c("A", "A", "A", "B", "B"),
 		varChild = c("a", "b", "Total", "c", "Total"),
-		n = c(1, 2, 3, 5, 5)
+		n = c(1, 2, 3, 5, 5),
+		stringsAsFactors = TRUE
 	)
 
 	expect_silent(
@@ -191,7 +199,11 @@ test_that("table is created with count visualization", {
 	
 	tableData <- table$x$data
 	
-	tableInput <- cbind(data, hierarID = c("A-a", "A-b", "A", "B-c", "B"))
+	tableInput <- cbind(
+		data, 
+		hierarID = c("A-a", "A-b", "A", "B-c", "B"),
+		stringsAsFactors = TRUE
+	)
 	expect_equal(sort(colnames(tableInput)), sort(colnames(tableData)))
 	
 	tableData <- tableData[, colnames(tableInput)]
