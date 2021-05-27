@@ -1,3 +1,3 @@
-# clinUtils
+# clinDataReview
 
-This package is in the process of being submitted to CRAN, so might be updated soon. Stay tune!
+This package is in the process of being submitted to CRAN, so might be updated soon. Stay tuned!
