@@ -43,8 +43,8 @@ library(clinDataReview)
 **Previous data transfer (used for comparisons):**
 `r params$previousDataTransfer`  
 
-This report works best with **Google Chrome**. Please do not use Internet
-Explorer or Edge as they do not contain all functionalities.  
+This report works best with **Mozilla Firefox** and **Google Chrome**. Please do
+not use Internet Explorer or Edge as they do not contain all functionalities.  
 
 Please send questions, requests, suggestions and issues about these reports to
 `r toString(params$contactPerson)`.  
