@@ -156,7 +156,7 @@ test_that("Convert Md file to Html", {
           indexPath = "index.Rmd"
       )
       expect_is(htmlOutput, "character")
-      expect_true(grepl(outputDir, htmlOutput))
+      expect_equal(normalizePath(dirname(htmlOutput)), normalizePath(outputDir))
       
       if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
       
@@ -172,7 +172,7 @@ test_that("Convert Md file to Html", {
           indexPath = "index.Rmd"
       )
       expect_is(htmlOutput, "character")
-      expect_true(grepl(outputDir, htmlOutput))
+      expect_equal(normalizePath(dirname(htmlOutput)), normalizePath(outputDir))
       
       if(file.exists(filePathSessionInfo)) file.remove(filePathSessionInfo)
       
