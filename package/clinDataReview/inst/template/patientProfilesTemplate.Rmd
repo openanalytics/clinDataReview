@@ -221,8 +221,12 @@ message(paste0("Data is available for the datasets: ", toString(names(dataAll)),
 		for(palette in c("colorPalette", "shapePalette")){
 			if(!is.null(plotParams[[palette]]) & 
 				!inherits(plotParams[[palette]], "r-lazy")){
-				if(is.character(plotParams[[palette]]))
-					plotParams[[palette]] <- eval(parse(text = plotParams[[palette]]))
+				# old specification of palette, advice is to specify palette via '!r ...'
+				if(is.character(plotParams[[palette]])){
+					res <- try(paletteEval <- eval(parse(text = plotParams[[palette]])), silent = TRUE)
+					if(!inherits(res, "try-error"))
+						plotParams[[palette]] <- paletteEval
+				}
 				if(is.list(plotParams[[palette]]))
 					plotParams[[palette]] <- unlist(plotParams[[palette]])
 			}
