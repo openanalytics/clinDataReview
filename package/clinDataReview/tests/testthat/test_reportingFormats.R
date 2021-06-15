@@ -39,7 +39,7 @@ test_that("Add logo", {
       
       
       expect_silent(
-          res <- addLogoGitbook(
+          res <- clinDataReview:::addLogoGitbook(
               logo = pathPlotBasic
           )
       )

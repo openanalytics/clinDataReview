@@ -16,7 +16,7 @@ test_that("Set facetting layout for for not specified ncol", {
           nrow = 1
       )
       expect_silent(
-          res <- setFacetLayoutWrap(data, facetPars)
+          res <- clinDataReview:::setFacetLayoutWrap(data, facetPars)
       )
       expect_equal(class(res), "list")
       expect_equal(res$nrow, 1)
@@ -34,10 +34,10 @@ test_that("Set facetting layout for for not specified nrow", {
       )
       
       expect_silent(
-          res <- setFacetLayoutWrap(data, facetPars)
+          res <- clinDataReview:::setFacetLayoutWrap(data, facetPars)
       )
       expect_silent(
-          res <- setFacetLayoutWrap(data, facetPars)
+          res <- clinDataReview:::setFacetLayoutWrap(data, facetPars)
       )
       expect_equal(class(res), "list")
       expect_equal(res$ncol, 3)
@@ -48,7 +48,7 @@ test_that("Set facetting layout for for not specified nrow", {
 test_that("Get dimentions of plot when width is not specified", {
       
       expect_silent(
-          res <- getSizePlotClinData(
+          res <- clinDataReview:::getSizePlotClinData(
               width = NULL,
               height = 700
           )
@@ -69,7 +69,7 @@ test_that("Get dimentions of plot when width is not specified", {
 test_that("Get dimentions of plot when width is not specified and legend is FALSE", {
       
       expect_silent(
-          res <- getSizePlotClinData(
+          res <- clinDataReview:::getSizePlotClinData(
               width = NULL,
               height = 700,
               legend = FALSE
@@ -85,7 +85,7 @@ test_that("Get dimentions of plot when width is not specified and legend is FALS
 test_that("Get dimentions of plot when height is not specified and legend is top", {
       
       expect_silent(
-          res <- getSizePlotClinData(
+          res <- clinDataReview:::getSizePlotClinData(
               width = 700,
               height = NULL,
               legendPosition = "top"
@@ -107,7 +107,7 @@ test_that("Get dimentions of plot when height is not specified and legend is top
 test_that("Get dimentions of plot when height is not specified and legend is FALSE", {
       
       expect_silent(
-          res <- getSizePlotClinData(
+          res <- clinDataReview:::getSizePlotClinData(
               width = 700,
               height = NULL,
               legend = FALSE

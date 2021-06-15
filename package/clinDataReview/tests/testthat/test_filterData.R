@@ -104,7 +104,7 @@ test_that("Filter data for a single filter in the simplest setting", {
       )
       
       expect_silent(
-          filterData <- filterDataSingle(
+          filterData <- clinDataReview:::filterDataSingle(
               data = data,
               filters = list(
                   var = "C", value = "a"
@@ -133,7 +133,7 @@ test_that("Errors in filtering data", {
       )
       
       expect_error(
-          filterDataSingle(
+          clinDataReview:::filterDataSingle(
               data = data,
               filters = list(value = "a")
           ),
@@ -141,7 +141,7 @@ test_that("Errors in filtering data", {
       )
       
       expect_error(
-          filterDataSingle(
+          clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "C")
           ),
@@ -160,7 +160,7 @@ test_that("Return all in filter data for a single filter", {
       )
       
       expect_silent(
-          filterData <- filterDataSingle(
+          filterData <- clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a"),
               returnAll = TRUE
@@ -183,7 +183,7 @@ test_that("Keep NA in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_silent(
-          filterData <- filterDataSingle(
+          filterData <- clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a"),
               keepNA = TRUE
@@ -206,7 +206,7 @@ test_that("Not keep NA in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_silent(
-          filterData <- filterDataSingle(
+          filterData <- clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a"),
               keepNA = FALSE
@@ -227,7 +227,7 @@ test_that("Filter column not in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_warning(
-          filterData <- filterDataSingle(
+          filterData <- clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "D", value = "a"),
               keepNA = TRUE
@@ -247,7 +247,7 @@ test_that("Filter with 'byVar' in filter data for single filter", {
           D = c("cat1", "cat2", "cat1", "cat1"),
           stringsAsFactors = FALSE      
       )
-      filterData <- filterDataSingle(
+      filterData <- clinDataReview:::filterDataSingle(
           data = data,
           filters = list(
               var = "A", valueFct = function(x) x > 2,
@@ -268,7 +268,7 @@ test_that("Filter with 'varNew' in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_silent(
-          filterData <- filterDataSingle(
+          filterData <- clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a", varNew = "newVar"),
           )
@@ -278,7 +278,7 @@ test_that("Filter with 'varNew' in filter data for single filter", {
       expect_equal(filterData$newVar, c(TRUE, TRUE))
       
       expect_warning(
-          filterDataSingle(
+          clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "C", value = "a", varNew = "B"),
           ),
@@ -295,7 +295,7 @@ test_that("Filter with 'valueFct' in filter data for single filter", {
           stringsAsFactors = FALSE      
       )
       expect_error(
-          filterDataSingle(
+          clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "C", valueFct = grepl("a", data$C))
           ),
@@ -303,7 +303,7 @@ test_that("Filter with 'valueFct' in filter data for single filter", {
       )
       
       expect_silent(
-          filterData <- filterDataSingle(
+          filterData <- clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "A", valueFct = function(x) x > 1)
           )
@@ -312,7 +312,7 @@ test_that("Filter with 'valueFct' in filter data for single filter", {
       expect_equal(nrow(filterData), 1)
       
       expect_silent(
-          filterData2 <- filterDataSingle(
+          filterData2 <- clinDataReview:::filterDataSingle(
               data = data,
               filters = list(var = "A", valueFct = "function(x) x > 1")
           )

@@ -35,12 +35,12 @@ test_that("Check availability of metadata", {
       rownames(expectation) <- "A"
       
       expect_identical(
-          checkAvailabilityMetadata(listName, subListName = "A"),
+          clinDataReview:::checkAvailabilityMetadata(listName, subListName = "A"),
           expectation
       )
       
       expect_identical(
-          checkAvailabilityMetadata(listName, subListName = "B"),
+          clinDataReview:::checkAvailabilityMetadata(listName, subListName = "B"),
           "Not available"
       )
       
@@ -161,7 +161,7 @@ test_that("Rename metadata paths info", {
       namesInfo <- setNames(rownames(summaryInfo), rownames(summaryInfo))
       
       expect_silent(
-          resRename <- renamePathDateInfoMetadata(summaryInfo, namesInfo)
+          resRename <- clinDataReview:::renamePathDateInfoMetadata(summaryInfo, namesInfo)
       )
       expect_identical(
           rownames(resRename),
@@ -171,7 +171,7 @@ test_that("Rename metadata paths info", {
       namesInfo <- setNames(c("Name 1", "Name 2", "Name 3"), rownames(summaryInfo))
       
       expect_silent(
-          resRename <- renamePathDateInfoMetadata(summaryInfo, namesInfo)
+          resRename <- clinDataReview:::renamePathDateInfoMetadata(summaryInfo, namesInfo)
       )
       expect_identical(
           rownames(resRename),
@@ -184,7 +184,7 @@ test_that("Rename metadata paths info", {
           "pathNewSDTM" = "Name 2"
       )
       expect_silent(
-          resRenameUnordered <- renamePathDateInfoMetadata(summaryInfo, namesInfoUnordered)
+          resRenameUnordered <- clinDataReview:::renamePathDateInfoMetadata(summaryInfo, namesInfoUnordered)
       )
       expect_identical(
           rownames(resRenameUnordered),
@@ -201,7 +201,7 @@ test_that("Add date of report running", {
       summaryInfo <- resMetadata$summaryInfo
       
       expect_silent(
-          resDate <- addDateOfReportRun(summaryInfo)
+          resDate <- clinDataReview:::addDateOfReportRun(summaryInfo)
       )
       expect_equal(
           nrow(resDate), nrow(summaryInfo) + 1
@@ -221,7 +221,7 @@ test_that("Format output of paths info", {
       summaryInfo <- resMetadata$summaryInfo
       namesInfo <- setNames(rownames(summaryInfo), rownames(summaryInfo))
       expect_silent(
-          kableFormat <- formatPathDateInfoMetadata(summaryInfo, namesInfo)
+          kableFormat <- clinDataReview:::formatPathDateInfoMetadata(summaryInfo, namesInfo)
       )
       expect_is(kableFormat, "knitr_kable")
       
@@ -231,18 +231,18 @@ test_that("Print metadata", {
       
       resMetadata <- getMetadata(tmpYamlFile)
       
-      resPrintWithoutOptions <- knit_print.clinDataReviewMetadata(
+      resPrintWithoutOptions <- clinDataReview:::knit_print.clinDataReviewMetadata(
           getMetadata(tmpYamlFile)
       )
       expect_is(resPrintWithoutOptions, "knit_asis")
       
-      resPrintWithDate <- knit_print.clinDataReviewMetadata(
+      resPrintWithDate <- clinDataReview:::knit_print.clinDataReviewMetadata(
           getMetadata(tmpYamlFile),
           options = list(dateReportRun = TRUE)
       )
       expect_is(resPrintWithDate, "knit_asis")
       
-      resPrintWithoutDate <- knit_print.clinDataReviewMetadata(
+      resPrintWithoutDate <- clinDataReview:::knit_print.clinDataReviewMetadata(
           getMetadata(tmpYamlFile),
           options = list(dateReportRun = FALSE)
       )

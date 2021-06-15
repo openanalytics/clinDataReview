@@ -41,7 +41,7 @@ test_that("Check uniqueness of report titles", {
 
 test_that("Get path of Md from config file - default settings", {
       
-      mdFiles <- getMdFromConfig(configFiles, intermediateDir = testPathInterim)
+      mdFiles <- clinDataReview:::getMdFromConfig(configFiles, intermediateDir = testPathInterim)
       expect_is(mdFiles, "character")
       expect_length(mdFiles, length(configFiles))
       
@@ -58,7 +58,7 @@ test_that("Get path of Md from config file - default settings", {
 test_that("Get path of Md from config file - not default settings", {
       
       # Different name for indexPath
-      mdFilesIndex <- getMdFromConfig(
+      mdFilesIndex <- clinDataReview:::getMdFromConfig(
           configFiles,
           indexPath = "myIndex.Rmd",
           intermediateDir = testPathInterim
@@ -74,7 +74,7 @@ test_that("Get path of Md from config file - not default settings", {
       expect_identical(mdNames, mdFilesIndex)
       
       # Different intermediateDir
-      mdFilesInterim <- getMdFromConfig(configFiles, intermediateDir = "myDir")
+      mdFilesInterim <- clinDataReview:::getMdFromConfig(configFiles, intermediateDir = "myDir")
       expect_is(mdFilesInterim, "character")
       expect_length(mdFilesInterim, length(configFiles))
       mdNames <- file.path("myDir", c(
@@ -180,7 +180,7 @@ test_that("Convert Md file to Html", {
 
 test_that("Check template name in config", {
       
-      checkedConfig <- checkTemplatesName(configFiles, configDir = testPathConfig)
+      checkedConfig <- clinDataReview:::checkTemplatesName(configFiles, configDir = testPathConfig)
       expect_is(checkedConfig, "character")
       expect_identical(configFiles, checkedConfig)
       
@@ -200,7 +200,7 @@ test_that("Check template name for config file without template specification", 
       configFileTemplate <- basename(configFileTemplate)  
       
       expect_warning(
-          checkTemplatesName(configFileTemplate, tmpdir),
+          clinDataReview:::checkTemplatesName(configFileTemplate, tmpdir),
           "Import of parameters from config file .+ failed with error:"
       )
       
@@ -232,10 +232,10 @@ test_that("Check template name for config files with same template package", {
       
       configFileTemplates <- c(configFileTemplate, configFileTemplateBis)
       expect_warning(
-          checkTemplatesName(configFileTemplates, configDir = tmpdir),
+          clinDataReview:::checkTemplatesName(configFileTemplates, configDir = tmpdir),
           "The following config file[(]s[)] are ignored, because the same template name is used"
       )
-      output <- checkTemplatesName(configFileTemplates, configDir = tmpdir)
+      output <- clinDataReview:::checkTemplatesName(configFileTemplates, configDir = tmpdir)
       expect_length(output, 0)
       
     })
@@ -243,7 +243,7 @@ test_that("Check template name for config files with same template package", {
 test_that("Merge of session infos", {
       
       sessionInfos <- list(sessionInfo(), sessionInfo())
-      sessionInfo <- do.call(merge.sessionInfo, sessionInfos)
+      sessionInfo <- do.call(clinDataReview:::merge.sessionInfo, sessionInfos)
       expect_is(sessionInfo, "sessionInfo")
       expect_is(sessionInfo, "list")
       
@@ -251,11 +251,11 @@ test_that("Merge of session infos", {
 
 test_that("Export of session infos", {
       
-      expect_null(exportSessionInfoToMd(sessionInfos = NULL))
+      expect_null(clinDataReview:::exportSessionInfoToMd(sessionInfos = NULL))
       
       sessionInfos <- list(sessionInfo(), sessionInfo())
       
-      mdFile <-exportSessionInfoToMd(sessionInfos, intermediateDir = testPathInterim)
+      mdFile <- clinDataReview:::exportSessionInfoToMd(sessionInfos, intermediateDir = testPathInterim)
       expect_is(mdFile, "character")
       expect_identical(mdFile, file.path(testPathInterim, "sessionInfo.md"))
       file.remove(file.path(testPathInterim, "sessionInfo.md"))

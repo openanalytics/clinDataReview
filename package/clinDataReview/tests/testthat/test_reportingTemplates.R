@@ -60,7 +60,7 @@ test_that("path to template report is extracted from the installed package", {
 test_that("documentation of template reports is created even if no reports are available", {
       
 	# R CMD check runs on package binary, so without 'inst' folder:
-	doc <- createTemplateDoc()
+	doc <- clinDataReview:::createTemplateDoc()
 	expect_type(doc, "character")
       
 	docRoxParType <- paste0(
@@ -81,7 +81,7 @@ test_that("documentation of template reports is created even if no reports are a
 test_that("documentation for template reports is not created if template folder doesn't exist", {
       
 	expect_silent(
-		res <- createTemplateDoc(system.file("inst", "template", package = "clinDataReview"))
+		res <- clinDataReview:::createTemplateDoc(system.file("inst", "template", package = "clinDataReview"))
 	)
 	expect_type(res, "character")
 	expect_identical(res, "")
@@ -107,7 +107,7 @@ test_that("parameter documentation is converted from JSON schema to R documentat
 	cat(jsonCnt, file = jsonFileName, sep = "\n")    
 	templateSpec <- jsonlite::fromJSON(jsonFileName)
       
-	jsonSchemaDoc <- JSONSchToRd(JSONSch = templateSpec, title = "templateName")
+	jsonSchemaDoc <- clinDataReview:::JSONSchToRd(JSONSch = templateSpec, title = "templateName")
 	expect_type(jsonSchemaDoc, "character")
 	# title is parsed
 	expect_match(jsonSchemaDoc, regexp = "\\section{test title templateName}", fixed = TRUE, all = FALSE)
@@ -146,7 +146,7 @@ test_that("documentation for template reports contains parameter description fro
 	cat(jsonCnt, file = jsonFileName, sep = "\n")
 			
 	expect_silent(
-		res <- createTemplateDoc(templatePath = tmpFolder)
+		res <- clinDataReview:::createTemplateDoc(templatePath = tmpFolder)
 	)
 	expect_type(res, "character")
 	
@@ -170,7 +170,7 @@ test_that("documentation for template reports is created even if report, but no 
 	file.create(templateName)
       
 	expect_silent(
-		res <- createTemplateDoc(templatePath = tmpFolder)
+		res <- clinDataReview:::createTemplateDoc(templatePath = tmpFolder)
 	)
 	expect_type(res, "character")
 	expect_match(res, regexp = "\\section{template}", fixed = TRUE, all = FALSE)
