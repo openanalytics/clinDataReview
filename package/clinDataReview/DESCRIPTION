@@ -8,8 +8,9 @@ Authors@R: c(
   email = "laure.cougnaud@openanalytics.eu"),
   person(given = "Michela", family = "Pasetto", role = c("aut", "cre"),
   email = "michela.pasetto@openanalytics.eu"),
-  person(given = "Arne", family = "De Roeck", role = "ctb")
-  )
+  person(given = "Arne", family = "De Roeck", role = "ctb"),
+  person(given = "Open Analytics", role = "cph")
+)
 Description: Creation of interactive tables, listings and figures ('TLFs') 
   and associated report for exploratory analysis of data in a clinical trial, 
   e.g. for clinical oversight activities.
