@@ -22,24 +22,23 @@ test_that("Creation of division template", {
       # Read division config from available one in tests folder
       testPathFiles <- normalizePath(path = "../files")
       testPathConfig <- file.path(testPathFiles, "config")
-      configFiles <- list.files(testPathConfig)
-      filePathConfig <- file.path(testPathConfig, configFiles)
-      
-      # Division config file
-      divisionConfigs <- configFiles[! grepl("config.yml", configFiles)]
-      filePathOtherConfigs <- file.path(testPathConfig, divisionConfigs)
-      params <- read_yaml(filePathOtherConfigs)
-      
+	  
+	  # Division config file
+      configFile <- list.files(
+			 path = testPathConfig, 
+			 pattern = "config-adverseEvents-division.yml",
+			 full.names = TRUE
+	 )
+      params <- read_yaml(configFile)
       
       templateName <- "divisionTemplate.Rmd"
       pathTemplate <- system.file("template", templateName, package = "clinDataReview")      
-      
-      rmarkdown::render(
+      	  
+	  outputFile <- rmarkdown::render(
           pathTemplate,
-          output_file = file.path(tmpdir, templateName)
+		  output_dir = tmpdir
       )
-      expect_true(any(file.exists(templateName, tmpdir)))
-      expect_true(templateName %in% list.files(tmpdir))
+	  expect_true(file.exists(outputFile))
       detach(params)
       rm(params)
       
@@ -70,13 +69,12 @@ test_that("Creation of listing template", {
       params <- read_yaml(configFilePath)
       
       pathTemplate <- system.file("template", templateName, package = "clinDataReview")      
-      
-      rmarkdown::render(
+      	  
+      outputFile <- rmarkdown::render(
           pathTemplate,
-          output_file = file.path(tmpdir, templateName)
+          output_dir = tmpdir
       )
-      expect_true(any(file.exists(templateName, tmpdir)))
-      expect_true(templateName %in% list.files(tmpdir))
+	  expect_true(file.exists(outputFile))
       detach(params)
       rm(params)
       
@@ -106,12 +104,11 @@ test_that("Creation of counts visualization template", {
       
       pathTemplate <- system.file("template", templateName, package = "clinDataReview")      
       
-      rmarkdown::render(
+      outputFile <- rmarkdown::render(
           pathTemplate,
-          output_file = file.path(tmpdir, templateName)
+		  output_dir = tmpdir
       )
-      expect_true(any(file.exists(templateName, tmpdir)))
-      expect_true(templateName %in% list.files(tmpdir))
+	  expect_true(file.exists(outputFile))
       detach(params)
       rm(params)
       
@@ -142,12 +139,11 @@ test_that("Creation of plot template", {
       
       pathTemplate <- system.file("template", templateName, package = "clinDataReview")      
       
-      rmarkdown::render(
+      outputFile <- rmarkdown::render(
           pathTemplate,
-          output_file = file.path(tmpdir, templateName)
+		  output_dir = tmpdir
       )
-      expect_true(any(file.exists(templateName, tmpdir)))
-      expect_true(templateName %in% list.files(tmpdir))
+	  expect_true(file.exists(outputFile))
       detach(params)
       rm(params)
       
@@ -182,12 +178,11 @@ test_that("Creation of summary plot template", {
       
       pathTemplate <- system.file("template", templateName, package = "clinDataReview")      
       
-      rmarkdown::render(
+	  outputFile <- rmarkdown::render(
           pathTemplate,
-          output_file = file.path(tmpdir, templateName)
+          output_file = tmpdir
       )
-      expect_true(any(file.exists(templateName, tmpdir)))
-      expect_true(templateName %in% list.files(tmpdir))
+	  expect_true(file.exists(outputFile))
       detach(params)
       rm(params)
       
@@ -220,12 +215,11 @@ test_that("Creation of summary table template", {
       
       pathTemplate <- system.file("template", templateName, package = "clinDataReview")      
       
-      rmarkdown::render(
+	  outputFile <- rmarkdown::render(
           pathTemplate,
-          output_file = file.path(tmpdir, templateName)
+		  output_file = tmpdir
       )
-      expect_true(any(file.exists(templateName, tmpdir)))
-      expect_true(templateName %in% list.files(tmpdir))
+	  expect_true(file.exists(outputFile))
       detach(params)
       rm(params)
       
@@ -264,12 +258,11 @@ test_that("Creation of patient profiles template", {
       
       pathTemplate <- system.file("template", templateName, package = "clinDataReview")      
       
-      rmarkdown::render(
+      outputFile <- rmarkdown::render(
           pathTemplate,
-          output_file = file.path(tmpdir, templateName)
+		  output_file = tmpdir
       )
-      expect_true(any(file.exists(templateName, tmpdir)))
-      expect_true(templateName %in% list.files(tmpdir))
+	  expect_true(file.exists(outputFile))
       expect_true(file.exists(file.path(tmpdir, "patientProfiles")))
       expect_true(all(
               grepl("subjectProfile-",
