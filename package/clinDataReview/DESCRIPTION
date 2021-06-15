@@ -10,7 +10,7 @@ Authors@R: c(
   email = "michela.pasetto@openanalytics.eu"),
   person(given = "Arne", family = "De Roeck", role = "ctb")
   )
-Description: Creation of interactive tables, listings and figures (TLFs) 
+Description: Creation of interactive tables, listings and figures ('TLFs') 
   and associated report for exploratory analysis of data in a clinical trial, 
   e.g. for clinical oversight activities.
   Interactive figures include sunburst, treemap, scatterplot, line plot and
@@ -19,7 +19,7 @@ Description: Creation of interactive tables, listings and figures (TLFs)
   (as counts of adverse events, enrollment table) and listings.
   Possibility to compare data (summary table or listing) across two data batches/sets.
   A clinical data review report is created via study-specific configuration 
-  files and template Rmarkdown reports contained in the package.
+  files and template 'R Markdown' reports contained in the package.
 Imports: 
   bookdown,
   clinUtils,
