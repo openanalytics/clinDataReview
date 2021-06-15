@@ -3,6 +3,10 @@
 \name{clinDataReview-templates}
 \alias{clinDataReview-templates}
 \title{Rmarkdown templates for clinical data}
+\value{
+No return value, used for the documentation of 
+the Rmarkdown template reports contained in the package.
+}
 \description{
 Template reports with standard visualizations/tables
 available in the package are described here.

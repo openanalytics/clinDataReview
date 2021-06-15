@@ -22,6 +22,10 @@ by default), where
 markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 each sub report are stored.}
 }
+\value{
+No return value, used for the documentation of 
+the clinical data reporting functions of the package.
+}
 \description{
 Common parameters for the clinical data reporting function
 }

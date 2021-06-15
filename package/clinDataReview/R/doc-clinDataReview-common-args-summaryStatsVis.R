@@ -27,4 +27,6 @@
 #' returns also a \code{datatable} containing the plot data.
 #' (The plot and the table are not linked.)
 #' @name clinDataReview-common-args-summaryStatsVis
+#' @return No return value, used for the documentation of 
+#' the plotting functions of summary statistics of the package.
 NULL

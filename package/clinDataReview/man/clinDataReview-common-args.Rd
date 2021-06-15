@@ -94,6 +94,10 @@ If not specified, a random id, as 'plotClinData[X]' is used.}
 If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}
 }
+\value{
+No return value, used for the documentation of 
+the functions of the package.
+}
 \description{
 Common arguments for the functions of the clinDataReview package
 }

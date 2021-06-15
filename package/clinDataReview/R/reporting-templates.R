@@ -271,4 +271,6 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 #' @evalRd createTemplateDoc()
 #' 
 #' @name clinDataReview-templates
+#' @return No return value, used for the documentation of 
+#' the Rmarkdown template reports contained in the package.
 NULL

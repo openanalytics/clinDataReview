@@ -872,4 +872,6 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
 #' markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 #' each sub report are stored.
 #' @name clinDataReview-common-args-report
+#' @return No return value, used for the documentation of 
+#' the clinical data reporting functions of the package.
 NULL

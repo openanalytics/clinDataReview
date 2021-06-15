@@ -66,4 +66,6 @@
 #' If not specified, the viridis color palette is used.\cr
 #' See \code{\link[clinUtils]{clinColors}}.
 #' @name clinDataReview-common-args
+#' @return No return value, used for the documentation of 
+#' the functions of the package.
 NULL
