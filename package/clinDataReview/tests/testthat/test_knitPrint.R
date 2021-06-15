@@ -17,9 +17,6 @@ data <- data.frame(
     stringsAsFactors = FALSE    
 )
 
-fileInput <- "knitPrintClinDataReview-input.RData"
-fileRmd <- "knitPrintClinDataReview.Rmd"
-
 # utility function to test inclusion of objects in a Rmd report
 includeCodeInRmdDoc <- function(code, fileRmd, fileInput){
   unlink(fileRmd)
@@ -55,7 +52,11 @@ test_that("Inclusion of direct med mon output in report", {
       )
       
       code <- c("knitPrintClinDataReview(list = medMonRes)")
-      saveRDS(medMonRes, file = fileInput)
+	  
+	  fileInput <- tempfile(pattern = "knitPrintClinDataReview-input", fileext = ".RData")
+	  saveRDS(medMonRes, file = fileInput)
+	  
+	  fileRmd <- tempfile(pattern = "knitPrintClinDataReview", fileext = ".Rmd")
       htmlReport <- includeCodeInRmdDoc(code, fileRmd, fileInput)
       
       # check that output contains a datatables and a plotly object
@@ -75,7 +76,11 @@ test_that("Inclusion of a named list of level 1 in report", {
       )
       
       code <- c("knitPrintClinDataReview(list = medMonRes, level = 2)")
-      saveRDS(medMonRes, file = fileInput)
+	  
+	  fileInput <- tempfile(pattern = "knitPrintClinDataReview-input", fileext = ".RData")
+	  saveRDS(medMonRes, file = fileInput)
+	  
+	  fileRmd <- tempfile(pattern = "knitPrintClinDataReview", fileext = ".Rmd")
       htmlReport <- includeCodeInRmdDoc(code, fileRmd, fileInput)
       
       # check that output contains some datatables and plotly objects
@@ -105,7 +110,11 @@ test_that("Inclusion of a nested list in the report", {
       medMonResNested <- list(B = medMonRes, A = medMonRes)
       
       code <- c("knitPrintClinDataReview(list = medMonRes, level = 2)")
-      saveRDS(medMonResNested, file = fileInput)
+	  
+	  fileInput <- tempfile(pattern = "knitPrintClinDataReview-input", fileext = ".RData")
+	  saveRDS(medMonResNested, file = fileInput)
+	  
+	  fileRmd <- tempfile(pattern = "knitPrintClinDataReview", fileext = ".Rmd")
       htmlReport <- includeCodeInRmdDoc(code, fileRmd, fileInput)
       
       # check that output contains some datatables and plotly objects
@@ -131,7 +140,11 @@ test_that("Inclusion of list with missing names", {
             )
       )
       code <- c("knitPrintClinDataReview(list = medMonRes, level = 3)")
-      saveRDS(medMonRes, file = fileInput)
+	  
+	  fileInput <- tempfile(pattern = "knitPrintClinDataReview-input", fileext = ".RData")
+	  saveRDS(medMonRes, file = fileInput)
+	  
+	  fileRmd <- tempfile(pattern = "knitPrintClinDataReview", fileext = ".Rmd")
       htmlReport <- includeCodeInRmdDoc(code, fileRmd, fileInput)
       
       # check that output contains some datatables and plotly objects
@@ -156,7 +169,10 @@ test_that("Custom separator", {
       h2 <- unique(sub("(.+)\\[SEP\\].*", "\\1", names(medMonRes)))
       
       code <- c("knitPrintClinDataReview(list = medMonRes, level = 2, sep = '[SEP]')")
-      saveRDS(medMonRes, file = fileInput)
+	  fileInput <- tempfile(pattern = "knitPrintClinDataReview-input", fileext = ".RData")
+	  saveRDS(medMonRes, file = fileInput)
+	  
+	  fileRmd <- tempfile(pattern = "knitPrintClinDataReview", fileext = ".Rmd")
       htmlReport <- includeCodeInRmdDoc(code, fileRmd, fileInput)
       
       htmlH2 <- xml_find_all(htmlReport, '//body//h2')
@@ -199,7 +215,11 @@ test_that("Inclusion of a list with empty element", {
       expect_length(idxEmptyPlot, 1)
       
       code <- c("knitPrintClinDataReview(list = medMonRes, level = 2)")
-      saveRDS(medMonRes, file = fileInput)
+	  
+	  fileInput <- tempfile(pattern = "knitPrintClinDataReview-input", fileext = ".RData")
+	  saveRDS(medMonRes, file = fileInput)
+	  
+	  fileRmd <- tempfile(pattern = "knitPrintClinDataReview", fileext = ".Rmd")
       htmlReport <- includeCodeInRmdDoc(code, fileRmd, fileInput)
       
       # check that output contains some datatables and plotly objects

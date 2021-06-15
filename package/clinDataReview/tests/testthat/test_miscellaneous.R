@@ -14,7 +14,7 @@ test_that("createPatientProfileVar", {
 		regex  = "*not found"
 	)
 	
-	patientProfilePath <- "patientProfiles"	
+	patientProfilePath <- tempfile(pattern = "patientProfiles")
 	
 	expect_silent(
 		dataUpdated <- createPatientProfileVar(
@@ -36,8 +36,6 @@ test_that("createPatientProfileVar", {
 		),
 		regex = "patient profile variable is not created"
 	)
-	
-	unlink(patientProfilePath)
 	
 })
 
