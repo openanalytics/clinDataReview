@@ -4,7 +4,11 @@
 \alias{checkReportTitles}
 \title{Check report titles}
 \usage{
-checkReportTitles(configFiles, configDir = "./config")
+checkReportTitles(
+  configFiles,
+  configDir = file.path(inputDir, "config"),
+  inputDir = "."
+)
 }
 \arguments{
 \item{configFiles}{Character vector with config file names}

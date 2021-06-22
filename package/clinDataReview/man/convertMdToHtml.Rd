@@ -6,34 +6,35 @@
 \usage{
 convertMdToHtml(
   outputDir = "./report",
+  inputDir = ".",
+  configDir = file.path(inputDir, "config"),
+  indexPath = file.path(inputDir, "index.Rmd"),
   intermediateDir = "./interim",
-  configDir = "./config",
-  mdFiles = NULL,
-  indexPath = "index.Rmd"
+  mdFiles = NULL
 )
 }
 \arguments{
 \item{outputDir}{String with output directory,
 ('report' by default).}
 
-\item{intermediateDir}{String with intermediate directory ('interim'
-by default), where
-markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
-each sub report are stored.}
-
 \item{configDir}{String with directory with config files,
-('config' by default).
+by default a 'config' folder in \code{inputDir}.\cr
 It should contain a general 'config.yml' file and dedicated
 'config-[X].yml' for each chapter.
 The order of each chapter is specified in the 'config' slot in the general 
 general 'config.yml'.}
 
+\item{indexPath}{String with path to the index file,
+by default 'index.Rmd' in \code{inputDir}.}
+
+\item{intermediateDir}{String with intermediate directory ('interim'
+by default), where
+markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
+each sub report are stored.}
+
 \item{mdFiles}{(optional) Path to the \code{Markdown} files that
 should be converted. If specified, the specified config files 
 in \code{configDir} are ignored.}
-
-\item{indexPath}{String with path to the index file,
-('index.Rmd' by default).}
 }
 \value{
 String with path to the front page of the 

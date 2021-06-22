@@ -6,12 +6,13 @@
 \usage{
 render_clinDataReviewReport(
   configFiles = NULL,
-  configDir = "./config",
+  configDir = file.path(inputDir, "config"),
   logFile = NULL,
-  indexPath = "index.Rmd",
+  indexPath = file.path(inputDir, "index.Rmd"),
+  inputDir = ".",
   outputDir = "./report",
   intermediateDir = "./interim",
-  extraDirs = c("figures", "tables"),
+  extraDirs = file.path(inputDir, c("figures", "tables")),
   quiet = FALSE
 )
 }
@@ -29,7 +30,7 @@ should be already available in the \code{intermediateDir} folder.
 }}
 
 \item{configDir}{String with directory with config files,
-('config' by default).
+by default a 'config' folder in \code{inputDir}.\cr
 It should contain a general 'config.yml' file and dedicated
 'config-[X].yml' for each chapter.
 The order of each chapter is specified in the 'config' slot in the general 
@@ -40,7 +41,10 @@ where output (also error/messages/warnings) should be stored.
 If specified, the entire output is re-directed to this file.}
 
 \item{indexPath}{String with path to the index file,
-('index.Rmd' by default).}
+by default 'index.Rmd' in \code{inputDir}.}
+
+\item{inputDir}{String with input directory,
+working directory by default.}
 
 \item{outputDir}{String with output directory,
 ('report' by default).}
@@ -52,9 +56,10 @@ each sub report are stored.}
 
 \item{extraDirs}{Character vector with extra directories required by
 the report, directory with external images  .
-By default, the directories: 'figures', 'tables' and 
-directory included in the 'patientProfilePath' parameter of the
-general config file are considered.}
+By default, the directories: 'figures', 'tables' and mentioned in the 
+'patientProfilePath' parameter of the
+general config file are included.
+All these folders should be available in \code{inputDir}.}
 
 \item{quiet}{Logical, if TRUE (FALSE by default)
 progress messages during report execution are not displayed

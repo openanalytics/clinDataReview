@@ -4,14 +4,18 @@
 \alias{getParamsFromConfig}
 \title{Get parameters from a config file}
 \usage{
-getParamsFromConfig(configFile, configDir = "./config")
+getParamsFromConfig(
+  configFile,
+  configDir = file.path(inputDir, "config"),
+  inputDir = "."
+)
 }
 \arguments{
 \item{configFile}{String with filename of the config
 file of interest in YAML format.}
 
 \item{configDir}{String with directory with config files,
-('config' by default).
+by default a 'config' folder in \code{inputDir}.\cr
 It should contain a general 'config.yml' file and dedicated
 'config-[X].yml' for each chapter.
 The order of each chapter is specified in the 'config' slot in the general 

@@ -5,10 +5,10 @@
 \title{Common parameters for the clinical data reporting function}
 \arguments{
 \item{indexPath}{String with path to the index file,
-('index.Rmd' by default).}
+by default 'index.Rmd' in \code{inputDir}.}
 
 \item{configDir}{String with directory with config files,
-('config' by default).
+by default a 'config' folder in \code{inputDir}.\cr
 It should contain a general 'config.yml' file and dedicated
 'config-[X].yml' for each chapter.
 The order of each chapter is specified in the 'config' slot in the general 

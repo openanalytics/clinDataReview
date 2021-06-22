@@ -15,7 +15,7 @@ getMdFromConfig(
 \item{configFiles}{Character vector with name or path of the config file(s).}
 
 \item{indexPath}{String with path to the index file,
-('index.Rmd' by default).}
+by default 'index.Rmd' in \code{inputDir}.}
 
 \item{intermediateDir}{String with intermediate directory ('interim'
 by default), where

@@ -36,9 +36,10 @@
 #' clinical data template report available in the package.
 #' @param extraDirs Character vector with extra directories required by
 #' the report, directory with external images  .
-#' By default, the directories: 'figures', 'tables' and 
-#' directory included in the 'patientProfilePath' parameter of the
-#' general config file are considered.
+#' By default, the directories: 'figures', 'tables' and mentioned in the 
+#' 'patientProfilePath' parameter of the
+#' general config file are included.
+#' All these folders should be available in \code{inputDir}.
 #' @param configFiles (optional) Character vector with specific config files
 #' to be converted from Rmarkdown to Markdown. If
 #' \itemize{
@@ -56,6 +57,8 @@
 #' @param logFile (optional) String with path to a log file,
 #' where output (also error/messages/warnings) should be stored.
 #' If specified, the entire output is re-directed to this file.
+#' @param inputDir String with input directory,
+#' working directory by default.
 #' @inheritParams clinDataReview-common-args-report
 #' @inherit convertMdToHtml return
 #' @author Laure Cougnaud
@@ -63,11 +66,14 @@
 #' @family clinical data reporting
 #' @export
 render_clinDataReviewReport <- function(
-	configFiles = NULL,  configDir = "./config", 
+	configFiles = NULL, 
+	configDir = file.path(inputDir, "config"), 
 	logFile = NULL,
-    indexPath = "index.Rmd", 
-    outputDir = "./report", intermediateDir = "./interim",
-    extraDirs = c("figures", "tables"),
+    indexPath = file.path(inputDir, "index.Rmd"), 
+	inputDir = ".",
+    outputDir = "./report", 
+	intermediateDir = "./interim",
+    extraDirs = file.path(inputDir, c("figures", "tables")),
     quiet = FALSE){
   
   # log output
@@ -87,12 +93,17 @@ render_clinDataReviewReport <- function(
   intermediateDir <- normalizePath(intermediateDir)
   
   # extract parameters from general config file
-  configGeneralParams <- getParamsFromConfig(configFile = "config.yml", configDir = configDir)
+  configGeneralParams <- getParamsFromConfig(
+	configFile = "config.yml", 
+	configDir = configDir,
+	inputDir = inputDir
+ )
   
   ## copy created directory into output directory
   
   # add patient profiles dir to repos to copy
-  extraDirs <- unique(c(extraDirs, configGeneralParams$patientProfilePath))
+	patientProfilePath <- file.path(inputDir, configGeneralParams$patientProfilePath)
+	extraDirs <- unique(c(extraDirs, patientProfilePath))
   
   ## run index file + each chapter
   
@@ -119,7 +130,11 @@ render_clinDataReviewReport <- function(
       
       # extract chapter-specific parameters from config file
       resParams <- try(
-          params <- getParamsFromConfig(configFile = configFile, configDir = configDir)
+          params <- getParamsFromConfig(
+			configFile = configFile, 
+			configDir = configDir,
+			inputDir = inputDir
+		  )
           , silent = TRUE)
       
       if(inherits(resParams, "try-error")){
@@ -148,20 +163,15 @@ render_clinDataReviewReport <- function(
     
     # Extract template from package
     if(runDocument){
+		
+		if(configFile != "config.yml")
+			inputRmdFile <- file.path(inputDir, inputRmdFile)
       
       # Extract the template from the package if: 'templateFromPackage' is 'true'
       if(!is.null(params$templatePackage)){
         
-        if(file.exists(inputRmdFile))
-          warning(paste("Document with similar name than",
-                  "specified template from", sQuote(params$templatePackage),
-                  "for config file: ", sQuote(configFile),
-                  "is already available in the working directory,",
-                  "this document will be overwritten."
-              ), immediate. = TRUE, call. = FALSE)
-        
         pathTemplate <- clinDataReview::getPathTemplate(
-            file = inputRmdFile, 
+            file = basename(inputRmdFile), 
             package = params$templatePackage
         )
         if(!file.exists(pathTemplate)){
@@ -169,12 +179,20 @@ render_clinDataReviewReport <- function(
           runDocument <- FALSE
           
         }else{
+			
+			if(file.exists(inputRmdFile))
+				warning(paste("Document with similar name than",
+					"specified template from", sQuote(params$templatePackage),
+					"for config file: ", sQuote(configFile),
+					"is already available in the working directory,",
+					"this document will be overwritten."
+				), immediate. = TRUE, call. = FALSE)
           
           # copy file to working directory
-          tmp <- file.copy(from = pathTemplate, to = ".", overwrite = TRUE)
-          
+          tmp <- file.copy(from = pathTemplate, to = inputDir, overwrite = TRUE)
+		  
           # Extract the config file
-          configSpecFile <- file_path_sans_ext(inputRmdFile)
+          configSpecFile <- file_path_sans_ext(basename(inputRmdFile))
           configSpecFile <- paste0(configSpecFile, ".json")
           pathConfigSpecFile <- clinDataReview::getPathTemplate(
               file = configSpecFile, 
@@ -263,7 +281,7 @@ render_clinDataReviewReport <- function(
         
         # create a report only with a section title
         pathTemplate <- clinDataReview::getPathTemplate("divisionTemplate.Rmd")
-        tmp <- file.copy(from = pathTemplate, to = ".", overwrite = TRUE)
+        tmp <- file.copy(from = pathTemplate, to = inputDir, overwrite = TRUE)
         envReport <- new.env(parent = globalenv()) 
         params$content <- "**This part of the report could not be created.**"
         assign("params", params, envir = envReport)
@@ -369,7 +387,9 @@ getMdFromConfig <- function(
 #' @family clinical data reporting
 #' @export
 getParamsFromConfig <- function(
-    configFile, configDir = "./config"){
+	configFile, 
+	configDir = file.path(inputDir, "config"),
+	inputDir = "."){
   
   if(!dir.exists(configDir))
     stop("Config directory: ", sQuote(configDir), " doesn't exist.")
@@ -501,10 +521,13 @@ forceParams <- function(params){
 #' @family clinical data reporting
 #' @export
 convertMdToHtml <- function(
-    outputDir = "./report", intermediateDir = "./interim",
-    configDir = "./config", 
-    mdFiles = NULL,
-    indexPath = "index.Rmd"){
+    outputDir = "./report", 
+	inputDir = ".",
+    configDir = file.path(inputDir, "config"), 
+	indexPath = file.path(inputDir, "index.Rmd"),
+	intermediateDir = "./interim",
+    mdFiles = NULL
+    ){
   
   outputDir <- normalizePath(outputDir)
   if(!dir.exists(outputDir))	dir.create(outputDir)
@@ -515,7 +538,11 @@ convertMdToHtml <- function(
   # Extract md files from general config file
   if(is.null(mdFiles)){
     
-    configGeneralParams <- getParamsFromConfig(configFile = "config.yml", configDir = configDir)
+    configGeneralParams <- getParamsFromConfig(
+		configFile = "config.yml", 
+		configDir = configDir,
+		inputDir = inputDir
+    )
     configFiles <- c("config.yml", configGeneralParams$config)
     
     mdFiles <- getMdFromConfig(
@@ -601,7 +628,9 @@ convertMdToHtml <- function(
 #' @inheritParams getParamsFromConfig
 #' @return Updated \code{configFiles}
 #' @author Laure Cougnaud
-checkTemplatesName <- function(configFiles, configDir = "./config"){
+checkTemplatesName <- function(configFiles, 
+	configDir = file.path(inputDir, "config"),
+	inputDir = "."){
   
   configFilesWithTemplate <- setdiff(configFiles, "config.yml")
   
@@ -609,7 +638,11 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
   configTemplateInfoList <- sapply(configFilesWithTemplate, function(configFile){
         
         res <- try(
-            params <- getParamsFromConfig(configFile = configFile, configDir = configDir),
+            params <- getParamsFromConfig(
+				configFile = configFile, 
+				configDir = configDir,
+				inputDir = inputDir
+			),
             silent = TRUE
         )
         
@@ -671,14 +704,21 @@ checkTemplatesName <- function(configFiles, configDir = "./config"){
 #' @return A named vector with the report titles and the corresponding config file
 #' @author Michela Pasetto
 #' @export 
-checkReportTitles <- function(configFiles, configDir = "./config") {
+checkReportTitles <- function(
+	configFiles, 
+	configDir = file.path(inputDir, "config"),
+	inputDir = ".") {
   
   configFileNames <- configFiles[configFiles != "config.yml"]
   
   reportTitles <- sapply(configFileNames, function(configFileI) {
         
         res <- try(            
-            configParams <- getParamsFromConfig(configFile = configFileI, configDir = configDir),
+            configParams <- getParamsFromConfig(
+				configFile = configFileI, 
+				configDir = configDir,
+				inputDir = inputDir
+			),
             silent = TRUE)
         
         if(!inherits(res, "try-error")) {
@@ -858,9 +898,9 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
 
 #' Common parameters for the clinical data reporting function
 #' @param indexPath String with path to the index file,
-#' ('index.Rmd' by default).
+#' by default 'index.Rmd' in \code{inputDir}.
 #' @param configDir String with directory with config files,
-#' ('config' by default).
+#' by default a 'config' folder in \code{inputDir}.\cr
 #' It should contain a general 'config.yml' file and dedicated
 #' 'config-[X].yml' for each chapter.
 #' The order of each chapter is specified in the 'config' slot in the general 

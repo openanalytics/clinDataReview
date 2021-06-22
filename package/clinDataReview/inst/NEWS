@@ -4,6 +4,7 @@
     o new 'reportSkeleton' functionality
     o change name to "clinDataReview"
     o patient profiles template: support '!r' spec for colorPalette/shapePalette
+    o render report: new parameter inputDir
 0.9.2
     o fix for highlight_key -> crosstalk::SharedData
     o barplotMonitoring: fix link legend <-> x-axis in case color/x variables are nested
