@@ -2,7 +2,7 @@ context("Test zip of reports")
 
 tmpdir <- tempdir()
 
-test_that("Creation of redirect page", {
+test_that("Redirect page is created successfully", {
       
       tmpRedirect <- tempfile()
       dir.create(tmpRedirect)
@@ -18,7 +18,7 @@ test_that("Creation of redirect page", {
       
     })
 
-test_that("Error in input arguments", {
+test_that("Input arguments for zip function are correctly checked", {
       
       expect_error(
           zipClinDataReview(reportDir = 1),
@@ -39,7 +39,7 @@ test_that("Error in input arguments", {
       
     })
 
-test_that("Error in not existing directory", {
+test_that("An error is generated during creation of the zip folder creation if the report directory doesn't exist", {
       
       expect_error(
           zipClinDataReview(reportDir = "folderReport"),
@@ -48,19 +48,23 @@ test_that("Error in not existing directory", {
       
     })
 
-test_that("Error in empty directory", {
+test_that("An error is generated during creation of the zip folder creation if the report directory is empty", {
       
       emptyDir <- tempfile()
       dir.create(emptyDir)
+	  newDir <- tempfile("report_dependencies")
 #      expect_true(dir.exists(emptyDir))
       expect_error(
-          zipClinDataReview(reportDir = emptyDir),
+          zipClinDataReview(
+			reportDir = emptyDir, 
+			newDir = newDir
+		),
           "No files available in the 'reportDir'."
       )
       
     })
 
-test_that("Zip reports", {
+test_that("The zip folder is successfully created", {
       
       tmpZip <- tempfile()
       dir.create(tmpZip)
