@@ -2,11 +2,11 @@ Package: clinDataReview
 Type: Package
 Title: Clinical Data Review Tool
 Version: 1.0.0
-Date: 2021-05-26
+Date: 2021-06-23
 Authors@R: c(
-  person(given = "Laure", family = "Cougnaud", role = "aut", 
+  person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"), 
   email = "laure.cougnaud@openanalytics.eu"),
-  person(given = "Michela", family = "Pasetto", role = c("aut", "cre"), 
+  person(given = "Michela", family = "Pasetto", role = "aut", 
   email = "michela.pasetto@openanalytics.eu"),
   person(given = "Arne", family = "De Roeck", role = "ctb"),
   person(given = "Open Analytics", role = "cph")
