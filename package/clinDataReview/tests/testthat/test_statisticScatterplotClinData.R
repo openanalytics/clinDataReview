@@ -16,7 +16,7 @@ labelVars <- c(A = "var1", B = "var2", C = "colorVar")
 test_that("Missing aesLab without labels", {
       
       expect_silent(
-          gPlot <- staticScatterplotClinData(
+          gPlot <- clinDataReview:::staticScatterplotClinData(
               data = data,
               xVar = "A", yVar = "B",
               aesPointVar = list(color = "C")
@@ -33,7 +33,7 @@ test_that("Missing aesLab without labels", {
 test_that("Missing aesLab with labels", {
       
       expect_silent(
-          gPlot <- staticScatterplotClinData(
+          gPlot <- clinDataReview:::staticScatterplotClinData(
               data = data,
               xVar = "A", yVar = "B",
               aesPointVar = list(color = "C"),
@@ -51,7 +51,7 @@ test_that("Missing aesLab with labels", {
 test_that("Warning of transformation of axis", {
       
       expect_warning(
-          staticScatterplotClinData(
+          clinDataReview:::staticScatterplotClinData(
               data = data,
               xVar = "A", yVar = "B",
               aesPointVar = list(color = "C"),
