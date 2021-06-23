@@ -1,6 +1,6 @@
 context("Test skeleton")
 
-dirName <- tempdir()
+dirName <- tempfile("skeleton")
 dirSubfunctions <- file.path(dirName, "testSubfunctions")
 dirData <- file.path(dirSubfunctions, "data")
 dirSkeletonFiles <- file.path(dirSubfunctions, "files")
@@ -8,14 +8,14 @@ dirSkeleton <- file.path(dirName, "skeleton")
 
 test_that("Move data from clinUtils to folder", {
       
-      expect_silent(
-          clinDataReview:::moveXpt(dirData)
-      )
-      res <- list.files(dirData)
-      expect_length(res, 8)
-      expect_true(all(grepl("xpt", res)))
+	expect_silent(
+		clinDataReview:::moveXpt(dirData)
+	)
+	res <- list.files(dirData)
+	expect_length(res, 8)
+	expect_true(all(grepl("xpt", res)))
       
-    })
+})
 
 test_that("Create example metadata file", {
       
@@ -70,33 +70,33 @@ test_that("Create skeleton", {
           res,
           c("config", "data", "figures", "index.Rmd")
       )
+	  unlink(dirSkeleton, recursive = TRUE)
       
       
     })
 
 test_that("Warning of skeleton creation", {
       
-      expect_warning(
-          createClinDataReviewReportSkeleton(dirSkeleton),
-          ".+ is not empty."
-      )
+	createClinDataReviewReportSkeleton(dirSkeleton)
+	expect_warning(
+		createClinDataReviewReportSkeleton(dirSkeleton),
+		".+ is not empty."
+	)
+	unlink(dirSkeleton, recursive = TRUE)
       
-    })
+})
 
 test_that("skeleton report is successfully executed", {
 		
-	unlink(dirSkeleton, recursive = TRUE)
 	createClinDataReviewReportSkeleton(dirSkeleton)
 	
 	# Track warnings during execution of example report:
 	warn <- NULL
 	resReport <- withCallingHandlers(
 		render_clinDataReviewReport(
-			configDir = file.path(dirSkeleton, "config"), 
-			indexPath = file.path(dirSkeleton, "index.Rmd"), 
+			inputDir = dirSkeleton,
 			outputDir = file.path(dirSkeleton, "report"), 
 			intermediateDir = file.path(dirSkeleton, "interim"),
-			extraDirs = file.path(dirSkeleton, c("figures", "tables")),
 			quiet = TRUE
 		),
 		warning = function(w){

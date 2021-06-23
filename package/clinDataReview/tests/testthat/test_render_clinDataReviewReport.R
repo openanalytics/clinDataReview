@@ -686,7 +686,7 @@ test_that("A warning is generated if a template is not available in the specifie
       
 })
 
-test_that("Warning of template in another package for 'render_clinDataReviewReport'", {
+test_that("A warning is generated if no config parameters are available", {
       
 	testDir <- tempfile("report")
 	dir.create(testDir)
