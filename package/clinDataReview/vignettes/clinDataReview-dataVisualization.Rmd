@@ -3,9 +3,8 @@ title: "Visualization of clinical data"
 author: "Laure Cougnaud, Michela Pasetto"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
-  rmarkdown::html_document:
+  rmarkdown::html_vignette:
     toc: true
-    toc_float: true
     toc_depth: 5
     number_sections: true
 vignette: >
@@ -37,7 +36,7 @@ We will use example data sets from the `clinUtils` package.
 
 If you have doubts on the data format, please check first the vignette on data
 preprocessing available at:
-[here](../doc/clinDataReview-dataPreprocessing.html)).
+[here](../doc/clinDataReview-dataPreprocessing.html).
 
 If everything is clear on that side, let's get started!
 
@@ -56,9 +55,17 @@ library(clinUtils)
 data(dataADaMCDISCP01)
 labelVars <- attr(dataADaMCDISCP01, "labelVars")
 
-dataLB <- dataADaMCDISCP01$ADLBC
-dataDM <- dataADaMCDISCP01$ADSL
-dataAE <- dataADaMCDISCP01$ADAE
+varsLB <- c(
+	"PARAM", "PARAMCD", "USUBJID", "TRTP", 
+	"ADY", "VISITNUM", "VISIT", "LBSTRESN"
+)
+dataLB <- dataADaMCDISCP01$ADLBC[, varsLB]
+
+varsAE <- c("USUBJID", "AESOC", "AEDECOD", "ASTDY", "AENDY", "AESEV")
+dataAE <- dataADaMCDISCP01$ADAE[, varsAE]
+
+varsDM <- c("RFSTDTC", "USUBJID")
+dataDM <- dataADaMCDISCP01$ADSL[, varsDM]
 
 ```
 
@@ -86,10 +93,21 @@ vignette("clinDataReview-reporting", "clinDataReview")
 
 # Data visualization
 
+All the visualizations available in the package are interactive.
+
 ## Visualization of individual profiles
 
 Visualization of individual profiles is available via the function
 **`scatterplotClinData`**.
+
+### Explore the visualization data
+
+To facilitate the exploration of the data, the underlying data
+behind each visualization can be included as a table as well
+below the plot by setting the parameter `table` to TRUE. 
+
+Please note that this functionality is not demonstrated in this document
+to ensure a lightweight vignette in the package.
 
 ### Link with patient profiles
 
@@ -106,7 +124,7 @@ table, the specific patient profile is opened in a new window in the browser**.
 
 labParam <- "ALT"
 dataPlot <- subset(dataLB, PARAMCD == labParam)
-dataPlot <- annotateData(dataPlot, annotations = list(data = dataDM))
+
 visitLab <- with(dataPlot, tapply(ADY, VISIT, median))
 names(visitLab) <- sub("-", "\n", names(visitLab))
 
@@ -120,9 +138,9 @@ scatterplotClinData(
     data = dataPlot, 
     xVar = "ADY",
     yVar = "LBSTRESN",
-    aesPointVar = list(color = "ARM", fill = "ARM"),
-    aesLineVar = list(group = "USUBJID", color = "ARM"),
-    hoverVars = c("USUBJID", "VISIT", "ADY", "LBSTRESN", "ARM"),
+    aesPointVar = list(color = "TRTP", fill = "TRTP"),
+    aesLineVar = list(group = "USUBJID", color = "TRTP"),
+    hoverVars = c("USUBJID", "VISIT", "ADY", "LBSTRESN", "TRTP"),
     labelVars = labelVars,
     xPars = list(breaks = visitLab, labels = names(visitLab)),
     title = paste("Actual value of", 
@@ -132,7 +150,7 @@ scatterplotClinData(
     ),
     # include link to patient profiles:
     pathVar = "patientProfilePath",
-    table = TRUE, id = paste("subjectProfile", labParam, sep = "-"),
+    table = FALSE, id = paste("subjectProfile", labParam, sep = "-"),
     verbose = TRUE
 )
 
@@ -144,7 +162,6 @@ scatterplotClinData(
 
 # format data long -> wide format (one column per lab param)
 dataPlot <- subset(dataLB, PARAMCD %in% c("ALT", "ALB"))
-dataPlot <- annotateData(dataPlot, annotations = list(data = dataDM))
 library(reshape2)
 dataPlotWide <- dcast(
     data = dataPlot,
@@ -173,7 +190,7 @@ scatterplotClinData(
     facetPars = list(facets = ~ VISIT),
     labelVars = labelVars,
     pathVar = "patientProfilePath",
-    table = TRUE,
+    table = FALSE,
     verbose = TRUE
 )
 
@@ -183,10 +200,11 @@ scatterplotClinData(
 
 ```{r eDishPlot}
 
-dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
 dataALT <- subset(dataLB, PARAMCD == "ALT")
 dataBILI <- subset(dataLB, PARAMCD == "BILI")
+
 byVar <- c("USUBJID", "VISIT")
+
 dataPlot <- merge(
     x = dataALT, y = dataBILI[, c(byVar, "LBSTRESN")], 
     by = c("USUBJID", "VISIT"), 
@@ -217,12 +235,12 @@ scatterplotClinData(
     yLab = getLabelParamcd(
         paramcd = "BILI", data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
     ),
-    aesPointVar = list(color = "VISIT", fill = "VISIT", shape = "ARM"),
+    aesPointVar = list(color = "VISIT", fill = "VISIT", shape = "TRTP"),
     xTrans = "log10", yTrans = "log10",
     hoverVars = c("USUBJID"),
     themePars = list(legend.position = "bottom"),
     labelVars = labelVars,
-    table = TRUE, id = "eDish",
+    table = FALSE, id = "eDish",
     pathVar = "patientProfilePath",
     verbose = TRUE
 )
@@ -249,7 +267,7 @@ timeProfileIntervalPlot(
     colorVar = "AESEV",
     hoverVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV"),
     labelVars = labelVars,
-    table = TRUE, pathVar = "patientProfilePath",
+    table = FALSE, pathVar = "patientProfilePath",
     tableVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV"),
     verbose = TRUE
 )
@@ -291,7 +309,7 @@ timeProfileIntervalPlot(
     shapePalette = shapePalette,
     hoverVars = c("USUBJID", "AEDECOD", "AESEV", "ASTDY", "AESTFLG", "AENDY", "AEENFLG"),
     labelVars = labelVars,
-    table = TRUE, 
+    table = FALSE, 
     tableVars = c("USUBJID", "AEDECOD", "AESEV", "ASTDY", "AESTFLG", "AENDY", "AEENFLG"),
     pathVar = "patientProfilePath"
 )
@@ -416,7 +434,7 @@ sunburstClinData(
     valueVar = "n", valueLab = "Number of patients with adverse events",
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
-    table = TRUE,
+    table = FALSE,
     verbose = TRUE,
     labelVars = labelVars
 )
@@ -447,7 +465,7 @@ treemapClinData(
     valueLab = "Number of patients with adverse events",
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
-    table = TRUE,
+    table = FALSE,
     verbose = TRUE,
     labelVars = labelVars
 )
@@ -473,7 +491,7 @@ barplotClinData(
     labelVars = labelVars,
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
-    table = TRUE,
+    table = FALSE,
     verbose = TRUE,
     barmode = "stack"
 )
@@ -508,8 +526,8 @@ plotsLab <- dlply(dataPlot, "PARAMCD", function(dataLBParam){
           data = dataLBParam, 
           xVar = "ADY",
           yVar = "LBSTRESN",
-          aesPointVar = list(color = "TRT01P"),
-          aesLineVar = list(group = "USUBJID", color = "TRT01P"),
+          aesPointVar = list(color = "TRTP"),
+          aesLineVar = list(group = "USUBJID", color = "TRTP"),
           labelVars = labelVars,
           title = paste("Actual value of", 
               getLabelParamcd(
@@ -518,7 +536,7 @@ plotsLab <- dlply(dataPlot, "PARAMCD", function(dataLBParam){
           ),
           # include link to patient profiles:
           pathVar = "patientProfilePath",
-          table = TRUE, 
+          table = FALSE, 
           # important: each plot should have an unique ID!
           # for unique relationship of interactivity between plot <-> table
           id = paste("labProfileLoop", paramcd, sep = "-"),
@@ -553,9 +571,9 @@ Please see the `clinUtils` package for the default colors and shapes.
 
 # display default palettes
 colorsDefault <- getOption("clinDataReview.colors")
-colorsDefault
+str(colorsDefault)
 shapesDefault <- getOption("clinDataReview.shapes")
-shapesDefault
+str(shapesDefault)
 
 ```
 

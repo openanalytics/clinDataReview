@@ -3,9 +3,8 @@ title: "Creation of a clinical data review report"
 author: "Laure Cougnaud, Michela Pasetto"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output: 
-  rmarkdown::html_document:
+  rmarkdown::html_vignette:
     toc: true
-    toc_float: true
     toc_depth: 5
     number_sections: true
 vignette: >
