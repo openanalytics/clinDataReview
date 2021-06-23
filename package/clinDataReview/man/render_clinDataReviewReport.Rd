@@ -114,8 +114,9 @@ clinical data template report available in the package.
 
 \seealso{
 Other clinical data reporting: 
+\code{\link{checkReportTitles}()},
 \code{\link{convertMdToHtml}()},
-\code{\link{getMdFromConfig}()},
+\code{\link{forceParams}()},
 \code{\link{getMdHeader}()},
 \code{\link{getParamsFromConfig}()},
 \code{\link{gitbook_clinDataReview_report}()},

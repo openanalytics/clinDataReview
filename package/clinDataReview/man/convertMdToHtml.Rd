@@ -17,6 +17,9 @@ convertMdToHtml(
 \item{outputDir}{String with output directory,
 ('report' by default).}
 
+\item{inputDir}{String with input directory,
+working directory by default.}
+
 \item{configDir}{String with directory with config files,
 by default a 'config' folder in \code{inputDir}.\cr
 It should contain a general 'config.yml' file and dedicated
@@ -54,7 +57,8 @@ checking if the associated \code{Markdown} and \code{rds} file
 }
 \seealso{
 Other clinical data reporting: 
-\code{\link{getMdFromConfig}()},
+\code{\link{checkReportTitles}()},
+\code{\link{forceParams}()},
 \code{\link{getMdHeader}()},
 \code{\link{getParamsFromConfig}()},
 \code{\link{gitbook_clinDataReview_report}()},

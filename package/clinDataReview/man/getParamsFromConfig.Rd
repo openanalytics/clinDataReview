@@ -20,6 +20,9 @@ It should contain a general 'config.yml' file and dedicated
 'config-[X].yml' for each chapter.
 The order of each chapter is specified in the 'config' slot in the general 
 general 'config.yml'.}
+
+\item{inputDir}{String with input directory,
+working directory by default.}
 }
 \value{
 List with parameters from the specified \code{configFile}
@@ -47,8 +50,9 @@ general config file is ignored.
 \link{forceParams}
 
 Other clinical data reporting: 
+\code{\link{checkReportTitles}()},
 \code{\link{convertMdToHtml}()},
-\code{\link{getMdFromConfig}()},
+\code{\link{forceParams}()},
 \code{\link{getMdHeader}()},
 \code{\link{gitbook_clinDataReview_report}()},
 \code{\link{html_clinDataReview_report}()},

@@ -19,6 +19,9 @@ It should contain a general 'config.yml' file and dedicated
 'config-[X].yml' for each chapter.
 The order of each chapter is specified in the 'config' slot in the general 
 general 'config.yml'.}
+
+\item{inputDir}{String with input directory,
+working directory by default.}
 }
 \value{
 Updated \code{configFiles}

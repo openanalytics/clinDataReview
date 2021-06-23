@@ -14,6 +14,9 @@ It should contain a general 'config.yml' file and dedicated
 The order of each chapter is specified in the 'config' slot in the general 
 general 'config.yml'.}
 
+\item{inputDir}{String with input directory,
+working directory by default.}
+
 \item{outputDir}{String with output directory,
 ('report' by default).}
 

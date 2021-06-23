@@ -57,8 +57,6 @@
 #' @param logFile (optional) String with path to a log file,
 #' where output (also error/messages/warnings) should be stored.
 #' If specified, the entire output is re-directed to this file.
-#' @param inputDir String with input directory,
-#' working directory by default.
 #' @inheritParams clinDataReview-common-args-report
 #' @inherit convertMdToHtml return
 #' @author Laure Cougnaud
@@ -342,7 +340,6 @@ render_clinDataReviewReport <- function(
 #' @inheritParams clinDataReview-common-args-report
 #' @return String with path to the 
 #' @importFrom tools file_path_sans_ext
-#' @family clinical data reporting
 #' @author Laure Cougnaud
 getMdFromConfig <- function(
     configFiles, indexPath = "index.Rmd", 
@@ -482,6 +479,7 @@ getParamsFromConfig <- function(
 #' str(forceParams(params))
 #' @author Laure Cougnaud
 #' @seealso \link{getParamsFromConfig}
+#' @family clinical data reporting
 #' @export
 forceParams <- function(params){
 	
@@ -701,8 +699,10 @@ checkTemplatesName <- function(configFiles,
 #' @param configFiles Character vector with config file names
 #' @param configDir String with directory with config files,
 #' ('config' by default)
+#' @inheritParams clinDataReview-common-args-report
 #' @return A named vector with the report titles and the corresponding config file
 #' @author Michela Pasetto
+#' @family clinical data reporting
 #' @export 
 checkReportTitles <- function(
 	configFiles, 
@@ -905,6 +905,8 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
 #' 'config-[X].yml' for each chapter.
 #' The order of each chapter is specified in the 'config' slot in the general 
 #' general 'config.yml'.
+#' @param inputDir String with input directory,
+#' working directory by default.
 #' @param outputDir String with output directory,
 #' ('report' by default).
 #' @param intermediateDir String with intermediate directory ('interim'

@@ -35,17 +35,6 @@ the name of the config file, after removal of the
 '\code{config-}' part.}
 }
 }
-\seealso{
-Other clinical data reporting: 
-\code{\link{convertMdToHtml}()},
-\code{\link{getMdHeader}()},
-\code{\link{getParamsFromConfig}()},
-\code{\link{gitbook_clinDataReview_report}()},
-\code{\link{html_clinDataReview_report}()},
-\code{\link{knitPrintClinDataReview}()},
-\code{\link{render_clinDataReviewReport}()}
-}
 \author{
 Laure Cougnaud
 }
-\concept{clinical data reporting}

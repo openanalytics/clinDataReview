@@ -15,6 +15,9 @@ checkReportTitles(
 
 \item{configDir}{String with directory with config files,
 ('config' by default)}
+
+\item{inputDir}{String with input directory,
+working directory by default.}
 }
 \value{
 A named vector with the report titles and the corresponding config file
@@ -23,6 +26,18 @@ A named vector with the report titles and the corresponding config file
 Check uniqueness of report titles across the config files.
 If not unique titles are provided, an error is returned.
 }
+\seealso{
+Other clinical data reporting: 
+\code{\link{convertMdToHtml}()},
+\code{\link{forceParams}()},
+\code{\link{getMdHeader}()},
+\code{\link{getParamsFromConfig}()},
+\code{\link{gitbook_clinDataReview_report}()},
+\code{\link{html_clinDataReview_report}()},
+\code{\link{knitPrintClinDataReview}()},
+\code{\link{render_clinDataReviewReport}()}
+}
 \author{
 Michela Pasetto
 }
+\concept{clinical data reporting}
