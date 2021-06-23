@@ -81,7 +81,7 @@ test_that("documentation of template reports is created even if no reports are a
 test_that("documentation for template reports is not created if template folder doesn't exist", {
       
 	expect_silent(
-		res <- clinDataReview:::createTemplateDoc(system.file("inst", "template", package = "clinDataReview"))
+		res <- clinDataReview:::createTemplateDoc(system.file("inst", "template2", package = "clinDataReview"))
 	)
 	expect_type(res, "character")
 	expect_identical(res, "")
