@@ -151,7 +151,7 @@ tag and the `templatePackage` set to 'clinDataReview'.
 For example, to include a division in the report, your YAML config file should
 be formatted as:
 
-```{yaml, eval = FALSE}
+```{js, eval = FALSE}
 template: divisionTemplate.Rmd
 templatePackage: clinDataReview
 reportTitle: "Title for a chapter"
