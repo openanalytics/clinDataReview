@@ -49,6 +49,8 @@ test_that("Creation of division template", {
 })
 
 test_that("Creation of listing template", {
+			
+	skip_on_cran()
       
       templateName <- "listingTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
@@ -89,6 +91,8 @@ test_that("Creation of listing template", {
     })
 
 test_that("Creation of counts visualization template", {
+			
+	skip_on_cran()
       
       templateName <- "countsVisualizationTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
@@ -127,6 +131,8 @@ test_that("Creation of counts visualization template", {
     })
 
 test_that("Creation of plot template", {
+			
+	skip_on_cran()
       
       templateName <- "plotTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
@@ -166,6 +172,8 @@ test_that("Creation of plot template", {
     })
 
 test_that("Creation of summary plot template", {
+			
+	skip_on_cran()
       
       templateName <- "summaryPlotTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
@@ -209,6 +217,8 @@ test_that("Creation of summary plot template", {
     })
 
 test_that("Creation of summary table template", {
+			
+	skip_on_cran()
       
       templateName <- "summaryTableTemplate.Rmd"
       configFilePath <- file.path(tmpdir,
@@ -251,6 +261,8 @@ test_that("Creation of summary table template", {
 
 
 test_that("Creation of patient profiles template", {
+			
+	skip_on_cran()
       
       templateName <- "patientProfilesTemplate.Rmd"
       configFilePath <- file.path(tmpdir,

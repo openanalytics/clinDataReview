@@ -87,6 +87,8 @@ test_that("Warning of skeleton creation", {
 })
 
 test_that("skeleton report is successfully executed", {
+			
+	skip_on_cran() 
 		
 	createClinDataReviewReportSkeleton(dirSkeleton)
 	

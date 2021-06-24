@@ -44,6 +44,8 @@ includeCodeInRmdDoc <- function(code, fileRmd, fileInput){
 
 
 test_that("Inclusion of direct med mon output in report", {
+			
+	skip_on_cran()
       
       medMonRes <- scatterplotClinData(
           data = data, 
@@ -66,6 +68,8 @@ test_that("Inclusion of direct med mon output in report", {
     })
 
 test_that("Inclusion of a named list of level 1 in report", {
+			
+	skip_on_cran()
       
       medMonRes <- dlply(data, c("VISIT", "LBTPT"), function(dataI)
             scatterplotClinData(
@@ -99,6 +103,8 @@ test_that("Inclusion of a named list of level 1 in report", {
     })
 
 test_that("Inclusion of a nested list in the report", {
+			
+	skip_on_cran()
       
       medMonRes <- dlply(data, "VISIT", function(dataI)
             scatterplotClinData(
@@ -131,6 +137,8 @@ test_that("Inclusion of a nested list in the report", {
     })
 
 test_that("Inclusion of list with missing names", {
+			
+	skip_on_cran()
       
       medMonRes <- dlply(data, NULL, function(dataI)
             scatterplotClinData(
@@ -157,6 +165,8 @@ test_that("Inclusion of list with missing names", {
     })
 
 test_that("Custom separator", {
+			
+	skip_on_cran()
       
       medMonRes <- dlply(data, c("VISIT", "LBTPT"), function(dataI)
             scatterplotClinData(
@@ -200,6 +210,8 @@ test_that("Wrong input", {
     })
 
 test_that("Inclusion of a list with empty element", {
+			
+	skip_on_cran()
       
       dataWithEmptyEl <- data
       idxEmpty <- which(dataWithEmptyEl$VISIT == dataWithEmptyEl[1, "VISIT"])

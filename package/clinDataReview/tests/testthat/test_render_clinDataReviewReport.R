@@ -307,6 +307,8 @@ test_that("The export of session infos to Markdown runs successfully", {
 })
 
 test_that("A clinical data report is created successfully via specification of config files", {
+	
+	skip_on_cran()
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
@@ -333,7 +335,9 @@ test_that("A clinical data report is created successfully via specification of c
       
 })
 
-test_that("A clinical data report is created successfully via log file", {
+test_that("A clinical data report is created successfully with a log file", {
+			
+	skip_on_cran()
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
@@ -360,6 +364,8 @@ test_that("A clinical data report is created successfully via log file", {
 
 test_that("A clinical data report is created successfully via config directory", {
 
+	skip_on_cran()
+			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 	outputDir <- file.path(testDir, "report")
@@ -387,8 +393,10 @@ test_that("A clinical data report is created successfully via config directory",
       
 })
 
-test_that("A warning is generated if a specified config file doesn't exist.", {
+test_that("A warning is generated if a specified config file doesn't exist", {
       
+	skip_on_cran()
+			
       testDir <- tempfile("report")
       dir.create(testDir)
 	  
@@ -440,6 +448,8 @@ test_that("A warning is generated if a specified config file doesn't exist.", {
 })
 
 test_that("A warning is generated if a template Rmd is already available", {
+			
+	skip_on_cran()
       
 	testDir <- tempfile("report")
 	dir.create(testDir)
@@ -497,7 +507,9 @@ test_that("A warning is generated if a template Rmd is already available", {
 })
 
 test_that("A warning is generated if the creation of a chapter fails'", {
-      
+     
+	skip_on_cran()
+			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 	
@@ -550,6 +562,8 @@ test_that("A warning is generated if the creation of a chapter fails'", {
 
 test_that("A warning is generated if the template name is missing in a config file", {
 			
+	skip_on_cran()
+			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 	
@@ -595,7 +609,9 @@ test_that("A warning is generated if the template name is missing in a config fi
 })
 
 test_that("A warning is generated if the config parameters don't comply to the template specifications", {
-      
+    
+	skip_on_cran()
+			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 	
@@ -642,6 +658,8 @@ test_that("A warning is generated if the config parameters don't comply to the t
 
 test_that("A warning is generated if a template is not available in the specified package", {
       
+	skip_on_cran()
+			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 			
@@ -688,6 +706,8 @@ test_that("A warning is generated if a template is not available in the specifie
 
 test_that("A warning is generated if no config parameters are available", {
       
+	skip_on_cran()		
+			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 			
@@ -733,7 +753,7 @@ test_that("A warning is generated if no config parameters are available", {
 })
 
 test_that("A warning is generated if some Markdown files are missing for conversion to html", {
-      
+			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 			
