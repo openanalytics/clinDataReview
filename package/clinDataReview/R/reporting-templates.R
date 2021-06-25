@@ -64,7 +64,7 @@ getPathTemplate <- function(file, package = "clinDataReview"){
 #' @return Character vector with Rd code containing description
 #' for all template documents.
 #' @importFrom tools file_path_sans_ext
-#' @references \href{JSON schema specification}{https://json-schema.org/understanding-json-schema/}
+#' @references \href{https://json-schema.org/understanding-json-schema/}{JSON schema specification}
 #' @author Laure Cougnaud
 createTemplateDoc <- function(
 	templatePath = system.file("template", package = "clinDataReview")){

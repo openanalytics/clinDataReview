@@ -25,7 +25,7 @@ to the template is extracted from this file with the function
 \code{JSONSchToRd}.
 }
 \references{
-\href{JSON schema specification}{https://json-schema.org/understanding-json-schema/}
+\href{https://json-schema.org/understanding-json-schema/}{JSON schema specification}
 }
 \author{
 Laure Cougnaud
