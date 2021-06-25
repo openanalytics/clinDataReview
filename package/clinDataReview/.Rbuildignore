@@ -1,7 +1,7 @@
 vignettes/figures_vignette
 vignettes/tables_CSR
-vignettes/patientProfiles
 vignettes/data
+vignettes/patientProfiles
 \.docx$
 ^doc$
 ^Meta$

@@ -78,12 +78,40 @@ profiles created with the `patientProfilesVis` package.
 Such patient profiles can be created via a config file, with a dedicated
 template report available in the `clinDataReview` package.
 
-The documentation on how to set up a config file is available in the vignette
-about reporting.
+A simple patient profile report for each subject in the example
+dataset is created below.
 
-You can directly skip to reporting vignette, which is available
-[here](../doc/clinDataReview-reporting.html) or run in your
-console the command below.
+```{r createPatientProfiles, results = "hide"}
+# create a directory to store the patient profiles:
+patientProfilesDir <- "patientProfiles"
+dir.create(patientProfilesDir)
+
+# get examples of parameters for the report
+configDir <- system.file("skeleton", "config", package = "clinDataReview")
+params <- getParamsFromConfig(
+	configDir = configDir, 
+	configFile = "config-patientProfiles.yml"
+)
+# create patient profile with only one panel for the demo
+params$patientProfilesParams <- params$patientProfilesParams[1]
+# use dataset from the clinUtils package
+params$pathDataFolder <- system.file("extdata", "cdiscpilot01", "SDTM", package = "clinUtils")
+# store patient profile in this folder:
+params$patientProfilePath <- patientProfilesDir
+
+# create patient profiles
+pathTemplate <- clinDataReview::getPathTemplate(params$template)
+file.copy(from = pathTemplate, to = ".")
+report <- rmarkdown::render(input = basename(pathTemplate))
+unlink(c(basename(pathTemplate), report)) # clean
+```
+
+Please refer to the vignette about reporting for more details on how 
+to set up a config file and use template reports available
+in the package.
+
+You can directly skip to reporting vignette, which is available [here](../doc/clinDataReview-reporting.html) 
+or run in your console the command below.
 
 ```{r reportingVignette, eval = FALSE}
 
@@ -235,7 +263,7 @@ scatterplotClinData(
     yLab = getLabelParamcd(
         paramcd = "BILI", data = dataLB, paramcdVar = "PARAMCD", paramVar = "PARAM"
     ),
-    aesPointVar = list(color = "VISIT", fill = "VISIT", shape = "TRTP"),
+    aesPointVar = list(color = "VISIT", fill = "VISIT"),
     xTrans = "log10", yTrans = "log10",
     hoverVars = c("USUBJID"),
     themePars = list(legend.position = "bottom"),
