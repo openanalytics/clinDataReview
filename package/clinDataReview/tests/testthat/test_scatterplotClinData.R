@@ -107,10 +107,7 @@ test_that("plotting function aesthetic testing", {
       plDataLines <- plDataLines[do.call(order, plDataLines), ]
       
       expect_equivalent(object = plDataLines, expected = dataPointLine)# all equal, no attributes
-      
-      ## check if created plot == reference
-      #expect_doppelganger(title = "aesthetics", fig = pl, writer = write_svg_plotly)
-      
+            
     })
 
 test_that("plotting function: reference lines", {
@@ -156,10 +153,7 @@ test_that("plotting function: reference lines", {
       
       isRefLineYInPlot <- all(c(dataRefLines$LBSTNRHI, yLine) %in% unlist(lapply(plDataRefLines, function(x) x$y)))
       expect_true(isRefLineYInPlot, info = "All specified vertical lines are plotted.")
-      
-      ## check if created plot == reference
-      #expect_doppelganger(title = "reference lines", fig = pl, writer = write_svg_plotly)
-      
+            
     })
 
 test_that("plotting function: labels", {
@@ -195,10 +189,7 @@ test_that("plotting function: labels", {
       # facet labels
       #plAnnotAll <- sapply(plLayoutAnnot, function(x)x $text)
       #expect_true(unique(dataPlot$VISIT) %in% plAnnotAll)
-      
-      ## check if created plot == reference
-      #expect_doppelganger(title = "labels", fig = pl, writer = write_svg_plotly)
-      
+            
     })
 
 test_that("interactive table is created", {

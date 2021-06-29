@@ -106,9 +106,6 @@ test_that("plotting function runs properly", {
 	dataPlot <- dataPlot[match(plDataBarDf$AEDECOD, dataPlot$AEDECOD), ]
 	expect_equivalent(object = plDataBarDf, expected = dataPlot)
 	
-	## check if created plot == reference
-	#expect_doppelganger(title = "basic", fig = pl, writer = write_svg_plotly)
-
 })
 
 test_that("interactive table is created", {

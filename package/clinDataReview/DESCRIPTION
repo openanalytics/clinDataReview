@@ -49,7 +49,6 @@ Suggests:
   patientProfilesVis (>= 0.12.0), 
   reshape2,
   testthat,
-  vdiffr,
   xml2,
   DT
 URL: https://github.com/openanalytics/clinDataReview

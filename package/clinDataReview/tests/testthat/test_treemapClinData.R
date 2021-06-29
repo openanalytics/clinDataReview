@@ -82,9 +82,6 @@ test_that("plotting function runs properly", {
 	)
     expect_is(pl, "plotly")
     
-	## check if created plot == reference
-	#expect_doppelganger(title = "basic", fig = pl, writer = write_svg_plotly)
-
 })
 
 test_that("interactive table is created", {
@@ -209,9 +206,6 @@ test_that("treemap with color variable", {
 		object = isColorGroupOfStat, 
 		label = "color var doesn't represent groups of specified summary statistic"
 	)
-	
-	## check if created plot == reference
-	#expect_doppelganger(title = "color", fig = pl, writer = write_svg_plotly)
 				
 })
 			

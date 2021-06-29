@@ -28,31 +28,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
     texinfo \
     && rm -rf /var/lib/apt/lists/*
     
-# System libraries for installing orca
-RUN apt-get update -y \
-    && apt-get install --no-install-recommends -y \
-    xvfb \
-    libgtk-3-0 \
-    libgtk-3-dev \
-    libgconf-2-4 \
-    xauth \
-    libxtst6 \
-    libxss1 \
-    libnss3 \
-    libcanberra-gtk-module libcanberra-gtk3-module \
-    && rm -rf /var/lib/apt/lists/*
-
-# Download orca AppImage, extract it, and make it executable under xvfb
-RUN mkdir -p /opt/orca
-ADD https://github.com/plotly/orca/releases/download/v1.1.1/orca-1.1.1-x86_64.AppImage /opt/orca/orca.AppImage
-RUN chmod 777 /opt/orca/orca.AppImage 
-
-# To avoid the need for FUSE, extract the AppImage into a directory (name squashfs-root by default)
-RUN cd /opt/orca && /opt/orca/orca.AppImage --appimage-extract
-RUN printf '#!/bin/bash \nxvfb-run --auto-servernum --server-args "-screen 0 640x480x24" /opt/orca/squashfs-root/app/orca "$@"' > /usr/bin/orca
-RUN chmod 777 /usr/bin/orca && chmod -R 777 /opt/orca/squashfs-root/
-    
-
 RUN R -e "cat(\"local(options(repos = c(CRAN = 'https://cloud.r-project.org')))\n\", file = R.home('etc/Rprofile.site'), append = TRUE)"
 
 # install dependencies
@@ -185,8 +160,6 @@ RUN R -e "remotes::install_version('dplyr', version = '1.0.5', upgrade = FALSE)"
     R -e "remotes::install_version('plotly', version = '4.9.3', upgrade = FALSE)" && \
     R -e "remotes::install_version('testthat', version = '3.0.2', upgrade = FALSE)" && \
     R -e "remotes::install_version('devtools', version = '2.3.2', upgrade = FALSE)"
-RUN R -e "remotes::install_version('vdiffr', version = '0.3.3', upgrade = FALSE)"
-
 
 # extra dependencies for reporting
 RUN R -e "remotes::install_version('bookdown', version = '0.21', upgrade = FALSE)"

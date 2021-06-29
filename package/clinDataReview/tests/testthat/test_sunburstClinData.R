@@ -80,9 +80,6 @@ test_that("plotting function runs properly", {
 		valueVar = "n", valueLab = "Number of patients with adverse events"
 	)
     expect_is(pl, "plotly")
-	
-	## check if created plot == reference
-	#expect_doppelganger(title = "basic", fig = pl, writer = write_svg_plotly)
 
 })
 
