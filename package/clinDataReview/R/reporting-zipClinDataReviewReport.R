@@ -41,12 +41,13 @@ zipClinDataReview <- function(
   createRedirectPage(redirectPage, dir = folderName)
   
   origWd <- getwd()
+  on.exit(setwd(origWd))
+  
   setwd(dirname(zipFolder))
   zip(
       zipFolder,
       files = c(basename(redirectPage), folderName)
   )
-  on.exit(setwd(origWd))
   
 }
 
