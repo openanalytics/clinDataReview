@@ -91,6 +91,7 @@ getMetadata <- function(filePath, namesInfo) {
 #' @importFrom knitr knit_print
 #' @importFrom clinUtils getClinDT
 #' @importFrom htmltools tagList knit_print.shiny.tag.list
+#' @return html code to include metadata in a report
 #' @export
 knit_print.clinDataReviewMetadata <- function(
     x, options = list(), ...

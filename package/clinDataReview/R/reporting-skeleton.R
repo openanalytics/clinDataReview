@@ -152,6 +152,8 @@ moveSkeletonFiles <- function(dir) {
 #' with the directory where the data are stored.
 #' @param dir String, path to the directory.
 #' @param dirData String, path to the directory of the data.
+#' @return No return value, a file _config.yml_
+#' is created in the specified directory.
 #' @importFrom yaml write_yaml
 createMainConfigSkeleton <- function(dir, dirData) {
   

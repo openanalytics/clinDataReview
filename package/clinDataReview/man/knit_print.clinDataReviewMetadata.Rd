@@ -17,6 +17,8 @@ The option \code{dateReportRun} sets to true prints the date and time of the rep
 }
 \value{
 Nothing. The tables are ready to be printed in Rmd.
+
+html code to include metadata in a report
 }
 \description{
 This function receives the metadata information from \code{\link{getMetadata}} and 

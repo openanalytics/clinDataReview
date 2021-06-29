@@ -11,6 +11,10 @@ createMainConfigSkeleton(dir, dirData)
 
 \item{dirData}{String, path to the directory of the data.}
 }
+\value{
+No return value, a file _config.yml_
+is created in the specified directory.
+}
 \description{
 This function creates the main config file for the \code{\link{createClinDataReviewReportSkeleton}} 
 with the directory where the data are stored.
