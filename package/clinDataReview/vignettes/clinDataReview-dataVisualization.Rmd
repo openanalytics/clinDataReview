@@ -102,8 +102,7 @@ params$patientProfilePath <- patientProfilesDir
 # create patient profiles
 pathTemplate <- clinDataReview::getPathTemplate(params$template)
 file.copy(from = pathTemplate, to = ".")
-report <- rmarkdown::render(input = basename(pathTemplate))
-unlink(c(basename(pathTemplate), report)) # clean
+report <- rmarkdown::render(input = basename(pathTemplate), envir = new.env())
 ```
 
 Please refer to the vignette about reporting for more details on how 
