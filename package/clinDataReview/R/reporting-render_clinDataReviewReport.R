@@ -238,13 +238,6 @@ render_clinDataReviewReport <- function(
           intermediateDir = intermediateDir
       )
       
-      # specify report-specific input parameters
-      # in a new environment ('params' doesn't work within 'Rscript_call'?)
-      # Note: new.env will inherit of parent environments
-      # so objects created in global environment also available there
-      envReport <- new.env(parent = globalenv()) 
-      assign("params", params, envir = envReport)
-      
       # run report
       message("Run report for config file: ", sQuote(configFile), ".")
       
@@ -256,8 +249,8 @@ render_clinDataReviewReport <- function(
               input = inputRmdFile, 
               output_file = basename(outputMdFile),
               output_dir = dirname(outputMdFile),
-              env = envReport,
-              quiet = quiet
+              quiet = quiet,
+			  params = params
           ),
           silent = TRUE
       )
@@ -280,15 +273,13 @@ render_clinDataReviewReport <- function(
         # create a report only with a section title
         pathTemplate <- clinDataReview::getPathTemplate("divisionTemplate.Rmd")
         tmp <- file.copy(from = pathTemplate, to = inputDir, overwrite = TRUE)
-        envReport <- new.env(parent = globalenv()) 
         params$content <- "**This part of the report could not be created.**"
-        assign("params", params, envir = envReport)
         outputRmd <- renderInNewSession(
             input = basename(pathTemplate), 
             output_file = basename(outputMdFile),
             output_dir = dirname(outputMdFile),
-            env = envReport,
-            quiet = quiet
+            quiet = quiet,
+			params = params
         )
         
       }
@@ -757,6 +748,11 @@ checkReportTitles <- function(
 #' @param output_options List of output options,
 #' by default 'keep_md = TRUE' (keep Markdown file)
 #' @param encoding String with encoding, 'UTF-8' by default.
+#' @param params List with input parameters for this document.\cr
+#' These parameters should be accessed in the Rmd document via
+#' \code{params$...}.\cr
+#' These parameters will be saved to a RDS file and imported 
+#' during the report rendering.
 #' @param ... Any extra parameters passed to \code{\link[rmarkdown]{render}}
 #' @return Output of the function executed in the new R session 
 #' with additional attribute: 'sessionInfo' containing
@@ -769,6 +765,7 @@ renderInNewSession <- function(
     run_pandoc = FALSE,
     output_options = list(keep_md = TRUE),
     encoding = "UTF-8",
+	params = NULL,
     ...){
   
   argsRender <- c(
@@ -792,9 +789,10 @@ renderInNewSession <- function(
           inputFile <- inputArgs[[1]]
           input <- readRDS(inputFile)	
           fct <- input$fct	
-          if(is.character(fct))
-          fct <- eval(parse(text = fct), envir = globalenv())
-          res <- do.call(fct, input$args, envir = globalenv())
+          params <- input$params
+
+          res <- do.call(fct, input$args)
+
           attr(res, "sessionInfo") <- sessionInfo()
           
           outputFile <- inputArgs[[2]]
@@ -810,7 +808,14 @@ renderInNewSession <- function(
   IOFiles <- list(input = inputFile, output = outputFile)
   
   # store fct and input parameters in a temporary file
-  saveRDS(object = list(fct = rmarkdown::render, args = argsRender), file = inputFile)
+  saveRDS(
+	object = list(
+		fct = rmarkdown::render, 
+		args = argsRender,
+		params = params
+	), 
+	file = inputFile
+	)
   
   # run in separated session
   # capture output/messages/errors in output
@@ -873,17 +878,15 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
     sessionInfoFile <- tempfile("sessionInfo", fileext = ".Rmd")
     cat(
         '\n\n# Appendix  \n\n## Session information  \n\n',
-        '```{r, echo = FALSE, results = "asis"}\nsessionInfoAll\n```', 
+        '```{r, echo = FALSE, results = "asis"}\nparams$sessionInfoAll\n```', 
         file = sessionInfoFile
     )
-    envReport <- new.env()
-    assign("sessionInfoAll", sessionInfoAll, envir = envReport)
     sessionInfoMd <- "sessionInfo.md"
     outputRmd <- renderInNewSession(
         input = sessionInfoFile, 
         output_file = sessionInfoMd, 
         output_dir = intermediateDir, 
-        env = envReport
+		params = list(sessionInfoAll = sessionInfoAll)
     )
     
     sessionInfoMdPath <- file.path(intermediateDir, sessionInfoMd)

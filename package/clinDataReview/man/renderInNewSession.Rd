@@ -11,6 +11,7 @@ renderInNewSession(
   run_pandoc = FALSE,
   output_options = list(keep_md = TRUE),
   encoding = "UTF-8",
+  params = NULL,
   ...
 )
 }
@@ -24,6 +25,12 @@ convert Md to specified output with pandoc.}
 by default 'keep_md = TRUE' (keep Markdown file)}
 
 \item{encoding}{String with encoding, 'UTF-8' by default.}
+
+\item{params}{List with input parameters for this document.\cr
+These parameters should be accessed in the Rmd document via
+\code{params$...}.\cr
+These parameters will be saved to a RDS file and imported 
+during the report rendering.}
 
 \item{...}{Any extra parameters passed to \code{\link[rmarkdown]{render}}}
 }
