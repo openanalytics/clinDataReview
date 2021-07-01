@@ -114,6 +114,27 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			)
 		}
 		
+	}else if(plotFunction == "boxplotClinData"){
+		
+		if(tableVarsNotSpec){
+			tableVars <- with(plotArgs, c(idVar, xVar, yVar, colorVar, facetVar))
+			tableLab <- with(plotArgs, 
+				c(
+					getLabelVar(var = idVar, label = if(!missing(idLab))	idLab, labelVars = labelVars),
+					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
+					getLabelVar(var = colorVar, label = if(!missing(colorLab)) colorLab, labelVars = labelVars),
+					getLabelVar(var = facetVar, label = if(!missing(facetVar)) facetLab, labelVars = labelVars)
+				)
+			)
+		}else{
+			tableLab <- with(plotArgs, 
+				getLabelVar(tableVars, labelVars = labelVars, 
+					label = if(!missing(tableLab))	tableLab
+				)
+			)
+		}
+		
 	}else	if(plotFunction %in% c("plotCountClinData", "treemapClinData", "sunburstClinData")){
 			
 		valueVar <- plotArgs$valueVar

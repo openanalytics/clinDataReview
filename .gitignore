@@ -35,3 +35,6 @@ figures_vignette
 !package/clinDataReview/inst/css/gitbook.css
 
 report/
+
+# development dir
+development/

@@ -65,6 +65,12 @@ getDimGgplot <- function(gg){
 
 #' Get dimensions for a clinical data plot
 #' @param gg \code{\link[ggplot2]{ggplot}}
+#' @param nrow single-length integer specifying the 
+#'   number of facet rows in the plot. (default = 1) 
+#'   Overwritten if \code{gg} is specified. 
+#' @param ncol single-length integer specifying the 
+#'   number of facet columns in the plot. (default = 1)
+#'   Overwritten if \code{gg} is specified. 
 #' @param legend Logical, if TRUE (by default)
 #' a legend is available in the plot.
 #' @param legendPosition String with position of the legend,
@@ -77,7 +83,10 @@ getDimGgplot <- function(gg){
 getSizePlotClinData <- function(
 	width = NULL, height = NULL,
 	gg = NULL,
-	legend = TRUE, legendPosition = "right"){
+	nrow = 1L,
+	ncol = 1L,
+	legend = TRUE, 
+	legendPosition = "right"){
 	
 	widthDef <- 800
 
@@ -88,7 +97,7 @@ getSizePlotClinData <- function(
 		nrow <- unname(plotDim["nrow"])
 		ncol <- unname(plotDim["ncol"])
 		
-	}else	nrow <- ncol <- 1
+	}
 	
 	if(is.null(width) & is.null(height)){
 		width <- widthDef

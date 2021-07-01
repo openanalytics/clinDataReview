@@ -162,6 +162,7 @@ sunburstClinData(
 \seealso{
 Other visualizations of summary statistics for clinical data: 
 \code{\link{barplotClinData}()},
+\code{\link{boxplotClinData}()},
 \code{\link{plotCountClinData}()},
 \code{\link{treemapClinData}()}
 }

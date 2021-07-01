@@ -525,6 +525,39 @@ barplotClinData(
 
 ```
 
+### Boxplot
+
+A boxplot visualizes the distribution of a continuous variable of interest
+versus specific categorical variables.
+
+```{r boxplot}
+
+dataPlot <- subset(dataADaMCDISCP01$ADVS, 
+	PARAMCD == "DIABP" & ANL01FL == "Y" &
+	AVISIT %in% c("Baseline", "Week 2", "Week 4", "Week 6", "Week 8")
+)
+# link to patient profiles
+dataPlot$patientProfilePath <- paste0(
+	"patientProfiles/subjectProfile-", 
+	sub("/", "-", dataPlot$USUBJID), ".pdf"
+)
+
+boxplotClinData(
+	data = dataPlot,
+	xVar = "AVISIT", 
+	yVar = "AVAL",
+	colorVar = "TRTA",
+	facetVar = "ATPT",
+	title = "Diastolic Blood Pressure distribution by actual visit and analysis timepoint",
+	yLab = "Actual value of the Diastolic Blood Pressure parameter (mmHg)",
+	labelVars = labelVars,
+	pathVar = "patientProfilePath",
+	pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
+	table = FALSE
+)
+
+```
+
 ## Multiple visualizations in a loop
 
 To include multiple clinical data visualizations (with or without attached

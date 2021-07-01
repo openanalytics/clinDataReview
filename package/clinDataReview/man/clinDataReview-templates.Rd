@@ -94,7 +94,7 @@ This report visualizes input data with a function of the clinical data review pa
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData' } , plotting function of the package to consider}
+\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'boxplotClinData' } , plotting function of the package to consider}
 \item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !r-lazy [dataI]}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff' } , output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}

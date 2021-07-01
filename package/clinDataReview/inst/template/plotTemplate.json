@@ -37,7 +37,7 @@
     
     "plotFunction": {
       "type": "string",
-      "enum": ["timeProfileIntervalPlot", "scatterplotClinData"],
+      "enum": ["timeProfileIntervalPlot", "scatterplotClinData", "boxplotClinData"],
       "doc": "plotting function of the package to consider"
     },
     "plotParams": {

@@ -8,6 +8,8 @@ getSizePlotClinData(
   width = NULL,
   height = NULL,
   gg = NULL,
+  nrow = 1L,
+  ncol = 1L,
   legend = TRUE,
   legendPosition = "right"
 )
@@ -20,6 +22,14 @@ getSizePlotClinData(
 700 by default.}
 
 \item{gg}{\code{\link[ggplot2]{ggplot}}}
+
+\item{nrow}{single-length integer specifying the 
+number of facet rows in the plot. (default = 1) 
+Overwritten if \code{gg} is specified.}
+
+\item{ncol}{single-length integer specifying the 
+number of facet columns in the plot. (default = 1)
+Overwritten if \code{gg} is specified.}
 
 \item{legend}{Logical, if TRUE (by default)
 a legend is available in the plot.}
