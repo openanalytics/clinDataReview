@@ -270,7 +270,7 @@ getPathHyperlink <- function(x){
 #' @author Laure Cougnaud
 #' @export
 varToFm <- function(var){
-	fm <- as.formula(paste0("~", paste(var, collapse = "+")))
+	fm <- as.formula(paste0("~", paste(paste0("`", var, "`"), collapse = "+")))
 	return(fm)
 }
 

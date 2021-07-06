@@ -150,3 +150,40 @@ test_that("x-variable non nested in color variable is created with success for a
 	)
 	
 })
+
+test_that("A text variable is correctly displayed in the barplot", {
+			
+	# create plot
+	pl <- barplotClinData(
+		data = dataPlot,
+		xVar = "AEDECOD",
+		yVar = "n", 
+		textVar = "%"
+	)
+	
+	# extract data from output object
+	plData <- plotly_build(pl)$x$data
+	
+	# only bar aes
+	plDataBar <- plData[sapply(plData, function(x) x$type == "bar")]
+	
+	# format plot data
+	plDataBar <- lapply(plDataBar, `[`, c("x", "y", "text"))
+	plDataBar <- lapply(plDataBar, cbind.data.frame)
+	plDataBar <- do.call(rbind, plDataBar)
+	plDataBar <- plDataBar[do.call(order, plDataBar), ]
+	# text is converted to factor by plotly:
+	plDataBar[["text"]] <- as.character(plDataBar[["text"]])
+	
+	dataRef <- dataPlot[, c("AEDECOD" ,"n", "%")]
+	dataRef <- dataRef[do.call(order, dataRef), ]
+	
+	expect_equal(
+		object = plDataBar, 
+		expected = dataRef, 
+		checkNames = FALSE,
+		check.attributes = FALSE # ignore row.names
+	)
+	
+})
+

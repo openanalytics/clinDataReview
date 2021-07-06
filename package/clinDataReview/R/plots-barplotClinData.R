@@ -3,6 +3,8 @@
 #' @param colorLab String with label for \code{colorVar}.
 #' @param barmode String with type of barplot, either:
 #' 'group' or 'stack' (see parameter in \code{\link[plotly]{layout}}).
+#' @param textVar (optional) String with a text variable,
+#' that will be displayed outside of each bar.
 #' @inheritParams clinDataReview-common-args-summaryStatsVis
 #' @inheritParams clinDataReview-common-args
 #' @inheritParams tableClinData
@@ -31,6 +33,7 @@ barplotClinData <- function(
 	# interactivity:
 	width = NULL, height = NULL,
 	hoverVars, hoverLab,
+	textVar = NULL, 
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	table = FALSE, 
 	tableVars, tableLab,
@@ -52,6 +55,7 @@ barplotClinData <- function(
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
 	hoverVars <- unique(hoverVars)
+	
 	dataSharedData <- formatDataForPlotClinData(
 		data = data, 
 		hoverVars = hoverVars, hoverLab = hoverLab,
@@ -90,7 +94,11 @@ barplotClinData <- function(
 		colors = if(!is.null(colorVar))	colorPalette,
 		type = "bar",
 		hovertemplate = varToFm("hover"),
-		width = width, height = height
+		width = width, height = height,
+		# include text/label if specified
+		text = if(!is.null(textVar))	varToFm(textVar), 
+		textposition = ifelse(barmode == "group", "outside", 'auto'),
+		textfont = if(barmode != "group") list(color = '#ffffff')
 	)
 	
 	## layout option

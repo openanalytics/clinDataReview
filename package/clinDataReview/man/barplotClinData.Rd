@@ -21,6 +21,7 @@ barplotClinData(
   height = NULL,
   hoverVars,
   hoverLab,
+  textVar = NULL,
   pathVar = NULL,
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
   table = FALSE,
@@ -70,6 +71,9 @@ See \code{\link[clinUtils]{clinColors}}.}
 by default any position and aesthetic variables displayed in the plot.}
 
 \item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
+
+\item{textVar}{(optional) String with a text variable,
+that will be displayed outside of each bar.}
 
 \item{pathVar}{String with variable of \code{data} containing hyperlinks 
 with path to the subject-specific report, formatted as: \cr
@@ -165,9 +169,17 @@ barplotClinData(
 	yVar = "n", yLab = "Number of patients with adverse events",
 	labelVars = labelVars
 )
+# add number on top of the bars
+barplotClinData(
+	data = dataPlot,
+	xVar = "AEDECOD", 
+	yVar = "n", yLab = "Number of patients with adverse events",
+	textVar = "n",
+	labelVars = labelVars
+)
 
 # display percentage of events per severity
-dataPlot <- computeSummaryStatisticsTable(
+tableAEBySeverity <- computeSummaryStatisticsTable(
 	data = dataAE,
 	rowVar = c("AEDECOD", "AESEV"),
 	dataTotal = dataTotal,
@@ -178,7 +190,7 @@ dataPlot <- computeSummaryStatisticsTable(
 	rowVarTotalPerc = "AEDECOD"
 )
 barplotClinData(
-	data = dataPlot,
+	data = tableAEBySeverity,
 	xVar = "AEDECOD", 
 	yVar = "statPercm", yLab = "Percentage of adverse events",
 	labelVars = labelVars,
@@ -190,7 +202,8 @@ barplotClinData(
 		statN = "Number of patients",
 		statm = "Number of events",
 		statPercm = "Percentage of events"
-	)
+	),
+	textVar = "\%m",
 )
 }
 \seealso{

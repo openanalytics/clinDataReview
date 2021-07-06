@@ -61,19 +61,32 @@ test_that("Formatting of hover text", {
       
     })
 
-test_that("Getting formula for variable", {
+test_that("One variable is correctly converted to a formula", {
       
-      # One variable
-      varFormula <- varToFm("CHG")
-      expect_is(varFormula, "formula")
-      expect_equal(as.formula("~CHG"), varFormula)
+	# One variable
+	varFormula <- varToFm("CHG")
+	expect_s3_class(varFormula, "formula")
+	expect_equal(as.formula("~CHG"), varFormula, check.attributes = FALSE)
+	  
+})
+
+test_that("Multiple variables are correctly combined when converted to a formula", {
+
+	# Two variables
+	varsFormula <- varToFm(c("AVAL", "CHG"))
+	expect_s3_class(varsFormula, "formula")
+	expect_equal(as.formula("~AVAL + CHG"), varsFormula, check.attributes = FALSE)
       
-      # Two variables
-      varsFormula <- varToFm(c("AVAL", "CHG"))
-      expect_is(varsFormula, "formula")
-      expect_equal(as.formula("~AVAL + CHG"), varsFormula)
-      
-    })
+})
+
+test_that("A variable with non syntactically valid name is correctly converted to a formula", {
+			
+	# One variable
+	varFormula <- varToFm("%m")
+	expect_s3_class(varFormula, "formula")
+	expect_equal(as.formula("~`%m`"), varFormula, check.attributes = FALSE)
+			
+})
 
 test_that("Get JS dependencies", {
       
