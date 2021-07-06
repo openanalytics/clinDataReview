@@ -99,7 +99,6 @@ if(comparisonTableType != "none") {
   
 } else pathsData <- c("currentData" = pathDataFolder)
 
-
 dataList <- sapply(names(pathsData), function(dataBatch) {
       
       pathData <- file.path(
@@ -187,9 +186,44 @@ labelVars <- attr(dataList$currentData$data, "labelVars")
 
 ```
 
+
+```{r summaryTableTemplate-getComparisonTable-newData-diff, eval = (comparisonTableType == "newData-diff")}
+
+dataCurrent <- dataList$currentData$data
+dataPrevious <- dataList$previousData$data
+
+dataCurrent <- ddply(dataCurrent, loopingVar, function(dataCurrentI){
+			
+	# get old table
+	if(!is.null(loopingVar)){
+		dataPreviousI <- merge(
+			x = unique(dataCurrentI[, loopingVar, drop = FALSE]),
+			y = dataPrevious,
+			by = loopingVar,
+			all = FALSE
+		)
+	}else	dataPreviousI <- dataPrevious
+
+	argsCompTable <- comparisonTableParams
+		
+	argsCompTable$newData <- dataCurrentI
+	argsCompTable$oldData <- dataPreviousI
+	argsCompTable$outputType <- "newData-diff"
+
+	do.call(clinUtils::compareTables, argsCompTable)
+
+})
+	
+dataList$currentData$data <- dataCurrent
+dataList$previousData <- NULL
+
+```
+
+
+
 ```{r summaryTableTemplate-computeSummaryStatisticsTable}
 
-summaryTableList <- sapply(names(pathsData), function(dataBatch) {
+summaryTableList <- sapply(names(dataList), function(dataBatch) {
       
       ## Extract from list
       data <- dataList[[dataBatch]][["data"]]			
@@ -262,7 +296,7 @@ summaryTableList <- sapply(names(pathsData), function(dataBatch) {
 
 ```
 
-```{r summaryTableTemplate-exportSummaryStatisticsTable, eval = (comparisonTableType == "none")}
+```{r summaryTableTemplate-exportSummaryStatisticsTable, eval = (comparisonTableType %in% c("none", "newData-diff"))}
 
 ## Format messages
 #messages <- gsub(" (based on).*", ".", messages)
@@ -311,7 +345,7 @@ summaryTableDT <- sapply(names(summaryTable), function(group){
         tableParamsDTI$statsVar <- attr(sumTable, "summaryTable")$statsVar
       tableParamsDTI$statsVar <- unique(c(tableParamsDTI$statsVar, names(statsPP)))
       tableParamsDTI$title <- htmltools::tags$caption(
-          htmltools::a("Formatted .docx table", target="_blank", href = tableParamsDocxI$file),
+          htmltools::a("Summary table in .docx format", target="_blank", href = tableParamsDocxI$file),
           br(),
           tableParamsDTI$footer,
           if(!is.null(loopingVar) && loopingTotal)	
@@ -344,7 +378,7 @@ knitPrintClinDataReview(
 
 ```	
 	
-```{r summaryTableTemplate-getComparisonTable, eval = (comparisonTableType != "none"), message = TRUE}
+```{r summaryTableTemplate-getComparisonTable, eval = (comparisonTableType == "table-comparison-interactive"), message = TRUE}
 
 if(!exists("comparisonTableParams"))	comparisonTableParams <- NULL
 
@@ -372,7 +406,7 @@ summaryTableDT <- sapply(names(summaryTableList$currentData$summaryTable), funct
       argsCompTable$outputType <- comparisonTableType
       argsCompTable$pageLength <- Inf
 	  if(!is.null(labelVars))
-		  argsCompTable$colnames <- setNames(labelVars, labelVars)
+		  argsCompTable$colnames <- setNames(names(labelVars), labelVars)
       
       argsCompTable$caption <- if(!is.null(loopingVar) && loopingTotal){
         htmltools::tags$caption(

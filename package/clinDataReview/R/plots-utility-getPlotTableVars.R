@@ -169,10 +169,7 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			}
 			
 		}
-		
-		if(!"barVar" %in% names(tablePars))
-			tablePars$barVar <- valueVar
-		
+				
 	}else if(plotFunction == "timeProfileIntervalPlot"){
 		
 		if(tableVarsNotSpec){

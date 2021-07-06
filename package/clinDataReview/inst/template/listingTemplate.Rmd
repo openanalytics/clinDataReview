@@ -15,6 +15,7 @@ Input parameters:
 - comparisonTableParams (optional): list with parameters for the comparison table, see ? clinUtils::compareTables
 - loopingVar (optional): character vector with variables to loop over, a listing will be created for each combination of groups of this variable
 - loopingNMax (optional): integer with maximal number of groups to consider (all by default)
+- listingDocx (optional): boolean (TRUE/FALSE) to export entire listing to Word.
 
 * General:
 - pathDataFolder: string with path to the data folder
@@ -61,6 +62,7 @@ if(comparisonTableType != "none" &
 if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 if(!exists("loopingVar")) loopingVar <- NULL
 if(!exists("loopingTotal"))	loopingTotal <- TRUE
+if(!exists("listingDocx"))	listingDocx <- FALSE
 
 ```
 
@@ -70,6 +72,7 @@ library(clinUtils)
 library(inTextSummaryTable)
 library(clinDataReview)
 library(plyr)
+library(htmltools)
 
 ```
 
@@ -147,10 +150,52 @@ labelVars <- attr(dataCurrent, "labelVars")
 
 ```
 
+```{r listingTemplate-exportToDocx, eval = isTRUE(listingDocx)}
+
+getListingPath <- function(loopingVar, data){
+	
+	fileListing <- sprintf("listing_%s.docx",
+		strtrim(
+			gsub(" ", "_", gsub("[[:punct:]]", "", reportTitle)), 30
+		)
+	)
+
+	if(!is.null(loopingVar)){
+		fileListing <- paste0(
+			tools::file_path_sans_ext(fileListing), 
+			"_", formatLabel(unique(dataCurrentI[,loopingVar])), ".",
+			tools::file_ext(fileListing)
+		)
+	}
+	fileListing <- file.path("tables", fileListing)
+	return(fileListing)
+	
+}
+
+exportListing <- function(data, file){
+	
+	colnames(data) <- clinUtils::getLabelVar(var = colnames(data), labelVars = labelVars)
+
+	# create listing as flextable
+	ft <- getListing(
+		data = data,
+		includeRownames = FALSE,
+		landscape = TRUE
+	)
+
+	# export to docx
+	exportFlextableToDocx(object = ft, file = file, landscape = TRUE)
+
+}
+
+```
+
+
 ```{r listingTemplate-getListingTable, eval = (comparisonTableType  == "none"), message = TRUE}	
 
 data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 			
+	# parameters for the interactive table:		
 	argsTable <- c(
 		list(
 			data = dataCurrentI, 
@@ -160,6 +205,27 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 		),
 		tableParams
 	)
+			
+	# Export listing to Word
+	if(isTRUE(listingDocx)){
+
+		fileListing <- getListingPath(data = dataCurrentI, loopingVar = loopingVar)
+				
+		dataListing <- dataCurrentI
+		if(!is.null(tableParams$tableVars)){
+			dataListing <- dataListing[, tableParams$tableVars, drop = FALSE]
+		}
+		exportListing(data = dataListing, file = fileListing)
+				
+		# add link in caption of interactive table
+		argsTable$tablePars$caption <- htmltools::tags$caption(
+			htmltools::a("Complete listing in .docx format", target="_blank", href = fileListing),
+			br(),
+			argsTable$tablePars$caption
+		)
+		
+	}
+
 	do.call("tableClinData", argsTable)
 	
 })
@@ -167,6 +233,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 knitPrintClinDataReview(data, level = reportTitleLevel + 1)
 
 ```
+
 
 ```{r listingTemplate-getListingComparisonTable, eval = (comparisonTableType %in% c("newData-diff-interactive", "table-comparison-interactive")), message = TRUE}	
 
@@ -203,7 +270,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 	argsExportDiff$colnames <- setNames(names(tableLab), tableLab)
 	
 	# formatting for patient profiles
-	getArgsExportDiffPatientProfiles <- function(data, argsExportDiff){
+	getArgsPatientProfiles <- function(data, argsExportDiff){
 		argsExportDiff <- c(argsExportDiff,
 			list(
 				# escape it in the table	
@@ -224,9 +291,11 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 		return(data)
 	}
 	
-	switch(comparisonTableType, 
+	res <- switch(comparisonTableType, 
 			
 		`newData-diff-interactive` = {
+			
+			argsCompTable[["outputType"]] <- "newData-diff-interactive"
 					
 			# convert character columns as factor (as requested)
 			dataCurrentI <- convertColToFact(dataCurrentI)
@@ -241,24 +310,49 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 					vars = c("patientProfileLink" = match("USUBJID", colnames(dataCurrentI))+1)
 				)
 				# getClinDT params-specific for patient profile
-				argsExportDiff <- getArgsExportDiffPatientProfiles(
+				argsExportDiff <- getArgsPatientProfiles(
 					data = dataCurrentI, 
 					argsExportDiff = argsExportDiff
 				)
 				
 			}
 			
+			# add link in caption of interactive table
+			if(isTRUE(listingDocx)){
+				fileListing <- getListingPath(data = dataCurrentI, loopingVar = loopingVar)
+				argsCompTable$caption <- htmltools::tags$caption(
+					htmltools::a("Complete listing in .docx format", target="_blank", href = fileListing),
+					br(),
+					argsCompTable$caption
+				)
+				argsCompTable[["outputType"]] <- c(argsCompTable[["outputType"]], "newData-diff")
+			}
+			
+			# create comparison table
 			argsCompTable <- c(
 				argsCompTable,
 				 list(
-					outputType = "newData-diff-interactive",
 				 	newData = dataCurrentI,
 				 	oldData = dataPreviousI
 				 ),
 				 argsExportDiff
 		 	)
+			tableComparison <- do.call(clinUtils::compareTables, argsCompTable)
 			
-			tableComparisonDT <- do.call(clinUtils::compareTables, argsCompTable)
+			# export comparison table to docx
+			if(isTRUE(listingDocx)){
+				
+				dataListing <- tableComparison[["newData-diff"]]
+				dataListing <- subset(dataListing, 
+					select = setdiff(colnames(dataListing), "patientProfileLink")
+				)
+				exportListing(data = dataListing, file = fileListing)
+				
+				# extract interactive table as output
+				tableComparison <- tableComparison[["newData-diff-interactive"]]
+			}
+			
+			tableComparison
 			
 		},
 		
@@ -275,6 +369,22 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 			)
 			tableComparison <- do.call(clinUtils::compareTables, argsCompTable)
 			tableCompAttr <- attributes(tableComparison)[c("referenceVars", "changeableVars")]
+			
+			## export to docx
+			if(isTRUE(listingDocx)){
+				
+				fileListing <- getListingPath(data = dataCurrentI, loopingVar = loopingVar)
+				
+				# export comparison table to docx
+				exportListing(data = tableComparison, file = fileListing)
+				
+				# add link in caption of interactive table
+				argsExportDiff$caption <- htmltools::tags$caption(
+					htmltools::a("Complete listing in .docx format", target="_blank", href = fileListing),
+					br(),
+					argsExportDiff$caption
+				)
+			}
 			
 			## export to DT
 		
@@ -297,7 +407,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 				)
 				
 				# getClinDT params-specific for patient profile
-				argsExportDiff <- getArgsExportDiffPatientProfiles(
+				argsExportDiff <- getArgsPatientProfiles(
 					data = tableComparison, 
 					argsExportDiff = argsExportDiff
 				)
@@ -305,7 +415,7 @@ data <- dlply(dataCurrent, loopingVar, function(dataCurrentI){
 			}
 			
 			argsExportDiff <- c(
-				list(diffData = tableComparison), 
+				list(diffData = tableComparison),
 				tableCompAttr,
 				argsExportDiff
 			)

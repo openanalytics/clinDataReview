@@ -59,7 +59,8 @@
     "comparisonTableType": {
       "type": "string",
       "doc": "output type of the comparison table",
-      "enum": ["none", "table-comparison-interactive"]
+      "enum": ["none", "table-comparison-interactive", "newData-diff"],
+      "doc": "for 'table-comparison-interactive': the summary statistics are computed, and then compared, 'newData-diff': the differences at a record level between the new and old batch are first identified, and then summarized"
     },
     "comparisonTableParams": {
       "type": "object",

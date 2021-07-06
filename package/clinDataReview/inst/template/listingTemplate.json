@@ -61,6 +61,10 @@
     "loopingNMax": {
       "type": "integer",
       "doc": "maximum number of elements of \\code{loopingVar} to include in the report"
+    },
+    "listingDocx": {
+      "type": "boolean",
+      "doc": "export listing to Word"
     }
   },
   

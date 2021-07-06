@@ -54,33 +54,6 @@ test_that("variable and labels are extracted from table variables", {
       
 })
 
-test_that("value variable displayed as a bar in table for count plot(s)", {
-			
-	plotArgs <- list(
-		data = data,
-		vars = "A", 
-		colorVar = "B", valueVar = "C",
-		tableVars = c("A", "B"),
-		labelVars = NULL
-	)
-	
-	plotFctNames <- c(
-		"plotCountClinData", "treemapClinData", "sunburstClinData"
-	)
-	
-	for(fctName in plotFctNames){
-		
-		expect_identical({
-			res <- getPlotTableVars(!!fctName, plotArgs)
-			attr(res, "tablePars")
-			}, 
-			expected = list(nonVisibleVar = "C", barVar = "C")
-		)
-		
-	}
-			
-})
-
 test_that("variable/labels are extracted from scatterplot parameters", {
 			
 	data <- data.frame(
