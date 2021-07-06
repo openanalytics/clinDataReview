@@ -5,24 +5,30 @@
 \title{Format data to a hierarchical data, in the format
 as required by the plotly sunburst and treemap.}
 \usage{
-formatToHierarchicalData(data, vars)
+formatToHierarchicalData(data, vars, valueVar)
 }
 \arguments{
 \item{data}{Data.frame with data.}
 
-\item{vars}{Character vector with variable(s) of interest.}
+\item{vars}{Character vector with variables of \code{data}
+containing plot nodes.
+If multiple, they should be specified in hierarchical order (from parent to child node).}
+
+\item{valueVar}{String with numeric variable of \code{data} containing node value,
+and associated label.}
 }
 \value{
 Updated data.frame with \code{vars} in 
 hierarchical format, with extra attributes (in 'metadat'):
 \itemize{
-\item{'varsPlotly': }{Named character vector with
-new variable names (\code{[var].hier}) names
-with original variable names
-}
-\item{'varLabel': }{String with name
-of new column containing text used for
-label in plotly.}
+\item{'varID': }{String with column of output
+containing ID of specific element.\cr
+This is a combination from the specified \code{vars}.}
+\item{'varParent': }{String with column of output
+containing ID of the parent element}
+\item{'varLabel': }{String with column of output
+containing the label to display.\cr
+This is usually the name of the child element.}
 }
 }
 \description{

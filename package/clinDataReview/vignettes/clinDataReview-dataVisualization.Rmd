@@ -391,8 +391,11 @@ dataAE$patientProfileLink <- with(dataAE,
     )
 )
 
-# combine all paths across patients
-# the paths should be collapsed with: ', '
+# Specify extra summarizations besides the standard stats
+# When the data is summarized,
+# the patient profile path are summarized
+# as well across patients
+# (the paths should be collapsed with: ', ')
 statsExtraPP <- list(
     statPatientProfilePath = function(data)	
       toString(sort(unique(data$patientProfilePath))),
@@ -418,8 +421,10 @@ tableAE <- getSummaryStatisticsTable(
     rowOrder = "total",
     labelVars = labelVars,
     
-    # plotly treemap requires records (rows) for each group
-    rowVarTotalInclude = "AEDECOD",
+    # The total across the variable used for the nodes
+	# should be specified (rowVarTotalInclude = 'AEDECOD')
+	# The total across the other variable(s) is optional
+    rowVarTotalInclude = c("AESOC", "AEDECOD"),
     
     ## DT-output specific:
     outputType = "data.frame-base",
@@ -477,7 +482,6 @@ group.
 Note, that a treemap can also be colored accordingly to a meaningful
 variable. For instance, if we show adverse events, we might **color the plot by
 severity**. This can be achieved with the **colorVar** parameter.
-
 
 ```{r treemap}
 

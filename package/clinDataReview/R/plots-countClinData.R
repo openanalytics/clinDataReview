@@ -65,7 +65,11 @@ plotCountClinData <- function(
   }
   
   # for data to hierarchical format
-  dataPlot <- formatToHierarchicalData(data = data, vars = vars)
+  dataPlot <- formatToHierarchicalData(
+	data = data, 
+	vars = vars,
+	valueVar = valueVar
+  )
   varsPlot <- attr(dataPlot, "metadata")
   varID <- varsPlot$varID
   varLabel <- varsPlot$varLabel
@@ -149,7 +153,7 @@ plotCountClinData <- function(
       branchvalues = valueType,
       hovertemplate = varToFm("hover"),
       width = width, height = height,
-      textinfo = "label+value"
+      textinfo = "label"
   )
   pl <- pl %>% layout(
       title = title, 

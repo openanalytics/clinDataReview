@@ -5,23 +5,25 @@
 #' (the variables are not overwritten) to avoid
 #' issues with cases where the value in the child 
 #' and parent variables are the same.
-#' @param vars Character vector with variable(s) of interest.
 #' @inheritParams clinDataReview-common-args
+#' @inheritParams clinDataReview-common-args-summaryStatsVis
 #' @return Updated data.frame with \code{vars} in 
 #' hierarchical format, with extra attributes (in 'metadat'):
 #' \itemize{
-#' \item{'varsPlotly': }{Named character vector with
-#' new variable names (\code{[var].hier}) names
-#' with original variable names
-#' }
-#' \item{'varLabel': }{String with name
-#' of new column containing text used for
-#' label in plotly.}
+#' \item{'varID': }{String with column of output
+#' containing ID of specific element.\cr
+#' This is a combination from the specified \code{vars},
+#' or 'Overall' for the grand total.}
+#' \item{'varParent': }{String with column of output
+#' containing ID of the parent element}
+#' \item{'varLabel': }{String with column of output
+#' containing the label to display.\cr
+#' This is usually the name of the child element.}
 #' }
 #' @importFrom utils head tail capture.output
 #' @importFrom plyr colwise
 #' @author Laure Cougnaud
-formatToHierarchicalData <- function(data, vars){
+formatToHierarchicalData <- function(data, vars, valueVar){
 		
 	# filter missing records for 'vars'
 	idxAllNa <- which(rowSums(is.na(data[, vars, drop = FALSE])) == length(vars))
@@ -37,9 +39,13 @@ formatToHierarchicalData <- function(data, vars){
 	
 	## Build IDs: combine values of child + parents if any
 	varID <- "hierarID"
-	data[[varID]] <- apply(dataVars, 1, function(x) 
-		paste(x[which(x != "Total")], collapse = "-")
-	)
+	data[[varID]] <- apply(dataVars, 1, function(x){
+		if(all(x == "Total")){
+			"Overall"
+		}else{
+			paste(x[which(x != "Total")], collapse = "-")
+		}
+	})
 	if(any(duplicated(data[[varID]])))
 		stop("Duplicated records when combining: ", 
 			toString(sQuote(vars)), ".")
@@ -59,7 +65,7 @@ formatToHierarchicalData <- function(data, vars){
 			idxColVars <- if(!any(x == "Total")){
 				length(vars)
 			}else{
-				idxColTotalParent <- min(which(x == "Total")-1)
+				idxColTotalParent <- max(min(which(x == "Total")-1), 1)
 				seq(from = idxColTotalParent, to = length(vars))
 			}
 		}
@@ -88,12 +94,14 @@ formatToHierarchicalData <- function(data, vars){
 		
 		# the parent should be available for all records
 		#  excepted for higher category
-		isNoParent <- is.na(idParent)
-		if(any(isNoParent)){
-			idxColNoParent <- which(data[isNoParent, vars] != "Total", arr.ind = TRUE)[, "col"]
+		isGrandTotal <- (rowSums(dataVars == "Total") == length(vars))
+		hasNoParent <- is.na(idParent) | isGrandTotal
+		
+		if(any(hasNoParent)){
+			idxColNoParent <- which(data[hasNoParent, vars] != "Total", arr.ind = TRUE)[, "col"]
 			if(any(idxColNoParent != 1))
 				stop("Missing parent value")
-			idParent[isNoParent] <- ""
+			idParent[hasNoParent] <- ""
 		}
 		
 		data[[varParent]] <- idParent
@@ -102,14 +110,25 @@ formatToHierarchicalData <- function(data, vars){
 
 	## Build labels: 
 	varLabel <- "hierarLabel"
-	data[[varLabel]] <- apply(dataVars, 1, function(x){
-		idxNotTotal <- which(x != "Total")
-		paste(x[tail(idxNotTotal, 1)], collapse = "-")
+	data[[varLabel]] <- apply(data, 1, function(dataRow){
+		if(all(dataRow[vars] == "Total")){
+			labelFromVars <- "Overall"
+		}else{
+			# extract label for sector:
+			idxNotTotal <- which(dataRow[vars] != "Total")
+			dataRowVars <- dataRow[vars][tail(idxNotTotal, 1)]
+			labelFromVars <- paste(dataRowVars, collapse = "-")
+		}
+		# add value to have also values displayed for higher-level sectors
+		labelFromValue <- dataRow[valueVar]
+		paste(labelFromVars, labelFromValue, sep = ": ")
 	})
 
-#	head(data[, c(vars, varID, varParent, varLabel)])
-
-	attr(data, "metadata") <- list(varID = varID, varParent = varParent, varLabel = varLabel)
+	attr(data, "metadata") <- list(
+		varID = varID, 
+		varParent = varParent, 
+		varLabel = varLabel
+	)
 	
 	return(data)
 	

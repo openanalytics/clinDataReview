@@ -2,6 +2,7 @@
     o new boxplotClinData functionality
     o barplotClinData: textVar
     o support non syntactical variable name
+    o plotCountClinData: display counts for parents & grand total
 1.0.0
     o new 'startup' config param for all visualizations template
     o remove color specification for collapsible button

@@ -37,7 +37,7 @@ test_that("parent variable(s) being not the sum of their children is flagged", {
 	
 })
 
-test_that("creation of count visualization for specified one parent variable is successful", {				
+test_that("creation of count visualization for one specified parent variable is successful", {				
 			
 	data <- data.frame(
 		varParent = c("A", "A", "A", "B", "B"),
@@ -63,7 +63,7 @@ test_that("creation of count visualization for specified one parent variable is 
 	dataHierar <- data.frame(
 		hierarID = c("A-a", "A-b", "A", "B-c", "B"),
 		hierarParent = c("A", "A", "", "B", ""),
-		hierarLabel = c("a", "b", "A", "c", "B"),
+		hierarLabel = c("a: 1", "b: 2", "A: 3", "c: 5", "B: 5"),
 		stringsAsFactors = FALSE
 	)
 	# orders df the same
@@ -94,7 +94,7 @@ test_that("child and parent variables can contain the same element", {
 	dataHierar <- data.frame(
 		hierarID = c("A-A", "A-b", "A", "B-c", "B"),
 		hierarParent = c("A", "A", "", "B", ""),
-		hierarLabel = c("A", "b", "A", "c", "B"),
+		hierarLabel = c("A: 1", "b: 2", "A: 3", "c: 5", "B: 5"),
 		stringsAsFactors = FALSE
 	)
 	
@@ -214,3 +214,41 @@ test_that("table is created with count visualization", {
 	)
 			
 })
+
+test_that("overall total is correctly included", {				
+			
+	data <- data.frame(
+		varParent = c("A", "A", "A", "B", "B", "Total"),
+		varChild = c("a", "b", "Total", "c", "Total", "Total"),
+		n = c(1, 2, 3, 4, 4, 7)
+	)
+	expect_silent(
+		pl <- plotCountClinData(data, 
+			vars = c("varParent", "varChild"), 
+			valueVar = "n"
+		)
+	)
+	expect_s3_class(pl, "plotly")
+	plotData <- as.data.frame(plotly_data(pl))
+			
+	# all records being retained?
+	plotDataInput <- plotData[, colnames(data)]
+	plotDataInputOrder <- plotDataInput[do.call(order, plotData), ]
+	dataOrder <- data[do.call(order, data), ]
+	expect_equal(plotDataInputOrder, dataOrder, check.attributes = FALSE)
+			
+	# check extraction of hierarchical data
+	dataHierar <- data.frame(
+		hierarID = c("A-a", "A-b", "A", "B-c", "B", "Overall"),
+		hierarParent = c("A", "A", "Overall", "B", "Overall", ""),
+		hierarLabel = c("a: 1", "b: 2", "A: 3", "c: 4", "B: 4", "Overall: 7"),
+		stringsAsFactors = FALSE
+	)
+	# orders df the same
+	dataHierarOrder <- dataHierar[do.call(order, dataHierar), ]
+	plotDataInternal <- plotData[, colnames(dataHierar)]
+	plotDataInternalOrder <- plotDataInternal[do.call(order, plotDataInternal), ]
+	expect_equal(plotDataInternalOrder, dataHierarOrder, check.attributes = FALSE)
+			
+})
+

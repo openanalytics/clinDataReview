@@ -192,9 +192,12 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 	# all variable of interest:
 	vars <- c(parentVar, countVar)
 	
-	varWithTotal <- tail(vars, -1)
+	varWithTotal <- vars
 	
 	# variable to summarize
+	# if a color variable is specified:
+	# - the mean of this variable is computed (var = [color var])
+	# - as well as the counts per group (var = 'all')
 	if(!is.null(colorVar)){
 		if(packageVersion("inTextSummaryTable") < "2.11.0")
 			stop("'inTextSummaryTable' version >= 2.11.0 is required.")
@@ -223,7 +226,8 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 			)
 		}
 	
-		# if 'color' is specified, for the computation of the data total across rows
+		# The variable(s) used for coloring should be included into the same data column
+		# So for the computation of the data total across rows
 		# the corresponding specified colorVar of the PARENT variable should be used
 		if(!is.null(colorVar)){
 			if(!is.null(names(colorVar))){
@@ -235,7 +239,7 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 					
 					dataTotalRow <- ddply(dataI, c("USUBJID", parentVar), function(x){
 						# if color var not specified for this variable: set to NA
-						x[[colorVar[countVar]]] <- if(is.na(colorParentVar)){
+						x[[colorVar[countVar]]] <- if(length(colorParentVar) == 0 || is.na(colorParentVar)){
 							NA
 						}else	x[[colorParentVar]]
 						x
