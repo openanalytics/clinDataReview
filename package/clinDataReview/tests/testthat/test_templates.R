@@ -18,6 +18,11 @@ write_xpt(dataEX, file.path(testPathData, "adex.xpt"))
 
 
 test_that("Creation of division template", {
+			
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(), 
+		message = "pandoc is not available"
+	)
       
       # Read division config from available one in tests folder
       testPathFiles <- normalizePath(path = "../files")

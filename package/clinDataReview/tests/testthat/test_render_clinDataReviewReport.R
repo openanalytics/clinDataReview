@@ -1,6 +1,7 @@
 context("Test the 'render_clinDataReviewReport'")
 
 library(yaml)
+library(rmarkdown)
 
 testPathBase <- normalizePath(path = "../files")
 testPathConfig <- file.path(testPathBase, "config")
@@ -158,7 +159,12 @@ test_that("A warning is generated if the general config file is not available", 
 })
 
 test_that("The creation of html file from markdown files is successful", {
-      
+     
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(), 
+		message = "pandoc is not available"
+	)
+			
 	testDir <- tempfile("mdConversion")
 	dir.create(testDir)
 	

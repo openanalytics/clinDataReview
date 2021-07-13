@@ -2,7 +2,7 @@ Package: clinDataReview
 Type: Package
 Title: Clinical Data Review Tool
 Version: 1.1.0
-Date: 2021-07-06
+Date: 2021-07-13
 Authors@R: c(
   person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"), 
   email = "laure.cougnaud@openanalytics.eu"),
@@ -52,8 +52,10 @@ Suggests:
   testthat,
   xml2,
   DT
+SystemRequirements: pandoc (to create a clinical data review report)
 URL: https://github.com/openanalytics/clinDataReview
 BugReports: https://github.com/openanalytics/clinDataReview/issues
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
+

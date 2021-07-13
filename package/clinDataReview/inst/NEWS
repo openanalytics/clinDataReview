@@ -6,6 +6,7 @@
     o listing template: export to docx with listingDocx
     o summary table template: comparison type 'newData-diff' available
     o count template: remove bar variable by default in table 
+    o unit tests/doc: fix for Pandoc (CRAN Solaris) + SystemRequirements
 1.0.0
     o new 'startup' config param for all visualizations template
     o remove color specification for collapsible button

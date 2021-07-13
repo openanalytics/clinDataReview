@@ -81,7 +81,10 @@ template report available in the `clinDataReview` package.
 A simple patient profile report for each subject in the example
 dataset is created below.
 
-```{r createPatientProfiles, results = "hide"}
+Please note that the patient profiles are only created if Pandoc
+is available.
+
+```{r createPatientProfiles, results = "hide", eval = rmarkdown::pandoc_available()}
 # create a directory to store the patient profiles:
 patientProfilesDir <- "patientProfiles"
 dir.create(patientProfilesDir)
