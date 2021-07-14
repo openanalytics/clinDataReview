@@ -23,7 +23,8 @@ hierarchical format, with extra attributes (in 'metadat'):
 \itemize{
 \item{'varID': }{String with column of output
 containing ID of specific element.\cr
-This is a combination from the specified \code{vars}.}
+This is a combination from the specified \code{vars},
+or 'Overall' for the grand total.}
 \item{'varParent': }{String with column of output
 containing ID of the parent element}
 \item{'varLabel': }{String with column of output
