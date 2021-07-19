@@ -24,6 +24,7 @@ scatterplotClinData(
   xLimExpandData = TRUE,
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+  caption = NULL,
   facetPars = list(),
   facetType = c("wrap", "grid"),
   scalePars = list(),

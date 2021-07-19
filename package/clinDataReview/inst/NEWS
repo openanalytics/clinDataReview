@@ -1,3 +1,5 @@
+1.2.0
+    o scatterplot clin data: add caption
 1.1.0
     o new boxplotClinData functionality
     o barplotClinData: textVar

@@ -86,7 +86,8 @@ getSizePlotClinData <- function(
 	nrow = 1L,
 	ncol = 1L,
 	legend = TRUE, 
-	legendPosition = "right"){
+	legendPosition = "right",
+	caption = NULL){
 	
 	widthDef <- 800
 
@@ -117,6 +118,10 @@ getSizePlotClinData <- function(
 			height <- height + height/nrow*0.2
 		if(legendPosition %in% c("left", "right"))
 			width <- width + width/ncol*0.2
+	}
+	
+	if(!is.null(caption)){
+		height <- height + height/nrow*0.05
 	}
 	
 	dim <- c(width = width, height = height)

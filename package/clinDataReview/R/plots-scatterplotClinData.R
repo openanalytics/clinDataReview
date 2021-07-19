@@ -49,6 +49,7 @@ scatterplotClinData <- function(
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+	caption = NULL,
 	facetPars = list(), facetType = c("wrap", "grid"),
 	scalePars = list(),
 	themePars = list(legend.position = "bottom"),
@@ -144,7 +145,7 @@ scatterplotClinData <- function(
 		labelVars = labelVars,
 		hoverVars = hoverVars,
 		geomType = "point"
-	)
+	)		
 	
 	# set plot dimensions:
 	legPos <- themePars$legend.position
@@ -154,7 +155,8 @@ scatterplotClinData <- function(
 		height = height, 
 		gg = gg,
 		legend = length(c(aesPointVar, aesLineVar)) > 0,
-		legendPosition = legPos
+		legendPosition = legPos,
+		caption = caption
 	)
 	width <- unname(dimPlot["width"])
 	height <- unname(dimPlot["height"])
@@ -165,6 +167,9 @@ scatterplotClinData <- function(
 		width = width, height = height, 
 		tooltip = if(!is.null(hoverVars))	"text"
 	)
+	
+	if(!is.null(caption ))
+		pl <- addCaptionToPlotly(pl = pl, caption = caption)
 	
 	# fix for legend
 	# 'legend.position' not supported in ggplotly

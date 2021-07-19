@@ -274,3 +274,30 @@ varToFm <- function(var){
 	return(fm)
 }
 
+#' Add a caption to a plotly object
+#' @param pl a \code{\link[plotly]{plotly}} object
+#' @param caption String with caption.
+#' @return The updated \code{\link[plotly]{plotly}} object
+#' with a caption included
+#' @importFrom plotly layout
+#' @author Laure Cougnaud
+addCaptionToPlotly <- function(pl, caption){
+	
+	pl <- layout(
+		p = pl,
+		annotations = list(
+			list(
+				x = 1, y = -0.1, text = caption, 
+				showarrow = FALSE, 
+				xref = 'paper', yref = 'paper', 
+				xanchor = 'right', yanchor = 'top', 
+				xshift = 0, yshift = -40,
+				font = list(size = 12)
+			)
+		),
+		margin = list(b = 80 + 40) # 80 px by default
+	)
+	return(pl)
+	
+}
+

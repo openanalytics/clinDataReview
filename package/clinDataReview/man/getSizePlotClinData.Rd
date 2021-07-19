@@ -11,7 +11,8 @@ getSizePlotClinData(
   nrow = 1L,
   ncol = 1L,
   legend = TRUE,
-  legendPosition = "right"
+  legendPosition = "right",
+  caption = NULL
 )
 }
 \arguments{
