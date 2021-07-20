@@ -4,12 +4,28 @@
 \alias{addCaptionToPlotly}
 \title{Add a caption to a plotly object}
 \usage{
-addCaptionToPlotly(pl, caption)
+addCaptionToPlotly(
+  pl,
+  caption,
+  nrow = 1L,
+  legend = FALSE,
+  legendPosition = "right"
+)
 }
 \arguments{
 \item{pl}{a \code{\link[plotly]{plotly}} object}
 
 \item{caption}{String with caption.}
+
+\item{nrow}{single-length integer specifying the 
+number of facet rows in the plot. (default = 1) 
+Overwritten if \code{gg} is specified.}
+
+\item{legend}{Logical, if TRUE (by default)
+a legend is available in the plot.}
+
+\item{legendPosition}{String with position of the legend,
+'right' by default.}
 }
 \value{
 The updated \code{\link[plotly]{plotly}} object

@@ -277,25 +277,28 @@ varToFm <- function(var){
 #' Add a caption to a plotly object
 #' @param pl a \code{\link[plotly]{plotly}} object
 #' @param caption String with caption.
+#' @inheritParams getSizePlotClinData
 #' @return The updated \code{\link[plotly]{plotly}} object
 #' with a caption included
 #' @importFrom plotly layout
 #' @author Laure Cougnaud
-addCaptionToPlotly <- function(pl, caption){
+addCaptionToPlotly <- function(pl, caption, 
+	nrow = 1L, legend = FALSE, legendPosition = "right"){
 	
+	legendMargin <- 80 + ifelse(legend & (legendPosition == "bottom"), 20, 0)
 	pl <- layout(
 		p = pl,
 		annotations = list(
 			list(
-				x = 1, y = -0.1, text = caption, 
+				x = 1, y = 0, text = caption, #-1/nrow*0.1
 				showarrow = FALSE, 
 				xref = 'paper', yref = 'paper', 
 				xanchor = 'right', yanchor = 'top', 
-				xshift = 0, yshift = -40,
+				xshift = 0, yshift = -legendMargin,
 				font = list(size = 12)
 			)
 		),
-		margin = list(b = 80 + 40) # 80 px by default
+		margin = list(b = legendMargin + 20) # 80 px by default
 	)
 	return(pl)
 	

@@ -169,7 +169,13 @@ scatterplotClinData <- function(
 	)
 	
 	if(!is.null(caption ))
-		pl <- addCaptionToPlotly(pl = pl, caption = caption)
+		pl <- addCaptionToPlotly(
+			pl = pl, 
+			caption = caption, 
+			nrow = attr(gg, "metaData")$nrow,
+			legend = length(c(aesPointVar, aesLineVar)) > 0,
+			legendPosition = legPos
+		)
 	
 	# fix for legend
 	# 'legend.position' not supported in ggplotly

@@ -192,6 +192,8 @@ staticScatterplotClinData <- function(
 	if(!is.null(title))
 		gg <- gg + ggtitle(title)
 	
+	metadata <- list()
+	
 	# facetting:
 	if(length(facetPars) > 0){
 		
@@ -203,7 +205,10 @@ staticScatterplotClinData <- function(
 			grid = facet_grid
 		)
 		gg <- gg + do.call(facetFct, facetPars)
-	}
+		
+		metadata <- facetPars[c("nrow", "ncol")]
+		
+	}else	metadata <- list(nrow = 1, ncol = 1)
 	
 	# theme:
 	gg <- gg + theme_bw()
@@ -217,6 +222,8 @@ staticScatterplotClinData <- function(
 		xVar = xVar, yVar = yVar, 
 		refLinePars = refLinePars, facetPars = facetPars
 	)
+	
+	attr(gg, "metaData") <- metadata
 	
 	return(gg)
 	
