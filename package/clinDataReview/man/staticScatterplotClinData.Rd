@@ -18,6 +18,7 @@ staticScatterplotClinData(
   yTrans = "identity",
   xPars = list(),
   yPars = list(),
+  xLabVars = NULL,
   yLim = NULL,
   xLim = NULL,
   yLimExpandData = TRUE,
@@ -70,6 +71,14 @@ passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}
 \code{\link[ggplot2]{scale_x_continuous}}/
 \code{\link[ggplot2]{scale_y_continuous}} functions,
 besides \code{trans} and \code{limits}.}
+
+\item{xLabVars}{Character vector with variable(s) to be displayed 
+as the labels of the ticks in the x-axis.\cr
+By default, \code{xVar} is displayed.\cr
+If specified, this overwrites any \code{labels} specified via \code{xPars}.\cr
+In case the variable(s) contain different elements 
+by \code{xVar} or between facets, they are combined
+and displayed below each other.}
 
 \item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 

@@ -87,7 +87,7 @@ This report creates the specified patient profiles (with the \code{patientProfil
 }
 }
 \section{Clinical data generic template for visualization : plotTemplate}{
-This report visualizes input data with a function of the clinical data review package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).
+This report visualizes input data with a function of the clinical data review package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).Summary statistics can be computed optionally and included in the plot (see 'tableParams' parameter).
 \cr The following parameters are available: \itemize{
 \item{\strong{\code{template}}: }{string set to: 'plotTemplate.Rmd' , name of the template report}
 \item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
@@ -96,7 +96,9 @@ This report visualizes input data with a function of the clinical data review pa
 \item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
 \item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'boxplotClinData' } , plotting function of the package to consider}
-\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !r-lazy [dataI]}}
+\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr \code{[parameterName]: !r-lazy [dataI]}}
+\item{\code{tableParams}: }{(optional) object , parameters for a summary table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}\cr Summary statistics are computed and merged as extra columns available for the plot data.}
+\item{\code{tableProcessing}: }{(optional) array , data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff' } , output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}

@@ -346,3 +346,63 @@ test_that("custom color palette is specified", {
       expect_equal(dataPlot, plData, check.attributes = FALSE)
       
     })
+	
+test_that("Labels from variables for the x-axis are correctly set", {
+		
+	dataPlot <- data.frame(
+		AVISIT = factor(
+			c("Day 4", "Screening"), 
+			levels = c("Screening", "Day 4")
+		),
+		AVAL = c(1, 2),
+		USUBJID = c("1", "2"),
+		n = c("N = 4", "N = 3"),
+		stringsAsFactors = FALSE
+	)
+	pl <- scatterplotClinData(
+		data = dataPlot, 
+		xVar = "AVISIT", xLabVars = c("AVISIT", "n"),
+		yVar = "AVAL"
+	)
+	plXAxis <- plotly_build(pl)$x$layout$xaxis
+	# extract tick labels
+	plXTickLab <- plXAxis$ticktext
+	# and sort them
+	plXTickLab <- plXTickLab[order(plXAxis$tickvals, decreasing = FALSE)]
+	
+	expect_match(object = plXTickLab[1], regexp = "Screening.+N = 3")
+	expect_match(object = plXTickLab[2], regexp = "Day 4.+N = 4")
+			
+})
+
+test_that("Labels from variables for the x-axis are correctly combined and ordered if multiple", {
+			
+	dataPlot <- data.frame(
+		AVISIT = factor(
+			c("Day 4", "Screening", "Day 4", "Screening"), 
+			levels = c("Screening", "Day 4")
+		),
+		AVAL = c(1, 2, 3, 4),
+		USUBJID = c("1", "1", "2", "2"),
+		TREAT = factor(
+			c("Compound", "Compound", "Placebo", "Placebo"),
+			levels = c("Placebo", "Compound")
+		),
+		stringsAsFactors = FALSE
+	)
+	pl <- scatterplotClinData(
+		data = dataPlot, 
+		xVar = "AVISIT", xLabVars = c("AVISIT", "TREAT"),
+		yVar = "AVAL"
+	)
+	plXAxis <- plotly_build(pl)$x$layout$xaxis
+	
+	# extract tick labels
+	plXTickLab <- plXAxis$ticktext
+	# and sort them
+	plXTickLab <- plXTickLab[order(plXAxis$tickvals, decreasing = FALSE)]
+			
+	expect_match(object = plXTickLab[1], regexp = "Screening.+Placebo.+Compound")
+	expect_match(object = plXTickLab[2], regexp = "Day 4.+Placebo.+Compound")
+	
+})

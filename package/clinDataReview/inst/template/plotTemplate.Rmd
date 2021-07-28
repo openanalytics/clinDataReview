@@ -69,6 +69,9 @@ library(clinDataReview)
 library(clinUtils)
 library(plyr)
 
+if(exists("tableParams"))
+	library(inTextSummaryTable)
+
 ```
 
 ```{r plotTemplate-startUpCode, code = as.character(params$startup)}
@@ -131,6 +134,45 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 		)
 	
 	data
+	
+}, simplify = FALSE)
+
+data <- dataList$currentData
+labelVars <- attr(dataList$currentData, "labelVars")
+
+```
+
+```{r plotTemplate-computeSummaryStatisticsTable, eval = exists("tableParams")}
+  
+dataList <- sapply(dataList, function(dataBatch) {
+
+	# Compute summary statistics
+	tableParamsBatch <- params[["tableParams"]]
+	tableParamsBatch$data <- dataBatch
+	summaryTable <- do.call(computeSummaryStatisticsTable, tableParamsBatch)	
+	summaryTable <- subset(summaryTable, !isTotal)
+	
+	# extra processing if required
+	if(exists("tableProcessing")){
+		
+		summaryTable <- processData(
+			data = summaryTable, 
+			processing = tableProcessing,
+			verbose = FALSE,
+			labelVars = labelVars,
+			labelData = "summary table"
+		)
+		labelVars <- attr(summaryTable, "labelVars")
+		
+	}
+	
+	# add summary statistics to input data
+	dataBatchWithStats <- base::merge(
+		x = dataBatch, y = summaryTable, 
+		all.x = TRUE, sort = FALSE
+	)
+	attr(dataBatchWithStats, "labelVars") <- labelVars
+	dataBatchWithStats
 	
 }, simplify = FALSE)
 

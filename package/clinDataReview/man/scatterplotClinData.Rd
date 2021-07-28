@@ -18,6 +18,7 @@ scatterplotClinData(
   yTrans = "identity",
   xPars = list(),
   yPars = list(),
+  xLabVars = NULL,
   yLim = NULL,
   xLim = NULL,
   yLimExpandData = TRUE,
@@ -92,6 +93,14 @@ besides \code{trans} and \code{limits}.}
 \code{\link[ggplot2]{scale_x_continuous}}/
 \code{\link[ggplot2]{scale_y_continuous}} functions,
 besides \code{trans} and \code{limits}.}
+
+\item{xLabVars}{Character vector with variable(s) to be displayed 
+as the labels of the ticks in the x-axis.\cr
+By default, \code{xVar} is displayed.\cr
+If specified, this overwrites any \code{labels} specified via \code{xPars}.\cr
+In case the variable(s) contain different elements 
+by \code{xVar} or between facets, they are combined
+and displayed below each other.}
 
 \item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
@@ -240,6 +249,53 @@ dataLB <- dataADaMCDISCP01$ADLBC
 dataDM <- dataADaMCDISCP01$ADSL
 dataLB <- annotateData(dataLB, annotations = list(data = dataDM))
 
+## time profile
+
+dataPlot <- subset(dataLB, PARAMCD == "ALT")
+
+# with relative day
+scatterplotClinData(
+	data = dataPlot, 
+	xVar = "ADY",
+	yVar = "LBSTRESN",
+	aesPointVar = list(color = "TRTP", fill = "TRTP"),
+	aesLineVar = list(group = "USUBJID", color = "TRTP"),
+	labelVars = labelVars
+)
+
+# with actual visit
+dataPlot$AVISIT <- with(dataPlot, reorder(AVISIT, AVISITN))
+scatterplotClinData(
+	data = dataPlot, 
+	xVar = "AVISIT",
+	yVar = "LBSTRESN",
+	aesPointVar = list(color = "TRTP", fill = "TRTP"),
+	aesLineVar = list(group = "USUBJID", color = "TRTP"),
+	labelVars = labelVars
+)
+
+# add number of subjects below each visit
+
+# compute number of subjects by visit
+summaryTable <- inTextSummaryTable::computeSummaryStatisticsTable(
+	dataPlot,
+	rowVar = "AVISIT",
+	stats = "n"
+)
+# add it in the data
+dataPlot <- merge(dataPlot, summaryTable[, c("AVISIT", "n")], all.x = TRUE)
+dataPlot$n <- paste0("N=", dataPlot$n)
+
+scatterplotClinData(
+	data = dataPlot, 
+	xVar = "AVISIT", xLabVars = c("AVISIT", "n"),
+	yVar = "LBSTRESN",
+	aesPointVar = list(color = "TRTP", fill = "TRTP"),
+	aesLineVar = list(group = "USUBJID", color = "TRTP"),
+	labelVars = labelVars
+)
+
+
 ## pairwise comparison plot of two parameters of interest:
 
 # format data long -> wide format (one column per lab param)
@@ -310,10 +366,10 @@ scatterplotClinData(
 	refLinePars = list(
 		list(slope = 1, intercept = 0, linetype = 1, color = "black", 
 			label = FALSE),
-		list(xintercept = "A1LO", linetype = 2, color = "orange"),
-		list(yintercept = "A1LO", linetype = 2, color = "orange"),
-		list(xintercept = "A1HI", linetype = 2, color = "orange"),
-		list(yintercept = "A1HI", linetype = 2, color = "orange", 
+		list(xintercept = "A1LO", linetype = 2, color = "blue"),
+		list(yintercept = "A1LO", linetype = 2, color = "blue"),
+		list(xintercept = "A1HI", linetype = 2, color = "purple"),
+		list(yintercept = "A1HI", linetype = 2, color = "purple", 
 			label = "Reference Range Upper Limit")
 	)
 )

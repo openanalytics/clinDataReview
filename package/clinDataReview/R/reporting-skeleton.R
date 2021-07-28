@@ -189,7 +189,8 @@ createMainConfigSkeleton <- function(dir, dirData) {
               "config-concomitantMedications-listing.yml",
 			  "config-laboratory-summaryBarplot.yml",
               "config-laboratory-eDISH-ALT.yml",
-              "config-laboratory-spaghettiPlot.yml"
+              "config-laboratory-spaghettiPlot.yml",
+			  "config-laboratory-spaghettiPlot-byVisit.yml"
           )
       ),
       fileName

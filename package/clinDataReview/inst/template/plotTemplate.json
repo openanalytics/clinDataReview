@@ -3,7 +3,7 @@
   
   "title" : "Clinical data generic template for visualization",
   
-  "description" : "This report visualizes input data with a function of the clinical data review package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).",
+  "description" : "This report visualizes input data with a function of the clinical data review package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).Summary statistics can be computed optionally and included in the plot (see 'tableParams' parameter).",
   
   "type": "object",
   
@@ -42,7 +42,16 @@
     },
     "plotParams": {
       "type": "object",
-      "doc": "parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\\cr\\code{[parameterName]: !r-lazy [dataI]}"
+      "doc": "parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\\cr \\code{[parameterName]: !r-lazy [dataI]}"
+    },
+    
+    "tableParams": {
+      "type": "object",
+      "doc": "parameters for a summary table, passed to \\link[inTextSummaryTable]{computeSummaryStatisticsTable}\\cr Summary statistics are computed and merged as extra columns available for the plot data."
+    },
+    "tableProcessing": {
+      "type": "array",
+      "doc": "data processing parameters for the summary table, passed to \\link[clinDataReview]{processData}"
     },
     
     "comparisonTableType": {

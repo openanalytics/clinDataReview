@@ -44,6 +44,7 @@ scatterplotClinData <- function(
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
 	xPars = list(), yPars = list(),
+	xLabVars = NULL,
 	yLim = NULL, xLim = NULL, 
 	yLimExpandData = TRUE, xLimExpandData = TRUE,
 	# general plot:
@@ -133,6 +134,7 @@ scatterplotClinData <- function(
 		# axis specification:
 		xTrans = xTrans, yTrans = yTrans,
 		xPars = xPars, yPars = yPars,
+		xLabVars = xLabVars,
 		yLim = yLim, xLim = xLim, 
 		yLimExpandData = yLimExpandData, xLimExpandData = xLimExpandData,
 		# general plot:
