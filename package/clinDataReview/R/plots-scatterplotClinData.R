@@ -1,4 +1,8 @@
 #' Scatterplot of variables of interest for clinical data visualization.
+#' 
+#' The parameters for this visualization
+#' are based on \code{ggplot2} (aesthetic, scale, ...), parameter specification,
+#' unlike the other visualizations of the package.
 #' @param pathVar String with variable of \code{data} containing
 #' path to a subject-specific report. The report info should be unique 
 #' for each element of \code{idVar}.
@@ -49,7 +53,7 @@ scatterplotClinData <- function(
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
-	caption = NULL,
+	caption = NULL, subtitle = NULL,
 	facetPars = list(), facetType = c("wrap", "grid"),
 	scalePars = list(),
 	themePars = list(legend.position = "bottom"),
@@ -148,15 +152,16 @@ scatterplotClinData <- function(
 	)		
 	
 	# set plot dimensions:
-	legPos <- themePars$legend.position
-	if(is.null(legPos)) 	legPos <- "right"
+	legendPosition <- themePars$legend.position
+	if(is.null(legendPosition)) 	legendPosition <- "right"
 	dimPlot <- getSizePlotClinData(
 		width = width, 
 		height = height, 
 		gg = gg,
 		legend = length(c(aesPointVar, aesLineVar)) > 0,
-		legendPosition = legPos,
-		caption = caption
+		legendPosition = legendPosition,
+		caption = caption,
+		subtitle = subtitle
 	)
 	width <- unname(dimPlot["width"])
 	height <- unname(dimPlot["height"])
@@ -169,26 +174,26 @@ scatterplotClinData <- function(
 	)
 	
 	if(!is.null(caption ))
-		pl <- addCaptionToPlotly(
-			pl = pl, 
+		pl <- addLabsToPlotly(
+			pl,
 			caption = caption, 
-			nrow = attr(gg, "metaData")$nrow,
+			subtitle = subtitle,
 			legend = length(c(aesPointVar, aesLineVar)) > 0,
-			legendPosition = legPos
+			legendPosition = legendPosition
 		)
 	
 	# fix for legend
 	# 'legend.position' not supported in ggplotly
 	# Note: in case legend position is left or top, big legend might overlap the plot
-	if(legPos == "none"){
+	if(legendPosition == "none"){
 		pl <- pl %>% layout(showlegend = FALSE)
 	}else{
 		plotDim <- getDimGgplot(gg = gg)
-		legOrient <- ifelse(legPos %in% c("top", "bottom"), "h", "v")
-		legY <- c(top = 1, bottom = -0.1/unname(plotDim["nrow"]), right = 0.5, left = 0.5)[legPos]
-		legYAnchor <- c(top = "bottom", bottom = "top", right = "top", left = "top")[legPos]
-		legX <- c(top = 0.5, bottom = 0.5, right = 1, left = -0.1/width)[legPos]
-		legXAnchor <- c(top = "middle", bottom = "middle", right = "left", left = "right")[legPos]
+		legOrient <- ifelse(legendPosition %in% c("top", "bottom"), "h", "v")
+		legY <- c(top = 1, bottom = -0.1/unname(plotDim["nrow"]), right = 0.5, left = 0.5)[legendPosition]
+		legYAnchor <- c(top = "bottom", bottom = "top", right = "top", left = "top")[legendPosition]
+		legX <- c(top = 0.5, bottom = 0.5, right = 1, left = -0.1/width)[legendPosition]
+		legXAnchor <- c(top = "middle", bottom = "middle", right = "left", left = "right")[legendPosition]
 		pl <- pl %>% layout(
 			legend = list(
 				orientation = legOrient, 

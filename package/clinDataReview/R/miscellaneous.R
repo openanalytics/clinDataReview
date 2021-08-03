@@ -274,33 +274,22 @@ varToFm <- function(var){
 	return(fm)
 }
 
-#' Add a caption to a plotly object
-#' @param pl a \code{\link[plotly]{plotly}} object
-#' @param caption String with caption.
-#' @inheritParams getSizePlotClinData
-#' @return The updated \code{\link[plotly]{plotly}} object
-#' with a caption included
-#' @importFrom plotly layout
+#' Count number of lines in a vector
+#' @param x Character vector.
+#' @return Integer vector of length \code{x} with number
+#' of lines
 #' @author Laure Cougnaud
-addCaptionToPlotly <- function(pl, caption, 
-	nrow = 1L, legend = FALSE, legendPosition = "right"){
+#' @examples 
+#' countNLines(x = c("A\nB", "blabla", "This\nis\na\nsentence."))
+#' @export
+countNLines <- function(x){
 	
-	legendMargin <- 80 + ifelse(legend & (legendPosition == "bottom"), 20, 0)
-	pl <- layout(
-		p = pl,
-		annotations = list(
-			list(
-				x = 1, y = 0, text = caption, #-1/nrow*0.1
-				showarrow = FALSE, 
-				xref = 'paper', yref = 'paper', 
-				xanchor = 'right', yanchor = 'top', 
-				xshift = 0, yshift = -legendMargin,
-				font = list(size = 12)
-			)
-		),
-		margin = list(b = legendMargin + 20) # 80 px by default
+	lines <- regmatches(
+		x = x, 
+		m = gregexpr(pattern = "\n", text = x, fixed = TRUE)
 	)
-	return(pl)
+	nLines <- sapply(lines, length)
+	nLines <- nLines + 1L
+	return(nLines)
 	
 }
-

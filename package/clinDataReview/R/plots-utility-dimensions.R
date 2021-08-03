@@ -87,9 +87,14 @@ getSizePlotClinData <- function(
 	ncol = 1L,
 	legend = TRUE, 
 	legendPosition = "right",
-	caption = NULL){
+	caption = NULL,
+	subtitle = NULL){
 	
+	isWidthSpec <- !is.null(width)
+	isHeightSpec <- !is.null(height)
+
 	widthDef <- 800
+	heightDef <- 500
 
 	# extract layout (in case facetting)
 	if(!is.null(gg)){
@@ -100,28 +105,31 @@ getSizePlotClinData <- function(
 		
 	}
 	
-	if(is.null(width) & is.null(height)){
+	if(!isHeightSpec){
+		height <- heightDef * nrow
+	}
+	if(!isWidthSpec){
 		width <- widthDef
-		plotSize <- width/ncol
-		height <- plotSize*nrow
-	}else	if(is.null(height)){
-		plotSize <- width/ncol
-		height <- plotSize*nrow
-	}else	if(is.null(width)){
-		plotSize <- height/nrow
-		width <- plotSize*ncol
 	}
 	
 	# add space for legend
+	# (only if width/height not specified)
 	if(legend && !(!is.null(legendPosition) && legendPosition == "none")){
-		if(legendPosition %in% c("bottom", "top"))
+		if(!isHeightSpec && legendPosition %in% c("bottom", "top"))
 			height <- height + height/nrow*0.2
-		if(legendPosition %in% c("left", "right"))
+		if(!isWidthSpec && legendPosition %in% c("left", "right"))
 			width <- width + width/ncol*0.2
 	}
 	
-	if(!is.null(caption)){
-		height <- height + height/nrow*0.05
+	# add space for caption & subtitle
+	# (only if height is not specified)
+	if(!isHeightSpec){
+		if(!is.null(caption)){
+			height <- height + height/nrow*0.05*countNLines(caption)
+		}
+		if(!is.null(subtitle)){
+			height <- height + height/nrow*0.05*countNLines(subtitle)
+		}
 	}
 	
 	dim <- c(width = width, height = height)

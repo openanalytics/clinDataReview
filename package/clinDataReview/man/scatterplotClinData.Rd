@@ -25,6 +25,7 @@ scatterplotClinData(
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
   caption = NULL,
+  subtitle = NULL,
   facetPars = list(),
   facetType = c("wrap", "grid"),
   scalePars = list(),
@@ -229,7 +230,9 @@ a \code{clinDataReview} object, a.k.a a list with the
 }
 }
 \description{
-Scatterplot of variables of interest for clinical data visualization.
+The parameters for this visualization
+are based on \code{ggplot2} (aesthetic, scale, ...), parameter specification,
+unlike the other visualizations of the package.
 }
 \examples{
 library(clinUtils)

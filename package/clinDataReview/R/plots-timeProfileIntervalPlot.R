@@ -164,11 +164,8 @@ timeProfileIntervalPlot <- function(data,
 		}else	colorPalette <- getColorPalette(n = 1, palette = colorPaletteOpt)
 	}
 
-	linesYVar <- regmatches(
-		x = yLevels, 
-		m = gregexpr(pattern = "\n", text = yLevels, fixed = TRUE)
-	)
-	nLinesY <- sum(sapply(linesYVar, length) + 1)
+	linesYVar <- countNLines(yLevels)
+	nLinesY <- sum(linesYVar)
 	plotHeight <- sum(nLinesY) * 20
 	
 	# top margin: top bar + title
