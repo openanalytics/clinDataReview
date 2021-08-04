@@ -263,7 +263,9 @@ scatterplotClinData(
 	aesPointVar = list(color = "USUBJID"),
 	themePars = list(legend.position = "none"),
 	facetPars = list(facets = "VISIT"),
-	labelVars = labelVars
+	labelVars = labelVars,
+	subtitle = "Visualization is split by visit",
+	caption = "Points are colored by subject ID"
 )
 
 # scatterplot with all visits, link subjects

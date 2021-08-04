@@ -358,7 +358,7 @@ test_that("a subtitle is correctly set", {
 	
 	subtitle <- paste(sample(LETTERS, 100, replace = TRUE), collapse = "")
 	subtitle <- paste(rep(subtitle, 10), collapse = "\n")
-	pl <- scatterplotClinData(
+	plSubtitle <- scatterplotClinData(
 		data = data, 
 		xVar = "DY", 
 		yVar = "AVAL", 
@@ -366,16 +366,61 @@ test_that("a subtitle is correctly set", {
 	)
 	
 	# extract annotation
-	plAnnot <- lapply(pl$x$layoutAttrs, function(x)
+	plSubtitleAnnot <- lapply(plSubtitle$x$layoutAttrs, function(x)
 		if(hasName(x, "annotations"))
 			lapply(x[["annotations"]], function(xEl)
 				if(hasName(xEl, "text"))
 					xEl[["text"]]
 			)
 	)
-	plAnnot <- unlist(plAnnot, recursive = TRUE, use.names = FALSE)
-	expect_identical(plAnnot, subtitle)
+	plSubtitleAnnot <- unlist(plSubtitleAnnot, recursive = TRUE, use.names = FALSE)
+	expect_identical(plSubtitleAnnot, subtitle)
+	
+	# check that top margin is increased
+	plNoSubtitle <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL"
+	)
+	expect_gt(
+		object = plotly_build(plSubtitle)$x$layout$margin$t,
+		expected = plotly_build(plNoSubtitle)$x$layout$margin$t
+	)
 			
+})
+
+test_that("extra margin is set for the subtitle in a facetted plot", {
+			
+	data <- data.frame(
+		DY = c(1, 2, 1, 2),
+		AVAL = c(3, 4, 2, 6),
+		USUBJID = c(1, 1, 2, 2),
+		TRT = c("A", "A", "B", "B"),
+		stringsAsFactors = FALSE
+	)
+			
+	subtitle <- paste(sample(LETTERS, 100, replace = TRUE), collapse = "")
+	subtitle <- paste(rep(subtitle, 10), collapse = "\n")
+	plSubtitleFacet <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL", 
+		subtitle = subtitle,
+		facetPars = list(facets = "TRT")
+	)
+	
+	# check that top margin is increased
+	plSubtitleNoFacet <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL",
+		subtitle = subtitle
+	)
+	expect_gt(
+		object = plotly_build(plSubtitleFacet)$x$layout$margin$t,
+		expected = plotly_build(plSubtitleNoFacet)$x$layout$margin$t
+	)
+
 })
 
 test_that("a caption is correctly set", {
@@ -389,7 +434,7 @@ test_that("a caption is correctly set", {
 			
 	caption <- paste(sample(LETTERS, 100, replace = TRUE), collapse = "")
 	caption <- paste(rep(caption, 10), collapse = "\n")
-	pl <- scatterplotClinData(
+	plCaption <- scatterplotClinData(
 		data = data, 
 		xVar = "DY", 
 		yVar = "AVAL", 
@@ -397,14 +442,25 @@ test_that("a caption is correctly set", {
 	)
 			
 	# extract annotation
-	plAnnot <- lapply(pl$x$layoutAttrs, function(x)
+	plCaptionAnnot <- lapply(plCaption$x$layoutAttrs, function(x)
 		if(hasName(x, "annotations"))
 			lapply(x[["annotations"]], function(xEl)
 				if(hasName(xEl, "text"))
 					xEl[["text"]]
 			)
 		)
-	plAnnot <- unlist(plAnnot, recursive = TRUE, use.names = FALSE)
-	expect_identical(plAnnot, subtitle)
+	plCaptionAnnot <- unlist(plCaptionAnnot, recursive = TRUE, use.names = FALSE)
+	expect_identical(plCaptionAnnot, caption)
+	
+	# check that bottom margin is increased
+	plNoCaption <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL"
+	)
+	expect_gt(
+		object = plotly_build(plCaption)$x$layout$margin$b,
+		expected = plotly_build(plNoCaption)$x$layout$margin$b
+	)
 			
 })

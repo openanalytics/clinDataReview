@@ -178,7 +178,8 @@ scatterplotClinData <- function(
 		caption = caption, 
 		subtitle = subtitle,
 		legend = length(c(aesPointVar, aesLineVar)) > 0,
-		legendPosition = legendPosition
+		legendPosition = legendPosition,
+		facet = length(facetPars) > 0
 	)
 	
 	# fix for legend

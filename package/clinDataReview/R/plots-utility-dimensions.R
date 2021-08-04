@@ -105,11 +105,17 @@ getSizePlotClinData <- function(
 		
 	}
 	
-	if(!isHeightSpec){
-		height <- heightDef * nrow
-	}
 	if(!isWidthSpec){
 		width <- widthDef
+	}
+	
+	if(!isHeightSpec){
+		if(nrow == 1){
+			height <- heightDef
+		}else{
+			plotSize <- width/ncol
+			height <- plotSize * nrow
+		}
 	}
 	
 	# add space for legend

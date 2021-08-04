@@ -12,7 +12,8 @@ addLabsToPlotly <- function(
 	caption = NULL, 
 	subtitle = NULL,
 	legend = FALSE, 
-	legendPosition = "right"){
+	legendPosition = "right",
+	facet = FALSE){
 	
 	if(!is.null(caption)){
 	
@@ -30,8 +31,7 @@ addLabsToPlotly <- function(
 					xanchor = 'right', yanchor = 'top', 
 					# position: below the x-axis title and legend
 					xshift = 0, yshift = -bottomMargin,
-					font = list(size = 12)#,
-#					pad = list(t = 10, b = 10) # in px
+					font = list(size = 12)
 				)
 			),
 			margin = list(b = bottomMargin + bottomMarginCaption + 10), # px
@@ -45,7 +45,9 @@ addLabsToPlotly <- function(
 	if(!is.null(subtitle)){
 		
 		# top margin seems to be 50 px by default (?) in plotly
-		topMargin <- 50 + ifelse(legend & (legendPosition == "top"), 10, 0)
+		topMargin <- 50 + 
+			ifelse(legend & (legendPosition == "top"), 10, 0) +
+			ifelse(facet, 20, 0)
 		topMarginSubtitle <- getHeightLabs(subtitle)
 		
 		pl <- layout(
@@ -57,9 +59,11 @@ addLabsToPlotly <- function(
 					showarrow = FALSE, 
 					xref = 'paper', yref = 'paper', 
 					xanchor = 'left', yanchor = 'bottom', 
-					xshift = 0, yshift = 0,
-					font = list(size = 12),
-					pad = list(b = 10) # in px
+					xshift = 0, 
+					# position for a ggplot2 facet plot is from
+					# the bottom (inside) of the facet label
+					yshift = ifelse(facet, 25, 0),
+					font = list(size = 12)
 				)
 			),
 			margin = list(t = topMargin + topMarginSubtitle),

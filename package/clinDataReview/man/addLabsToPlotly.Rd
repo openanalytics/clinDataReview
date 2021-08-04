@@ -9,7 +9,8 @@ addLabsToPlotly(
   caption = NULL,
   subtitle = NULL,
   legend = FALSE,
-  legendPosition = "right"
+  legendPosition = "right",
+  facet = FALSE
 )
 }
 \arguments{
