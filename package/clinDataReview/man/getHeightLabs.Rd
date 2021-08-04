@@ -2,8 +2,8 @@
 % Please edit documentation in R/plots-utility-dimensions.R
 \name{getHeightLabs}
 \alias{getHeightLabs}
-\title{Get height of labs of the plot,
-i.e.g caption or subtitle}
+\title{Get height of labels of the plot,
+i.e caption or subtitle}
 \usage{
 getHeightLabs(lab)
 }
@@ -15,8 +15,8 @@ Integer with height in pixels
 for this element.
 }
 \description{
-Get height of labs of the plot,
-i.e.g caption or subtitle
+Get height of labels of the plot,
+i.e caption or subtitle
 }
 \author{
 Laure Cougnaud

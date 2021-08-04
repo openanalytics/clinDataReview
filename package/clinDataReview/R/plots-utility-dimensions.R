@@ -64,6 +64,25 @@ getDimGgplot <- function(gg){
 }
 
 #' Get dimensions for a clinical data plot
+#' 
+#' This function set sensitive defaults dimensions
+#' for a plot in the package.
+#' This includes:
+#' \itemize{
+#' \item{setting a default width for a figure to 
+#' fit in a standard clinical data review report}
+#' \item{increasing the figure height:}{
+#' \itemize{
+#' \item{for facetted plot, ensuring that each 
+#' facet is relatively squared}
+#' \item{if a caption or a subtitle is specified}
+#' \item{if a legend is set at the bottom or the top
+#' of the plot}
+#' }
+#' \item{increasing the figure width if a legend
+#' is set at the left or the right of the plot}
+#' }
+#' }
 #' @param gg \code{\link[ggplot2]{ggplot}}
 #' @param nrow single-length integer specifying the 
 #'   number of facet rows in the plot. (default = 1) 
@@ -144,8 +163,8 @@ getSizePlotClinData <- function(
 	
 }
 
-#' Get height of labs of the plot,
-#' i.e.g caption or subtitle
+#' Get height of labels of the plot,
+#' i.e caption or subtitle
 #' @param lab String with label.
 #' @return Integer with height in pixels 
 #' for this element.
