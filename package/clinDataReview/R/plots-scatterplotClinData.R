@@ -173,14 +173,13 @@ scatterplotClinData <- function(
 		tooltip = if(!is.null(hoverVars))	"text"
 	)
 	
-	if(!is.null(caption ))
-		pl <- addLabsToPlotly(
-			pl,
-			caption = caption, 
-			subtitle = subtitle,
-			legend = length(c(aesPointVar, aesLineVar)) > 0,
-			legendPosition = legendPosition
-		)
+	pl <- addLabsToPlotly(
+		pl,
+		caption = caption, 
+		subtitle = subtitle,
+		legend = length(c(aesPointVar, aesLineVar)) > 0,
+		legendPosition = legendPosition
+	)
 	
 	# fix for legend
 	# 'legend.position' not supported in ggplotly

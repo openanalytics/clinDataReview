@@ -346,3 +346,65 @@ test_that("custom color palette is specified", {
       expect_equal(dataPlot, plData, check.attributes = FALSE)
       
     })
+	
+test_that("a subtitle is correctly set", {
+			
+	data <- data.frame(
+		DY = c(1, 2, 1, 2),
+		AVAL = c(3, 4, 2, 6),
+		USUBJID = c(1, 1, 2, 2),
+		stringsAsFactors = FALSE
+	)	
+	
+	subtitle <- paste(sample(LETTERS, 100, replace = TRUE), collapse = "")
+	subtitle <- paste(rep(subtitle, 10), collapse = "\n")
+	pl <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL", 
+		subtitle = subtitle
+	)
+	
+	# extract annotation
+	plAnnot <- lapply(pl$x$layoutAttrs, function(x)
+		if(hasName(x, "annotations"))
+			lapply(x[["annotations"]], function(xEl)
+				if(hasName(xEl, "text"))
+					xEl[["text"]]
+			)
+	)
+	plAnnot <- unlist(plAnnot, recursive = TRUE, use.names = FALSE)
+	expect_identical(plAnnot, subtitle)
+			
+})
+
+test_that("a caption is correctly set", {
+			
+	data <- data.frame(
+		DY = c(1, 2, 1, 2),
+		AVAL = c(3, 4, 2, 6),
+		USUBJID = c(1, 1, 2, 2),
+		stringsAsFactors = FALSE
+	)	
+			
+	caption <- paste(sample(LETTERS, 100, replace = TRUE), collapse = "")
+	caption <- paste(rep(caption, 10), collapse = "\n")
+	pl <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL", 
+		caption = caption
+	)
+			
+	# extract annotation
+	plAnnot <- lapply(pl$x$layoutAttrs, function(x)
+		if(hasName(x, "annotations"))
+			lapply(x[["annotations"]], function(xEl)
+				if(hasName(xEl, "text"))
+					xEl[["text"]]
+			)
+		)
+	plAnnot <- unlist(plAnnot, recursive = TRUE, use.names = FALSE)
+	expect_identical(plAnnot, subtitle)
+			
+})

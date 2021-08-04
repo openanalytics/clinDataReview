@@ -16,8 +16,9 @@ addLabsToPlotly <- function(
 	
 	if(!is.null(caption)){
 	
-		# bottom margin is 80 px by default in plotly
-		bottomMargin <- 80 + ifelse(legend & (legendPosition == "bottom"), 20, 0)
+		# bottom margin seems to be 50 px by default (?) in plotly
+		bottomMargin <- 50 + ifelse(legend & (legendPosition == "bottom"), 10, 0)
+		bottomMarginCaption <- getHeightLabs(caption)
 		
 		pl <- layout(
 			p = pl,
@@ -27,40 +28,48 @@ addLabsToPlotly <- function(
 					showarrow = FALSE, 
 					xref = 'paper', yref = 'paper', 
 					xanchor = 'right', yanchor = 'top', 
+					# position: below the x-axis title and legend
 					xshift = 0, yshift = -bottomMargin,
-					font = list(size = 12)
+					font = list(size = 12)#,
+#					pad = list(t = 10, b = 10) # in px
 				)
 			),
-			margin = list(b = bottomMargin + 20) # 80 px by default
+			margin = list(b = bottomMargin + bottomMarginCaption + 10), # px
+			# fix the distance between axis labels and title text
+			# otherwise title is centered vertically in the margin
+			xaxis = list(title = list(standoff = 10)) # px
 		)
 		
 	}
 	
 	if(!is.null(subtitle)){
 		
-		# top margin is 100 px by default in plotly
-		topMargin <- 100 + ifelse(legend & (legendPosition == "top"), 20, 0)
+		# top margin seems to be 50 px by default (?) in plotly
+		topMargin <- 50 + ifelse(legend & (legendPosition == "top"), 10, 0)
+		topMarginSubtitle <- getHeightLabs(subtitle)
 		
 		pl <- layout(
 			p = pl,
 			annotations = list(
 				list(
-					x = 0.5, y = 1, text = subtitle, 
+					x = 0, y = 1, text = subtitle, 
+					align = "left",
 					showarrow = FALSE, 
 					xref = 'paper', yref = 'paper', 
-					xanchor = 'center', yanchor = 'bottom', 
+					xanchor = 'left', yanchor = 'bottom', 
 					xshift = 0, yshift = 0,
-					font = list(size = 12)
+					font = list(size = 12),
+					pad = list(b = 10) # in px
 				)
 			),
-			margin = list(t = topMargin + 20),
-			# set title at the top of the top margin 
+			margin = list(t = topMargin + topMarginSubtitle),
+			# fix title at the top of the top margin 
 			# (vertical center by default)
 			# otherwise might overlap with subtitle
 			title = list(
 				yref = "container", 
 				y = 1, yanchor = "top",
-				pad = list(t = 10)
+				pad = list(t = 10) # in px
 			)
 		)
 			

@@ -125,15 +125,30 @@ getSizePlotClinData <- function(
 	# (only if height is not specified)
 	if(!isHeightSpec){
 		if(!is.null(caption)){
-			height <- height + height/nrow*0.05*countNLines(caption)
+			height <- height + getHeightLabs(caption)
 		}
 		if(!is.null(subtitle)){
-			height <- height + height/nrow*0.05*countNLines(subtitle)
+			height <- height + getHeightLabs(subtitle)
 		}
 	}
 	
 	dim <- c(width = width, height = height)
 	
 	return(dim)
+	
+}
+
+#' Get height of labs of the plot,
+#' i.e.g caption or subtitle
+#' @param lab String with label.
+#' @return Integer with height in pixels 
+#' for this element.
+#' @author Laure Cougnaud
+getHeightLabs <- function(lab){
+	
+	nLines <- countNLines(lab)
+	height <- 15*nLines
+	
+	return(height)
 	
 }
