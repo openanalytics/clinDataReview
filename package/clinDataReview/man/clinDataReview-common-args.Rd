@@ -90,6 +90,10 @@ If not specified, a random id, as 'plotClinData[X]' is used.}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
+\item{caption}{String with caption.}
+
+\item{subtitle}{String with subtitle}
+
 \item{colorPalette}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}

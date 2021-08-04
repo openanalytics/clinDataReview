@@ -150,10 +150,10 @@ getSizePlotClinData <- function(
 	# (only if height is not specified)
 	if(!isHeightSpec){
 		if(!is.null(caption)){
-			height <- height + getHeightLabs(caption)
+			height <- height + getHeightCaption(caption)
 		}
 		if(!is.null(subtitle)){
-			height <- height + getHeightLabs(subtitle)
+			height <- height + getHeightSubtitle(subtitle)
 		}
 	}
 	
@@ -163,17 +163,27 @@ getSizePlotClinData <- function(
 	
 }
 
-#' Get height of labels of the plot,
-#' i.e caption or subtitle
-#' @param lab String with label.
+#' Get height of subtitle
+#' @inheritParams clinDataReview-common-args
 #' @return Integer with height in pixels 
 #' for this element.
 #' @author Laure Cougnaud
-getHeightLabs <- function(lab){
+getHeightSubtitle <- function(subtitle){
 	
-	nLines <- countNLines(lab)
+	nLines <- countNLines(subtitle)
 	height <- 15*nLines
+	return(height)
 	
+}
+
+#' Get height of caption
+#' @inheritParams clinDataReview-common-args
+#' @inherit getHeightSubtitle return
+#' @author Laure Cougnaud
+getHeightCaption <- function(caption){
+	
+	nLines <- countNLines(caption)
+	height <- 20*nLines
 	return(height)
 	
 }

@@ -29,6 +29,7 @@ barplotClinData <- function(
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+	caption = NULL, subtitle = NULL,
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
@@ -68,7 +69,9 @@ barplotClinData <- function(
 	dimPlot <- getSizePlotClinData(
 		width = width, height = height,
 		legend = !is.null(colorVar),
-		legendPosition = "bottom"
+		legendPosition = "bottom",
+		caption = caption,
+		subtitle = subtitle
 	)
 	width <- unname(dimPlot["width"])
 	height <- unname(dimPlot["height"])
@@ -102,8 +105,7 @@ barplotClinData <- function(
 	)
 	
 	## layout option
-	
-	xaxisArgs <- list(title = xLab, tickangle = 45)
+	xaxisArgs <- list(tickangle = 45)
 	
 	# in case x-var is not nested within color variable
 	# when elements are selected in the legend legend selection,
@@ -134,19 +136,21 @@ barplotClinData <- function(
 			
 		}
 	}
-	pl <- pl %>% layout(
-		title = title,
-		xaxis = xaxisArgs,
-		yaxis = list(title = yLab), 
-		barmode = barmode
-	)
 	
-	pl <- pl %>% layout(legend = 
-		list(
-			orientation = "h",
-			x = 0.5, xanchor = "center",
-			y = 1
-		)
+	pl <- layoutClinData(
+		p = pl,
+		xLab = xLab,
+		yLab = yLab,
+		title = title,
+		caption = caption, 
+		subtitle = subtitle,
+		legend = !is.null(colorVar),
+		legendPosition = "bottom",
+		width = width,
+		height = height,
+		# extra params passed to plotly::layout
+		xaxis = xaxisArgs,
+		barmode = barmode
 	)
 		
 	# specific formatting for clinical data

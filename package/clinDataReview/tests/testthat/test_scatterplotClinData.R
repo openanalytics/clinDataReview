@@ -366,15 +366,13 @@ test_that("a subtitle is correctly set", {
 	)
 	
 	# extract annotation
-	plSubtitleAnnot <- lapply(plSubtitle$x$layoutAttrs, function(x)
-		if(hasName(x, "annotations"))
-			lapply(x[["annotations"]], function(xEl)
-				if(hasName(xEl, "text"))
-					xEl[["text"]]
-			)
+	plAnnot <- plotly_build(plSubtitle)$x$layout$annotations
+	plSubtitleAnnot <- lapply(plAnnot, function(xEl)
+		if(hasName(xEl, "text"))
+			xEl[["text"]]
 	)
 	plSubtitleAnnot <- unlist(plSubtitleAnnot, recursive = TRUE, use.names = FALSE)
-	expect_identical(plSubtitleAnnot, subtitle)
+	expect_match(plSubtitleAnnot, gsub("\n", ".*", subtitle))
 	
 	# check that top margin is increased
 	plNoSubtitle <- scatterplotClinData(
@@ -436,21 +434,14 @@ test_that("a caption is correctly set", {
 	caption <- paste(rep(caption, 10), collapse = "\n")
 	plCaption <- scatterplotClinData(
 		data = data, 
-		xVar = "DY", 
+		xVar = "DY", xLab = "TEST",
 		yVar = "AVAL", 
 		caption = caption
 	)
 			
 	# extract annotation
-	plCaptionAnnot <- lapply(plCaption$x$layoutAttrs, function(x)
-		if(hasName(x, "annotations"))
-			lapply(x[["annotations"]], function(xEl)
-				if(hasName(xEl, "text"))
-					xEl[["text"]]
-			)
-		)
-	plCaptionAnnot <- unlist(plCaptionAnnot, recursive = TRUE, use.names = FALSE)
-	expect_identical(plCaptionAnnot, caption)
+	xAxisTitle <- plotly_build(plCaption)$x$layout$xaxis$title$text
+	expect_match(xAxisTitle, gsub("\n", ".*", caption))
 	
 	# check that bottom margin is increased
 	plNoCaption <- scatterplotClinData(

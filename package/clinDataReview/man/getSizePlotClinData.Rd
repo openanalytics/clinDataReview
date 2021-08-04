@@ -38,6 +38,10 @@ a legend is available in the plot.}
 
 \item{legendPosition}{String with position of the legend,
 'right' by default.}
+
+\item{caption}{String with caption.}
+
+\item{subtitle}{String with subtitle}
 }
 \value{
 Numeric vector with width ('width')

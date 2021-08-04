@@ -173,35 +173,21 @@ scatterplotClinData <- function(
 		tooltip = if(!is.null(hoverVars))	"text"
 	)
 	
-	pl <- addLabsToPlotly(
-		pl,
+	plotDim <- getDimGgplot(gg = gg)
+	nrow <- unname(plotDim["nrow"])
+	ncol <- unname(plotDim["ncol"])
+	pl <- layoutClinData(
+		p = pl,
+		xLab = xLab,
 		caption = caption, 
 		subtitle = subtitle,
 		legend = length(c(aesPointVar, aesLineVar)) > 0,
 		legendPosition = legendPosition,
-		facet = length(facetPars) > 0
+		facet = length(facetPars) > 0,
+		width = width,
+		height = height,
+		nrow = nrow, ncol = ncol
 	)
-	
-	# fix for legend
-	# 'legend.position' not supported in ggplotly
-	# Note: in case legend position is left or top, big legend might overlap the plot
-	if(legendPosition == "none"){
-		pl <- pl %>% layout(showlegend = FALSE)
-	}else{
-		plotDim <- getDimGgplot(gg = gg)
-		legOrient <- ifelse(legendPosition %in% c("top", "bottom"), "h", "v")
-		legY <- c(top = 1, bottom = -0.1/unname(plotDim["nrow"]), right = 0.5, left = 0.5)[legendPosition]
-		legYAnchor <- c(top = "bottom", bottom = "top", right = "top", left = "top")[legendPosition]
-		legX <- c(top = 0.5, bottom = 0.5, right = 1, left = -0.1/width)[legendPosition]
-		legXAnchor <- c(top = "middle", bottom = "middle", right = "left", left = "right")[legendPosition]
-		pl <- pl %>% layout(
-			legend = list(
-				orientation = legOrient, 
-				x = legX, xanchor = legXAnchor,
-				y = legY, yanchor = legYAnchor
-			)
-		)
-	}
 
 	# convert static to interactive plot
 	pl <- formatPlotlyClinData(

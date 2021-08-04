@@ -115,6 +115,10 @@ Please note that the same limits are set for all facets.}
 
 \item{title}{String with title for the plot.}
 
+\item{caption}{String with caption.}
+
+\item{subtitle}{String with subtitle}
+
 \item{facetPars}{List with facetting parameters, passed to the facetting function.}
 
 \item{facetType}{String with facetting type, either:

@@ -16,6 +16,8 @@ barplotClinData(
   barmode = "group",
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+  caption = NULL,
+  subtitle = NULL,
   labelVars = NULL,
   width = NULL,
   height = NULL,
@@ -58,6 +60,10 @@ See \code{\link[clinUtils]{clinColors}}.}
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{title}{String with title for the plot.}
+
+\item{caption}{String with caption.}
+
+\item{subtitle}{String with subtitle}
 
 \item{labelVars}{Named character vector containing variable labels.}
 
@@ -169,6 +175,7 @@ barplotClinData(
 	yVar = "n", yLab = "Number of patients with adverse events",
 	labelVars = labelVars
 )
+
 # add number on top of the bars
 barplotClinData(
 	data = dataPlot,
@@ -191,7 +198,7 @@ tableAEBySeverity <- computeSummaryStatisticsTable(
 )
 barplotClinData(
 	data = tableAEBySeverity,
-	xVar = "AEDECOD", 
+	xVar = "AEDECOD", xLab = "Adverse event term",
 	yVar = "statPercm", yLab = "Percentage of adverse events",
 	labelVars = labelVars,
 	colorVar = "AESEV", barmode = "stack",
@@ -204,6 +211,9 @@ barplotClinData(
 		statPercm = "Percentage of events"
 	),
 	textVar = "\%m",
+	# add subtitle and caption
+	subtitle = "Group: severity",
+	caption = "a\nb\nc\nd\neThe height of the bar is relative to the percentage of events by category"
 )
 }
 \seealso{
