@@ -593,7 +593,7 @@ plotsLab <- dlply(dataPlot, "PARAMCD", function(dataLBParam){
           data = dataLBParam, 
           xVar = "ADY",
           yVar = "LBSTRESN",
-          aesPointVar = list(color = "TRTP"),
+          aesPointVar = list(color = "TRTP", fill = "TRTP"),
           aesLineVar = list(group = "USUBJID", color = "TRTP"),
           labelVars = labelVars,
           title = paste("Actual value of", 
