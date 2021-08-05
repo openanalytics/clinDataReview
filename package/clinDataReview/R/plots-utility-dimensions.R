@@ -127,7 +127,7 @@ getSizePlotClinData <- function(
 		}else	yUnique <- unique(y)
 		nLinesY <- countNLines(yUnique)
 		nLinesY <- sum(nLinesY)
-		heightDef <- sum(nLinesY) * 20
+		heightDef <- nLinesY * 30
 	# otherwise set default height
 	}else	heightDef <- 500
 
@@ -187,7 +187,6 @@ getSizePlotClinData <- function(
 #' }
 #' }
 #' @author Laure Cougnaud
-#' @export
 getPositionAndMargins <- function(
 	title = NULL, subtitle = NULL,
 	xLab = NULL, caption = NULL, 

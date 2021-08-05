@@ -149,7 +149,8 @@ layoutClinData <- function(
 					
 				},
 				`bottom` = {
-					legendY <- -positions$legend/heightPlot
+					# should be [-2, 3]
+					legendY <- -min(positions$legend/heightPlot, 2)
 					list(
 						orientation = "h", 
 						x = 0.5, xanchor = "center",
