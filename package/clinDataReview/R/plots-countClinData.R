@@ -34,7 +34,7 @@ plotCountClinData <- function(
         paste(valueLab, "by", paste(varsLab, collapse = " and "), 
             titleExtra), collapse = "<br>"
     ),
-	subtitle = NULL,
+	subtitle = NULL, caption = NULL,
     labelVars = NULL,
     # interactivity:
     width = NULL, height = NULL,
@@ -101,7 +101,7 @@ plotCountClinData <- function(
       includeLegend = FALSE,
 	  title = title,
 	  subtitle = subtitle,
-	  xLab = xLab
+	  caption = caption
   )
   width <- dimPlot[["width"]]
   height <- dimPlot[["height"]]
@@ -164,6 +164,7 @@ plotCountClinData <- function(
 		p = pl,
 		title = title,
 		subtitle = subtitle,
+		caption = caption,
 		includeLegend = FALSE,
 		width = width,
 		height = height,

@@ -205,7 +205,7 @@ boxplotClinData(
 	data = data,
 	xVar = "AVISIT", 
 	yVar = "AVAL",
-	facetVar = "ATPT", 
+	facetVar = "ATPT", ncol = 2,
 	colorVar = "TRTA",
 	title = "Diastolic Blood Pressure distribution",
 	subtitle = "By actual visit and analysis timepoint",
