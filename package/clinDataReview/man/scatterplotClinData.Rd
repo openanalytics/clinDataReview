@@ -264,7 +264,7 @@ dataPlotWide <- dcast(
 scatterplotClinData(
 	data = dataPlotWide, 
 	xVar = "ALT", yVar = "AST",
-	aesPointVar = list(color = "USUBJID"),
+	aesPointVar = list(color = "USUBJID", fill = "USUBJID"),
 	themePars = list(legend.position = "none"),
 	facetPars = list(facets = "VISIT"),
 	labelVars = labelVars,
@@ -278,12 +278,12 @@ xLab <- getLabelParamcd(paramcd = "ALT", data = dataLB,
 yLab <- getLabelParamcd(paramcd = "AST", data = dataLB, 
 	paramcdVar = "PARAMCD", paramVar = "PARAM")
 scatterplotClinData(
-	data = dataPlotWide, 
+	data = subset(dataPlotWide, VISIT \%in\% c("SCREENING 1", "WEEK 4")),
 	xVar = "ALT", yVar = "AST",
 	xLab = xLab,
 	yLab = yLab,
-	aesPointVar = list(color = "VISIT", shape = "VISIT"),
-	aesLineVar = list(group = "USUBJID", linetype = "VISIT"),
+	aesPointVar = list(color = "VISIT", fill = "VISIT"),
+	aesLineVar = list(group = "USUBJID"),
 	labelVars = labelVars
 )
 
@@ -307,7 +307,7 @@ scatterplotClinData(
 	data = dataPlot, 
 	xVar = "LBSTRESNBL", xLab = xLab,
 	yVar = "LBSTRESN", yLab = yLab,
-	aesPointVar = list(color = "USUBJID"),
+	aesPointVar = list(color = "USUBJID", fill = "USUBJID"),
 	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
 	hoverVars = c("USUBJID", "VISIT", "ADY", "LBSTRESN"),
 	labelVars = labelVars,
@@ -320,14 +320,13 @@ scatterplotClinData(
 	refLinePars = list(
 		list(slope = 1, intercept = 0, linetype = 1, color = "black", 
 			label = FALSE),
-		list(xintercept = "A1LO", linetype = 2, color = "orange"),
-		list(yintercept = "A1LO", linetype = 2, color = "orange"),
+		list(xintercept = "A1LO", linetype = 2, color = "yellow"),
+		list(yintercept = "A1LO", linetype = 2, color = "yellow"),
 		list(xintercept = "A1HI", linetype = 2, color = "orange"),
 		list(yintercept = "A1HI", linetype = 2, color = "orange", 
 			label = "Reference Range Upper Limit")
 	)
 )
-
 }
 \author{
 Laure Cougnaud

@@ -211,9 +211,8 @@ barplotClinData(
 		statPercm = "Percentage of events"
 	),
 	textVar = "\%m",
-	# add subtitle and caption
-	subtitle = "Group: severity",
-	caption = "The height of the bar is relative to the percentage of events by category"
+	# add subtitle
+	subtitle = "Group: severity"
 )
 }
 \seealso{

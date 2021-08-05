@@ -129,9 +129,12 @@ layoutClinData <- function(
 		# Note: in case legend position is left or top, big legend might overlap the plot
 		if(legendPosition == "none"){
 			
-			args$legend$showlegend <- FALSE
+			args$showlegend <- FALSE
 			
 		}else{
+			
+			# print legend even if only one y-element
+			args$showlegend <- TRUE 
 			
 			# legend position is in normalized coordinates
 			# to the plot region (without margins)
