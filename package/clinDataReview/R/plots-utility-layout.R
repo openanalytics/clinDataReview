@@ -49,23 +49,16 @@ layoutClinData <- function(
 		caption <- paste0("<i>", caption, "</i>")
 		xLab <- paste(c(xLab, caption), collapse = "\n\n")
 
-#		pl <- layout(
-#			p = pl,
-#			annotations = list(
-#				list(
-#					x = 1, y = 0, text = caption, 
-#					showarrow = FALSE, 
-#					xref = 'paper', yref = 'paper', 
-#					xanchor = 'right', yanchor = 'top', 
-#					# position: below the x-axis title and legend
-#					xshift = 0, yshift = -bottomMargin,
-#					font = list(size = 12)
-#				)
-#			),
-#			margin = list(b = bottomMargin + bottomMarginCaption + 10), # px
-#			# fix the distance between axis labels and title text
-#			# otherwise title is centered vertically in the margin
-#			xaxis = list(title = list(standoff = 10)) # px
+#		args$annotations <- c(args$annotations,
+#			list(
+#				x = 1, y = 0, text = caption, 
+#				showarrow = FALSE, 
+#				xref = 'paper', yref = 'paper', 
+#				xanchor = 'right', yanchor = 'bottom', 
+#				# position: on top of the margin
+#				xshift = 0, yshift = -margins$t,
+#				font = list(size = 12)
+#			)
 #		)
 		
 	}
@@ -109,7 +102,7 @@ layoutClinData <- function(
 	if(!is.null(xLab)){
 		args$xaxis$title$text <- xLab
 		# standoff: distance between axis text and title
-		# adjusted to not have overlapping legend for bottom legend
+		# adjusted such as it does not overlap with caption or bottom legend
 		# (standoff + automargin on: margins are pushed to fit the axis title at given standoff distance)
 		args$xaxis$title$standoff <- 0
 	}
