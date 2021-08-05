@@ -5,12 +5,14 @@ labelVars <- attr(dataADaMCDISCP01, "labelVars")
 
 dataAE <- dataADaMCDISCP01$ADAE
 
+# basic plot
 timeProfileIntervalPlot(
 	data = dataAE,
 	paramVar = "USUBJID",
 	# time-variables
 	timeStartVar = "ASTDY",
 	timeEndVar = "ASTDY",
+	# colored by severity
 	colorVar = "AESEV",
 	labelVars = labelVars
 )
@@ -19,7 +21,6 @@ timeProfileIntervalPlot(
 timeProfileIntervalPlot(
 	data = dataAE,
 	paramVar = "USUBJID",
-	# time-variables
 	timeStartVar = "ASTDY",
 	timeEndVar = "ASTDY",
 	colorVar = "AESEV",

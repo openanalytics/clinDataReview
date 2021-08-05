@@ -211,7 +211,7 @@ getPositionAndMargins <- function(
 	# 2) legend
 	if(includeLegend && legendPosition == "top"){
 		res$position$legend <- topMargin
-		topMargin <- topMargin + 20
+		topMargin <- topMargin + 30
 	}
 	
 	# 3) subtitle
@@ -224,7 +224,7 @@ getPositionAndMargins <- function(
 	# title allowed to overlap button bar
 	# such as there is no empty margin in exported png
 	if(!is.null(title)){
-		topMargin <- topMargin + getHeightLab(title)
+		topMargin <- topMargin + 1.5*getHeightLab(title)
 	}else	topMargin <- topMargin + 20
 	# no position needed because title can be positioned with 'container'
 	
@@ -243,7 +243,7 @@ getPositionAndMargins <- function(
 	
 	# 2) legend
 	if(includeLegend && legendPosition == "bottom"){
-		bottomMargin <- bottomMargin + 20
+		bottomMargin <- bottomMargin + 30
 		res$position$legend <- bottomMargin
 	}
 	
