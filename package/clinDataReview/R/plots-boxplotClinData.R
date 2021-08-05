@@ -244,6 +244,7 @@ boxplotClinData <- function(
 	
 	pl <- layoutClinData(
 		p = pl,
+		xLab = xLab,
 		caption = caption, 
 		subtitle = subtitle,
 		includeLegend = TRUE, 

@@ -99,15 +99,23 @@ layoutClinData <- function(
 	}
 	
 	if(!is.null(xLab)){
-		args$xaxis$title$text <- xLab
+		
+		# label for the x-axis already set in facetted plot
+		if(!facet)
+			args$xaxis$title$text <- xLab
+		
 		# standoff: distance between axis text and title
 		# adjusted such as it does not overlap with caption or bottom legend
 		# (standoff + automargin on: margins are pushed to fit the axis title at given standoff distance)
 		args$xaxis$title$standoff <- 0
+		
 	}
 	
-	if(!is.null(yLab))
-		args$yaxis$title$text <- yLab
+	if(!is.null(yLab)){
+		# label for the y-axis already set in facetted plot
+		if(!facet)
+			args$yaxis$title$text <- yLab
+	}
 	
 	# set margins
 	args$margin <- margins

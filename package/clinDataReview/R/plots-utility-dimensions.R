@@ -146,8 +146,10 @@ getSizePlotClinData <- function(
 		if(nrow == 1){
 			height <- heightDef
 		}else{
-			plotSize <- width/ncol
-			height <- plotSize * nrow
+			if(ncol == 1){
+				height1Plot <- heightDef
+			}else	height1Plot <- width/ncol
+			height <- height1Plot * nrow
 		}
 	
 		# add space for margins
