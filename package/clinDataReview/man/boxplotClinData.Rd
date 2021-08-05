@@ -18,6 +18,8 @@ boxplotClinData(
   ncol = 1L,
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+  subtitle = NULL,
+  caption = NULL,
   labelVars = NULL,
   width = NULL,
   height = NULL,
@@ -64,6 +66,10 @@ See \code{\link[clinUtils]{clinColors}}.}
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{title}{String with title for the plot.}
+
+\item{subtitle}{String with subtitle}
+
+\item{caption}{String with caption.}
 
 \item{labelVars}{Named character vector containing variable labels.}
 
@@ -184,20 +190,27 @@ boxplotClinData(
 	data = data,
 	xVar = "AVISIT", 
 	yVar = "AVAL",
-	colorVar = "TRTA",
-	title = "Diastolic Blood Pressure distribution by actual visit and analysis timepoint",
-	yLab = "Actual value of the Diastolic Blood Pressure parameter (mmHg)",
-	labelVars = labelVars
+	colorVar = "TRTA"
 )
 
 boxplotClinData(
 	data = data,
 	xVar = "AVISIT", 
 	yVar = "AVAL",
-	facetVar = "ATPT",
-	ncol = 2,
-	title = "Diastolic Blood Pressure distribution by actual visit and analysis timepoint",
+	facetVar = "ATPT"
+)
+
+# add caption & subtitle
+boxplotClinData(
+	data = data,
+	xVar = "AVISIT", 
+	yVar = "AVAL",
+	facetVar = "ATPT", ncol = 2,
+	colorVar = "TRTA",
+	title = "Diastolic Blood Pressure distribution",
+	subtitle = "By actual visit and analysis timepoint",
 	yLab = "Actual value of the Diastolic Blood Pressure parameter (mmHg)",
+	caption = "Summary statistics are computed internally.",
 	labelVars = labelVars
 )
 }

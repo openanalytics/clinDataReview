@@ -14,3 +14,17 @@ timeProfileIntervalPlot(
 	colorVar = "AESEV",
 	labelVars = labelVars
 )
+
+# add caption & subtitle
+timeProfileIntervalPlot(
+	data = dataAE,
+	paramVar = "USUBJID",
+	# time-variables
+	timeStartVar = "ASTDY",
+	timeEndVar = "ASTDY",
+	colorVar = "AESEV",
+	labelVars = labelVars,
+	title = "Adverse events",
+	subtitle = "Time intervals",
+	caption = "Day is relative to the study baseline"
+)

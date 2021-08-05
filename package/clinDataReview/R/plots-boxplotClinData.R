@@ -30,6 +30,7 @@ boxplotClinData <- function(
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+	subtitle = NULL, caption = NULL,
 	labelVars = NULL,
 	# interactivity:
 	width = NULL, height = NULL,
@@ -102,19 +103,23 @@ boxplotClinData <- function(
 	# get plot dim
 	dimPlot <- getSizePlotClinData(
 		width = width, height = height,
+		title = title,
+		subtitle = subtitle,
+		caption = caption,
+		xLab = xLab,
+		facet = !is.null(facetVar),
 		includeLegend = !is.null(colorVar),
-		nrow = nrow, ncol = ncol,
-		legendPosition = "bottom"
+		legendPosition = "bottom",
+		nrow = nrow, ncol = ncol
 	)
-	width <- unname(dimPlot["width"])
-	height <- unname(dimPlot["height"])
+	width <- dimPlot[["width"]]
+	height <- dimPlot[["height"]]
 	
 	# Default size configurations:
 	axisLabelFontsize <- 15
 	titleFontSize <- 18
 	panelWidth <- 20 
 	panelSide <- "top"
-	
 	
 	## Help function to create a single sub-plot.
 	singleBoxPlot <- function(data, showLegend, row, col){
@@ -166,18 +171,19 @@ boxplotClinData <- function(
 	col_row <- expand.grid(col = 1:ncol, row = 1:nrow)[1:length(dataList),]
 	plotList <- mapply(
 		FUN = singleBoxPlot,
-  	data = dataList,
+		data = dataList,
 		col = col_row$col,
 		row = col_row$row,
-  	showLegend = showLegend,
-  	SIMPLIFY = FALSE)
+		showLegend = showLegend,
+		SIMPLIFY = FALSE
+	)
 	
 	pl <- subplot(
 		plotList,
-  	nrows = nrow,
-  	shareX = TRUE,
-  	titleY = FALSE,
-  	titleX = FALSE,
+		nrows = nrow,
+		shareX = TRUE,
+		titleY = FALSE,
+		titleX = FALSE,
 		margin = if(nrow > 1 &&  panelSide == "top"){
 				# Add additional bottom margin to each sub figure. 
 				# Else facet panel overlaps with fig above.
@@ -202,24 +208,27 @@ boxplotClinData <- function(
 				x = 0, y=0.5, xshift = -60, # position y-label
 				text = yLab,
 				textangle = 270,
-      	showarrow = F,
+				showarrow = F,
 				font = list(size = axisLabelFontsize),
 				xref='paper', yref='paper'
 			),
 			list(#create x-label via annotation.
-				x = 0.5, xref='paper', # place in the middle under the figures. 
-				y = -0.125/nrow,  # y_xlabel < 0 (else collision with ticks) and y_xlabel > y_legend
-				yref='paper',# important that yref = the same as the legend yref. 
-  			yanchor = "top", # else collision with the figures. 
+				x = 0.5, 
+				xref = 'paper', # place in the middle under the figures. 
+				y = 0,  # y_xlabel < 0 (else collision with ticks) and y_xlabel > y_legend
+				yref = 'paper',# important that yref = the same as the legend yref. 
+				yshift = -20,
+				yanchor = "top", # else collision with the figures. 
 				text = xLab,
-      	showarrow = F,
+				showarrow = FALSE,
 				font = list(size = axisLabelFontsize)
-	))
+			)
+		)
 	)
 	
 	# Title
 	if(!is.null(facetVar) && panelSide == "top"){
-		pl <-	pl %>% layout(
+		pl <- pl %>% layout(
 			title = list(
 				text = title, 
 				font = list(size = titleFontSize),
@@ -233,19 +242,33 @@ boxplotClinData <- function(
 		pl <- pl %>% layout(title = list(text = title, font = list(size = titleFontSize)))
 	}
 	
-	# Legend
-	pl <- pl %>% layout(
-		legend = list(
-			orientation = "h", 
-			x = 0.5, 
-			xanchor = "center",
-			y = -0.2/nrow, # Imporant that y_legend < y_xlabel (such that legend is below xlabel)
-			yanchor = "top", # Important that this is top such that it not collides with the x-label. (multi-row legend will expand downwards)
-			title = list(text = colorLab)
-		)
+	pl <- layoutClinData(
+		p = pl,
+		caption = caption, 
+		subtitle = subtitle,
+		includeLegend = TRUE, 
+		legendPosition = "bottom",
+		facet = TRUE,
+		width = width,
+		height = height,
+		nrow = nrow, ncol = ncol,
+		# passed to plotly::layout
+		legend = list(title = list(text = colorLab))
 	)
+	
+#	# Legend
+#	pl <- pl %>% layout(
+#		legend = list(
+#			orientation = "h", 
+#			x = 0.5, 
+#			xanchor = "center",
+#			y = -0.2/nrow, # Important that y_legend < y_xlabel (such that legend is below xlabel)
+#			yanchor = "top", # Important that this is top such that it not collides with the x-label. (multi-row legend will expand downwards)
+#			title = list(text = colorLab)
+#		)
+#	)
+	
 	## Custom interactive behaviour 
-  
 	pl <- formatPlotlyClinData(
 		data = data, pl = pl,
 		idVar = idVar, pathVar = pathVar,

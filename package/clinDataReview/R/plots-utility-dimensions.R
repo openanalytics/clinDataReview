@@ -151,13 +151,14 @@ getSizePlotClinData <- function(
 		}
 	
 		# add space for margins
-		margins <- getMargins(
+		sizeDetails <- getPositionAndMargins(
 			title = title, subtitle = subtitle,
 			xLab = xLab, caption = caption, 
 			facet = facet,
 			includeLegend = includeLegend,
 			legendPosition = legendPosition
 		)
+		margins <- sizeDetails[["margin"]]
 		height <- height + margins$t + margins$b
 		
 	}
@@ -170,10 +171,22 @@ getSizePlotClinData <- function(
 
 #' Get margins for a clinical data plot
 #' @inheritParams getSizePlotClinData
-#' @return List with margins
+#' @return List with:
+#' \itemize{
+#' \item{'margin'}{List with bottom ('t') and top ('t')
+#' margins in pixels}
+#' \item{'position': }{List with position
+#' of the following plot elements:
+#' title, subtitle, caption, xLab
+#' of the following elements.\cr
+#' The position is defined in distance in pixelx from the bottom
+#' or the top of the plotting region, depending on the 
+#' location of the element.
+#' }
+#' }
 #' @author Laure Cougnaud
 #' @export
-getMargins <- function(
+getPositionAndMargins <- function(
 	title = NULL, subtitle = NULL,
 	xLab = NULL, caption = NULL, 
 	facet = FALSE,
@@ -181,59 +194,79 @@ getMargins <- function(
 	legendPosition = "right"
 	){
 	
-	topMargin <- 30
-	bottomMargin <- 20
+	res <- list()	
+		
+	## top margin
+	# from top of the plotting region 
+	# to the top of the window/container
 	
-	if(!is.null(title))
-		topMargin <- topMargin + 20
+	topMargin <- 0
 	
-	if(!is.null(subtitle))
-		topMargin <- topMargin + getHeightSubtitle(subtitle)
-	
-	if(!is.null(xLab))
-		bottomMargin <- bottomMargin + 20
-	
-	if(!is.null(caption))
-		bottomMargin <- bottomMargin + getHeightCaption(caption)
-	
+	# 1) facet title
 	if(facet)
 		topMargin <- topMargin + 20
-		
-	if(includeLegend){
-		switch(legendPosition,
-			`top` = {
-				topMargin <- topMargin + 20
-			},
-			`bottom` = {
-				bottomMargin <- bottomMargin + 20
-			}
-		)
+	
+	# 2) legend
+	if(includeLegend && legendPosition == "top"){
+		res$position$legend <- topMargin
+		topMargin <- topMargin + 20
 	}
 	
-	return(list(t = topMargin, b = bottomMargin))
+	# 3) subtitle
+	if(!is.null(subtitle)){
+		res$position$subtitle <- topMargin
+		topMargin <- topMargin + getHeightLab(subtitle)
+	}
+	
+	# 4) title
+	# title allowed to overlap button bar
+	# such as there is no empty margin in exported png
+	if(!is.null(title)){
+		topMargin <- topMargin + getHeightLab(title)
+	}else	topMargin <- topMargin + 20
+	# no position needed because title can be positioned with 'container'
+	
+	## bottom margin
+	# from bottom of the plot
+	# to the bottom of the container
+	
+	# 0) (horizontal axis labels)
+	bottomMargin <- 20
+	
+	# 1) label for the x-axis
+	if(!is.null(xLab)){
+		bottomMargin <- bottomMargin + getHeightLab(xLab)
+		res$position$xLab <- bottomMargin
+	}
+	
+	# 2) legend
+	if(includeLegend && legendPosition == "bottom"){
+		bottomMargin <- bottomMargin + 20
+		res$position$legend <- bottomMargin
+	}
+	
+	# 3) caption
+	if(!is.null(caption)){
+		bottomMargin <- bottomMargin + getHeightLab(caption)
+		res$position$caption <- bottomMargin
+	}
+	
+	res$margin$t <- topMargin
+	res$margin$b <- bottomMargin
+	
+	return(res)
 	
 }
 
-#' Get height of subtitle
+#' Get height of labels: title, subtitle or caption
 #' @inheritParams clinDataReview-common-args
 #' @return Integer with height in pixels 
 #' for this element.
 #' @author Laure Cougnaud
-getHeightSubtitle <- function(subtitle){
+getHeightLab <- function(lab){
 	
-	nLines <- countNLines(subtitle)
-	height <- 15*nLines
-	return(height)
-	
-}
-
-#' Get height of caption
-#' @inheritParams clinDataReview-common-args
-#' @inherit getHeightSubtitle return
-#' @author Laure Cougnaud
-getHeightCaption <- function(caption){
-	
-	nLines <- countNLines(caption)
+	lab <- unname(lab)
+	nLines <- countNLines(lab)
 	height <- 20*nLines
 	return(height)
 	

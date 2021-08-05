@@ -24,78 +24,77 @@ layoutClinData <- function(
 	args <- list(...)
 	
 	# get margins
-	margins <- getMargins(
+	sizeDetails <- getPositionAndMargins(
 		title = title, subtitle = subtitle,
 		xLab = xLab, caption = caption, 
 		facet = facet,
 		includeLegend = includeLegend,
 		legendPosition = legendPosition
 	)
+	margins <- sizeDetails[["margin"]]
+	
 	# height of the plotting region
 	# used to set position in normalized coordinates
 	heightPlot <- height-margins$b-margins$t 
 	
+	positions <- sizeDetails[["position"]]
+	
 	if(!is.null(title)){
+		
 		args$title$text <- title
-		args$title$x <- 0.5
+		
+		args$title$xref <- "container"
+		args$title$x <- 0.5 # default
 		args$title$xanchor <- "center"
+		
+		# fix title at the top of the top margin 
+		# (vertical center by default)
+		# otherwise might overlap with subtitle or top legend
+		args$title$yref <- "container"
+		args$title$y <- 1
+		args$title$yanchor <- "top"
+		args$title$pad <- list(t = 10)
+		
 	}
 	
 	if(!is.null(caption)){
 		
+		# Option 1: in case of long or rotated x-axis labels
 		# include caption in title of the x-axis
 		# to have automated position of the caption
 		# in case the labels of the x-axis are rotated
-		caption <- paste0("<i>", caption, "</i>")
-		xLab <- paste(c(xLab, caption), collapse = "\n\n")
+#		caption <- paste0("<i>", caption, "</i>")
+#		xLab <- paste(c(xLab, caption), collapse = "\n\n")
 
-#		args$annotations <- c(args$annotations,
-#			list(
-#				x = 1, y = 0, text = caption, 
-#				showarrow = FALSE, 
-#				xref = 'paper', yref = 'paper', 
-#				xanchor = 'right', yanchor = 'bottom', 
-#				# position: on top of the margin
-#				xshift = 0, yshift = -margins$t,
-#				font = list(size = 12)
-#			)
-#		)
+		# Option 2:
+		# works for treemap/sunburst (which don't have x-axis)
+		# works for facetted boxplot
+		args$annotations <- c(args$annotations,
+			list(list(
+				x = 1, y = 0, text = caption, 
+				showarrow = FALSE, 
+				xref = 'paper', yref = 'paper', 
+				xanchor = 'right', yanchor = 'bottom', 
+				xshift = 0, yshift = -positions$caption,
+				font = list(size = 12)
+			))
+		)
 		
 	}
 	
 	if(!is.null(subtitle)){
 		
-		yshift <- 0
-		
-		if(includeLegend && legendPosition == "top")
-			yshift <- yshift + 20
-
-		# position for a ggplot2 facet plot is from
-		# the bottom (inside) of the facet label
-		if(facet)
-			yshift <- yshift + 25
-		
 		args$annotations <- c(args$annotations,
-			list(
+			list(list(
 				x = 0, y = 1, text = subtitle, 
 				align = "left",
 				showarrow = FALSE, 
 				xref = 'paper', yref = 'paper', 
 				xanchor = 'left', yanchor = 'bottom', 
-				xshift = 0, yshift = yshift,
+				xshift = 0, yshift = positions$subtitle,
 				font = list(size = 12)
-			)
+			))
 		)
-		
-		# fix title at the top of the top margin 
-		# (vertical center by default)
-		# otherwise might overlap with subtitle
-		args$title$yref <- "container"
-		args$title$y <- 1
-		args$title$yanchor <- "top"
-		args$title$pad <- list(t = 10)
-		args$title$x <- 0.5 # default
-		args$title$xanchor <- "center"
 			
 	}
 	
@@ -128,8 +127,9 @@ layoutClinData <- function(
 			
 			# legend position is in normalized coordinates
 			# to the plot region (without margins)
-			legend <- switch(legendPosition,
+			argsLegend <- switch(legendPosition,
 				`top` = {
+					legendY <- 1+positions$legend/heightPlot
 					list(
 						orientation = "h", 
 						x = 0.5, xanchor = "center",
@@ -138,13 +138,12 @@ layoutClinData <- function(
 					
 				},
 				`bottom` = {
-					heightPlot <- height-margins$b-margins$t 
-					legendY <- -(margins$b-20)/heightPlot
+					legendY <- -positions$legend/heightPlot
 					list(
 						orientation = "h", 
 						x = 0.5, xanchor = "center",
 						y = legendY, #-0.1/nrow
-						yanchor = "top"
+						yanchor = "bottom"
 					)
 				},
 				`left` = {
@@ -162,7 +161,7 @@ layoutClinData <- function(
 					)
 				}
 			)
-			args$legend <- legend		
+			args$legend[names(argsLegend)] <- argsLegend
 
 		}
 		
