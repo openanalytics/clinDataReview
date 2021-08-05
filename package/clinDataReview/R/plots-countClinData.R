@@ -34,6 +34,7 @@ plotCountClinData <- function(
         paste(valueLab, "by", paste(varsLab, collapse = " and "), 
             titleExtra), collapse = "<br>"
     ),
+	subtitle = NULL,
     labelVars = NULL,
     # interactivity:
     width = NULL, height = NULL,
@@ -97,10 +98,13 @@ plotCountClinData <- function(
   # get plot dim
   dimPlot <- getSizePlotClinData(
       width = width, height = height,
-      legend = FALSE
+      includeLegend = FALSE,
+	  title = title,
+	  subtitle = subtitle,
+	  xLab = xLab
   )
-  width <- unname(dimPlot["width"])
-  height <- unname(dimPlot["height"])
+  width <- dimPlot[["width"]]
+  height <- dimPlot[["height"]]
   
   # get color vector
   colorPaletteOpt <- colorPalette
@@ -155,13 +159,20 @@ plotCountClinData <- function(
       width = width, height = height,
       textinfo = "label"
   )
-  pl <- pl %>% layout(
-      title = title, 
-      # remove the axis labels, included when color is specified in the treemap:
-      xaxis = list(showticklabels = FALSE),
-      yaxis = list(showticklabels = FALSE),
-      legend = list(title = list(text = colorLab))# not yet available in plotly for treemap?
-  )
+  
+	pl <- layoutClinData(
+		p = pl,
+		title = title,
+		subtitle = subtitle,
+		includeLegend = FALSE,
+		width = width,
+		height = height,
+		# extra params passed to plotly::layout
+		# remove the axis labels, included when color is specified in the treemap:
+		xaxis = list(showticklabels = FALSE),
+		yaxis = list(showticklabels = FALSE)#,
+#		legend = list(title = list(text = colorLab))
+	)
   
   # current hovered element identified by d.points[0].label
   

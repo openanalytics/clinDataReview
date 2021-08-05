@@ -26,6 +26,8 @@ timeProfileIntervalPlot(
   yLab = NULL,
   xLab = paste(c(timeStartLab, timeEndLab), collapse = " and "),
   title = NULL,
+  subtitle = NULL,
+  caption = NULL,
   labelVars = NULL,
   width = 800,
   height = NULL,
@@ -92,6 +94,10 @@ See \code{\link[clinUtils]{clinColors}}.}
 \item{xLab, yLab}{(optional) String with labels for the x/y-axis.}
 
 \item{title}{String with title for the plot.}
+
+\item{subtitle}{String with subtitle}
+
+\item{caption}{String with caption.}
 
 \item{labelVars}{Named character vector containing variable labels.}
 

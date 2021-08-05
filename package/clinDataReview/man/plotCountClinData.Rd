@@ -18,6 +18,7 @@ plotCountClinData(
   titleExtra = NULL,
   title = paste(paste(valueLab, "by", paste(varsLab, collapse = " and "), titleExtra),
     collapse = "<br>"),
+  subtitle = NULL,
   labelVars = NULL,
   width = NULL,
   height = NULL,
@@ -71,6 +72,8 @@ or 'relative'.}
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{title}{String with title for the plot.}
+
+\item{subtitle}{String with subtitle}
 
 \item{labelVars}{Named character vector containing variable labels.}
 

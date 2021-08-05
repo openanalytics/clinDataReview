@@ -68,13 +68,15 @@ barplotClinData <- function(
 	# get plot dim
 	dimPlot <- getSizePlotClinData(
 		width = width, height = height,
-		legend = !is.null(colorVar),
+		includeLegend = !is.null(colorVar),
 		legendPosition = "bottom",
+		title = title,
 		caption = caption,
-		subtitle = subtitle
+		subtitle = subtitle,
+		xLab = xLab
 	)
-	width <- unname(dimPlot["width"])
-	height <- unname(dimPlot["height"])
+	width <- dimPlot[["width"]]
+	height <- dimPlot[["height"]]
 	
 	if(is.null(colorPalette)){
 		colorPaletteOpt <- getOption("clinDataReview.colors")
@@ -108,7 +110,7 @@ barplotClinData <- function(
 	xaxisArgs <- list(tickangle = 45)
 	
 	# in case x-var is not nested within color variable
-	# when elements are selected in the legend legend selection,
+	# when elements are selected in the legend,
 	# corresponding elements are not filtered in the x-axis (bar is only removed)
 	# this is a fix:
 	if(!is.null(colorVar) && !is.numeric(data[, xVar]) && barmode == "stack"){
@@ -144,8 +146,9 @@ barplotClinData <- function(
 		title = title,
 		caption = caption, 
 		subtitle = subtitle,
-		legend = !is.null(colorVar),
+		includeLegend = !is.null(colorVar),
 		legendPosition = "bottom",
+		legend = list(title = list(text = colorLab)),
 		width = width,
 		height = height,
 		# extra params passed to plotly::layout

@@ -61,5 +61,6 @@ sunburstClinData(
 	data = tableDM,
 	vars = c("ARM", "SITEID"),
 	valueVar = "statN", valueLab = "Counts of patients",
-	valueType = "total"
+	valueType = "total",
+	subtitle = "The sectors are colored by category (treatment or site)."
 )

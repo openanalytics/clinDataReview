@@ -51,6 +51,7 @@ If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}
     \item{\code{titleExtra}}{String with extra title for the plot (appended after \code{title}).}
     \item{\code{title}}{String with title for the plot.}
+    \item{\code{subtitle}}{String with subtitle}
     \item{\code{labelVars}}{Named character vector containing variable labels.}
     \item{\code{width}}{Numeric, width of the plot in pixels,
 700 by default.}

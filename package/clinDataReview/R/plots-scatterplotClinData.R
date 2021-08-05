@@ -158,13 +158,16 @@ scatterplotClinData <- function(
 		width = width, 
 		height = height, 
 		gg = gg,
-		legend = length(c(aesPointVar, aesLineVar)) > 0,
-		legendPosition = legendPosition,
+		title = title,
 		caption = caption,
-		subtitle = subtitle
+		subtitle = subtitle,
+		xLab = xLab,
+		facet = length(facetPars) > 0,
+		includeLegend = length(c(aesPointVar, aesLineVar)) > 0,
+		legendPosition = legendPosition
 	)
-	width <- unname(dimPlot["width"])
-	height <- unname(dimPlot["height"])
+	width <- dimPlot[["width"]]
+	height <- dimPlot[["height"]]
 	
 	# convert to interactive plot
 	pl <- ggplotly(
@@ -174,14 +177,15 @@ scatterplotClinData <- function(
 	)
 	
 	plotDim <- getDimGgplot(gg = gg)
-	nrow <- unname(plotDim["nrow"])
-	ncol <- unname(plotDim["ncol"])
+	nrow <- plotDim[["nrow"]]
+	ncol <- plotDim[["ncol"]]
 	pl <- layoutClinData(
 		p = pl,
 		xLab = xLab,
+		title = title,
 		caption = caption, 
 		subtitle = subtitle,
-		legend = length(c(aesPointVar, aesLineVar)) > 0,
+		includeLegend = length(c(aesPointVar, aesLineVar)) > 0,
 		legendPosition = legendPosition,
 		facet = length(facetPars) > 0,
 		width = width,

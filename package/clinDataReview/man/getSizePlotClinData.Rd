@@ -10,10 +10,14 @@ getSizePlotClinData(
   gg = NULL,
   nrow = 1L,
   ncol = 1L,
-  legend = TRUE,
-  legendPosition = "right",
+  title = NULL,
+  subtitle = NULL,
   caption = NULL,
-  subtitle = NULL
+  xLab = NULL,
+  facet = FALSE,
+  includeLegend = TRUE,
+  legendPosition = "right",
+  y = NULL
 )
 }
 \arguments{
@@ -33,15 +37,21 @@ Overwritten if \code{gg} is specified.}
 number of facet columns in the plot. (default = 1)
 Overwritten if \code{gg} is specified.}
 
-\item{legend}{Logical, if TRUE (by default)
-a legend is available in the plot.}
+\item{title}{String with title for the plot.}
+
+\item{subtitle}{String with subtitle}
+
+\item{caption}{String with caption.}
+
+\item{xLab}{String with label for \code{xVar}.}
 
 \item{legendPosition}{String with position of the legend,
 'right' by default.}
 
-\item{caption}{String with caption.}
+\item{y}{Character vector or factor with elements in the y-axis.}
 
-\item{subtitle}{String with subtitle}
+\item{legend}{Logical, if TRUE (by default)
+a legend is available in the plot.}
 }
 \value{
 Numeric vector with width ('width')

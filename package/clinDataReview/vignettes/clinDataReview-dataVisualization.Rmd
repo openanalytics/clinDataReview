@@ -491,11 +491,13 @@ severity**. This can be achieved with the **colorVar** parameter.
 dataTreemap <- tableAE
 
 dataTreemap$n <- as.numeric(dataTreemap$n)
+dataTreemap$`%` <- as.numeric(dataTreemap$`%`)
 
 treemapClinData(
     data = dataTreemap,
     vars = c("AESOC", "AEDECOD"),
     valueVar = "n",
+	colorVar = "%",
     valueLab = "Number of patients with adverse events",
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),

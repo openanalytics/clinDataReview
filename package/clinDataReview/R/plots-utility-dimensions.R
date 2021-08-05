@@ -94,6 +94,7 @@ getDimGgplot <- function(gg){
 #' a legend is available in the plot.
 #' @param legendPosition String with position of the legend,
 #' 'right' by default.
+#' @param y Character vector or factor with elements in the y-axis.
 #' @inheritParams clinDataReview-common-args
 #' @return Numeric vector with width ('width')
 #' and height ('height') of the plot
@@ -104,62 +105,112 @@ getSizePlotClinData <- function(
 	gg = NULL,
 	nrow = 1L,
 	ncol = 1L,
-	legend = TRUE, 
-	legendPosition = "right",
+	title = NULL, 
+	subtitle = NULL,
 	caption = NULL,
-	subtitle = NULL){
+	xLab = NULL,
+	facet = FALSE,
+	includeLegend = TRUE, 
+	legendPosition = "right",
+	y = NULL){
 	
 	isWidthSpec <- !is.null(width)
 	isHeightSpec <- !is.null(height)
 
 	widthDef <- 800
-	heightDef <- 500
+	
+	# if y is specified, the height is based
+	# on number of lines
+	if(!is.null(y)){
+		if(is.factor(y)){
+			yUnique <- levels(y)
+		}else	yUnique <- unique(y)
+		nLinesY <- countNLines(yUnique)
+		nLinesY <- sum(nLinesY)
+		heightDef <- sum(nLinesY) * 20
+	# otherwise set default height
+	}else	heightDef <- 500
 
 	# extract layout (in case facetting)
 	if(!is.null(gg)){
-		
 		plotDim <- getDimGgplot(gg = gg)
-		nrow <- unname(plotDim["nrow"])
-		ncol <- unname(plotDim["ncol"])
-		
+		nrow <- plotDim[["nrow"]]
+		ncol <- plotDim[["ncol"]]
 	}
 	
-	if(!isWidthSpec){
+	if(!isWidthSpec)
 		width <- widthDef
-	}
 	
 	if(!isHeightSpec){
+		
 		if(nrow == 1){
 			height <- heightDef
 		}else{
 			plotSize <- width/ncol
 			height <- plotSize * nrow
 		}
-	}
 	
-	# add space for legend
-	# (only if width/height not specified)
-	if(legend && !(!is.null(legendPosition) && legendPosition == "none")){
-		if(!isHeightSpec && legendPosition %in% c("bottom", "top"))
-			height <- height + height/nrow*0.2
-		if(!isWidthSpec && legendPosition %in% c("left", "right"))
-			width <- width + width/ncol*0.2
-	}
-	
-	# add space for caption & subtitle
-	# (only if height is not specified)
-	if(!isHeightSpec){
-		if(!is.null(caption)){
-			height <- height + getHeightCaption(caption)
-		}
-		if(!is.null(subtitle)){
-			height <- height + getHeightSubtitle(subtitle)
-		}
+		# add space for margins
+		margins <- getMargins(
+			title = title, subtitle = subtitle,
+			xLab = xLab, caption = caption, 
+			facet = facet,
+			includeLegend = includeLegend,
+			legendPosition = legendPosition
+		)
+		height <- height + margins$t + margins$b
+		
 	}
 	
 	dim <- c(width = width, height = height)
 	
 	return(dim)
+	
+}
+
+#' Get margins for a clinical data plot
+#' @inheritParams getSizePlotClinData
+#' @return List with margins
+#' @author Laure Cougnaud
+#' @export
+getMargins <- function(
+	title = NULL, subtitle = NULL,
+	xLab = NULL, caption = NULL, 
+	facet = FALSE,
+	includeLegend = TRUE,
+	legendPosition = "right"
+	){
+	
+	topMargin <- 30
+	bottomMargin <- 20
+	
+	if(!is.null(title))
+		topMargin <- topMargin + 20
+	
+	if(!is.null(subtitle))
+		topMargin <- topMargin + getHeightSubtitle(subtitle)
+	
+	if(!is.null(xLab))
+		bottomMargin <- bottomMargin + 20
+	
+	if(!is.null(caption))
+		bottomMargin <- bottomMargin + getHeightCaption(caption)
+	
+	if(facet)
+		topMargin <- topMargin + 20
+		
+	if(includeLegend){
+		switch(legendPosition,
+			`top` = {
+				topMargin <- topMargin + 20
+			},
+			`bottom` = {
+				bottomMargin <- bottomMargin + 20
+			}
+		)
+	}
+	
+	return(list(t = topMargin, b = bottomMargin))
 	
 }
 

@@ -213,7 +213,7 @@ barplotClinData(
 	textVar = "\%m",
 	# add subtitle and caption
 	subtitle = "Group: severity",
-	caption = "a\nb\nc\nd\neThe height of the bar is relative to the percentage of events by category"
+	caption = "The height of the bar is relative to the percentage of events by category"
 )
 }
 \seealso{

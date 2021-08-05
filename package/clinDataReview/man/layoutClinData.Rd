@@ -10,7 +10,7 @@ layoutClinData(
   title = NULL,
   caption = NULL,
   subtitle = NULL,
-  legend = FALSE,
+  includeLegend = FALSE,
   legendPosition = "right",
   facet = FALSE,
   nrow = 1L,
@@ -21,12 +21,13 @@ layoutClinData(
 )
 }
 \arguments{
+\item{xLab}{String with label for \code{xVar}.}
+
+\item{title}{String with title for the plot.}
+
 \item{caption}{String with caption.}
 
 \item{subtitle}{String with subtitle}
-
-\item{legend}{Logical, if TRUE (by default)
-a legend is available in the plot.}
 
 \item{legendPosition}{String with position of the legend,
 'right' by default.}

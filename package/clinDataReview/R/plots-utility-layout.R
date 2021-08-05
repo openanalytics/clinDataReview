@@ -10,11 +10,11 @@
 #' @author Laure Cougnaud
 layoutClinData <- function(
 	xLab = NULL,
-	yLab = NULL,
+	yLab = NULL, 
 	title = NULL,
 	caption = NULL, 
 	subtitle = NULL,
-	legend = FALSE, 
+	includeLegend = FALSE, 
 	legendPosition = "right",
 	facet = FALSE,
 	nrow = 1L, ncol = 1L,
@@ -23,6 +23,24 @@ layoutClinData <- function(
 
 	args <- list(...)
 	
+	# get margins
+	margins <- getMargins(
+		title = title, subtitle = subtitle,
+		xLab = xLab, caption = caption, 
+		facet = facet,
+		includeLegend = includeLegend,
+		legendPosition = legendPosition
+	)
+	# height of the plotting region
+	# used to set position in normalized coordinates
+	heightPlot <- height-margins$b-margins$t 
+	
+	if(!is.null(title)){
+		args$title$text <- title
+		args$title$x <- 0.5
+		args$title$xanchor <- "center"
+	}
+	
 	if(!is.null(caption)){
 		
 		# include caption in title of the x-axis
@@ -30,12 +48,7 @@ layoutClinData <- function(
 		# in case the labels of the x-axis are rotated
 		caption <- paste0("<i>", caption, "</i>")
 		xLab <- paste(c(xLab, caption), collapse = "\n\n")
-	
-		# bottom margin seems to be 50 px by default (?) in plotly
-		bottomMargin <- 50 + ifelse(legend & (legendPosition == "bottom"), 10, 0)
-		bottomMarginCaption <- getHeightCaption(caption)		
-		args$margin$b <- bottomMargin + bottomMarginCaption + 10
-		
+
 #		pl <- layout(
 #			p = pl,
 #			annotations = list(
@@ -59,12 +72,6 @@ layoutClinData <- function(
 	
 	if(!is.null(subtitle)){
 		
-		# top margin seems to be 50 px by default (?) in plotly
-		topMargin <- 50 + 
-			ifelse(legend & (legendPosition == "top"), 10, 0) +
-			ifelse(facet, 20, 0)
-		topMarginSubtitle <- getHeightSubtitle(subtitle)
-		
 		args$annotations <- c(args$annotations,
 			list(
 				x = 0, y = 1, text = subtitle, 
@@ -79,8 +86,6 @@ layoutClinData <- function(
 				font = list(size = 12)
 			)
 		)
-	
-		args$margin$t <- topMargin + topMarginSubtitle
 		
 		# fix title at the top of the top margin 
 		# (vertical center by default)
@@ -94,19 +99,21 @@ layoutClinData <- function(
 	
 	if(!is.null(xLab)){
 		args$xaxis$title$text <- xLab
-		args$xaxis$yanchor <- "top"
+		# standoff: distance between axis text and title
+		# adjusted to not have overlapping legend for bottom legend
+		# (standoff + automargin on: margins are pushed to fit the axis title at given standoff distance)
+		args$xaxis$title$standoff <- 0
 	}
 	
 	if(!is.null(yLab))
 		args$yaxis$title$text <- yLab
 	
-	if(!is.null(title)){
-		args$title$text <- title
-		args$title$x <- 0.5
-		args$title$xanchor <- "center"
-	}
+	# set margins
+	args$margin <- margins
+	# margins are expanded if labels of the x-axis are too long
+	args$xaxis$automargin  <- TRUE
 	
-	if(legend && legendPosition == "bottom"){
+	if(includeLegend){
 		
 		# fix for legend
 		# 'legend.position' not supported in ggplotly
@@ -118,16 +125,43 @@ layoutClinData <- function(
 		}else{
 			
 			# legend position is in normalized coordinates
-			legOrient <- ifelse(legendPosition %in% c("top", "bottom"), "h", "v")
-			legY <- c(top = 1, bottom = -0.1/nrow, right = 0.5, left = 0.5)[legendPosition]
-			legYAnchor <- c(top = "bottom", bottom = "top", right = "top", left = "top")[legendPosition]
-			legX <- c(top = 0.5, bottom = 0.5, right = 1, left = -0.1/width)[legendPosition]
-			legXAnchor <- c(top = "center", bottom = "center", right = "left", left = "right")[legendPosition]
-			args$legend <- list(
-				orientation = legOrient, 
-				x = legX, xanchor = legXAnchor,
-				y = legY, yanchor = legYAnchor
+			# to the plot region (without margins)
+			legend <- switch(legendPosition,
+				`top` = {
+					list(
+						orientation = "h", 
+						x = 0.5, xanchor = "center",
+						y = 1, yanchor = "bottom"
+					)
+					
+				},
+				`bottom` = {
+					heightPlot <- height-margins$b-margins$t 
+					legendY <- -(margins$b-20)/heightPlot
+					list(
+						orientation = "h", 
+						x = 0.5, xanchor = "center",
+						y = legendY, #-0.1/nrow
+						yanchor = "top"
+					)
+				},
+				`left` = {
+					list(
+						orientation = "v", 
+						x = -0.1/width, xanchor = "right",
+						y = 0.5, yanchor = "top"
+					)
+				},
+				`right` = {
+					list(
+						orientation = "v", 
+						x = 1, xanchor = "left",
+						y = 0.5, yanchor = "top"
+					)
+				}
 			)
+			args$legend <- legend		
+
 		}
 		
 	}

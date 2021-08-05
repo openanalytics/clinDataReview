@@ -102,7 +102,7 @@ boxplotClinData <- function(
 	# get plot dim
 	dimPlot <- getSizePlotClinData(
 		width = width, height = height,
-		legend = !is.null(colorVar),
+		includeLegend = !is.null(colorVar),
 		nrow = nrow, ncol = ncol,
 		legendPosition = "bottom"
 	)
