@@ -74,7 +74,7 @@ layoutClinData <- function(
 				x = 1, y = 0, text = caption, 
 				showarrow = FALSE, 
 				xref = 'paper', yref = 'paper', 
-				xanchor = 'right', yanchor = 'bottom', 
+				xanchor = 'right', yanchor = 'top', 
 				xshift = 0, yshift = -positions$caption,
 				font = list(size = 12)
 			))
@@ -151,11 +151,14 @@ layoutClinData <- function(
 				`bottom` = {
 					# should be [-2, 3]
 					legendY <- -min(positions$legend/heightPlot, 2)
+					# It is important to define the bottom legend
+					# with 'top' anchor, otherwise the legend
+					# might overlap with the plot if it contains multiple rows.
 					list(
 						orientation = "h", 
 						x = 0.5, xanchor = "center",
 						y = legendY, #-0.1/nrow
-						yanchor = "bottom"
+						yanchor = "top"
 					)
 				},
 				`left` = {

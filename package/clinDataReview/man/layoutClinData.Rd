@@ -29,6 +29,9 @@ layoutClinData(
 
 \item{subtitle}{String with subtitle}
 
+\item{includeLegend}{Logical, if TRUE (by default)
+a legend is available in the plot.}
+
 \item{legendPosition}{String with position of the legend,
 'right' by default.}
 

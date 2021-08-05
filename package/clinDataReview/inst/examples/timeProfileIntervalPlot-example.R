@@ -19,7 +19,7 @@ timeProfileIntervalPlot(
 
 # add caption & subtitle
 timeProfileIntervalPlot(
-	data = dataAE[1, ],
+	data = dataAE,
 	paramVar = "USUBJID",
 	timeStartVar = "ASTDY",
 	timeEndVar = "ASTDY",

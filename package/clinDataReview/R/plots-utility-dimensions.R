@@ -90,10 +90,12 @@ getDimGgplot <- function(gg){
 #' @param ncol single-length integer specifying the 
 #'   number of facet columns in the plot. (default = 1)
 #'   Overwritten if \code{gg} is specified. 
-#' @param legend Logical, if TRUE (by default)
+#' @param includeLegend Logical, if TRUE (by default)
 #' a legend is available in the plot.
 #' @param legendPosition String with position of the legend,
 #' 'right' by default.
+#' @param facet Logical, if TRUE the plot
+#' contains facets.
 #' @param y Character vector or factor with elements in the y-axis.
 #' @inheritParams clinDataReview-common-args
 #' @return Numeric vector with width ('width')
@@ -175,16 +177,25 @@ getSizePlotClinData <- function(
 #' @inheritParams getSizePlotClinData
 #' @return List with:
 #' \itemize{
-#' \item{'margin'}{List with bottom ('t') and top ('t')
+#' \item{'margin': }{List with bottom ('t') and top ('t')
 #' margins in pixels}
 #' \item{'position': }{List with position
 #' of the following plot elements:
-#' title, subtitle, caption, xLab
-#' of the following elements.\cr
-#' The position is defined in distance in pixelx from the bottom
-#' or the top of the plotting region, depending on the 
-#' location of the element.
-#' }
+#' \itemize{
+#' \item{on top of the plot: subtitle and legend
+#' (if positioned at the top).\cr
+#' The position is defined as the distance in pixels
+#' from the top of the plotting area to the bottom
+#' of the element (\code{yanchor = 'bottom'})}
+#' \item{at the bottom of the plot: caption, xLab
+#' and legend (if positioned at the bottom).\cr
+#' The position is defined as the distance in pixels
+#' from the bottom of the plotting area to the top
+#' of the element (\code{yanchor = 'top'})\cr
+#' Especially, the legend should be positioned with
+#' anchor 'top' such as the margins are automatically
+#' expanded if the legend contains multiple rows.}
+#' }}
 #' }
 #' @author Laure Cougnaud
 getPositionAndMargins <- function(
@@ -236,20 +247,20 @@ getPositionAndMargins <- function(
 	
 	# 1) label for the x-axis
 	if(!is.null(xLab)){
-		bottomMargin <- bottomMargin + getHeightLab(xLab)
 		res$position$xLab <- bottomMargin
+		bottomMargin <- bottomMargin + getHeightLab(xLab)
 	}
 	
 	# 2) legend
 	if(includeLegend && legendPosition == "bottom"){
-		bottomMargin <- bottomMargin + 30
 		res$position$legend <- bottomMargin
+		bottomMargin <- bottomMargin + 30
 	}
 	
 	# 3) caption
 	if(!is.null(caption)){
-		bottomMargin <- bottomMargin + getHeightLab(caption)
 		res$position$caption <- bottomMargin
+		bottomMargin <- bottomMargin + getHeightLab(caption)
 	}
 	
 	res$margin$t <- topMargin

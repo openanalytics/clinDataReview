@@ -45,13 +45,16 @@ Overwritten if \code{gg} is specified.}
 
 \item{xLab}{String with label for \code{xVar}.}
 
+\item{facet}{Logical, if TRUE the plot
+contains facets.}
+
+\item{includeLegend}{Logical, if TRUE (by default)
+a legend is available in the plot.}
+
 \item{legendPosition}{String with position of the legend,
 'right' by default.}
 
 \item{y}{Character vector or factor with elements in the y-axis.}
-
-\item{legend}{Logical, if TRUE (by default)
-a legend is available in the plot.}
 }
 \value{
 Numeric vector with width ('width')

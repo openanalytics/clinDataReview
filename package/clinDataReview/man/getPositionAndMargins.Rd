@@ -23,22 +23,37 @@ getPositionAndMargins(
 
 \item{caption}{String with caption.}
 
+\item{facet}{Logical, if TRUE the plot
+contains facets.}
+
+\item{includeLegend}{Logical, if TRUE (by default)
+a legend is available in the plot.}
+
 \item{legendPosition}{String with position of the legend,
 'right' by default.}
 }
 \value{
 List with:
 \itemize{
-\item{'margin'}{List with bottom ('t') and top ('t')
+\item{'margin': }{List with bottom ('t') and top ('t')
 margins in pixels}
 \item{'position': }{List with position
 of the following plot elements:
-title, subtitle, caption, xLab
-of the following elements.\cr
-The position is defined in distance in pixelx from the bottom
-or the top of the plotting region, depending on the 
-location of the element.
-}
+\itemize{
+\item{on top of the plot: subtitle and legend
+(if positioned at the top).\cr
+The position is defined as the distance in pixels
+from the top of the plotting area to the bottom
+of the element (\code{yanchor = 'bottom'})}
+\item{at the bottom of the plot: caption, xLab
+and legend (if positioned at the bottom).\cr
+The position is defined as the distance in pixels
+from the bottom of the plotting area to the top
+of the element (\code{yanchor = 'top'})\cr
+Especially, the legend should be positioned with
+anchor 'top' such as the margins are automatically
+expanded if the legend contains multiple rows.}
+}}
 }
 }
 \description{
