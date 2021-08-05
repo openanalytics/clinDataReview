@@ -72,6 +72,16 @@ layoutClinData <- function(
 	
 	if(!is.null(subtitle)){
 		
+		yshift <- 0
+		
+		if(includeLegend && legendPosition == "top")
+			yshift <- yshift + 20
+
+		# position for a ggplot2 facet plot is from
+		# the bottom (inside) of the facet label
+		if(facet)
+			yshift <- yshift + 25
+		
 		args$annotations <- c(args$annotations,
 			list(
 				x = 0, y = 1, text = subtitle, 
@@ -79,10 +89,7 @@ layoutClinData <- function(
 				showarrow = FALSE, 
 				xref = 'paper', yref = 'paper', 
 				xanchor = 'left', yanchor = 'bottom', 
-				xshift = 0, 
-				# position for a ggplot2 facet plot is from
-				# the bottom (inside) of the facet label
-				yshift = ifelse(facet, 25, 0),
+				xshift = 0, yshift = yshift,
 				font = list(size = 12)
 			)
 		)
@@ -94,6 +101,8 @@ layoutClinData <- function(
 		args$title$y <- 1
 		args$title$yanchor <- "top"
 		args$title$pad <- list(t = 10)
+		args$title$x <- 0.5 # default
+		args$title$xanchor <- "center"
 			
 	}
 	

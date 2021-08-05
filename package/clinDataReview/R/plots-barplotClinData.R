@@ -69,7 +69,7 @@ barplotClinData <- function(
 	dimPlot <- getSizePlotClinData(
 		width = width, height = height,
 		includeLegend = !is.null(colorVar),
-		legendPosition = "bottom",
+		legendPosition = "top",
 		title = title,
 		caption = caption,
 		subtitle = subtitle,
@@ -147,7 +147,7 @@ barplotClinData <- function(
 		caption = caption, 
 		subtitle = subtitle,
 		includeLegend = !is.null(colorVar),
-		legendPosition = "bottom",
+		legendPosition = "top",
 		legend = list(title = list(text = colorLab)),
 		width = width,
 		height = height,

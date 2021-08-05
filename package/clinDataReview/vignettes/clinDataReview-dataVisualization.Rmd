@@ -521,15 +521,13 @@ dataPlot$n <- as.numeric(dataPlot$n)
 # create plot
 barplotClinData(
     data = dataPlot,
-    xVar = "AESOC", colorVar = "AEDECOD",
+    xVar = "AEDECOD", #colorVar = "AESOC",
     yVar = "n",
     yLab = "Number of patients with adverse events",
     labelVars = labelVars,
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
-    table = FALSE,
-    verbose = TRUE,
-    barmode = "stack"
+    table = FALSE
 )
 
 ```
