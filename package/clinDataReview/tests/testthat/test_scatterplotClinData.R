@@ -440,8 +440,13 @@ test_that("a caption is correctly set", {
 	)
 			
 	# extract annotation
-	xAxisTitle <- plotly_build(plCaption)$x$layout$xaxis$title$text
-	expect_match(xAxisTitle, gsub("\n", ".*", caption))
+	plAnnot <- plotly_build(plCaption)$x$layout$annotations
+	plCaptionAnnot <- lapply(plAnnot, function(xEl)
+		if(hasName(xEl, "text"))
+			xEl[["text"]]
+	)
+	plCaptionAnnot <- unlist(plCaptionAnnot, recursive = TRUE, use.names = FALSE)
+	expect_match(plCaptionAnnot, gsub("\n", ".*", caption))
 	
 	# check that bottom margin is increased
 	plNoCaption <- scatterplotClinData(
@@ -452,6 +457,5 @@ test_that("a caption is correctly set", {
 	expect_gt(
 		object = plotly_build(plCaption)$x$layout$margin$b,
 		expected = plotly_build(plNoCaption)$x$layout$margin$b
-	)
-			
+	)			
 })

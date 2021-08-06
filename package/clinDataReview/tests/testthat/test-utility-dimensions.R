@@ -4,7 +4,6 @@ test_that("Width and height, if specified, are respected", {
 		width = 300,
 		height = 100
 	)
-	expect_identical(res, c(width = width, ))
 	expect_is(res, "numeric")
 	expect_length(res, 2)
 	expect_named(res)
