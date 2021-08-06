@@ -40,7 +40,7 @@ timeProfileIntervalPlot <- function(data,
 	timeEndShapeVar = NULL, timeEndShapeLab = getLabelVar(timeEndShapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	# color
-	colorVar = NULL, colorLab = getLabelVar(timeStartShapeVar, labelVars = labelVars),
+	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	# transparency
 	alpha = 1,
@@ -263,6 +263,7 @@ timeProfileIntervalPlot <- function(data,
 		width = width,
 		height = height,
 		# extra params passed to plotly::layout
+		legend = list(title = list(text = colorLab)),
 		yaxis = list(
 			showgrid = TRUE,
 			title = list(text = yLab),

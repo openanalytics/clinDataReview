@@ -283,7 +283,7 @@ xLab <- getLabelParamcd(paramcd = "ALT", data = dataLB,
 yLab <- getLabelParamcd(paramcd = "AST", data = dataLB, 
 	paramcdVar = "PARAMCD", paramVar = "PARAM")
 scatterplotClinData(
-	data = subset(dataPlotWide, VISIT \%in\% c("SCREENING 1", "WEEK 4")),
+	data = dataPlotWide,
 	xVar = "ALT", yVar = "AST",
 	xLab = xLab,
 	yLab = yLab,

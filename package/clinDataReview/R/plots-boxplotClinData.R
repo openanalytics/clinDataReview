@@ -253,7 +253,7 @@ boxplotClinData <- function(
 		width = width,
 		height = height,
 		nrow = nrow, ncol = ncol,
-		# passed to plotly::layout
+		# extra params passed to plotly::layout
 		legend = list(title = list(text = colorLab))
 	)
 	

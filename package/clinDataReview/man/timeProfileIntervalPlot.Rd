@@ -20,7 +20,7 @@ timeProfileIntervalPlot(
   timeEndShapeLab = getLabelVar(timeEndShapeVar, labelVars = labelVars),
   shapePalette = NULL,
   colorVar = NULL,
-  colorLab = getLabelVar(timeStartShapeVar, labelVars = labelVars),
+  colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
   alpha = 1,
   yLab = NULL,

@@ -171,8 +171,9 @@ plotCountClinData <- function(
 		# extra params passed to plotly::layout
 		# remove the axis labels, included when color is specified in the treemap:
 		xaxis = list(showticklabels = FALSE),
-		yaxis = list(showticklabels = FALSE)#,
-#		legend = list(title = list(text = colorLab))
+		yaxis = list(showticklabels = FALSE),
+		# extra params passed to plotly::layout
+		legend = list(title = list(text = colorLab))
 	)
   
   # current hovered element identified by d.points[0].label
