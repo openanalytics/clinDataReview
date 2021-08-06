@@ -1,5 +1,13 @@
 1.2.0
     o scatterplot: variables for labels for x-axis & plot template: table params
+    o add caption & subtitle
+    o plot dimensions:
+        - consistent size policy across visualizations
+        - reduce default height to fit in screen window
+        - width not adjusted if height is specified
+        - automatic margins adjustments
+    o time profile plot: include color lab
+    o barplot: fix position legend
 1.1.0
     o new boxplotClinData functionality
     o barplotClinData: textVar

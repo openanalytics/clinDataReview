@@ -274,3 +274,22 @@ varToFm <- function(var){
 	return(fm)
 }
 
+#' Count number of lines in a vector
+#' @param x Character vector.
+#' @return Integer vector of length \code{x} with number
+#' of lines
+#' @author Laure Cougnaud
+#' @examples 
+#' countNLines(x = c("A\nB", "blabla", "This\nis\na\nsentence."))
+#' @export
+countNLines <- function(x){
+	
+	lines <- regmatches(
+		x = x, 
+		m = gregexpr(pattern = "\n", text = x, fixed = TRUE)
+	)
+	nLines <- sapply(lines, length)
+	nLines <- nLines + 1L
+	return(nLines)
+	
+}

@@ -34,6 +34,7 @@ barplotClinData(
 	yVar = "n", yLab = "Number of patients with adverse events",
 	labelVars = labelVars
 )
+
 # add number on top of the bars
 barplotClinData(
 	data = dataPlot,
@@ -56,7 +57,7 @@ tableAEBySeverity <- computeSummaryStatisticsTable(
 )
 barplotClinData(
 	data = tableAEBySeverity,
-	xVar = "AEDECOD", 
+	xVar = "AEDECOD", xLab = "Adverse event term",
 	yVar = "statPercm", yLab = "Percentage of adverse events",
 	labelVars = labelVars,
 	colorVar = "AESEV", barmode = "stack",
@@ -69,4 +70,6 @@ barplotClinData(
 		statPercm = "Percentage of events"
 	),
 	textVar = "%m",
+	# add subtitle
+	subtitle = "Group: severity"
 )

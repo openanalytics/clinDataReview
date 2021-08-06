@@ -1,4 +1,8 @@
 #' Scatterplot of variables of interest for clinical data visualization.
+#' 
+#' The parameters for this visualization
+#' are based on \code{ggplot2} (aesthetic, scale, ...), parameter specification,
+#' unlike the other visualizations of the package.
 #' @param pathVar String with variable of \code{data} containing
 #' path to a subject-specific report. The report info should be unique 
 #' for each element of \code{idVar}.
@@ -50,6 +54,7 @@ scatterplotClinData <- function(
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+	caption = NULL, subtitle = NULL,
 	facetPars = list(), facetType = c("wrap", "grid"),
 	scalePars = list(),
 	themePars = list(legend.position = "bottom"),
@@ -146,20 +151,25 @@ scatterplotClinData <- function(
 		labelVars = labelVars,
 		hoverVars = hoverVars,
 		geomType = "point"
-	)
+	)		
 	
 	# set plot dimensions:
-	legPos <- themePars$legend.position
-	if(is.null(legPos)) 	legPos <- "right"
-	dimPlot <- getSizePlotClinData(
+	legendPosition <- themePars$legend.position
+	if(is.null(legendPosition)) 	legendPosition <- "right"
+	dimPlot <- getSizePlot(
 		width = width, 
 		height = height, 
 		gg = gg,
-		legend = length(c(aesPointVar, aesLineVar)) > 0,
-		legendPosition = legPos
+		title = title,
+		caption = caption,
+		subtitle = subtitle,
+		xLab = xLab,
+		facet = length(facetPars) > 0,
+		includeLegend = length(c(aesPointVar, aesLineVar)) > 0,
+		legendPosition = legendPosition
 	)
-	width <- unname(dimPlot["width"])
-	height <- unname(dimPlot["height"])
+	width <- dimPlot[["width"]]
+	height <- dimPlot[["height"]]
 	
 	# convert to interactive plot
 	pl <- ggplotly(
@@ -168,26 +178,22 @@ scatterplotClinData <- function(
 		tooltip = if(!is.null(hoverVars))	"text"
 	)
 	
-	# fix for legend
-	# 'legend.position' not supported in ggplotly
-	# Note: in case legend position is left or top, big legend might overlap the plot
-	if(legPos == "none"){
-		pl <- pl %>% layout(showlegend = FALSE)
-	}else{
-		plotDim <- getDimGgplot(gg = gg)
-		legOrient <- ifelse(legPos %in% c("top", "bottom"), "h", "v")
-		legY <- c(top = 1, bottom = -0.1/unname(plotDim["nrow"]), right = 0.5, left = 0.5)[legPos]
-		legYAnchor <- c(top = "bottom", bottom = "top", right = "top", left = "top")[legPos]
-		legX <- c(top = 0.5, bottom = 0.5, right = 1, left = -0.1/width)[legPos]
-		legXAnchor <- c(top = "middle", bottom = "middle", right = "left", left = "right")[legPos]
-		pl <- pl %>% layout(
-			legend = list(
-				orientation = legOrient, 
-				x = legX, xanchor = legXAnchor,
-				y = legY, yanchor = legYAnchor
-			)
-		)
-	}
+	plotDim <- getDimGgplot(gg = gg)
+	nrow <- plotDim[["nrow"]]
+	ncol <- plotDim[["ncol"]]
+	pl <- layoutClinData(
+		p = pl,
+		xLab = xLab,
+		title = title,
+		caption = caption, 
+		subtitle = subtitle,
+		includeLegend = length(c(aesPointVar, aesLineVar)) > 0,
+		legendPosition = legendPosition,
+		facet = length(facetPars) > 0,
+		width = width,
+		height = height,
+		nrow = nrow, ncol = ncol
+	)
 
 	# convert static to interactive plot
 	pl <- formatPlotlyClinData(

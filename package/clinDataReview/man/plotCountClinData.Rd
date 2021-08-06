@@ -18,6 +18,8 @@ plotCountClinData(
   titleExtra = NULL,
   title = paste(paste(valueLab, "by", paste(varsLab, collapse = " and "), titleExtra),
     collapse = "<br>"),
+  subtitle = NULL,
+  caption = NULL,
   labelVars = NULL,
   width = NULL,
   height = NULL,
@@ -71,6 +73,15 @@ or 'relative'.}
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{title}{String with title for the plot.}
+
+\item{subtitle}{String with subtitle.\cr
+The subtitle is included at the top left of the plot,
+below the title.}
+
+\item{caption}{String with caption. \cr
+The caption is included at the bottom right of the plot.
+Please note that this might overlap with 
+vertical or rotated x-axis labels.}
 
 \item{labelVars}{Named character vector containing variable labels.}
 

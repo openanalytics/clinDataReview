@@ -40,7 +40,7 @@ timeProfileIntervalPlot <- function(data,
 	timeEndShapeVar = NULL, timeEndShapeLab = getLabelVar(timeEndShapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	# color
-	colorVar = NULL, colorLab = getLabelVar(timeStartShapeVar, labelVars = labelVars),
+	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	# transparency
 	alpha = 1,
@@ -48,6 +48,7 @@ timeProfileIntervalPlot <- function(data,
 	yLab = NULL, #paste(paramLab, collapse = "\n"),
 	xLab = paste(c(timeStartLab, timeEndLab), collapse = " and "),
 	title = NULL,
+	subtitle = NULL, caption = NULL,
 	labelVars = NULL,
 	# interactivity:
 	width = 800, height = NULL,
@@ -164,23 +165,18 @@ timeProfileIntervalPlot <- function(data,
 		}else	colorPalette <- getColorPalette(n = 1, palette = colorPaletteOpt)
 	}
 
-	linesYVar <- regmatches(
-		x = yLevels, 
-		m = gregexpr(pattern = "\n", text = yLevels, fixed = TRUE)
+	dimPlot <- getSizePlot(
+		width = width, height = height,
+		title = title, 
+		subtitle = subtitle,
+		caption = caption,
+		xLab = xLab,
+		includeLegend = !is.null(colorVar), 
+		legendPosition = "bottom",
+		y = yLevels
 	)
-	nLinesY <- sum(sapply(linesYVar, length) + 1)
-	plotHeight <- sum(nLinesY) * 20
-	
-	# top margin: top bar + title
-	topMargin <- 30 + ifelse(!is.null(title), 20, 0) 
-	# bottom margin: # x-axis + x-lab + legend
-	bottomMargin <- 20 + ifelse(!is.null(xLab), 20, 0) + ifelse(!is.null(colorVar), 20, 0)
-	layoutMargin <- list(t = topMargin, b = bottomMargin)
-	
-	# get plot dim
-	if(is.null(height)){
-		height <- topMargin + plotHeight + bottomMargin
-	}
+	width <- dimPlot[["width"]]
+	height <- dimPlot[["height"]]
 	
 	pl <- plot_ly(width = width, height = height)
 
@@ -254,13 +250,20 @@ timeProfileIntervalPlot <- function(data,
 			opacity = alpha
 		)
 	}
-
-#	xMax <- max(data[, c(timeStartVar, timeEndVar)], na.rm = TRUE)
-	pl <- pl %>% layout(
+	
+	pl <- layoutClinData(
+		p = pl,
 		title = title,
-		# standoff: distance between axis text and title
-		#  adjusted to not have overlapping legend when only one y element
-		xaxis = list(title = list(text = xLab, standoff = 0)),
+		xLab = xLab,
+		yLab = yLab,
+		caption = caption,
+		subtitle = subtitle,
+		includeLegend = !is.null(colorVar),
+		legendPosition = "bottom",
+		width = width,
+		height = height,
+		# extra params passed to plotly::layout
+		legend = list(title = list(text = colorLab)),
 		yaxis = list(
 			showgrid = TRUE,
 			title = list(text = yLab),
@@ -270,16 +273,7 @@ timeProfileIntervalPlot <- function(data,
 			tickangle = 0,
 			range = c(0.5, length(yLevels)+0.5)
 		),
-		# x/y are in normalized coordinates
-		showlegend = TRUE, # print legend even if only one y-element
-		legend = list(
-			orientation = "h", 
-			xanchor = "center", x = 0.5, 
-			yanchor = "top", y = -min(bottomMargin/plotHeight, 2)
-		),
-		hovermode = "closest",
-		# margin in pixels
-		margin = layoutMargin
+		hovermode = "closest"
 	)
 	
 	# specific formatting for clinical data

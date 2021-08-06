@@ -62,6 +62,13 @@
 #' If not specified, a random id, as 'plotClinData[X]' is used.
 #' @param title String with title for the plot.
 #' @param titleExtra String with extra title for the plot (appended after \code{title}).
+#' @param caption String with caption. \cr
+#' The caption is included at the bottom right of the plot.
+#' Please note that this might overlap with 
+#' vertical or rotated x-axis labels.
+#' @param subtitle String with subtitle.\cr
+#' The subtitle is included at the top left of the plot,
+#' below the title.
 #' @param colorPalette (optional) Named character vector with color palette.
 #' If not specified, the viridis color palette is used.\cr
 #' See \code{\link[clinUtils]{clinColors}}.

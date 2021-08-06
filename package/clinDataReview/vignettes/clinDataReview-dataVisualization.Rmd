@@ -180,8 +180,13 @@ scatterplotClinData(
     ),
     # include link to patient profiles:
     pathVar = "patientProfilePath",
-    table = FALSE, id = paste("subjectProfile", labParam, sep = "-"),
-    verbose = TRUE
+	subtitle = paste(
+		"Profile plot by subject",
+		"Points are positioned at relative day",
+		"Visits are positioned based on median relative day across subjects.",
+		sep = "\n"
+	),
+    table = FALSE
 )
 
 ```
@@ -220,8 +225,7 @@ scatterplotClinData(
     facetPars = list(facets = ~ VISIT),
     labelVars = labelVars,
     pathVar = "patientProfilePath",
-    table = FALSE,
-    verbose = TRUE
+    table = FALSE
 )
 
 ```
@@ -267,12 +271,10 @@ scatterplotClinData(
     ),
     aesPointVar = list(color = "VISIT", fill = "VISIT"),
     xTrans = "log10", yTrans = "log10",
-    hoverVars = c("USUBJID"),
-    themePars = list(legend.position = "bottom"),
+    hoverVars = "USUBJID",
     labelVars = labelVars,
-    table = FALSE, id = "eDish",
-    pathVar = "patientProfilePath",
-    verbose = TRUE
+    table = FALSE, 
+    pathVar = "patientProfilePath"
 )
 
 ```
@@ -298,8 +300,7 @@ timeProfileIntervalPlot(
     hoverVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV"),
     labelVars = labelVars,
     table = FALSE, pathVar = "patientProfilePath",
-    tableVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV"),
-    verbose = TRUE
+    tableVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV")
 )
 
 ```
@@ -366,13 +367,14 @@ display the links of the respective patient profile reports.
 ### Compute count statistics
 
 In this example, counts of adverse events are extracted for each
-`r labelVars["AESOC"]` and `r labelVars["AEDECOD"]`. Besides the counts of the
+`r labelVars["AESOC"]` and `r labelVars["AEDECOD"]`.   
+
+Besides the counts of the
 number of subjects, the paths to the patient profile report for each subgroup
 are extracted and combined.
 
 ```{r createCountTableAE}
 
-# sunburst takes as input table with counts
 library(inTextSummaryTable)
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
@@ -406,33 +408,37 @@ statsExtraPP <- list(
       toString(sort(unique(data$patientProfileLink)))
 )
 
-# get default counts + stats with subjects profiles path
+# get counts (records, subjects, % subjects) + stats with subjects profiles path
 statsPP <- c(
-    getStats(type = "count-default"),
+    getStats(type = "count"),
     list(
         patientProfilePath = quote(statPatientProfilePath),
         patientProfileLink = quote(statPatientProfileLink)
     )
 )
 
+dataAE$AESEV <- factor(
+	dataAE$AESEV,
+	levels = c("MILD", "MODERATE", "SEVERE")
+)
+dataAE$AESEVN <- as.numeric(dataAE$AESEV)
+
 # compute adverse event table
-tableAE <- getSummaryStatisticsTable(
+tableAE <- computeSummaryStatisticsTable(
     
     data = dataAE,
     rowVar = c("AESOC", "AEDECOD"),
     dataTotal = dataTotal,
-    rowOrder = "total",
     labelVars = labelVars,
     
     # The total across the variable used for the nodes
-	# should be specified (rowVarTotalInclude = 'AEDECOD')
-	# The total across the other variable(s) is optional
+	# should be specified
     rowVarTotalInclude = c("AESOC", "AEDECOD"),
+	
+	rowOrder = "total",
     
-    ## DT-output specific:
-    outputType = "data.frame-base",
     # statistics of interest
-    # for DT output, include columns with patients
+    # include columns with patients
     stats = statsPP, 
     # add extra 'statistic': concatenate subject IDs
     statsExtra = statsExtraPP
@@ -461,16 +467,16 @@ The size of the different segments is relative the respective counts.
 
 dataSunburst <- tableAE
 
-dataSunburst$n <- as.numeric(dataSunburst$n)
+dataSunburst$m <- as.numeric(dataSunburst$m)
 
 sunburstClinData(
     data = dataSunburst,
     vars = c("AESOC", "AEDECOD"),
-    valueVar = "n", valueLab = "Number of patients with adverse events",
+    valueVar = "m", 
+	valueLab = "Number of adverse events",
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = FALSE,
-    verbose = TRUE,
     labelVars = labelVars
 )
 
@@ -490,17 +496,16 @@ severity**. This can be achieved with the **colorVar** parameter.
 
 dataTreemap <- tableAE
 
-dataTreemap$n <- as.numeric(dataTreemap$n)
+dataTreemap$m <- as.numeric(dataTreemap$m)
 
 treemapClinData(
     data = dataTreemap,
     vars = c("AESOC", "AEDECOD"),
-    valueVar = "n",
-    valueLab = "Number of patients with adverse events",
+    valueVar = "m",
+    valueLab = "Number of adverse events",
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = FALSE,
-    verbose = TRUE,
     labelVars = labelVars
 )
 
@@ -519,15 +524,14 @@ dataPlot$n <- as.numeric(dataPlot$n)
 # create plot
 barplotClinData(
     data = dataPlot,
-    xVar = "AESOC", colorVar = "AEDECOD",
+    xVar = "AEDECOD", 
     yVar = "n",
     yLab = "Number of patients with adverse events",
+	textVar = "n",
     labelVars = labelVars,
     pathVar = "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
-    table = FALSE,
-    verbose = TRUE,
-    barmode = "stack"
+    table = FALSE
 )
 
 ```
@@ -593,7 +597,7 @@ plotsLab <- dlply(dataPlot, "PARAMCD", function(dataLBParam){
           data = dataLBParam, 
           xVar = "ADY",
           yVar = "LBSTRESN",
-          aesPointVar = list(color = "TRTP"),
+          aesPointVar = list(color = "TRTP", fill = "TRTP"),
           aesLineVar = list(group = "USUBJID", color = "TRTP"),
           labelVars = labelVars,
           title = paste("Actual value of", 
@@ -606,8 +610,7 @@ plotsLab <- dlply(dataPlot, "PARAMCD", function(dataLBParam){
           table = FALSE, 
           # important: each plot should have an unique ID!
           # for unique relationship of interactivity between plot <-> table
-          id = paste("labProfileLoop", paramcd, sep = "-"),
-          verbose = TRUE
+          id = paste("labProfileLoop", paramcd, sep = "-")
       )
       
     })

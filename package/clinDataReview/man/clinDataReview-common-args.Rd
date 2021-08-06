@@ -90,6 +90,15 @@ If not specified, a random id, as 'plotClinData[X]' is used.}
 
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
+\item{caption}{String with caption. \cr
+The caption is included at the bottom right of the plot.
+Please note that this might overlap with 
+vertical or rotated x-axis labels.}
+
+\item{subtitle}{String with subtitle.\cr
+The subtitle is included at the top left of the plot,
+below the title.}
+
 \item{colorPalette}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}

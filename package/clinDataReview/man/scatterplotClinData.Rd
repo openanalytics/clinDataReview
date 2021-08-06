@@ -25,6 +25,8 @@ scatterplotClinData(
   xLimExpandData = TRUE,
   titleExtra = NULL,
   title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
+  caption = NULL,
+  subtitle = NULL,
   facetPars = list(),
   facetType = c("wrap", "grid"),
   scalePars = list(),
@@ -121,6 +123,15 @@ Please note that the same limits are set for all facets.}
 \item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{title}{String with title for the plot.}
+
+\item{caption}{String with caption. \cr
+The caption is included at the bottom right of the plot.
+Please note that this might overlap with 
+vertical or rotated x-axis labels.}
+
+\item{subtitle}{String with subtitle.\cr
+The subtitle is included at the top left of the plot,
+below the title.}
 
 \item{facetPars}{List with facetting parameters, passed to the facetting function.}
 
@@ -237,7 +248,9 @@ a \code{clinDataReview} object, a.k.a a list with the
 }
 }
 \description{
-Scatterplot of variables of interest for clinical data visualization.
+The parameters for this visualization
+are based on \code{ggplot2} (aesthetic, scale, ...), parameter specification,
+unlike the other visualizations of the package.
 }
 \examples{
 library(clinUtils)
@@ -312,10 +325,12 @@ dataPlotWide <- dcast(
 scatterplotClinData(
 	data = dataPlotWide, 
 	xVar = "ALT", yVar = "AST",
-	aesPointVar = list(color = "USUBJID"),
+	aesPointVar = list(color = "USUBJID", fill = "USUBJID"),
 	themePars = list(legend.position = "none"),
 	facetPars = list(facets = "VISIT"),
-	labelVars = labelVars
+	labelVars = labelVars,
+	subtitle = "Visualization is split by visit",
+	caption = "Points are colored by subject ID"
 )
 
 # scatterplot with all visits, link subjects
@@ -324,12 +339,12 @@ xLab <- getLabelParamcd(paramcd = "ALT", data = dataLB,
 yLab <- getLabelParamcd(paramcd = "AST", data = dataLB, 
 	paramcdVar = "PARAMCD", paramVar = "PARAM")
 scatterplotClinData(
-	data = dataPlotWide, 
+	data = dataPlotWide,
 	xVar = "ALT", yVar = "AST",
 	xLab = xLab,
 	yLab = yLab,
-	aesPointVar = list(color = "VISIT", shape = "VISIT"),
-	aesLineVar = list(group = "USUBJID", linetype = "VISIT"),
+	aesPointVar = list(color = "VISIT", fill = "VISIT"),
+	aesLineVar = list(group = "USUBJID"),
 	labelVars = labelVars
 )
 
@@ -353,7 +368,7 @@ scatterplotClinData(
 	data = dataPlot, 
 	xVar = "LBSTRESNBL", xLab = xLab,
 	yVar = "LBSTRESN", yLab = yLab,
-	aesPointVar = list(color = "USUBJID"),
+	aesPointVar = list(color = "USUBJID", fill = "USUBJID"),
 	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
 	hoverVars = c("USUBJID", "VISIT", "ADY", "LBSTRESN"),
 	labelVars = labelVars,
@@ -373,7 +388,6 @@ scatterplotClinData(
 			label = "Reference Range Upper Limit")
 	)
 )
-
 }
 \author{
 Laure Cougnaud

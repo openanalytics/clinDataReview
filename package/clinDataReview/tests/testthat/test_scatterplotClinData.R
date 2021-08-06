@@ -406,3 +406,117 @@ test_that("Labels from variables for the x-axis are correctly combined and order
 	expect_match(object = plXTickLab[2], regexp = "Day 4.+Placebo.+Compound")
 	
 })
+	
+
+test_that("a subtitle is correctly set", {
+			
+	data <- data.frame(
+		DY = c(1, 2, 1, 2),
+		AVAL = c(3, 4, 2, 6),
+		USUBJID = c(1, 1, 2, 2),
+		stringsAsFactors = FALSE
+	)	
+	
+	subtitle <- paste(sample(LETTERS, 100, replace = TRUE), collapse = "")
+	subtitle <- paste(rep(subtitle, 10), collapse = "\n")
+	plSubtitle <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL", 
+		subtitle = subtitle
+	)
+	
+	# extract annotation
+	plAnnot <- plotly_build(plSubtitle)$x$layout$annotations
+	plSubtitleAnnot <- lapply(plAnnot, function(xEl)
+		if(hasName(xEl, "text"))
+			xEl[["text"]]
+	)
+	plSubtitleAnnot <- unlist(plSubtitleAnnot, recursive = TRUE, use.names = FALSE)
+	expect_match(plSubtitleAnnot, gsub("\n", ".*", subtitle))
+	
+	# check that top margin is increased
+	plNoSubtitle <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL"
+	)
+	expect_gt(
+		object = plotly_build(plSubtitle)$x$layout$margin$t,
+		expected = plotly_build(plNoSubtitle)$x$layout$margin$t
+	)
+			
+})
+
+test_that("extra margin is set for the subtitle in a facetted plot", {
+			
+	data <- data.frame(
+		DY = c(1, 2, 1, 2),
+		AVAL = c(3, 4, 2, 6),
+		USUBJID = c(1, 1, 2, 2),
+		TRT = c("A", "A", "B", "B"),
+		stringsAsFactors = FALSE
+	)
+			
+	subtitle <- paste(sample(LETTERS, 100, replace = TRUE), collapse = "")
+	subtitle <- paste(rep(subtitle, 10), collapse = "\n")
+	plSubtitleFacet <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL", 
+		subtitle = subtitle,
+		facetPars = list(facets = "TRT")
+	)
+	
+	# check that top margin is increased
+	plSubtitleNoFacet <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL",
+		subtitle = subtitle
+	)
+	expect_gt(
+		object = plotly_build(plSubtitleFacet)$x$layout$margin$t,
+		expected = plotly_build(plSubtitleNoFacet)$x$layout$margin$t
+	)
+
+})
+
+test_that("a caption is correctly set", {
+			
+	data <- data.frame(
+		DY = c(1, 2, 1, 2),
+		AVAL = c(3, 4, 2, 6),
+		USUBJID = c(1, 1, 2, 2),
+		stringsAsFactors = FALSE
+	)	
+			
+	caption <- paste(sample(LETTERS, 100, replace = TRUE), collapse = "")
+	caption <- paste(rep(caption, 10), collapse = "\n")
+	plCaption <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", xLab = "TEST",
+		yVar = "AVAL", 
+		caption = caption
+	)
+			
+	# extract annotation
+	plAnnot <- plotly_build(plCaption)$x$layout$annotations
+	plCaptionAnnot <- lapply(plAnnot, function(xEl)
+		if(hasName(xEl, "text"))
+			xEl[["text"]]
+	)
+	plCaptionAnnot <- unlist(plCaptionAnnot, recursive = TRUE, use.names = FALSE)
+	expect_match(plCaptionAnnot, gsub("\n", ".*", caption))
+	
+	# check that bottom margin is increased
+	plNoCaption <- scatterplotClinData(
+		data = data, 
+		xVar = "DY", 
+		yVar = "AVAL"
+	)
+	expect_gt(
+		object = plotly_build(plCaption)$x$layout$margin$b,
+		expected = plotly_build(plNoCaption)$x$layout$margin$b
+	)			
+})

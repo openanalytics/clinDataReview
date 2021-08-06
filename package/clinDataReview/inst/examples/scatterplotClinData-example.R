@@ -70,10 +70,12 @@ dataPlotWide <- dcast(
 scatterplotClinData(
 	data = dataPlotWide, 
 	xVar = "ALT", yVar = "AST",
-	aesPointVar = list(color = "USUBJID"),
+	aesPointVar = list(color = "USUBJID", fill = "USUBJID"),
 	themePars = list(legend.position = "none"),
 	facetPars = list(facets = "VISIT"),
-	labelVars = labelVars
+	labelVars = labelVars,
+	subtitle = "Visualization is split by visit",
+	caption = "Points are colored by subject ID"
 )
 
 # scatterplot with all visits, link subjects
@@ -82,12 +84,12 @@ xLab <- getLabelParamcd(paramcd = "ALT", data = dataLB,
 yLab <- getLabelParamcd(paramcd = "AST", data = dataLB, 
 	paramcdVar = "PARAMCD", paramVar = "PARAM")
 scatterplotClinData(
-	data = dataPlotWide, 
+	data = dataPlotWide,
 	xVar = "ALT", yVar = "AST",
 	xLab = xLab,
 	yLab = yLab,
-	aesPointVar = list(color = "VISIT", shape = "VISIT"),
-	aesLineVar = list(group = "USUBJID", linetype = "VISIT"),
+	aesPointVar = list(color = "VISIT", fill = "VISIT"),
+	aesLineVar = list(group = "USUBJID"),
 	labelVars = labelVars
 )
 
@@ -111,7 +113,7 @@ scatterplotClinData(
 	data = dataPlot, 
 	xVar = "LBSTRESNBL", xLab = xLab,
 	yVar = "LBSTRESN", yLab = yLab,
-	aesPointVar = list(color = "USUBJID"),
+	aesPointVar = list(color = "USUBJID", fill = "USUBJID"),
 	aesLineVar = list(group = "USUBJID", color = "USUBJID"),
 	hoverVars = c("USUBJID", "VISIT", "ADY", "LBSTRESN"),
 	labelVars = labelVars,
@@ -131,4 +133,3 @@ scatterplotClinData(
 			label = "Reference Range Upper Limit")
 	)
 )
-

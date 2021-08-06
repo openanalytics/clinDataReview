@@ -51,6 +51,13 @@ If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}
     \item{\code{titleExtra}}{String with extra title for the plot (appended after \code{title}).}
     \item{\code{title}}{String with title for the plot.}
+    \item{\code{subtitle}}{String with subtitle.\cr
+The subtitle is included at the top left of the plot,
+below the title.}
+    \item{\code{caption}}{String with caption. \cr
+The caption is included at the bottom right of the plot.
+Please note that this might overlap with 
+vertical or rotated x-axis labels.}
     \item{\code{labelVars}}{Named character vector containing variable labels.}
     \item{\code{width}}{Numeric, width of the plot in pixels,
 700 by default.}
@@ -156,7 +163,9 @@ sunburstClinData(
 	data = tableDM,
 	vars = c("ARM", "SITEID"),
 	valueVar = "statN", valueLab = "Counts of patients",
-	valueType = "total"
+	valueType = "total",
+	caption = "The sectors are colored by category.",
+	subtitle = "Group: treatment and site"
 )
 }
 \seealso{
