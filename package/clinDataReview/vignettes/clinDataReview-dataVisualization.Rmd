@@ -180,7 +180,13 @@ scatterplotClinData(
     ),
     # include link to patient profiles:
     pathVar = "patientProfilePath",
-    table = FALSE, id = paste("subjectProfile", labParam, sep = "-")
+	subtitle = paste(
+		"Profile plot by subject",
+		"Points are positioned at relative day",
+		"Visits are positioned based on median relative day across subjects.",
+		sep = "\n"
+	),
+    table = FALSE
 )
 
 ```
@@ -265,10 +271,9 @@ scatterplotClinData(
     ),
     aesPointVar = list(color = "VISIT", fill = "VISIT"),
     xTrans = "log10", yTrans = "log10",
-    hoverVars = c("USUBJID"),
-    themePars = list(legend.position = "bottom"),
+    hoverVars = "USUBJID",
     labelVars = labelVars,
-    table = FALSE, id = "eDish",
+    table = FALSE, 
     pathVar = "patientProfilePath"
 )
 
