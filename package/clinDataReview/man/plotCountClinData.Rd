@@ -80,7 +80,7 @@ below the title.}
 
 \item{caption}{String with caption. \cr
 The caption is included at the bottom right of the plot.
-Please note that this might overlap with the with
+Please note that this might overlap with 
 vertical or rotated x-axis labels.}
 
 \item{labelVars}{Named character vector containing variable labels.}

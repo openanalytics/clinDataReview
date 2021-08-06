@@ -56,7 +56,7 @@ The subtitle is included at the top left of the plot,
 below the title.}
     \item{\code{caption}}{String with caption. \cr
 The caption is included at the bottom right of the plot.
-Please note that this might overlap with the with
+Please note that this might overlap with 
 vertical or rotated x-axis labels.}
     \item{\code{labelVars}}{Named character vector containing variable labels.}
     \item{\code{width}}{Numeric, width of the plot in pixels,
