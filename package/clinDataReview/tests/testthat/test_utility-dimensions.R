@@ -103,3 +103,37 @@ test_that("Height of the plot is takes into account the number of lines for text
 	)
 			
 })
+
+test_that("A top legend is positioned below the subtitle", {
+			
+	subtitle <- "Plot subtitle"
+	sizeDetails <- clinDataReview:::getPositionAndMargins(
+		subtitle = subtitle,
+		includeLegend = TRUE, legendPosition = "top"
+	)
+	expect_lt(
+		object = sizeDetails$position$legend,
+		expected = sizeDetails$position$subtitle
+	)
+			
+})
+
+test_that("The label for the x-axis, bottom legend and caption are positioned in this order at the bottom of the plot", {
+			
+	xLab <- "Label for the x-axis"
+	caption <- "This is a caption"
+	sizeDetails <- clinDataReview:::getPositionAndMargins(
+		xLab = xLab,
+		caption = caption,
+		includeLegend = TRUE, legendPosition = "bottom"
+	)
+	expect_lt(
+		object = sizeDetails$position$xLab,
+		expected = sizeDetails$position$legend
+	)
+	expect_lt(
+		object = sizeDetails$position$legend,
+		expected = sizeDetails$position$caption
+	)
+			
+})

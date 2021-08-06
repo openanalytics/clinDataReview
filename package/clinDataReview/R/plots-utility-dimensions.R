@@ -196,8 +196,8 @@ getSizePlot <- function(
 #' }
 #' Margins are computed based on the presence
 #' of these elements.\cr
-#' Only one line are counted for the legend,
-#' are plotly will extend the margin 
+#' Only one line is counted for the legend,
+#' as plotly will extend the margin 
 #' if necessary for the legend (for bottom legend).
 #' @inheritParams getSizePlot
 #' @return List with:
