@@ -75,7 +75,8 @@ getDimGgplot <- function(gg){
 #' \itemize{
 #' \item{for facetted plot, ensuring that each 
 #' facet is relatively squared}
-#' \item{if a caption or a subtitle is specified}
+#' \item{if a caption, subtitle, title, title
+#' for the x-axis are specified}
 #' \item{if a legend is set at the bottom or the top
 #' of the plot}
 #' }
@@ -102,7 +103,7 @@ getDimGgplot <- function(gg){
 #' and height ('height') of the plot
 #' in pixels.
 #' @author Laure Cougnaud
-getSizePlotClinData <- function(
+getSizePlot <- function(
 	width = NULL, height = NULL,
 	gg = NULL,
 	nrow = 1L,
@@ -173,8 +174,32 @@ getSizePlotClinData <- function(
 	
 }
 
-#' Get margins for a clinical data plot
-#' @inheritParams getSizePlotClinData
+#' Get margins and positions of specific
+#' elements for a clinical data plot
+#' 
+#' The elements are positioned as following:
+#' \itemize{
+#' \item{on top of the plot}{
+#' \enumerate{
+#' \item{title}
+#' \item{subtitle}
+#' \item{legend, if positioned on top of the plot}
+#' \item{facet title}
+#' }}
+#' \item{at the bottom of the plot}{
+#' \enumerate{
+#' \item{label for the x-axis}
+#' \item{legend, if positioned on the bottom
+#' of the plot}
+#' \item{caption}
+#' }}
+#' }
+#' Margins are computed based on the presence
+#' of these elements.\cr
+#' Only one line are counted for the legend,
+#' are plotly will extend the margin 
+#' if necessary for the legend (for bottom legend).
+#' @inheritParams getSizePlot
 #' @return List with:
 #' \itemize{
 #' \item{'margin': }{List with bottom ('t') and top ('t')

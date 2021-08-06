@@ -96,7 +96,7 @@ plotCountClinData <- function(
   )
   
   # get plot dim
-  dimPlot <- getSizePlotClinData(
+  dimPlot <- getSizePlot(
       width = width, height = height,
       includeLegend = FALSE,
 	  title = title,

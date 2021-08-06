@@ -154,7 +154,7 @@ scatterplotClinData <- function(
 	# set plot dimensions:
 	legendPosition <- themePars$legend.position
 	if(is.null(legendPosition)) 	legendPosition <- "right"
-	dimPlot <- getSizePlotClinData(
+	dimPlot <- getSizePlot(
 		width = width, 
 		height = height, 
 		gg = gg,

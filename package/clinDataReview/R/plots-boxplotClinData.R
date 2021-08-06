@@ -101,7 +101,7 @@ boxplotClinData <- function(
 	nrow = ceiling(length(dataList)/ncol)	
 
 	# get plot dim
-	dimPlot <- getSizePlotClinData(
+	dimPlot <- getSizePlot(
 		width = width, height = height,
 		title = title,
 		subtitle = subtitle,

@@ -4,7 +4,7 @@
 #' does the plot contains facets?
 #' @param ... Any parameters for the \link{code[plotly]{layout}}
 #' function. This should contain at least the plot object.
-#' @inheritParams getSizePlotClinData
+#' @inheritParams getSizePlot
 #' @return The updated \code{\link[plotly]{plotly}} object
 #' @importFrom plotly layout
 #' @author Laure Cougnaud

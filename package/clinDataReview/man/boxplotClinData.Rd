@@ -67,9 +67,14 @@ See \code{\link[clinUtils]{clinColors}}.}
 
 \item{title}{String with title for the plot.}
 
-\item{subtitle}{String with subtitle}
+\item{subtitle}{String with subtitle.\cr
+The subtitle is included at the top left of the plot,
+below the title.}
 
-\item{caption}{String with caption.}
+\item{caption}{String with caption. \cr
+The caption is included at the bottom right of the plot.
+Please note that this might overlap with the with
+vertical or rotated x-axis labels.}
 
 \item{labelVars}{Named character vector containing variable labels.}
 

@@ -165,7 +165,7 @@ timeProfileIntervalPlot <- function(data,
 		}else	colorPalette <- getColorPalette(n = 1, palette = colorPaletteOpt)
 	}
 
-	dimPlot <- getSizePlotClinData(
+	dimPlot <- getSizePlot(
 		width = width, height = height,
 		title = title, 
 		subtitle = subtitle,

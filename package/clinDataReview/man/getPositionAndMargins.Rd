@@ -2,7 +2,8 @@
 % Please edit documentation in R/plots-utility-dimensions.R
 \name{getPositionAndMargins}
 \alias{getPositionAndMargins}
-\title{Get margins for a clinical data plot}
+\title{Get margins and positions of specific
+elements for a clinical data plot}
 \usage{
 getPositionAndMargins(
   title = NULL,
@@ -17,11 +18,16 @@ getPositionAndMargins(
 \arguments{
 \item{title}{String with title for the plot.}
 
-\item{subtitle}{String with subtitle}
+\item{subtitle}{String with subtitle.\cr
+The subtitle is included at the top left of the plot,
+below the title.}
 
 \item{xLab}{String with label for \code{xVar}.}
 
-\item{caption}{String with caption.}
+\item{caption}{String with caption. \cr
+The caption is included at the bottom right of the plot.
+Please note that this might overlap with the with
+vertical or rotated x-axis labels.}
 
 \item{facet}{Logical, if TRUE the plot
 contains facets.}
@@ -57,7 +63,28 @@ expanded if the legend contains multiple rows.}
 }
 }
 \description{
-Get margins for a clinical data plot
+The elements are positioned as following:
+\itemize{
+\item{on top of the plot}{
+\enumerate{
+\item{title}
+\item{subtitle}
+\item{legend, if positioned on top of the plot}
+\item{facet title}
+}}
+\item{at the bottom of the plot}{
+\enumerate{
+\item{label for the x-axis}
+\item{legend, if positioned on the bottom
+of the plot}
+\item{caption}
+}}
+}
+Margins are computed based on the presence
+of these elements.\cr
+Only one line are counted for the legend,
+are plotly will extend the margin 
+if necessary for the legend (for bottom legend).
 }
 \author{
 Laure Cougnaud

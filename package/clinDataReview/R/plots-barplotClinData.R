@@ -66,7 +66,7 @@ barplotClinData <- function(
 	)
 	
 	# get plot dim
-	dimPlot <- getSizePlotClinData(
+	dimPlot <- getSizePlot(
 		width = width, height = height,
 		includeLegend = !is.null(colorVar),
 		legendPosition = "top",
