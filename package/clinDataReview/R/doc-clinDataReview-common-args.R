@@ -69,6 +69,7 @@
 #' @param subtitle String with subtitle.\cr
 #' The subtitle is included at the top left of the plot,
 #' below the title.
+#' @param colorVar (optional) String with color variable.
 #' @param colorPalette (optional) Named character vector with color palette.
 #' If not specified, the viridis color palette is used.\cr
 #' See \code{\link[clinUtils]{clinColors}}.

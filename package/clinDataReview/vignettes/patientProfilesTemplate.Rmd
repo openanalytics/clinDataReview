@@ -1,0 +1,333 @@
+
+<!--- 
+This report create patient profiles for all subjects of interest for the specified dataset
+(with the 'patientProfilesVis' package).
+
+Input parameters:
+ 
+* Report-specific:
+- reportTitle: string with report title
+- reportTitleLevel: integer with level of the report title, 1 for chapter, 2 for section, ...
+- createPatientProfiles: logical, should the patient profile reports be created? if FALSE, it is assumed they have already been created.
+- patientProfilesGeneralParams (optional): list with subject profiles parameters, used for all modules
+- patientProfilesParams (optional): list with subject profiles parameters for a specific module, each of the element contain:
+    - typePlot: string with type of the subject profile, 'text', 'interval', 'line' or 'event'
+    - dataFileName: string with name of the file of interest
+    - dataProcessing (optional): list with parameters for data processing, see ? clinDataReview::processData
+    - plotParams: list with parameters passed to the corresponding 'subjectProfile[typePlot]Function'
+- patientProfilesCreateReportParams (optional): list with any parameters passed to the patientProfilesVis::createSubjectProfileReport function.
+- tableParams (optional): list with parameters to create the table containing link to subject profiles,
+   - dataFileName: string with file name to the dataset of interest used for the table
+   - dataProcessing (optional): list with parameters for data processing of the data used for the table, see ? clinDataReview::processData
+   - vars (optional): character vector with variables of interest to display in the table
+
+* General:
+- pathDataFolder: string with path to the data folder
+- patientProfilePath: string with relative path where subject profiles are stored
+
+-->
+
+```{r patientProfilesTemplate, echo = FALSE, warning = FALSE, message = FALSE}
+
+library(knitr)
+opts_chunk$set(
+	echo = FALSE, 
+	warning = FALSE, error = FALSE, message = FALSE, 
+	results = "asis"
+)
+
+knitr::knit_hooks$set(
+	message = function(x, options) {
+		paste('\n\n<div class="alert alert-info">',
+			gsub('##', '\n', x),
+			'</div>', sep = '\n')
+	}
+)
+
+# print warnings where they occur (warn = 0 by default)
+options(warn = 1)
+
+```
+
+```{r patientProfilesTemplate-attachParameters}
+attach(params)
+if(!exists("createPatientProfiles"))	createPatientProfiles <- TRUE
+```
+
+```{r patientProfilesTemplate-loadPackages}
+
+library(clinDataReview)
+library(clinUtils)
+library(patientProfilesVis)
+library(ggplot2) # in case 'timeTrans'/'timeExpand' is specified
+
+```
+
+```{r patientProfilesTemplate-startUpCode, code = as.character(params$startup)}
+```
+
+```{r patientProfilesTemplate-setTitle}
+
+if(!exists("reportTitleLevel"))	reportTitleLevel <- 1
+
+# Create a header at the wanted depth
+cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
+
+```
+
+```{r patientProfilesTemplate-getData}
+
+# Load data
+pathFiles <- list.files(path = pathDataFolder, pattern = "*.(sas7bdat|xpt)$", full.names = TRUE)
+
+if(length(pathFiles) == 0)
+	stop(paste0("No data is available in:", params$dataPath, "."))
+
+dataAll <- clinUtils::loadDataADaMSDTM(files = pathFiles)
+labelVarsAll <- attr(dataAll, "labelVars")
+
+message(paste0("Data is available for the datasets: ", toString(names(dataAll)), "."))
+
+```
+
+```{r patientProfilesTemplate-utilityFct}
+
+	# Extract correct dataset from file name in input parameters ('[X]DataFileName' -> '[X]Data') 
+	getDataForParams <- function(params){
+		
+		paramsDataFileName <- grep("(D|d)ataFileName$", names(params), value = TRUE)
+		if(length(paramsDataFileName) > 0){
+			
+			# extract data name
+			paramsData <- sub("FileName$", "", paramsDataFileName)
+			
+			# extract data
+			params[paramsData] <- lapply(paramsDataFileName, function(fileName){
+				fileName <- params[[fileName]]
+				dataName <- toupper(tools::file_path_sans_ext(fileName))
+				dataAll[[dataName]]
+			})
+			
+			# remove parameters specifying file name(s)
+			params <- params[setdiff(names(params), paramsDataFileName)]	
+			
+		}
+		
+		return(params)
+		
+	}
+
+```
+
+```{r patientProfilesTemplate-getGeneralParameters, eval = createPatientProfiles & exists("patientProfilesGeneralParams")}	
+		
+	patientProfilesGeneralParams <- getDataForParams(patientProfilesGeneralParams)
+	
+	# extract subset of subjects (if specified)
+	# (this ensures the same subset is used across modules)
+	if(!is.null(patientProfilesGeneralParams[["subsetData"]])){
+		
+		# extract parameters related to filtering
+		filterParams <- setdiff(formalArgs(patientProfilesVis::filterData), "data")
+		filterParamsSpec <- intersect(filterParams, names(patientProfilesGeneralParams))
+		
+		# run the filtering
+		filterArgs <- patientProfilesGeneralParams[filterParamsSpec]
+		names(filterArgs)[which(names(filterArgs) == "subsetData")] <- "data"
+		subsetData <- do.call(patientProfilesVis::filterData, filterArgs)
+				
+		# save selected subjects in the 'subjectSubset' param (and remove all filtering-related params)
+		patientProfilesGeneralParams <- patientProfilesGeneralParams[setdiff(names(patientProfilesGeneralParams), filterParamsSpec)]
+		patientProfilesGeneralParams[["subjectSubset"]] <- unique(subsetData[, "USUBJID"])
+		
+	}
+	
+```
+
+```{r patientProfilesTemplate-buildModules, eval = createPatientProfiles & exists("patientProfilesParams")}
+
+	patientProfilesPlots <- list()
+
+	for(iParams in seq_along(patientProfilesParams)){
+		
+		paramsPlotI <- patientProfilesParams[[iParams]]
+		
+		## plot-specific params
+		label <- paramsPlotI[["plotParams"]][["label"]]
+		if(is.null(label))	label <- paste("module", iParams)
+		
+		## data
+		
+		# extract specified data
+		paramsPlotI <- getDataForParams(paramsPlotI)
+		dataI <- paramsPlotI[["data"]]
+		labelVars <- labelVarsAll
+		if(is.null(dataI)){
+			warning("Patient profiles:", label, "not created, because", 
+				dataFileName, "is not specified or available.")
+			break
+		}
+		
+		# extra data-processing
+		dataProcessing <- paramsPlotI[["dataProcessing"]]
+		if(!is.null(dataProcessing)){
+			
+			dataI <- processData(
+				data = dataI, 
+				dataPath = pathDataFolder,
+				processing = dataProcessing,
+				verbose = TRUE,
+				labelVars = labelVars
+			)
+			# Labels updated with extra annotation:
+			labelVars <- attr(dataI, "labelVars")
+			
+		}
+
+		## extract type of plot
+		typePlot <- paramsPlotI[["typePlot"]]
+		plotFctName <- paste0("subjectProfile", clinUtils::simpleCap(typePlot), "Plot")
+		getFctRes <- try(
+			plotFct <- do.call(`::`, list(pkg = "patientProfilesVis", name = plotFctName)),
+			silent = TRUE
+		)
+		if(inherits(getFctRes, "try-error")){
+			warning("Patient profiles:", label, "not created, because", 
+				"'typePlot' is not specified or available in the 'patientProfilesVis' package.")
+			break
+		}
+		
+		## extract plotting parameters
+		plotParams <- c(
+			list(data = dataI, labelVars = labelVars), 
+			paramsPlotI[["plotParams"]], 
+			if(exists("patientProfilesGeneralParams"))	patientProfilesGeneralParams
+		)
+		
+		# Extra formatting for parameters:
+
+		# ... passed as R code:
+
+		# this code is retained for back-compatibility
+		# new approach is to tag a parameter as 'r-lazy'
+		for(param in c("timeTrans", "timeExpand")){
+			if(!is.null(plotParams[[param]]) & 
+				!inherits(plotParams[[param]], "r-lazy") & 
+				is.character(plotParams[[param]])
+			)
+				plotParams[[param]] <- eval(parse(text = plotParams[[param]]))
+		}
+		# ... named character vector (imported as a list):
+		for(palette in c("colorPalette", "shapePalette")){
+			if(!is.null(plotParams[[palette]]) & 
+				!inherits(plotParams[[palette]], "r-lazy")){
+				# old specification of palette, advice is to specify palette via '!r ...'
+				if(is.character(plotParams[[palette]])){
+					res <- try(paletteEval <- eval(parse(text = plotParams[[palette]])), silent = TRUE)
+					if(!inherits(res, "try-error"))
+						plotParams[[palette]] <- paletteEval
+				}
+				if(is.list(plotParams[[palette]]))
+					plotParams[[palette]] <- unlist(plotParams[[palette]])
+			}
+		}
+		# if only one variable for reference range is available (e.g. ECG)
+		rangeVars <- plotParams[["paramValueRangeVar"]]
+		if(!is.null(rangeVars)){
+			idxRangeVarMissing <- which(!rangeVars %in% colnames(plotParams[["data"]]))
+			if(length(idxRangeVarMissing) > 0)
+				plotParams[["data"]][rangeVars[idxRangeVarMissing]] <- lapply(idxRangeVarMissing,
+					function(i) c(-Inf, +Inf)[i]
+				)
+		}
+		
+		# parse parameters tagged as: '!r-lazy'
+		plotParams <- forceParams(plotParams)
+
+		## create patient profiles for specified module
+		listPlotsI <- do.call(plotFct, plotParams)
+		message(paste("Subject profiles for", label, "created for", length(listPlotsI), "subject(s)."))
+		
+		## save plots
+		patientProfilesPlots <- c(patientProfilesPlots, setNames(list(listPlotsI), label))
+		
+		## free memory
+		rm(list = c("dataI", "plotParams", "listPlotsI"));tmp <- gc(verbose = FALSE) 
+		
+	}
+
+```
+
+```{r patientProfilesTemplate-createSubjectProfileReport, eval = createPatientProfiles}
+
+if(!exists("patientProfilesPlots"))
+	stop("Some patient profiles of interest should be specified.")
+
+if(exists("patientProfilesCreateReportParams")){
+	cReportParams <- getDataForParams(patientProfilesCreateReportParams)
+}else	cReportParams <- list()
+
+cReportParams[["listPlots"]] <- patientProfilesPlots
+cReportParams[["reportPerSubject"]] <- TRUE
+cReportParams[["outputFile"]] <- file.path(patientProfilePath, "subjectProfile.pdf")
+cReportParams[["verbose"]] <- TRUE
+
+pathsPatientProfiles <- do.call(createSubjectProfileReport, cReportParams)
+
+```
+
+The different data collected for each subject in this study are 
+summarized in a subject specific profile report.
+
+In the Medical Oversight and Monitoring Report, this report can displayed by:
+
+* selecting an element in a specific visualization,
+and clicking on the key 'P' (a.k.a 'Print Patient Profile').
+For individual profiles, the report of the selected subject is opened
+in the current browser. For visualization across patients 
+(e.g. counts of adverse events), a compressed file is downloaded
+with the subject profile reports for all selected patients.
+* clicking on the link for a specific subject in each table
+of the report
+
+```{r patientProfilesTemplate-table, eval = exists("tableParams")}
+
+	cat("The table below summarizes the subject of interests for the study,",
+		"with their associated subject profile.\n")
+
+	tableParams <- getDataForParams(tableParams)
+
+	dataTable <- tableParams[["data"]]
+	if(is.null(dataTable))
+		stop("'data' should be specified for 'tableParams'.")
+	labelVarsTable <- labelVarsAll
+	
+	# Data processing 
+	if(!is.null(tableParams$dataProcessing)){
+		dataTable <- processData(
+			data = dataTable, 
+			dataPath = pathDataFolder,
+			processing = tableParams$dataProcessing,
+			verbose = TRUE,
+			labelVars = labelVarsTable
+		)
+		# Labels updated with extra annotation:
+		labelVarsTable <- attr(dataTable, "labelVars")
+	}
+	
+	# Create URL to subject profiles
+	dataTable <- createPatientProfileVar(
+		data = dataTable, 
+		patientProfilePath = patientProfilePath,
+		checkExist = FALSE
+	)
+	
+	# Create the table
+	tableClinData(
+		data = dataTable,
+		tableVars = tableParams$vars,
+		pathVar = "patientProfilePath", pathExpand = FALSE,
+		labelVars = labelVarsTable
+	)
+
+```

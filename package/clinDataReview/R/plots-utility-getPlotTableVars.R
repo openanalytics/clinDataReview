@@ -114,7 +114,32 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			)
 		}
 		
-	}else if(plotFunction == "boxplotClinData"){
+	}else if(plotFunction == "errorbarClinData"){
+		
+		if(tableVarsNotSpec){
+			tableVars <- with(plotArgs, c(
+				if(!is.null(xErrorVar))	c(yVar, xVar, xErrorVar),
+				if(!is.null(yErrorVar))	c(xVar, yVar, yErrorVar),
+				colorVar
+			))
+			tableLab <- with(plotArgs, 
+				c(
+					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = xErrorVar, label = if(!missing(xErrorLab))	xErrorLab, labelVars = labelVars),
+					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
+					getLabelVar(var = yErrorVar, label = if(!missing(yErrorLab))	yErrorLab, labelVars = labelVars),
+					getLabelVar(var = colorVar, label = if(!missing(colorLab))	colorLab, labelVars = labelVars)
+				)
+			)
+		}else{
+			tableLab <- with(plotArgs, 
+				getLabelVar(tableVars, labelVars = labelVars, 
+					label = if(!missing(tableLab))	tableLab
+				)
+			)
+		}
+				
+	}else	if(plotFunction == "boxplotClinData"){
 		
 		if(tableVarsNotSpec){
 			tableVars <- with(plotArgs, c(idVar, xVar, yVar, colorVar, facetVar))

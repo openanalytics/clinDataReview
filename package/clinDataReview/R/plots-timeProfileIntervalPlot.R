@@ -19,7 +19,6 @@
 #' @param shapePalette (optional) Character vector with shape palette for
 #' \code{timeStartShapeVar} and \code{timeEndShapeVar}.
 #' @param xLab,yLab (optional) String with labels for the x/y-axis.
-#' @param colorVar (optional) String with color variable.
 #' @param colorLab (optional) String with label for \code{colorVar}.
 #' @param alpha (optional) Numeric with transparency, 1 by default.
 #' @inheritParams clinDataReview-common-args
@@ -251,6 +250,7 @@ timeProfileIntervalPlot <- function(data,
 		)
 	}
 	
+	# set layout
 	pl <- layoutClinData(
 		p = pl,
 		title = title,

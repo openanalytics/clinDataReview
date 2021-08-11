@@ -99,6 +99,8 @@ vertical or rotated x-axis labels.}
 The subtitle is included at the top left of the plot,
 below the title.}
 
+\item{colorVar}{(optional) String with color variable.}
+
 \item{colorPalette}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}

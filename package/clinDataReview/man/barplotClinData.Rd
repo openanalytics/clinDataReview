@@ -223,6 +223,7 @@ barplotClinData(
 \seealso{
 Other visualizations of summary statistics for clinical data: 
 \code{\link{boxplotClinData}()},
+\code{\link{errorbarClinData}()},
 \code{\link{plotCountClinData}()},
 \code{\link{sunburstClinData}()},
 \code{\link{treemapClinData}()}

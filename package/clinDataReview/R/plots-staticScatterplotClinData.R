@@ -169,24 +169,17 @@ staticScatterplotClinData <- function(
 	# axis specification
 	if(!is.null(xLabVars)){
 		
-		dataAxisLabs <- dataContent[do.call(order, dataContent[, xLabVars]), ]
-		xAxisLabs <- by(
-			data = dataAxisLabs,
-			# for each element in the x-axis...
-			INDICES = dataAxisLabs[, xVar], 
-			FUN = function(dataCol){
-				# ... extract unique elements for specified variables
-				cols <- lapply(dataCol[, xLabVars], function(x) paste(unique(x), collapse = "\n"))
-				# and combine different variables
-				Reduce(function(...) paste(..., sep = "\n"), cols)
-			},
-			simplify = TRUE
+		xAxisLabs <- getAxisLabs(
+			data = dataContent, 
+			var = xVar, 
+			labVars = xLabVars
 		)
-		xAxisLabs <- c(xAxisLabs)
+		
 		if(!is.null(xPars$labels))
 			warning("Specified labels for the x-axis (in xPars) are overwritten",
 				"to include the specified variables for the x-axis (xAxisLabs).")
 		xPars$labels <- xAxisLabs
+		
 	}
 
 	setAxis <- function(gg, trans, pars, lims, axis){

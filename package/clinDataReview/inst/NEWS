@@ -1,4 +1,6 @@
 1.2.0
+    o new error bar plot
+    o annotateData: fix when filters specified for current dataset
     o scatterplot: variables for labels for x-axis & plot template: table params
     o add caption & subtitle
     o plot dimensions:

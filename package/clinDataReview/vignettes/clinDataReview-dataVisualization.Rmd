@@ -364,7 +364,9 @@ the plot, a zip file containing the reports for all corresponding patients is
 downloaded**. If the attached table is display, each row can be extended to
 display the links of the respective patient profile reports.
 
-### Compute count statistics
+### Categorical variables
+
+#### Compute count statistics
 
 In this example, counts of adverse events are extracted for each
 `r labelVars["AESOC"]` and `r labelVars["AEDECOD"]`.   
@@ -373,7 +375,7 @@ Besides the counts of the
 number of subjects, the paths to the patient profile report for each subgroup
 are extracted and combined.
 
-```{r createCountTableAE}
+```{r computeSummaryStatistics-categoricalVariable}
 
 library(inTextSummaryTable)
 
@@ -452,7 +454,7 @@ pander(head(tableAE),
 
 ```
 
-### Sunburst
+#### Sunburst
 
 The **`sunburstClinData`** function visualizes the counts of hierarchical data
 in nested circles.
@@ -482,7 +484,7 @@ sunburstClinData(
 
 ```
 
-### Treemap
+#### Treemap
 
 A treemap visualizes the counts of the hierarchical data in nested rectangles.
 The area of each rectangle is proportional to the counts of the respective
@@ -511,7 +513,7 @@ treemapClinData(
 
 ```
 
-### Barplot
+#### Barplot
 
 A barplot visualizes the counts for one single variable in a specific order.
 
@@ -536,10 +538,119 @@ barplotClinData(
 
 ```
 
-### Boxplot
+### Continuous variable
+
+```{r getData-continuousVariable}
+
+dataVSDIABP <- subset(dataADaMCDISCP01$ADVS, 
+	PARAMCD == "DIABP" & ANL01FL == "Y" &
+	AVISIT %in% c("Baseline", "Week 2", "Week 4", "Week 6", "Week 8")
+)
+
+# add link to patient profiles report
+
+# add path in data
+dataVSDIABP$patientProfilePath <- paste0(
+	"patientProfiles/subjectProfile-", 
+	sub("/", "-", dataVSDIABP$USUBJID), ".pdf"
+)
+
+# add link in data (for attached table)
+dataVSDIABP$patientProfileLink <- with(dataVSDIABP,
+	paste0(
+		'<a href="', patientProfilePath, 
+		'" target="_blank">', USUBJID, '</a>'
+	)
+)
+
+```
+
+#### Compute summary statistics
+
+```{r computeSummaryStatistics-continuousVariable}
+
+library(inTextSummaryTable)
+
+# Specify extra summarizations besides the standard stats
+# When the data is summarized,
+# the patient profile path are summarized
+# as well across patients
+# (the paths should be collapsed with: ', ')
+statsExtraPP <- list(
+    statPatientProfilePath = function(data)	
+      toString(sort(unique(data$patientProfilePath))),
+    statPatientProfileLink = function(data)
+      toString(sort(unique(data$patientProfileLink)))
+)
+
+# get default counts + stats with subjects profiles path
+statsPP <- c(
+    getStats(x = dataVSDIABP$AVAL, type = "summary"),
+    list(
+        patientProfilePath = quote(statPatientProfilePath),
+        patientProfileLink = quote(statPatientProfileLink)
+    )
+)
+
+# compute summary table of actual value
+summaryTableCont <- computeSummaryStatisticsTable(
+    
+    data = dataVSDIABP,
+    rowVar = c("AVISIT", "ATPT"),
+	var = "AVAL",
+	
+    labelVars = labelVars,
+	
+    # statistics of interest
+    # for DT output, include columns with patients
+    stats = statsPP, 
+    # add extra 'statistic': concatenate subject IDs
+    statsExtra = statsExtraPP
+
+)
+pander(head(summaryTableCont, 1))
+```
+
+#### Plot error bars/confidence intervals
+
+```{r errorbarClinData}
+
+dataPlot <- subset(summaryTableCont, !isTotal)
+
+errorbarClinData(
+	data = dataPlot,
+	xVar = "AVISIT",
+	colorVar = "ATPT",
+	
+	# use non-rounded statistics for the plot
+	yVar = "statMean", 
+	yErrorVar = "statSE", 
+	
+	# display rounded stats in the hover + n: number of subjects
+	hoverVars = c("AVISIT", "ATPT", "n", "Mean", "SE"),
+	
+	yLab = "Mean", yErrorLab = "Standard Error",
+	title = "Diastolic Blood Pressure summary profile by actual visit and and analysis timepoint",
+	
+	# include lines connecting the error bars
+	mode = "markers+lines", 
+	
+	table = FALSE, labelVars = labelVars,
+	pathVar = "patientProfileLink",
+	pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars)
+
+)
+
+```
+
+#### Boxplot
 
 A boxplot visualizes the distribution of a continuous variable of interest
 versus specific categorical variables.
+
+This visualization doesn't rely on pre-computed statistics, so
+the continuous variable of interest is directly passed to
+the functionality.
 
 ```{r boxplot}
 

@@ -1,0 +1,326 @@
+#' Interactive plot of confidence interval/error interval of clinical data.
+#' 
+#' This plot is designed to display summary statistics
+#' of a continuous variable with (confidence) intervals.\cr
+#' The intervals are either displayed:
+#' \itemize{
+#' \item{vertically if \code{yErrorVar} is specified}
+#' \item{horizontally if \code{xErrorVar} is specified}
+#' }
+#' @param xErrorVar,yErrorVar String with variable of \code{data}
+#' containing the width of the interval (from
+#' the center of the interval) for
+#' horizontal or vertical intervals.
+#' @param xLabVars (vertical error bars) 
+#' Character vector with variable(s) to be displayed 
+#' as the labels of the ticks in the x-axis.\cr
+#' By default, \code{xVar} is displayed.\cr
+#' In case the variable(s) contain different elements 
+#' by \code{xVar}, they are combined
+#' and displayed below each other.
+#' @param mode String with the mode of the plot,
+#' 'markers' by default, so only data points are displayed. \cr
+#' This can also be set to 'lines' to include a line connecting
+#' the center of the error bars instead; or 'lines+markers' 
+#' to include both a marker and a line.\cr
+#' See \code{mode} attribute for plotly scatter.
+#' @inheritParams clinDataReview-common-args-summaryStatsVis
+#' @inheritParams clinDataReview-common-args
+#' @inheritParams tableClinData
+#' @inherit scatterplotClinData return
+#' @example inst/examples/errorbarClinData-example.R
+#' @family visualizations of summary statistics for clinical data
+#' @import plotly
+#' @importFrom clinUtils getColorPalette
+#' @author Laure Cougnaud
+#' @export
+errorbarClinData <- function(
+	data, 
+	# plot variables:
+	xVar, xLab = getLabelVar(xVar, labelVars = labelVars),
+	yVar, yLab = getLabelVar(yVar, labelVars = labelVars),
+	yErrorVar = NULL, yErrorLab = getLabelVar(yErrorVar, labelVars = labelVars),
+	xErrorVar = NULL, xErrorLab = getLabelVar(xErrorVar, labelVars = labelVars),
+	xLabVars = NULL,
+	xAxisLab = paste(c(xLab, xErrorLab), collapse = " and "),
+	yAxisLab = paste(c(yLab, yErrorLab), collapse = " and "),
+	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
+	colorPalette = NULL,
+	titleExtra = NULL,
+	title = paste(c(
+		paste(yAxisLab, "vs", xAxisLab),
+		titleExtra
+		), 
+		collapse = "<br>"
+	),
+	subtitle = NULL, caption = NULL,
+	labelVars = NULL,
+	mode = "markers",
+	# interactivity:
+	width = NULL, height = NULL,
+	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
+	hoverVars, hoverLab,
+	table = FALSE, 
+	tableVars,
+	tableLab,
+	tableButton = TRUE, tablePars = list(),
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+	verbose = FALSE){
+	
+	# store input parameter values for further use
+	plotArgs <- c(as.list(environment()))
+	
+	if(!is.null(xErrorVar) & !is.null(yErrorVar))
+		stop(paste("Variable with width of the interval",
+			"cannot be specified both on the x or the y axis."))
+	if(is.null(xErrorVar) & is.null(yErrorVar))
+		stop(paste("Variable with width of the interval",
+			"error should be specified."))
+	
+	# extract variable without error bar
+	groupAxis <- ifelse(!is.null(yErrorVar), "x", "y")
+	groupVar <- switch(groupAxis, x = xVar, y = yVar)
+	
+	# extract unique ID for each plot element
+	idVars <- c(groupVar, colorVar)
+	data$idEl <- interaction(data[, idVars, drop = FALSE])
+	
+	# extract default hover variables
+	if(missing(hoverVars)){
+		hoverVars <- c(xVar, xErrorVar, colorVar, yVar, yErrorVar)
+		hoverLab <- setNames(c(xLab, xErrorLab, colorLab, yLab, yErrorLab), hoverVars)
+	}else	if(missing(hoverLab)){
+		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
+	}
+	hoverVars <- unique(hoverVars)
+	
+	if(groupAxis == "y"){
+		
+		# split labels if too long and revert order
+		# otherwise first levels will appear
+		# at the bottom of the axis
+		data[, groupVar] <- formatVarForPlotLabel(
+			data = data, 
+			paramVar = groupVar, 
+			width = 20, revert = TRUE
+		)
+		
+	}
+	
+	# add jitter in case multiple color groups
+	if(!is.null(colorVar)){
+		
+		if(is.character(data[, colorVar]))
+			data[, colorVar] <- factor(data[, colorVar])
+		if(is.character(data[, groupVar]))
+			data[, groupVar] <- factor(data[, groupVar])
+		
+		data$groupJitter <- getJitterVar(
+			data = data, 
+			var = groupVar, byVar = colorVar
+		)	
+			
+		groupVarPlot <- "groupJitter"
+		hasJitter <- TRUE
+		
+	}else{
+		groupVarPlot <- groupVar
+		hasJitter <- FALSE
+	}
+	
+	# format data to: 'SharedData' object
+	dataSharedData <- formatDataForPlotClinData(
+		data = data, 
+		hoverVars = hoverVars, hoverLab = hoverLab,
+		hoverByVar = "idEl",
+		keyVar = "idEl", id = id,
+		labelVars = labelVars
+	)
+	
+	# get plot dim
+	dimPlot <- getSizePlot(
+		width = width, height = height,
+		title = title, 
+		subtitle = subtitle,
+		caption = caption,
+		xLab = xAxisLab,
+		includeLegend = !is.null(colorVar), 
+		legendPosition = "bottom",
+		y = if(groupAxis == "y")
+			data[, groupVar]
+	)
+	width <- dimPlot[["width"]]
+	height <- dimPlot[["height"]]
+	
+	# extract color palette
+	if(is.null(colorPalette)){
+		colorPaletteOpt <- getOption("clinDataReview.colors")
+		if(!is.null(colorVar)){
+			colorPalette <- getColorPalette(
+				x = data[, colorVar], 
+				palette = colorPaletteOpt
+			)
+		}else	colorPalette <- getColorPalette(n = 1, palette = colorPaletteOpt)
+	}
+	
+	# build the plot
+	argsPlotly <- list(
+		data = dataSharedData, 
+		ids = varToFm("idEl"),
+		color = if(!is.null(colorVar))	varToFm(colorVar)	else	I(colorPalette), 
+		colors = if(!is.null(colorVar))	colorPalette,
+		type = "scatter",
+		mode = mode,
+		hovertemplate = varToFm("hover"),
+		width = width, height = height
+	)
+	
+	argsPlotlyAxis <- switch(groupAxis,
+		x = list(
+			x = varToFm(groupVarPlot),
+			y = varToFm(yVar),
+			error_y = list(
+				array = varToFm(yErrorVar),
+				type = "data"
+			)
+		),
+		y = list(
+			x = varToFm(xVar),
+			error_x = list(
+				array = varToFm(xErrorVar),
+				type = "data"
+			),
+			y = varToFm(groupVarPlot)
+		)
+	)
+	argsPlotly <- c(argsPlotly, argsPlotlyAxis)
+	pl <- do.call(plot_ly, argsPlotly)
+	
+	## set axes
+	xAxisArgs <- yAxisArgs <- NULL
+	if(!is.null(xLabVars) && groupAxis != "x")
+		stop(paste(
+			"Variables for the x-axis labels",
+			"can only be specified if the error bars",
+			"are included in the y-direction."
+		))
+	# set axis labels
+	if(!is.null(xLabVars) || (!is.numeric(data[, groupVar]) && hasJitter)){
+		
+		axisArgs <- getAxisLabs(
+			data = data, 
+			var = groupVar, 
+			labVars = if(!is.null(xLabVars)){
+				xLabVars
+			}else	groupVar
+		)
+		axisArgs <- list(
+			tickvals = seq_along(axisArgs), 
+			ticktext = axisArgs,
+			range = c(0.5, length(axisArgs)+0.5)
+		)
+		switch(groupAxis,
+			`x` = {
+				xAxisArgs <- axisArgs
+			},
+			`y` = {
+				yAxisArgs <- axisArgs
+			}
+		)
+	}
+	
+	# set layout
+	pl <- layoutClinData(
+		p = pl,
+		title = title,
+		xLab = xAxisLab,
+		yLab = yAxisLab,
+		caption = caption,
+		subtitle = subtitle,
+		includeLegend = !is.null(colorVar),
+		legendPosition = "bottom",
+		width = width,
+		height = height,
+		# extra params passed to plotly::layout
+		legend = list(title = list(text = colorLab)),
+		xaxis = xAxisArgs,
+		yaxis = yAxisArgs
+	)
+	
+	# specific formatting for clinical data
+	pl <- formatPlotlyClinData(
+		data = data, pl = pl,
+		idVar = "idEl", pathVar = pathVar,
+		# extract ID from 'id' column directly the plot output object
+		idFromDataPlot = FALSE, idVarPlot = "id",
+		id = id, 
+		verbose = verbose
+	)
+	
+	# create associated table
+	if(table){
+		
+		tableVars <- getPlotTableVars(
+			plotFunction = "errorbarClinData", 
+			plotArgs = plotArgs
+		)
+		tableLab <- attr(tableVars, "tableLab")
+		
+		table <- tableClinData(
+			data = data, 
+			keyVar = "idEl", idVar = groupVar,
+			pathVar = pathVar, pathLab = pathLab,
+			pathExpand = TRUE,
+			tableVars = tableVars,
+			tableLab = tableLab,
+			tableButton = tableButton, tablePars = tablePars,
+			id = id, 
+			labelVars = labelVars
+		)
+		res <- list(plot = pl, table = table)
+		
+		class(res) <- c("clinDataReview", class(res))
+	
+	}else res <- pl
+
+	return(res)
+	
+}
+
+#' Add jitter to the variable of the plot,
+#' based on the different groups of a grouping variable
+#' @param var String with variable to add a jitter to.
+#' @param byVar String with variable containing the
+#' groups to jitter by.
+#' @inheritParams clinDataReview-common-args
+#' @return Numeric vector of length \code{nrow(data)}
+#' containing the jittered variable.
+#' @author Laure Cougnaud
+getJitterVar <- function(data, var, byVar){
+	
+	if(is.character(data[, var]))
+		stop("The x-variable should be a numeric or factor.")
+	if(is.character(data[, byVar]))
+		stop("The color-variable should be a numeric or factor.")
+	
+	varNum <- as.numeric(data[, var])
+	
+	byVarNum <- as.numeric(data[, byVar])
+	nGroups <- length(unique(byVarNum))
+	
+	if(nGroups > 1){
+		
+		jitter <- ifelse(
+			is.numeric(data[, var]), 
+			ifelse(n_distinct(data[, var]) == 1, 0.1, min(diff(sort(unique(data[, var])))) * 0.1), 
+			0.3
+		)
+		
+		scale <- 1/(jitter/(nGroups-1))
+		byVarNumJitter <- c(scale(byVarNum, center = TRUE, scale = scale))
+		varNum <- varNum + byVarNumJitter
+	}
+	
+	return(varNum)
+	
+}

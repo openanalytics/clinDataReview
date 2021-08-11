@@ -295,7 +295,7 @@ annotateData <- function(
 				annotData <- filterData(
 					data = annotData, 
 					filters = annotFilter, 
-					returnAll = (annotDataset == "current"),
+					returnAll = FALSE,
 					labelVars = labelVarsAnnot
 				)
 				labelVarsAnnot <- attr(annotData, "labelVars")

@@ -150,40 +150,26 @@ if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
 ```{r summaryPlotTemplate-createTable}
 
 ## Params for the table
-			
-# combine all paths across patients
-# the paths should be collapsed with: ', '
-if(!is.null(patientProfilePath))
-	tableParams$statsExtra <- c(
-		tableParams$statsExtra,
-		list(
-			statPatientProfilePath = function(data) 
-				toString(sort(unique(data$patientProfilePath))),
-			statPatientProfileLink = function(data)
-				toString(sort(unique(data$patientProfileLink)))
-		)
-	)
-			
+statsExtraPP <- list(
+	statPatientProfilePath = function(data) 
+		toString(sort(unique(data$patientProfilePath))),
+	statPatientProfileLink = function(data)
+		toString(sort(unique(data$patientProfileLink)))
+)		
 # get specific set of statistics + stats with subjects profiles path
 statsPP <- if(!is.null(patientProfilePath))
 	setNames(
 		list(quote(statPatientProfileLink)), 
 		labelVars["USUBJID"]
 	)
-statsCustom <- eval(expr = parse(text = tableParams$stats))
-# if statistics are specified for each variable separately:
-if(any(names(statsCustom) %in% tableParams$var)){
-	tableParams$stats <- sapply(statsCustom, c, statsPP, simplify = FALSE)
-}else{
-	tableParams$stats <- c(statsPP, statsCustom)
-}
-			
+
 ## Create tables
-			
+		
 # create table with descriptive statistics (data.frame format)
 summaryTable <- dlply(data, loopingVar, function(dataI){
-			
-	# extract total dataset
+	
+	## Total dataset
+	
 	dataTotalI <- dataTotal
 	if(!is.null(loopingVar) && loopingTotal){
 		if(any(!loopingVar %in% colnames(dataTotalI)))
@@ -196,9 +182,30 @@ summaryTable <- dlply(data, loopingVar, function(dataI){
 			all = FALSE # only include data if present in y
 		)
 	}
+		
+	## Params for the table
+	
+	# evaluate !r-lazy parameters 
+	argsTable <- forceParams(tableParams)
+			
+	# combine all paths across patients
+	# the paths should be collapsed with: ', '
+	if(!is.null(patientProfilePath))
+		argsTable$statsExtra <- c(
+			argsTable$statsExtra, statsExtraPP
+		)
+	
+	if(is.character(argsTable$stats))
+		argsTable$stats <- eval(expr = parse(text = argsTable$stats))
+	# if statistics are specified for each variable separately:
+	if(any(names(argsTable$stats) %in% argsTable$var)){
+		argsTable$stats <- sapply(argsTable$stats, c, statsPP, simplify = FALSE)
+	}else{
+		argsTable$stats <- c(statsPP,argsTable$stats)
+	}
 			
 	argsTable <- c(
-		tableParams,
+		argsTable,
 		list(
 			data = dataI, 
 			labelVars = labelVars,
@@ -242,7 +249,7 @@ listPlots <- sapply(summaryTable, function(summaryTableI){
 	argsPlot$labelVars <- labelVars
 	argsPlot$table <- TRUE
 	# Summarized data: so patients profiles should be collapsed for each row of the table
-	if(plotFunction != 'barplotClinData'){
+	if("pathExpand" %in% formalArgs(plotFunction)){
 	  argsPlot$pathExpand <- TRUE
 	}
 	argsPlot$pathVar <- if(!is.null(patientProfilePath))	names(statsPP)

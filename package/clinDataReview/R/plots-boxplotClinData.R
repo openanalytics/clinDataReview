@@ -1,6 +1,5 @@
 
 #' Boxplot interactive plot.
-#' @param colorVar (optional) String with color variable.
 #' @param colorLab String with label for \code{colorVar}.
 #' @param facetVar (optional) String with facet variable.
 #' @param facetLab String with label for \code{facetVar}.

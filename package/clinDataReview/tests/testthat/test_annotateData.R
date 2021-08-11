@@ -341,3 +341,50 @@ test_that("Verbose annotation with exposure data", {
       )
       
     })
+
+test_that("Data is correctly annotated from filtered subset", {
+		
+	# extract baseline records
+	data <- data.frame(
+		AVISIT = c("Baseline", "Week 4", "Baseline", "Week 4"),
+		USUBJID = c(1, 1, 2, 2),
+		AVAL = c(4, 2, 6, 3)
+	)
+	
+	expect_silent(
+		annotatedData <- annotateData(
+			data = data,
+			annotations = list(
+				vars = "BASE",
+				varFct = "AVAL",
+				varsBy = "USUBJID",
+				filters = list(var = "AVISIT", value = "Baseline")
+			)
+		)
+	)
+	expect_setequal(subset(annotatedData, USUBJID == 1)$BASE, 4)
+	expect_setequal(subset(annotatedData, USUBJID == 2)$BASE, 6)
+			
+})
+
+test_that("A warning is generated if variable to group by has replicates", {
+		
+	data <- data.frame(
+		AVISIT = c("Baseline", "Week 4", "Baseline", "Week 4"),
+		USUBJID = c(1, 1, 2, 2),
+		AVAL = c(4, 2, 6, 3)
+	)
+			
+	expect_warning(
+		annotateData(
+			data = data,
+			annotations = list(
+				vars = "BASE",
+				varFct = "AVAL",
+				varsBy = "USUBJID"
+			)
+		),
+		"Duplicated records.*"
+	)
+			
+})

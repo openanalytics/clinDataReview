@@ -159,6 +159,7 @@ Note: the table and plot are not (yet) linked.
 Other visualizations of summary statistics for clinical data: 
 \code{\link{barplotClinData}()},
 \code{\link{boxplotClinData}()},
+\code{\link{errorbarClinData}()},
 \code{\link{sunburstClinData}()},
 \code{\link{treemapClinData}()}
 }

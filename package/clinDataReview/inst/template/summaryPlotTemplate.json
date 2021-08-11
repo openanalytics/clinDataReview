@@ -54,7 +54,7 @@
     
     "plotFunction": {
       "type": "string",
-      "enum": ["timeProfileIntervalPlot", "scatterplotClinData", "sunburstClinData", "treemapClinData", "barplotClinData"],
+      "enum": ["timeProfileIntervalPlot", "scatterplotClinData", "sunburstClinData", "treemapClinData", "barplotClinData", "errorbarClinData"],
       "doc": "plotting function to visualize summary data"
     },
     "plotParams": {
