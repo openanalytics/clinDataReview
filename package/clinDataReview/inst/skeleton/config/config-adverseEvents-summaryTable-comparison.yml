@@ -1,0 +1,60 @@
+# Report-specific parameters
+template: summaryTableTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: "Adverse events: summary table: comparison with previous data transfer"
+reportTitleLevel: 2
+# Dataset of interest
+dataFileName: ae.xpt
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC", "ACTARM"] 
+      # treatment-emergent
+    - vars: TRTEMFL
+      varFct: ifelse(is.na(AESTDY), "", ifelse(AESTDY >= 0, "Y", "N"))
+      varLabel: Treatment-emergent adverse event
+    - vars: WORSTINT
+      varFct: 'function(data){
+        asev <- with(data, ifelse(AESEV == "", NA_character_, AESEV));
+        asev <- factor(asev, levels = c("MILD", "MODERATE", "SEVERE"));
+        worstIntNum <- with(data, ave(as.numeric(asev), USUBJID, FUN = function(x){
+          if(all(is.na(x))) NA  else  max(x, na.rm = TRUE)
+        }));
+        factor(levels(asev)[worstIntNum], levels = levels(asev))
+       }'
+      varLabel: "Worst severity by subject"
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+# Total dataset
+dataTotalFileName: dm.xpt
+dataTotalProcessing:
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+# Table parameters
+tableParams:
+  var: ["TRTEMFL", "AESER", "AESDTH", "WORSTINT", "AEREL", "AEOUT"] # "AEACN" is empty
+  varFlag: ["TRTEMFL", "AESER", "AESDTH"]
+  varInclude0: TRUE
+  varGeneralLab: "Subjects with, n (%)"
+  stats: 'getStats(type = c("n", "%", "n (%)"))'
+  varSubgroupLab: Group
+# Comparison with previous batch
+comparisonTableType: "table-combine"
+# for docx export (optional):
+tableParamsDocx:
+  statsVar: "n (%)"
+  file: summaryAE.docx
+  footer: "The percentages are calculated over the safety analysis set"
+tableParamsDT:
+  statsVar: ["n", "%"]
+  statsLayout: rowInSepCol # col by default for DT output
+  pageLength: Inf
+  searchBox: TRUE 
+  footer: "The percentages are calculated over the safety analysis set"
+

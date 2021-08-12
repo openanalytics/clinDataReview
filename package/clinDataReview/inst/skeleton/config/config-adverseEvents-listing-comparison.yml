@@ -2,7 +2,7 @@
 template: listingTemplate.Rmd
 templatePackage: clinDataReview
 reportTitle: "Adverse events: listing: comparison with previous data transfer"
-reportTitleLevel: 2
+reportTitleLevel: 1
 # Dataset of interest
 dataFileName: ae.xpt
 dataProcessing:

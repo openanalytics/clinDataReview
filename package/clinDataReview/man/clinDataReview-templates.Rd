@@ -141,7 +141,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\strong{\code{tableParams}}: }{object , parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}}
 \item{\code{tableParamsDocx}: }{(optional) object , parameters to format the table to the docx format, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
 \item{\code{tableParamsDT}: }{(optional) object , parameters to format the table to the DT interactive table included in the report, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
-\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'table-comparison-interactive', 'newData-diff' } , output type of the comparison table}
+\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'table-comparison-interactive', 'newData-diff', 'table-combine' } , output type of the comparison table}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. By default, statistics variables are compared across row and column elements.}
 \item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}

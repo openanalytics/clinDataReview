@@ -10,6 +10,10 @@
         - automatic margins adjustments
     o time profile plot: include color lab
     o barplot: fix position legend
+    o summary table template: 
+        - new type of comparison: 'table-combine'
+        - fix for extraction total data from old batch
+    o listing, plot & summary table templates: fix processData from dataset & old batch
 1.1.0
     o new boxplotClinData functionality
     o barplotClinData: textVar

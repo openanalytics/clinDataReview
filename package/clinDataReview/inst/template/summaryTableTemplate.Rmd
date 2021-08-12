@@ -101,13 +101,11 @@ if(comparisonTableType != "none") {
 
 dataList <- sapply(names(pathsData), function(dataBatch) {
       
-      pathData <- file.path(
-          pathsData[[dataBatch]],
-          dataFileName
-      )
-      
-      dataAll <- clinUtils::loadDataADaMSDTM(pathData, verbose = FALSE)
-      data <- dataAll[[1]]
+	pathDataBatch <- pathsData[[dataBatch]]
+	
+	pathData <- file.path(pathDataBatch, dataFileName)
+	dataAll <- clinUtils::loadDataADaMSDTM(pathData, verbose = FALSE)
+	data <- dataAll[[1]]
       
       # Extract label information
       labelVars <- attr(dataAll, "labelVars")
@@ -116,7 +114,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 #        msg <- capture.output(
 		data <- processData(
                 data = data, 
-                dataPath = pathDataFolder,
+                dataPath = pathDataBatch,
                 processing = dataProcessing,
                 verbose = TRUE,
                 labelVars = labelVars
@@ -150,8 +148,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
       if(exists("dataTotalFileName")) {
         
         # Load data
-        pathDataTotal <- file.path(pathDataFolder, dataTotalFileName)
-        
+        pathDataTotal <- file.path(pathDataBatch, dataTotalFileName)
         dataTotalAll <- clinUtils::loadDataADaMSDTM(pathDataTotal, verbose = FALSE)
         dataTotal <- dataTotalAll[[1]]
         
@@ -162,7 +159,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
         if(exists("dataTotalProcessing")){
           dataTotal <- processData(
               data = dataTotal, 
-              dataPath = pathDataFolder, 
+              dataPath = pathDataBatch, 
               processing = dataTotalProcessing,
               verbose = TRUE,
               labelVars = labelVarsTotal,
@@ -191,6 +188,8 @@ labelVars <- attr(dataList$currentData$data, "labelVars")
 
 dataCurrent <- dataList$currentData$data
 dataPrevious <- dataList$previousData$data
+
+# TODO: check what happens if a group is in old but not in new data
 
 dataCurrent <- ddply(dataCurrent, loopingVar, function(dataCurrentI){
 			
@@ -296,7 +295,37 @@ summaryTableList <- sapply(names(dataList), function(dataBatch) {
 
 ```
 
-```{r summaryTableTemplate-exportSummaryStatisticsTable, eval = (comparisonTableType %in% c("none", "newData-diff"))}
+```{r summaryTableTemplate-combineSummaryStatisticsTable, eval = (comparisonTableType == "table-combine")}
+
+groups <- lapply(lapply(summaryTableList, "[[", "summaryTable"), names)
+groups <- Reduce(union, groups)
+
+summaryTableCombineGroups <- sapply(groups, function(group){
+			
+	idx <- ifelse(!is.null(loopingVar), group, 1)
+	sumTableCurrent <- summaryTableList$currentData$summaryTable[[idx]]
+	sumTableOld <- summaryTableList$previousData$summaryTable[[idx]]
+	
+	summaryTableCombine <- inTextSummaryTable::combine(
+		Previous = sumTableOld, 
+		Current = sumTableCurrent,
+		combineVar = "Version",
+		combineDir = "col"
+	)
+
+}, simplify = FALSE)
+
+summaryTableList <- list(
+	currentData = list(
+		summaryTable = summaryTableCombineGroups,
+		statsPP = summaryTableList$currentData$statsPP
+	)
+)
+
+```	
+	
+
+```{r summaryTableTemplate-exportSummaryStatisticsTable, eval = (comparisonTableType %in% c("none", "newData-diff", "table-combine"))}
 
 ## Format messages
 #messages <- gsub(" (based on).*", ".", messages)

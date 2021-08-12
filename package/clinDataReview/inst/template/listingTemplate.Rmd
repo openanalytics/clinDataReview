@@ -98,9 +98,10 @@ if(comparisonTableType != "none") {
 
 dataList <- sapply(names(pathsData), function(dataBatch) {
 			
+	pathDataBatch <- pathsData[[dataBatch]]
+			
 	# Load data
-	pathData <- file.path(pathsData[[dataBatch]], dataFileName)
-	
+	pathData <- file.path(pathDataBatch, dataFileName)
 	dataAll <- clinUtils::loadDataADaMSDTM(pathData, verbose = FALSE)
 	data <- dataAll[[1]]
 	
@@ -111,7 +112,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 	if(exists("dataProcessing")){
 		data <- processData(
 			data = data, 
-			dataPath = pathDataFolder,
+			dataPath = pathDataBatch,
 			processing = dataProcessing,
 			verbose = TRUE,
 			labelVars = labelVars

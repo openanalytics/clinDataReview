@@ -107,19 +107,34 @@ createExampleMetadata <- function(dir) {
 #' @importFrom clinUtils loadDataADaMSDTM
 createComparisonData <- function(dir) {
   
-  pathToFile <- system.file(
-      "extdata", "cdiscpilot01",
-      "SDTM", "ae.xpt",
-      package = "clinUtils"
-  )
-  data <- suppressMessages(
-      loadDataADaMSDTM(files = pathToFile)
-  )
-  dataAE <- data[[1]]
-  idx <- which(dataAE$USUBJID == "01-701-1148")
-  dataAE$AESER[idx] <- "Y"
-  dataAE$AESEV[idx] <- "SEVERE"
-  write_xpt(dataAE, file.path(dir, "ae.xpt"))
+	# Adverse events
+	pathToFile <- system.file(
+		"extdata", "cdiscpilot01",
+		"SDTM", "ae.xpt",
+		package = "clinUtils"
+	)
+	data <- suppressMessages(
+		loadDataADaMSDTM(files = pathToFile)
+	)
+	dataAE <- data[[1]]
+	dataAE <- dataAE[which(dataAE$USUBJID != "01-718-1427"), ]
+	idx <- which(dataAE$USUBJID == "01-701-1148")
+	dataAE$AESER[idx] <- "Y"
+	dataAE$AESEV[idx] <- "SEVERE"
+	write_xpt(dataAE, file.path(dir, "ae.xpt"))
+  
+	# dm
+	pathToFile <- system.file(
+		"extdata", "cdiscpilot01",
+		"SDTM", "dm.xpt",
+		package = "clinUtils"
+	)
+	data <- suppressMessages(
+		loadDataADaMSDTM(files = pathToFile)
+	)
+	dataDM <- data[[1]]
+	dataDM <- dataDM[which(dataDM$USUBJID != "01-718-1427"), ]
+	write_xpt(dataDM, file.path(dir, "dm.xpt"))
   
 }
 
@@ -182,9 +197,10 @@ createMainConfigSkeleton <- function(dir, dirData) {
 			  "config-demographics-summaryTable.yml",
               "config-adverseEvents-division.yml",
               "config-adverseEvents-summaryTable.yml",
+			  "config-adverseEvents-summaryTable-comparison.yml",
               "config-adverseEvents-all-countsVisualization.yml",
-              "config-adverseEvents-timeProfiles.yml",
-              "config-adverseEvents-listing-comparison.yml",
+			  "config-adverseEvents-listing-comparison.yml",
+			  "config-adverseEvents-timeProfiles.yml",
               "config-concomitantMedications-division.yml",
               "config-concomitantMedications-listing.yml",
 			  "config-laboratory-summaryBarplot.yml",

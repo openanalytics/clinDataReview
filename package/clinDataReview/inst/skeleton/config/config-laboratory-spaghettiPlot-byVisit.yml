@@ -1,7 +1,7 @@
 # Report-specific parameters
 template: plotTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: "Laboratory parameters: time profiles by visit"
+reportTitle: Laboratory profiles by visit
 reportTitleLevel: 1
 
 # Dataset of interest
