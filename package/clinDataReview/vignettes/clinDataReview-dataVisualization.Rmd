@@ -7,6 +7,8 @@ output:
     toc: true
     toc_depth: 5
     number_sections: true
+params:
+  patientProfilesCreate: FALSE
 vignette: >
   %\VignetteIndexEntry{Visualization of clinical data}
   %\VignetteEngine{knitr::rmarkdown}
@@ -89,7 +91,7 @@ template report available in the `clinDataReview` package.
 A simple patient profile report for each subject in the example
 dataset is created below.
 
-```{r createPatientProfiles, results = "hide", eval = hasPandoc}
+```{r patientProfilesCreate, results = "hide", eval = hasPandoc & params$patientProfilesCreate}
 # create a directory to store the patient profiles:
 patientProfilesDir <- "patientProfiles"
 dir.create(patientProfilesDir)
@@ -191,6 +193,7 @@ scatterplotClinData(
 		"Visits are positioned based on median relative day across subjects.",
 		sep = "\n"
 	),
+	verbose = TRUE,
     table = FALSE
 )
 
