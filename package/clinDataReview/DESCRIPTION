@@ -24,7 +24,7 @@ Description: Creation of interactive tables, listings and figures ('TLFs')
   files and template 'R Markdown' reports contained in the package.
 Imports: 
   bookdown,
-  clinUtils,
+  clinUtils (>= 0.1.0),
   crosstalk,
   data.table,
   ggplot2,

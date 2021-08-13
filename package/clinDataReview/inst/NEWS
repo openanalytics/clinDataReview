@@ -17,6 +17,7 @@
     o summary table template: tableParams/stats
        - support !r-lazy & by loop var
        - patient profiles after specified stats (when stats var not specified)
+    o skeleton - listing: button show/hide colums & export landscape pdf 
 1.1.0
     o new boxplotClinData functionality
     o barplotClinData: textVar

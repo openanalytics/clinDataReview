@@ -29,3 +29,6 @@ tableParams:
     - "CMENDTC"
     - "CMENDY"
     - "CMINDC"
+  tablePars:
+    buttons: !r clinUtils::getClinDTButtons(typeExtra = "colvis", opts = list(pdf = list(orientation = "landscape")))
+  
