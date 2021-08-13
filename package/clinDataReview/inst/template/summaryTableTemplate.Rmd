@@ -224,74 +224,78 @@ dataList$previousData <- NULL
 
 summaryTableList <- sapply(names(dataList), function(dataBatch) {
       
-      ## Extract from list
-      data <- dataList[[dataBatch]][["data"]]			
-      dataTotal <- dataList[[dataBatch]][["dataTotal"]]
+	## Extract from list
+	data <- dataList[[dataBatch]][["data"]]			
+	dataTotal <- dataList[[dataBatch]][["dataTotal"]]
       
-      ## Params for the table
-      argsTable <- tableParams
+	# statistics for patient profiles
+	statsPP <- if(!is.null(patientProfilePath))
+		setNames(list(quote(statPatientProfileLink)), labelVars["USUBJID"])
+	statsExtraPP <- if(!is.null(patientProfilePath))
+		list(
+			statPatientProfilePath = function(data) 
+				toString(sort(unique(data$patientProfilePath))),
+			statPatientProfileLink = function(data)
+				toString(sort(unique(data$patientProfileLink)))
+	)
       
-      # combine all paths across patients
-      # the paths should be collapsed with: ', '
-      if(!is.null(patientProfilePath))
-        argsTable$statsExtra <- c(
-            argsTable$statsExtra,
-            list(
-                statPatientProfilePath = function(data) 
-                  toString(sort(unique(data$patientProfilePath))),
-                statPatientProfileLink = function(data)
-                  toString(sort(unique(data$patientProfileLink)))
-            )
-        )
-      
-      # get specific set of statistics + stats with subjects profiles path
-      statsPP <- if(!is.null(patientProfilePath))
-        setNames(list(quote(statPatientProfileLink)), labelVars["USUBJID"])
-      statsCustom <- eval(expr = parse(text = argsTable$stats))
-      # if statistics are specified for each variable separately:
-      if(any(names(statsCustom) %in% argsTable$var)){
-        argsTable$stats <- sapply(statsCustom, c, statsPP, simplify = FALSE)
-      }else{
-        argsTable$stats <- c(statsPP, statsCustom)
-      }
-      
-      ## Create tables
-      summaryTable <- dlply(data, loopingVar, function(dataI){
-            
-            dataTotalI <- dataTotal
-            if(!is.null(loopingVar) && loopingTotal){
-              if(any(!loopingVar %in% colnames(dataTotalI)))
-                stop("Looping variable(s) are not available in the total dataset. ",
-                    "Are you sure you want to compute the total by 'loopingVar'? (see 'loopingTotal').")
-              dataTotalI <- merge(
-                  x = unique(dataI[, loopingVar, drop = FALSE]), 
-                  y = dataTotal, 
-                  by = loopingVar, 
-                  all = FALSE # only include data if present in y
-              )
-            }
+	## Create tables
+	summaryTable <- dlply(data, loopingVar, function(dataI){
+				
+		# extract total dataset
+		dataTotalI <- dataTotal
+		if(!is.null(loopingVar) && loopingTotal){
+			if(any(!loopingVar %in% colnames(dataTotalI)))
+				stop("Looping variable(s) are not available in the total dataset. ",
+					"Are you sure you want to compute the total by 'loopingVar'? (see 'loopingTotal').")
+				dataTotalI <- merge(
+					x = unique(dataI[, loopingVar, drop = FALSE]), 
+					y = dataTotal, 
+					by = loopingVar, 
+					all = FALSE # only include data if present in y
+				)
+			}
 			
-			argsTable <- forceParams(argsTable)
+		## Params for the table
+		argsTable <- tableParams
+			
+		# evaluate !r-lazy parameters
+		argsTable <- forceParams(argsTable)
+		
+		# combine all paths across patients
+		# the paths should be collapsed with: ', '
+		argsTable$statsExtra <- c(argsTable$statsExtra, statsExtraPP)
+				  	  
+		# get specific set of statistics + stats with subjects profiles path
+		statsCustom <- argsTable$stats
+		if(is.character(statsCustom)) # support old specification
+			statsCustom <- eval(expr = parse(text = statsCustom))
+		# if statistics are specified for each variable separately:
+		if(any(names(statsCustom) %in% argsTable$var)){
+			argsTable$stats <- sapply(statsCustom, c, statsPP, simplify = FALSE)
+		}else{
+			argsTable$stats <- c(statsCustom, statsPP)
+		}
+			
+		# create table with descriptive statistics (data.frame format)
+		argsTable <- c(
+			argsTable,
+			list(
+				data = dataI, 
+				labelVars = labelVars,
+				dataTotal = dataTotalI
+			)
+		)
+		summaryTable <- do.call(computeSummaryStatisticsTable, argsTable)
             
-            # create table with descriptive statistics (data.frame format)
-            argsTable <- c(
-                argsTable,
-                list(
-                    data = dataI, 
-                    labelVars = labelVars,
-                    dataTotal = dataTotalI
-                )
-            )
-            summaryTable <- do.call(computeSummaryStatisticsTable, argsTable)
-            
-          })
+	})
       
-      list(
-          summaryTable = summaryTable,
-          statsPP = statsPP
-      )
+	list(
+		summaryTable = summaryTable,
+		statsPP = statsPP
+	)
       
-    }, simplify = FALSE)
+}, simplify = FALSE)
 
 ```
 

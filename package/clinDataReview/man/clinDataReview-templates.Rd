@@ -138,7 +138,8 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{tableParams}}: }{object , parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}}
+\item{\strong{\code{tableParams}}: }{object , parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}
+.Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !r-lazy [dataI]}.}
 \item{\code{tableParamsDocx}: }{(optional) object , parameters to format the table to the docx format, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
 \item{\code{tableParamsDT}: }{(optional) object , parameters to format the table to the DT interactive table included in the report, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'table-comparison-interactive', 'newData-diff', 'table-combine' } , output type of the comparison table}

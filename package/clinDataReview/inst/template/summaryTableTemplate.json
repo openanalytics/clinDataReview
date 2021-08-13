@@ -45,7 +45,7 @@
     
     "tableParams": {
       "type": "object",
-      "doc": "parameters to summarize the data in a table, passed to \\link[inTextSummaryTable]{computeSummaryStatisticsTable}"
+      "doc": "parameters to summarize the data in a table, passed to \\link[inTextSummaryTable]{computeSummaryStatisticsTable}\n.Parameters depending on the dataset of interest can be specified as:\\cr\\code{[parameterName]: !r-lazy [dataI]}."
     },
     "tableParamsDocx": {
       "type": "object",
