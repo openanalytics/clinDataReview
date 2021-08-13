@@ -40,6 +40,14 @@ preprocessing available at:
 
 If everything is clear on that side, let's get started!
 
+Please note that the patient profiles and interactive
+visualizations are only displayed in the vignette
+if Pandoc is available.
+
+```{r checkPandocAvailability, echo = FALSE}
+hasPandoc <- rmarkdown::pandoc_available()
+```
+
 ```{r loadLibraries}
 
 library(clinDataReview)
@@ -81,10 +89,7 @@ template report available in the `clinDataReview` package.
 A simple patient profile report for each subject in the example
 dataset is created below.
 
-Please note that the patient profiles are only created if Pandoc
-is available.
-
-```{r createPatientProfiles, results = "hide", eval = rmarkdown::pandoc_available()}
+```{r createPatientProfiles, results = "hide", eval = hasPandoc}
 # create a directory to store the patient profiles:
 patientProfilesDir <- "patientProfiles"
 dir.create(patientProfilesDir)
@@ -150,7 +155,7 @@ table, the specific patient profile is opened in a new window in the browser**.
 
 ### Spaghetti plot of time profile
 
-```{r timeProfiles}
+```{r timeProfiles, eval = hasPandoc}
 
 labParam <- "ALT"
 dataPlot <- subset(dataLB, PARAMCD == labParam)
@@ -193,7 +198,7 @@ scatterplotClinData(
 
 ### Scatterplot
 
-```{r scatterplot}
+```{r scatterplot, eval = hasPandoc}
 
 # format data long -> wide format (one column per lab param)
 dataPlot <- subset(dataLB, PARAMCD %in% c("ALT", "ALB"))
@@ -232,7 +237,7 @@ scatterplotClinData(
 
 ### eDish plot
 
-```{r eDishPlot}
+```{r eDishPlot, eval = hasPandoc}
 
 dataALT <- subset(dataLB, PARAMCD == "ALT")
 dataBILI <- subset(dataLB, PARAMCD == "BILI")
@@ -283,7 +288,7 @@ scatterplotClinData(
 
 Time-intervals are displayed with the **`timeProfileIntervalPlot`** function:
 
-```{r timeProfileIntervalPlot}
+```{r timeProfileIntervalPlot, eval = hasPandoc}
 
 # link to patient profiles
 dataAE$patientProfilePath <- paste0(
@@ -309,7 +314,7 @@ By default, empty intervals are represented if the start/end time variables are
 missing. Missing start/end time can be imputed, or different symbols can be used
 to represent such cases:
 
-```{r timeProfileIntervalPlot-shapeVariables}
+```{r timeProfileIntervalPlot-shapeVariables, eval = hasPandoc}
 
 # create variable to indicate status of start/end date
 dataAE$AESTFLG <- ifelse(is.na(dataAE$ASTDY), "Missing start", "Complete")
@@ -465,7 +470,7 @@ of the circles.
 
 The size of the different segments is relative the respective counts.
 
-```{r sunburst}
+```{r sunburst, eval = hasPandoc}
 
 dataSunburst <- tableAE
 
@@ -494,7 +499,7 @@ Note, that a treemap can also be colored accordingly to a meaningful
 variable. For instance, if we show adverse events, we might **color the plot by
 severity**. This can be achieved with the **colorVar** parameter.
 
-```{r treemap}
+```{r treemap, eval = hasPandoc}
 
 dataTreemap <- tableAE
 
@@ -517,7 +522,7 @@ treemapClinData(
 
 A barplot visualizes the counts for one single variable in a specific order.
 
-```{r barplot}
+```{r barplot, eval = hasPandoc}
 
 dataPlot <- subset(tableAE, AEDECOD != "Total")
 
@@ -613,7 +618,7 @@ pander(head(summaryTableCont, 1))
 
 #### Plot error bars/confidence intervals
 
-```{r errorbarClinData}
+```{r errorbarClinData, eval = hasPandoc}
 
 dataPlot <- subset(summaryTableCont, !isTotal)
 
@@ -652,7 +657,7 @@ This visualization doesn't rely on pre-computed statistics, so
 the continuous variable of interest is directly passed to
 the functionality.
 
-```{r boxplot}
+```{r boxplot, eval = hasPandoc}
 
 dataPlot <- subset(dataADaMCDISCP01$ADVS, 
 	PARAMCD == "DIABP" & ANL01FL == "Y" &
@@ -687,7 +692,7 @@ table) in a loop (in the same _Rmarkdown_ chunk), the list of visualizations
 should be passed to the `knitPrintListObjects` function of the `clinUtils`
 package.
 
-```{r lab-profile-loop, results = "asis"}
+```{r lab-profile-loop, results = "asis", eval = hasPandoc}
 
 # consider only restricted set of lab parameters
 dataPlot <- subset(dataLB, PARAMCD %in% c("SODIUM", "K"))
@@ -758,7 +763,7 @@ str(shapesDefault)
 
 ```
 
-```{r palettes-default-example}
+```{r palettes-default-example, eval = hasPandoc}
 
 timeProfileIntervalPlot(
     data = dataAE,
@@ -788,7 +793,7 @@ options(clinDataReview.shapes = clinShapes)
 In case the palette contains less elements than available in the data, these are
 replicated.
 
-```{r palettes-customGeneral-example}
+```{r palettes-customGeneral-example, eval = hasPandoc}
 
 timeProfileIntervalPlot(
     data = dataAE,

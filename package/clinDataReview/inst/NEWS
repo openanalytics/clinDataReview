@@ -18,6 +18,7 @@
        - support !r-lazy & by loop var
        - patient profiles after specified stats (when stats var not specified)
     o skeleton - listing: button show/hide colums & export landscape pdf 
+    o vignette: fix for Pandoc (CRAN Solaris) - interactive vis
 1.1.0
     o new boxplotClinData functionality
     o barplotClinData: textVar
