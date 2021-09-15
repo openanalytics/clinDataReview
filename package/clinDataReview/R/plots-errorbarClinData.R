@@ -107,13 +107,21 @@ errorbarClinData <- function(
 		
 	}
 	
-	# add jitter in case multiple color groups
-	if(!is.null(colorVar)){
+	# drop unused factor levels as plotly default
+	# otherwise might have issues to assign xLabVars
+	if(is.factor(data[, groupVar]))
+		data[, groupVar] <- droplevels(data[, groupVar])
+	if(is.character(data[, groupVar]))
+		data[, groupVar] <- factor(data[, groupVar])
+
+	changeAxisGroupVar <- !is.null(xLabVars) | !is.null(colorVar)
+	
+	# convert group var to numeric if:
+	# - a color var is specified -> add jitter in case of multiple color groups
+	if(changeAxisGroupVar){
 		
 		if(is.character(data[, colorVar]))
 			data[, colorVar] <- factor(data[, colorVar])
-		if(is.character(data[, groupVar]))
-			data[, groupVar] <- factor(data[, groupVar])
 		
 		data$groupJitter <- getJitterVar(
 			data = data, 
@@ -121,11 +129,9 @@ errorbarClinData <- function(
 		)	
 			
 		groupVarPlot <- "groupJitter"
-		hasJitter <- TRUE
 		
 	}else{
 		groupVarPlot <- groupVar
-		hasJitter <- FALSE
 	}
 	
 	# format data to: 'SharedData' object
@@ -205,7 +211,7 @@ errorbarClinData <- function(
 			"are included in the y-direction."
 		))
 	# set axis labels
-	if(!is.null(xLabVars) || (!is.numeric(data[, groupVar]) && hasJitter)){
+	if(changeAxisGroupVar){
 		
 		axisArgs <- getAxisLabs(
 			data = data, 

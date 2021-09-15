@@ -43,6 +43,10 @@ barplotClinData <- function(
 
 	# store input parameter values for further use
 	plotArgs <- c(as.list(environment()))
+	
+	# drop unused factor levels as plotly default
+	if(is.factor(data[, xVar]))
+		data[, xVar] <- droplevels(data[, xVar])
 
 	idVars <- c(xVar, colorVar)
 	data$idEl <- interaction(data[, idVars, drop = FALSE])

@@ -375,10 +375,11 @@ test_that("Labels are correctly extracted for the hover", {
 
 test_that("Labels for the x-axis are correctly set from variables", {
 			
+	# example where some levels of the factor x-variable are not used
 	dataPlot <- data.frame(
 		AVISIT = factor(
-			c("Baseline", "Screening"),
-			levels = c("Screening", "Baseline")
+			c("Week 2", "Screening"),
+			levels = c("Screening", "Baseline", "Week 2")
 		),
 		Mean = c(12, 15),
 		SE = c(1, 2),
@@ -391,12 +392,16 @@ test_that("Labels for the x-axis are correctly set from variables", {
 		yVar = "Mean", yErrorVar = "SE"
 	)
 	plXAxis <- plotly_build(pl)$x$layout$xaxis
+	
+	# all visits - factor levels are included (even if no data)
+	expect_equal(plXAxis$tickvals, c(1, 2))
+	
 	# extract tick labels
 	plXTickLab <- plXAxis$ticktext
 	# and sort them
 	plXTickLab <- plXTickLab[order(plXAxis$tickvals, decreasing = FALSE)]
 			
 	expect_match(object = plXTickLab[1], regexp = "Screening.+N = 5")
-	expect_match(object = plXTickLab[2], regexp = "Baseline.+N = 3")
+	expect_match(object = plXTickLab[2], regexp = "Week 2.+N = 3")
 			
 })
