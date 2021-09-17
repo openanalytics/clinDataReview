@@ -51,8 +51,11 @@ errorbarClinData(
 
 # Data of interest: ratio from baseline at week 16
 dataLBW8 <- subset(dataADaMCDISCP01$ADLBC, grepl("Week 8", AVISIT))
-dataLBW8$R2BASE <- with(dataLBW8, AVAL/BASE) # compute ratio
+# compute ratio from baseline
+dataLBW8$R2BASE <- with(dataLBW8, AVAL/BASE) 
 dataLBW8 <- subset(dataLBW8, !is.na(R2BASE))
+# Order actual treatments
+dataLBW8$TRTA <- with(dataLBW8, reorder(TRTA, TRTAN))
 
 # compute summary statistics of the ratio per baseline per parameter
 library(inTextSummaryTable)
@@ -61,16 +64,31 @@ summaryTableLBW8 <- computeSummaryStatisticsTable(
 	var = "R2BASE",
 	rowVar = "PARAM",
 	colVar = "TRTA",
-	stats = getStats(x = dataLBW8$R2BASE, type = c("n", "Mean", "SD"))
+	stats = getStats(x = dataLBW8$R2BASE, type = c("n", "Median", "SD"))
 )
 dataPlot <- subset(summaryTableLBW8, !isTotal)
+# extract direction of ratio
+dataPlot$dir <- factor(
+	ifelse(dataPlot$statMedian >= 1, "Increase", "Decrease"),
+	levels = c("Decrease", "Increase")
+)
+# compute relative ratio (percentage above 1)
+dataPlot$statMedianRelative <- with(dataPlot,
+	ifelse(statMedian < 1, 1/statMedian, statMedian)
+)
+# order based on relative ratio in treatment arm
+params <- names(sort(with(dataPlot, tapply(statMedianRelative, PARAM, mean))))
+dataPlot$PARAM <- factor(dataPlot$PARAM, levels = params)
 errorbarClinData(
 	data = dataPlot,
-	xVar = "statMedian", xErrorVar = "statSD",
+	xVar = "statMedianRelative", xErrorVar = "statSD",
 	xLab = "Median", xErrorLab = "Standard deviation",
-	xAxisLab = "Ratio from baseline (Mean +- SD)",
+	xAxisLab = "Relative ratio from baseline (Median +- SD)",
 	yVar = "PARAM",
 	colorVar = "TRTA",
+	shapeVar = "dir", shapeLab = "Direction of ratio",
+	shapePalette = c(`Decrease` = 25, `Increase` = 24),
+	size = 10,
 	labelVars = labelVars,
 	title = "Summary ratio from baseline at week 8 by treatment"
 )

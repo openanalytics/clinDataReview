@@ -405,3 +405,98 @@ test_that("Labels for the x-axis are correctly set from variables", {
 	expect_match(object = plXTickLab[2], regexp = "Week 2.+N = 3")
 			
 })
+
+test_that("Symbols correctly set based on a specified variable", {
+			
+	data <- data.frame(
+		AVISIT = factor(
+			c("Baseline", "Screening", "Baseline", "Screening"),
+			levels = c("Screening", "Baseline")
+		),
+		Mean = c(25.6, 40, 12, 5),
+		SE = c(2, 3, 1, 2),
+		TRT = c("A", "A", "B", "B"),
+		stringsAsFactors = FALSE
+	)
+			
+	pl <- errorbarClinData(
+		data = data,
+		xVar = "AVISIT", 
+		yVar = "Mean", 
+		yErrorVar = "SE",
+		shapeVar = "TRT"
+	)
+			
+	# extract data from output object
+	plData <- plotly_build(pl)$x$data
+			
+	# only 'scatter' aes
+	plData <- plData[sapply(plData, function(x) x$type == "scatter")]
+			
+	plData <- do.call(rbind,
+		lapply(plData, function(x) 
+			data.frame(
+				# Note: error-bars are jittered by the color variable
+				# so x-coordinate is the jittered coordinate
+				x = x[["x"]],
+				y = x[["y"]], 
+				yError = x[["error_y"]]$array,
+				shape = as.character(x[["marker"]]$symbol),
+				group = x[["name"]],
+				stringsAsFactors = FALSE
+			)
+		)
+	)
+			
+	## check that different shapes are set by group
+	shapes <- with(plData, tapply(shape, group, unique))
+	expect_type(shapes, "character")
+	expect_length(shapes, 2)
+			
+	## check if input == output data
+	
+	plData <- plData[, c("x", "y", "yError", "group")]
+	dataReference <- data[, c("AVISIT", "Mean", "SE", "TRT")]
+	expect_equivalent(
+		object = plData[do.call(order, plData), ], 
+		expected = dataReference[do.call(order, dataReference), ]
+	)
+			
+})
+
+test_that("The points are correctly shaped with a specified palette", {
+			
+	data <- data.frame(
+		AVISIT = c("Baseline", "Week 2", "Baseline", "Week 2"),
+		Mean = c(25.6, 40, 12, 5),
+		SE = c(2, 3, 1, 2),
+		TRT = c("A", "A", "B", "B"),
+		stringsAsFactors = FALSE
+	)
+			
+	shapePalette <- c(B = "diamond", A = "cross")
+	pl <- errorbarClinData(
+		data = data,
+		xVar = "AVISIT", 
+		yVar = "Mean", 
+		yErrorVar = "SE",
+		shapeVar = "TRT", shapePalette = shapePalette
+	)
+			
+	plData <- plotly_build(pl)$x$data
+			
+	# only 'scatter' aes
+	plData <- plData[sapply(plData, function(x) x$type == "scatter")]
+			
+	plShapePalette <- do.call(c,
+		lapply(plData, function(x) 
+			setNames(
+				as.character(x[["marker"]]$symbol),
+				x[["name"]]
+			)
+		)
+	)
+			
+	expect_mapequal(object = plShapePalette, expected = shapePalette)
+			
+})

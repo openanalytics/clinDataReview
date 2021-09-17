@@ -7,6 +7,9 @@
 #' \item{vertically if \code{yErrorVar} is specified}
 #' \item{horizontally if \code{xErrorVar} is specified}
 #' }
+#' Error bars can visualized by group, via the color variable parameter.\cr
+#' Different symbols are set for each central point of the error bar
+#' via the shape variable parameter.
 #' @param xErrorVar,yErrorVar String with variable of \code{data}
 #' containing the width of the interval (from
 #' the center of the interval) for
@@ -24,6 +27,13 @@
 #' the center of the error bars instead; or 'lines+markers' 
 #' to include both a marker and a line.\cr
 #' See \code{mode} attribute for plotly scatter.
+#' @param shapeVar (optional) String with shape variable.
+#' @param shapePalette (optional) Named character vector with 
+#' shape palette, \code{\link[clinUtils]{clinShapes}}
+#' by default.
+#' @param shapeLab String with label for \code{shapeVar}.
+#' @param size Integer with size of markers in pixels, 
+#' 6 by default.
 #' @inheritParams clinDataReview-common-args-summaryStatsVis
 #' @inheritParams clinDataReview-common-args
 #' @inheritParams tableClinData
@@ -46,6 +56,9 @@ errorbarClinData <- function(
 	yAxisLab = paste(c(yLab, yErrorLab), collapse = " and "),
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
+	shapeVar = NULL, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
+	shapePalette = NULL,
+	size = 6,
 	titleExtra = NULL,
 	title = paste(c(
 		paste(yAxisLab, "vs", xAxisLab),
@@ -87,8 +100,11 @@ errorbarClinData <- function(
 	
 	# extract default hover variables
 	if(missing(hoverVars)){
-		hoverVars <- c(xVar, xErrorVar, colorVar, yVar, yErrorVar)
-		hoverLab <- setNames(c(xLab, xErrorLab, colorLab, yLab, yErrorLab), hoverVars)
+		hoverVars <- c(xVar, xErrorVar, colorVar, yVar, yErrorVar, shapeVar)
+		hoverLab <- setNames(
+			c(xLab, xErrorLab, colorLab, yLab, yErrorLab, shapeLab), 
+			hoverVars
+		)
 	}else	if(missing(hoverLab)){
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
@@ -169,16 +185,30 @@ errorbarClinData <- function(
 		}else	colorPalette <- getColorPalette(n = 1, palette = colorPaletteOpt)
 	}
 	
+	# extract shape palette
+	if(is.null(shapePalette)){
+		shapePaletteOpt <- getOption("clinDataReview.shapes")
+		if(!is.null(shapeVar)){
+			shapePalette <- getShapePalette(
+				x = data[, shapeVar], 
+				palette = shapePaletteOpt
+			)
+		}else	shapePalette <- getShapePalette(n = 1, palette = shapePaletteOpt)
+	}
+	
 	# build the plot
 	argsPlotly <- list(
 		data = dataSharedData, 
 		ids = varToFm("idEl"),
 		color = if(!is.null(colorVar))	varToFm(colorVar)	else	I(colorPalette), 
 		colors = if(!is.null(colorVar))	colorPalette,
+		symbol = if(!is.null(shapeVar))	varToFm(shapeVar)	else	I(shapePalette),
+		symbols = if(!is.null(shapePalette))	shapePalette,
 		type = "scatter",
 		mode = mode,
 		hovertemplate = varToFm("hover"),
-		width = width, height = height
+		width = width, height = height,
+		marker = list(size = size)
 	)
 	
 	argsPlotlyAxis <- switch(groupAxis,
