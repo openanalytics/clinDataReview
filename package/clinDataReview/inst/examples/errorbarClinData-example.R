@@ -76,7 +76,7 @@ dataPlot$dir <- factor(
 dataPlot$statMedianRelative <- with(dataPlot,
 	ifelse(statMedian < 1, 1/statMedian, statMedian)
 )
-# order based on relative ratio in treatment arm
+# order based on mean relative ratio across treatment arms
 params <- names(sort(with(dataPlot, tapply(statMedianRelative, PARAM, mean))))
 dataPlot$PARAM <- factor(dataPlot$PARAM, levels = params)
 errorbarClinData(
