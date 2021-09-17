@@ -94,7 +94,7 @@ getDimGgplot <- function(gg){
 #' @param includeLegend Logical, if TRUE (by default)
 #' a legend is available in the plot.
 #' @param legendPosition String with position of the legend,
-#' 'right' by default.
+#' among: 'top'/'left'/'bottom'/'right', 'right' by default.
 #' @param facet Logical, if TRUE the plot
 #' contains facets.
 #' @param y Character vector or factor with elements in the y-axis.

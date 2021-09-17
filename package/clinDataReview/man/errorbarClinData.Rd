@@ -30,6 +30,7 @@ errorbarClinData(
   caption = NULL,
   labelVars = NULL,
   mode = "markers",
+  legendPosition = "bottom",
   width = NULL,
   height = NULL,
   pathVar = NULL,
@@ -107,6 +108,9 @@ This can also be set to 'lines' to include a line connecting
 the center of the error bars instead; or 'lines+markers' 
 to include both a marker and a line.\cr
 See \code{mode} attribute for plotly scatter.}
+
+\item{legendPosition}{String with position of the legend,
+among: 'top'/'left'/'bottom'/'right', 'bottom' by default.}
 
 \item{width}{Numeric, width of the plot in pixels,
 700 by default.}

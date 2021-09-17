@@ -34,6 +34,8 @@
 #' @param shapeLab String with label for \code{shapeVar}.
 #' @param size Integer with size of markers in pixels, 
 #' 6 by default.
+#' @param legendPosition String with position of the legend,
+#' among: 'top'/'left'/'bottom'/'right', 'bottom' by default.
 #' @inheritParams clinDataReview-common-args-summaryStatsVis
 #' @inheritParams clinDataReview-common-args
 #' @inheritParams tableClinData
@@ -69,6 +71,7 @@ errorbarClinData <- function(
 	subtitle = NULL, caption = NULL,
 	labelVars = NULL,
 	mode = "markers",
+	legendPosition = "bottom",
 	# interactivity:
 	width = NULL, height = NULL,
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
@@ -167,7 +170,7 @@ errorbarClinData <- function(
 		caption = caption,
 		xLab = xAxisLab,
 		includeLegend = !is.null(colorVar), 
-		legendPosition = "bottom",
+		legendPosition = legendPosition,
 		y = if(groupAxis == "y")
 			data[, groupVar]
 	)
@@ -274,7 +277,7 @@ errorbarClinData <- function(
 		caption = caption,
 		subtitle = subtitle,
 		includeLegend = !is.null(colorVar),
-		legendPosition = "bottom",
+		legendPosition = legendPosition,
 		width = width,
 		height = height,
 		# extra params passed to plotly::layout

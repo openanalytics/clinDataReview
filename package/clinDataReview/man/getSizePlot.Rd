@@ -57,7 +57,7 @@ contains facets.}
 a legend is available in the plot.}
 
 \item{legendPosition}{String with position of the legend,
-'right' by default.}
+among: 'top'/'left'/'bottom'/'right', 'right' by default.}
 
 \item{y}{Character vector or factor with elements in the y-axis.}
 }
