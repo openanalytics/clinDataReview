@@ -227,6 +227,12 @@ summaryTableList <- sapply(names(dataList), function(dataBatch) {
 	## Extract from list
 	data <- dataList[[dataBatch]][["data"]]			
 	dataTotal <- dataList[[dataBatch]][["dataTotal"]]
+	
+	# format label for 'knitPrintClinDataReview'
+	if(!is.null(loopingVar)){
+		data[, loopingVar] <- colwise(function(x) gsub("\\.", "", x))(data[, loopingVar, drop = FALSE])
+		dataTotal[, loopingVar] <- colwise(function(x) gsub("\\.", "", x))(dataTotal[, loopingVar, drop = FALSE])
+	}
       
 	# statistics for patient profiles
 	statsPP <- if(!is.null(patientProfilePath))

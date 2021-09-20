@@ -135,13 +135,19 @@ if(exists("dataTotalFileName")){
 }else	dataTotal <- data
 
 # only subset of the data if requested
-if(!is.null(loopingVar) && exists("loopingNMax") && is.integer(loopingNMax)){
-	
-	data <- merge(
-		x = data,
-		y = unique(data[, loopingVar, drop = FALSE])[seq_len(loopingNMax), , drop = FALSE],
-		all = FALSE
-	)
+if(!is.null(loopingVar)){
+		
+	# format label for 'knitPrintClinDataReview'
+	data[, loopingVar] <- colwise(function(x) gsub("\\.", "", x))(data[, loopingVar, drop = FALSE])
+	dataTotal[, loopingVar] <- colwise(function(x) gsub("\\.", "", x))(dataTotal[, loopingVar, drop = FALSE])
+		
+	if(exists("loopingNMax") && is.integer(loopingNMax)){
+		data <- merge(
+			x = data,
+			y = unique(data[, loopingVar, drop = FALSE])[seq_len(loopingNMax), , drop = FALSE],
+			all = FALSE
+		)
+	}
 	
 }
 
@@ -164,7 +170,7 @@ statsPP <- if(!is.null(patientProfilePath))
 	)
 
 ## Create tables
-		
+	
 # create table with descriptive statistics (data.frame format)
 summaryTable <- dlply(data, loopingVar, function(dataI){
 	

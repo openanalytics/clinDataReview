@@ -30,7 +30,7 @@ This report compute counts of variable(s) of interest (with the \code{inTextSumm
 \item{\code{parentVar}: }{(optional) string or array , parent variable(s) of the counting variable, used for grouping}
 \item{\code{colorVar}: }{(optional) string or object , numeric variable(s) to consider for coloring, named by count/parent variable if different for each variable}
 \item{\code{colorRange}: }{(optional) array of number(s) of length: minimum 2, maximum 2 , range of the color variable for the visualization}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
+\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
 \item{\code{typePlot}: }{(optional) array or string of string(s)}
@@ -61,7 +61,7 @@ This report displays a listing of the variables and data of interest, displayed 
 \item{\code{tableParams}: }{(optional) object , parameters to create the table, passed to \link[clinDataReview]{tableClinData}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff-interactive', 'table-comparison-interactive' } , output type of the comparison table}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
+\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{listingDocx}: }{(optional) boolean , export listing to Word}
 }
@@ -101,7 +101,7 @@ This report visualizes input data with a function of the clinical data review pa
 \item{\code{tableProcessing}: }{(optional) array , data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff' } , output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
+\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
 }
@@ -121,7 +121,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\code{tableProcessing}: }{(optional) array , data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
 \item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'sunburstClinData', 'treemapClinData', 'barplotClinData', 'errorbarClinData' } , plotting function to visualize summary data}
 \item{\strong{\code{plotParams}}: }{object , parameters for the plotting function}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
+\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
 \item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
@@ -144,7 +144,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\code{tableParamsDT}: }{(optional) object , parameters to format the table to the DT interactive table included in the report, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
 \item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'table-comparison-interactive', 'newData-diff', 'table-combine' } , output type of the comparison table}
 \item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. By default, statistics variables are compared across row and column elements.}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over, for which each output should be created}
+\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
 \item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
 }

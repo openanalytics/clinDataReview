@@ -19,6 +19,7 @@
        - patient profiles after specified stats (when stats var not specified)
     o skeleton - listing: button show/hide colums & export landscape pdf 
     o vignette: fix for Pandoc (CRAN Solaris) - interactive vis
+    o template listing, summary plot/table: fix looping var with '.'
 1.1.0
     o new boxplotClinData functionality
     o barplotClinData: textVar

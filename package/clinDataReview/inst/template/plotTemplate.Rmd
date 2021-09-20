@@ -234,6 +234,7 @@ if(!is.null(outputComparison)){
 
 if(!is.null(loopingVar)){
 	
+	# format label for 'knitPrintClinDataReview'
 	data[, loopingVar] <- colwise(function(x) gsub("\\.", "", x))(data[, loopingVar, drop = FALSE])
 	
 	# only subset of the data if requested in _bookdown.yml

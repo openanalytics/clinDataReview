@@ -56,7 +56,7 @@
     },
     "loopingVar": {
       "type": ["array", "string"],
-      "doc": "data variable(s) to loop over, for which each output should be created"
+      "doc": "data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report."
     },
     "loopingNMax": {
       "type": "integer",
