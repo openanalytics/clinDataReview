@@ -21,21 +21,20 @@ createClinDataReviewReportSkeleton <- function(dir = ".") {
   
   if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
   preexistingFiles <- list.files(dir)
-  if(length(preexistingFiles) > 0) warning("'", dir, "' is not empty. Files might be overwritten.")
+  if(length(preexistingFiles) > 0)
+	  warning("'", dir, "' is not empty. Files might be overwritten.")
   
   dirData <- file.path(dir, "data")
-  dirComparisonData <- file.path(dirData, "comparisonData")
-  dirConfig <- file.path(dir, "config")
-  if(length(preexistingFiles) == 0) {
-    if(! any(grepl("data", preexistingFiles))) dir.create(dirData)
-    if(! any(grepl("comparisonData", preexistingFiles))) dir.create(dirComparisonData)
-    if(! any(grepl("config", preexistingFiles))) dir.create(dirConfig)
-  }
+  if(!dir.exists(dirData))	dir.create(dirData)
   
   moveXpt(dirData)
   createExampleMetadata(dirData)
+  
+  dirComparisonData <- file.path(dirData, "comparisonData")
   createComparisonData(dirComparisonData)
   
+  dirConfig <- file.path(dir, "config")
+  if(!dir.exists(dirConfig))	dir.create(dirConfig)
   createMainConfigSkeleton(dir = dirConfig, dirData = dirData)
   moveSkeletonFiles(dir)
   
@@ -106,6 +105,8 @@ createExampleMetadata <- function(dir) {
 #' @importFrom haven write_xpt
 #' @importFrom clinUtils loadDataADaMSDTM
 createComparisonData <- function(dir) {
+	
+	if(!dir.exists(dir))	dir.create(dir, recursive = TRUE)
   
 	# Adverse events
 	pathToFile <- system.file(
