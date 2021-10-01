@@ -33,7 +33,9 @@ test_that("The data is correctly displayed in vertical error bars", {
 			data.frame(
 				x = as.character(x[["x"]]), 
 				y = x[["y"]], 
-				yError = x[["error_y"]]$array)
+				yError = x[["error_y"]]$array,
+				stringsAsFactors = FALSE
+			)
 		)
 	)
 	

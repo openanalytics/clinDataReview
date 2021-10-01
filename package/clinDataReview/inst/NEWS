@@ -1,3 +1,5 @@
+1.2.1
+    o fix unit tests R < 4.0.0
 1.2.0
     o annotate data: 
       - fix when filters specified for current dataset
