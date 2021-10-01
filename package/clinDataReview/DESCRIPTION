@@ -9,7 +9,8 @@ Authors@R: c(
   person(given = "Michela", family = "Pasetto", role = "aut", 
   email = "michela.pasetto@openanalytics.eu"),
   person(given = "Lennart", family = "Tuijnder", role = "aut"),
-  person(given = "Arne", family = "De Roeck", role = "ctb"),
+  person(given = "Arne", family = "De Roeck", role = c("ctb", "rev"), 
+   comment = "rev: tests"),
   person(given = "Open Analytics", role = "cph")
   )
 Description: Creation of interactive tables, listings and figures ('TLFs') 

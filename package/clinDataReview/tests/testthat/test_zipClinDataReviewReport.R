@@ -1,102 +1,117 @@
-context("Test zip of reports")
+context("Zip a clinical data review report")
 
-tmpdir <- tempdir()
+test_that("The redirection page of the HTML report is successfully created", {
+      
+	tmpRedirect <- tempfile()
+	dir.create(tmpRedirect)
+	redirectPageFile <- file.path(tmpRedirect, "report.html")
+	clinDataReview:::createRedirectPage(
+		dir = tmpRedirect,
+		redirectPage = redirectPageFile
+	)
+	expect_true(file.exists(redirectPageFile))
+      
+	textInHtml <- readLines(redirectPageFile)
+	expect_type(textInHtml, "character")
+	expect_true(any(grepl("1-introduction.html", textInHtml)))
+      
+})
 
-test_that("Redirect page is created successfully", {
+test_that("An error is generated if the directory of the report to zip is not correctly specified", {
       
-      tmpRedirect <- tempfile()
-      dir.create(tmpRedirect)
-      createRedirectPage(
-          dir = tmpRedirect,
-          redirectPage = file.path(tmpRedirect, "report.html")
-      )
-      expect_true("report.html" %in% list.files(tmpRedirect))
-      
-      textInHtml <- readLines(file.path(tmpRedirect, "report.html"))
-      expect_is(textInHtml, "character")
-      expect_true(any(grepl("1-introduction.html", textInHtml)))
-      
-    })
+	expect_error(
+		zipClinDataReview(reportDir = 1),
+		"Input arguments should be characters."
+	)
+	  
+})
 
-test_that("Input arguments for zip function are correctly checked", {
+test_that("An error is generated if the new directory of the report to zip is not correctly specified", {
       
-      expect_error(
-          zipClinDataReview(reportDir = 1),
-          "Input arguments should be characters."
-      )
-      expect_error(
-          zipClinDataReview(newDir = 1),
-          "Input arguments should be characters."
-      )
-      expect_error(
-          zipClinDataReview(redirectPage = 1),
-          "Input arguments should be characters."
-      )
-      expect_error(
-          zipClinDataReview(zipFolder = 1),
-          "Input arguments should be characters."
-      )
-      
-    })
+	expect_error(
+		zipClinDataReview(newDir = 1),
+		"Input arguments should be characters."
+	)
+	
+})
 
-test_that("An error is generated during creation of the zip folder creation if the report directory doesn't exist", {
-      
-      expect_error(
-          zipClinDataReview(reportDir = "folderReport"),
-          "Directory specified in 'reportDir' does not exist."
-      )
-      
-    })
+test_that("An error is generated if the redirect page of the report to zip is not correctly specified", {
+			
+	expect_error(
+		zipClinDataReview(redirectPage = 1),
+		"Input arguments should be characters."
+	)
+	
+})
 
-test_that("An error is generated during creation of the zip folder creation if the report directory is empty", {
+test_that("An error is generated if the zip folder is not correctly specified", {
+			
+	expect_error(
+		zipClinDataReview(zipFolder = 1),
+		"Input arguments should be characters."
+	)
       
-      emptyDir <- tempfile()
-      dir.create(emptyDir)
-	  newDir <- tempfile("report_dependencies")
-#      expect_true(dir.exists(emptyDir))
-      expect_error(
-          zipClinDataReview(
+})
+
+test_that("An error is generated if the directory of the report to zip does not exist", {
+      
+	expect_error(
+		zipClinDataReview(reportDir = "folderReport"),
+		"Directory specified in 'reportDir' does not exist."
+	)
+      
+})
+
+test_that("An error is generated if the directory of the report to zip is empty", {
+      
+	emptyDir <- tempfile()
+	dir.create(emptyDir)
+	newDir <- tempfile("report_dependencies")
+	expect_error(
+		zipClinDataReview(
 			reportDir = emptyDir, 
 			newDir = newDir
 		),
-          "No files available in the 'reportDir'."
-      )
+		"No files available in the 'reportDir'."
+	)
       
-    })
+})
 
-test_that("The zip folder is successfully created", {
+test_that("The zip folder of the report is correctly created", {
       
-      tmpZip <- tempfile()
-      dir.create(tmpZip)
-      reportDir <- tempfile("reportFolder", tmpdir = tmpZip)
-      dir.create(reportDir)
-      medMonFile <- tempfile(pattern = "file", tmpdir = reportDir, fileext = ".html")
-      write(x = c('<!DOCTYPE html> </html>'), medMonFile)
+	tmpZip <- tempfile()
+	dir.create(tmpZip)
+
+	reportDir <- tempfile("reportFolder", tmpdir = tmpZip)
+	dir.create(reportDir)
       
-      newDir <- tempfile("report_dependencies", tmpdir = tmpZip)
-      zipFolder <- tempfile("reports", tmpdir = tmpZip, fileext = ".zip")
+	medMonFile <- tempfile(pattern = "file", tmpdir = reportDir, fileext = ".html")
+	write(x = c('<!DOCTYPE html> </html>'), medMonFile)
       
-      expect_silent(
-          zipClinDataReview(
-              reportDir = reportDir,
-              newDir = newDir,
-              redirectPage = file.path(tmpZip, "report.html"),
-              zipFolder = zipFolder       
-          )
-      )
+	newDir <- tempfile("report_dependencies", tmpdir = tmpZip)
+	zipFolder <- tempfile("reports", tmpdir = tmpZip, fileext = ".zip")
       
-      expect_setequal(
-          list.files(tmpZip),
-          c(
-              basename(newDir),
-              "report.html",
-              basename(reportDir),
-              basename(zipFolder)
-          )
-      )
-      expect_setequal(
-          list.files(newDir),
-          basename(medMonFile)
-      )
+	expect_silent(
+		zipClinDataReview(
+			reportDir = reportDir,
+			newDir = newDir,
+			redirectPage = file.path(tmpZip, "report.html"),
+			zipFolder = zipFolder       
+		)
+	)
       
-    })
+	expect_setequal(
+		object = list.files(tmpZip),
+		expected = c(
+			basename(newDir),
+			"report.html",
+			basename(reportDir),
+			basename(zipFolder)
+		)
+	)
+	expect_setequal(
+		object = list.files(newDir),
+		expected = basename(medMonFile)
+	)
+	
+})

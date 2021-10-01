@@ -1,87 +1,20 @@
-context("Barplot for clinical data")
+context("Visualize clinical data with a barplot")
 
-library(clinUtils)
-library(inTextSummaryTable)
 library(plotly)
 
-# load example data
-data(dataADaMCDISCP01)
-labelVars <- attr(dataADaMCDISCP01, "labelVars")
-
-dataAE <- dataADaMCDISCP01$ADAE
-dataDM <- dataADaMCDISCP01$ADSL
-
-# sunburst takes as input table with counts
-
-# total counts: Safety Analysis Set (patients with start date for the first treatment)
-dataTotal <- subset(dataDM, RFSTDTC != "")
-
-## patient profiles report
-
-# add path in data
-dataAE$patientProfilePath <- paste0(
-	"patientProfiles/subjectProfile-", 
-	sub("/", "-", dataAE$USUBJID), ".pdf"
-)
-# add link in data (for attached table)
-dataAE$patientProfileLink <- with(dataAE,
-	paste0(
-		'<a href="', patientProfilePath, 
-		'" target="_blank">', USUBJID, '</a>'
+test_that("A barplot is correctly created", {
+			
+	data <- data.frame(
+		parent = c("A", "A", "B"),
+		child = c("a", "b", "c"),
+		n = c(1, 2, 5)
 	)
-)
-
-# combine all paths across patients
-statsExtraPP <- list(
-		statPatientProfilePath = function(data)	
-			toString(sort(unique(data$patientProfilePath))),
-		statPatientProfileLink = function(data)
-			toString(sort(unique(data$patientProfileLink)))
-)
-
-# get default counts + stats with subjects profiles path
-statsPP <- c(
-	getStats(type = "count-default"),
-	list(
-			patientProfilePath = quote(statPatientProfilePath),
-			patientProfileLink = quote(statPatientProfileLink)
-	))
-
-# compute adverse event table
-tableAE <- getSummaryStatisticsTable(
-		
-	data = dataAE,
-	rowVar = c("AESOC", "AEDECOD"),
-	dataTotal = dataTotal,
-	rowOrder = "total",
-	labelVars = labelVars,
-	
-	# plotly treemap requires records (rows) for each group
-	rowVarTotalInclude = "AEDECOD",
-	
-	## DT-output specific:
-	outputType = "data.frame-base",
-	# statistics of interest
-	# for DT output, include columns with patients
-	stats = statsPP, 
-	# add extra 'statistic': concatenate subject IDs
-	statsExtra = statsExtraPP
-
-)
-
-dataPlot <- subset(tableAE, AEDECOD != "Total")
-
-dataPlot$n <- as.numeric(dataPlot$n)
-
-test_that("plotting function runs properly", {
 			
 	# create plot
 	pl <- barplotClinData(
-		data = dataPlot,
-		xVar = "AEDECOD", colorVar = "AESOC",
-		yVar = "n", yLab = "Number of patients with adverse events",
-		labelVars = labelVars,
-		pathVar = "patientProfileLink", pathLab = getLabelVar(var = "USUBJID", labelVars = labelVars)
+		data = data,
+		xVar = "child", colorVar = "parent",
+		yVar = "n"
 	)
 	
 	## check if input == output data
@@ -95,43 +28,54 @@ test_that("plotting function runs properly", {
 	plDataBarDf <- do.call(rbind,
 		lapply(plDataBar, function(x) 
 			data.frame(
-				AEDECOD = as.character(x[["x"]]), 
+				child = as.character(x[["x"]]), 
 				n = x$y, 
 				stringsAsFactors = TRUE
 			)
 		)
 	)
 	
-	dataPlot <- dataPlot[, c("AEDECOD", "n")]
-	dataPlot <- dataPlot[match(plDataBarDf$AEDECOD, dataPlot$AEDECOD), ]
+	dataPlot <- data[, c("child", "n")]
+	dataPlot <- dataPlot[match(plDataBarDf$child, dataPlot$child), ]
 	expect_equivalent(object = plDataBarDf, expected = dataPlot)
 	
 })
 
-test_that("interactive table is created", {
+test_that("An interactive table is created in addition to the barplot", {
+		
+	data <- data.frame(
+		child = c("a", "b", "c"),
+		n = c(1, 2, 5)
+	)
 			
 	res <- barplotClinData(
-		data = dataPlot,
-		xVar = "AEDECOD", yVar = "n",
+		data = data,
+		xVar = "child", yVar = "n",
 		table = TRUE
 	)
 	
-	expect_is(res$table, "datatables")
+	expect_s3_class(res$table, "datatables")
 	
 })
 
-test_that("Barplot with hoverVars without label", {
+test_that("A barplot is successfully created with selected hover variables", {
+			
+	data <- data.frame(
+		parent = c("A", "A", "B"),
+		child = c("a", "b", "c"),
+		n = c(1, 2, 5)
+	)
       
-      plOutput <- barplotClinData(
-          data = dataPlot, 
-          xVar = "AEDECOD", yVar = "n",
-          hoverVars = c("AEDECOD", "n")
-      )
-      expect_is(plOutput, "plotly")
+	plOutput <- barplotClinData(
+		data = data, 
+		xVar = "child", yVar = "n",
+		hoverVars = c("parent", "child", "n")
+	)
+	expect_s3_class(plOutput, "plotly")
       
-    })
+})
 
-test_that("x-variable non nested in color variable is created with success for a stack barplot", {
+test_that("A warning is generated if a stacked barplot is generated and the x and color variables are not nested", {
 		
 	data <- data.frame(
 		ANRIND = c("Low", "Normal", "High", "Normal"),
@@ -152,11 +96,19 @@ test_that("x-variable non nested in color variable is created with success for a
 })
 
 test_that("A text variable is correctly displayed in the barplot", {
+	
+	data <- data.frame(
+		child = c("a", "b", "c"),
+		n = c(1, 2, 5),
+		`%` = c("12.5", "25.0", "62.5"),
+		stringsAsFactors = FALSE,
+		check.names = FALSE
+	)
 			
 	# create plot
 	pl <- barplotClinData(
-		data = dataPlot,
-		xVar = "AEDECOD",
+		data = data,
+		xVar = "child",
 		yVar = "n", 
 		textVar = "%"
 	)
@@ -172,10 +124,11 @@ test_that("A text variable is correctly displayed in the barplot", {
 	plDataBar <- lapply(plDataBar, cbind.data.frame)
 	plDataBar <- do.call(rbind, plDataBar)
 	plDataBar <- plDataBar[do.call(order, plDataBar), ]
-	# text is converted to factor by plotly:
+	# text is converted to factor
 	plDataBar[["text"]] <- as.character(plDataBar[["text"]])
+	plDataBar[["x"]] <- as.character(plDataBar[["x"]])
 	
-	dataRef <- dataPlot[, c("AEDECOD" ,"n", "%")]
+	dataRef <- data[, c("child" ,"n", "%")]
 	dataRef <- dataRef[do.call(order, dataRef), ]
 	
 	expect_equal(

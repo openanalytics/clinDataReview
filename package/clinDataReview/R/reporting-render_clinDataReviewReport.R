@@ -52,7 +52,7 @@
 #' }
 #' }
 #' @param quiet Logical, if TRUE (FALSE by default)
-#' progress messages during report execution are not displayed
+#' messages during the execution of each report are not displayed
 #' in the console (see \code{\link[rmarkdown]{render}}).
 #' @param logFile (optional) String with path to a log file,
 #' where output (also error/messages/warnings) should be stored.
@@ -80,6 +80,8 @@ render_clinDataReviewReport <- function(
     sink(file = logFileCon, split = FALSE, type = "message")
     sink(file = logFileCon, split = FALSE, type = "output", append = TRUE)
     on.exit({sink(type = "output");sink(type="message")})
+	# quiet option is set to FALSE to ensure output is saved in the log file
+	if(quiet)	quiet <- FALSE
   }
   
   if(!dir.exists(configDir))	stop("Config directory doesn't exist.")
@@ -295,6 +297,7 @@ render_clinDataReviewReport <- function(
   
   # copy output directories before rendering the full report
   # e.g. if output dir contain logo required for full report
+  extraDirs <- extraDirs[file.exists(extraDirs)]
   if (length(extraDirs) > 0){
 	  tmp <- file.copy(
 		from = extraDirs, to = outputDir, 
@@ -309,7 +312,8 @@ render_clinDataReviewReport <- function(
       outputDir = outputDir, 
       configDir = configDir, 
       indexPath = indexPath,
-      intermediateDir = intermediateDir
+      intermediateDir = intermediateDir,
+	  quiet = quiet
   )
   
   return(outputFile)
@@ -502,6 +506,8 @@ forceParams <- function(params){
 #' @param mdFiles (optional) Path to the \code{Markdown} files that
 #' should be converted. If specified, the specified config files 
 #' in \code{configDir} are ignored.
+#' @param ... Any parameters passed to \code{\link[rmarkdown]{render}},
+#' for expert use only.
 #' @inheritParams clinDataReview-common-args-report
 #' @return String with path to the front page of the 
 #' clinical data report.
@@ -515,7 +521,8 @@ convertMdToHtml <- function(
     configDir = file.path(inputDir, "config"), 
 	indexPath = file.path(inputDir, "index.Rmd"),
 	intermediateDir = "./interim",
-    mdFiles = NULL
+    mdFiles = NULL,
+	...
     ){
   
   outputDir <- normalizePath(outputDir)
@@ -579,7 +586,8 @@ convertMdToHtml <- function(
   sessionInfoMd <- exportSessionInfoToMd(
       sessionInfos = sessionInfoReports, 
       mdFiles = mdFiles, 
-      intermediateDir = intermediateDir
+      intermediateDir = intermediateDir,
+	  ...
   )
   mdFiles <- c(mdFiles, sessionInfoMd)
   
@@ -599,7 +607,8 @@ convertMdToHtml <- function(
       output_dir = outputDir,
       run_pandoc = TRUE, 
       knit_meta = knit_meta_reports,
-      encoding = "UTF-8"
+      encoding = "UTF-8",
+	  ...
   )
   res <- file.remove(mdMainFile)
   
@@ -753,12 +762,14 @@ checkReportTitles <- function(
 #' \code{params$...}.\cr
 #' These parameters will be saved to a RDS file and imported 
 #' during the report rendering.
-#' @param ... Any extra parameters passed to \code{\link[rmarkdown]{render}}
+#' @param ... Any extra parameters passed to \code{\link[rmarkdown]{render}},
+#' for expert use only.
 #' @return Output of the function executed in the new R session 
 #' with additional attribute: 'sessionInfo' containing
 #' the details of the session information in the separated R session.
 #' If the report fails, an error message is returned.
 #' @importFrom tools file_path_sans_ext
+#' @importFrom utils hasName
 #' @author Laure Cougnaud
 renderInNewSession <- function(
     input, 
@@ -768,15 +779,16 @@ renderInNewSession <- function(
 	params = NULL,
     ...){
   
-  argsRender <- c(
-      list(
-          input = input, 
-          run_pandoc = run_pandoc,
-          output_options = output_options,
-          encoding = encoding
-      ),
-      list(...)
-  )
+	argsRenderExtra <- list(...)
+	argsRender <- c(
+		list(
+			input = input, 
+			run_pandoc = run_pandoc,
+			output_options = output_options,
+			encoding = encoding
+		),
+		argsRenderExtra
+	)
   
   ## Run job in a separated session with Rscript
   
@@ -827,7 +839,8 @@ renderInNewSession <- function(
       # to store output (including error) in an object
       stderr = TRUE, stdout = TRUE
   )
-  cat(stderrout, sep = "\n")
+  if(!(hasName(argsRenderExtra, "quiet") && isTRUE(argsRenderExtra[["quiet"]])))
+  	cat(stderrout, sep = "\n")
   
   resStatus <- attr(stderrout, "status")
   if(!is.null(resStatus) && resStatus != 0)
@@ -865,11 +878,14 @@ merge.sessionInfo <- function(...){
 #' and export them into a dedicated Markdown document
 #' @param sessionInfos List with \code{\link{sessionInfo}} objects
 #' @param mdFiles Character vector with Markdown files
+#' @param ... Any parameters passed to \code{\link{renderInNewSession}},
+#' for expert use only.
 #' @inheritParams clinDataReview-common-args-report
 #' @return String with path to Markdown file containing the session information,
 #' NULL if no session information(s) are provided.
 #' @author Laure Cougnaud
-exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "interim"){
+exportSessionInfoToMd <- function(sessionInfos, mdFiles,
+	intermediateDir = "interim", ...){
   
   if(length(sessionInfos) > 0){
     
@@ -886,7 +902,8 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles, intermediateDir = "inte
         input = sessionInfoFile, 
         output_file = sessionInfoMd, 
         output_dir = intermediateDir, 
-		params = list(sessionInfoAll = sessionInfoAll)
+		params = list(sessionInfoAll = sessionInfoAll),
+		...
     )
     
     sessionInfoMdPath <- file.path(intermediateDir, sessionInfoMd)

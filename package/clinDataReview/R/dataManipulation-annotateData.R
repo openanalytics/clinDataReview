@@ -178,10 +178,17 @@ annotateData <- function(
 						labelVarsEX <- attr(dataAnnotAll, "labelVars")
 						dataAnnot <- dataAnnotAll[[1]]
 						if(!subjectVar %in% colnames(dataAnnot))
-							stop(simpleCap(labelData), " is not annotated with exposure data because doesn't contain variable:", subjectVar, ".")
+							stop(simpleCap(labelData), " is not annotated with ",
+								"exposure data because doesn't contain the subject variable: ", 
+								shQuote(subjectVar), ".")
 						
 						startVar <- c("EXSTDTC", "STDY", "ASTDY")
 						startVar <- intersect(startVar, colnames(dataAnnot))
+						
+						if(length(startVar) == 0)
+							stop(simpleCap(labelData), " is not annotated with exposure",
+								" data because doesn't contain a start time variable.")
+						
 						idxWithST <- which(dataAnnot[, startVar] != "" & !is.na(dataAnnot[, startVar]))
 						dataAnnot <- dataAnnot[idxWithST, ]
 						
@@ -221,8 +228,11 @@ annotateData <- function(
 							"Lipids" = c("CHOL","HDL","LDL","TRIG"),
 							"Haematology" = c("BASO", "EOS", "HCT", "HGB", "LYM", "MCH", "MCHC", "MCV", "MONO", "NEUT", "PLAT", "RBC", "WBC")
 						)
-						labCodeToGroup <- setNames(rep(names(labGroups), times = sapply(labGroups, length)), unlist(labGroups))
-						labGroupData <- labCodeToGroup[data[, varParam]]
+						labCodeToGroup <- setNames(
+							rep(names(labGroups), times = sapply(labGroups, length)), 
+							unlist(labGroups)
+						)
+						labGroupData <- labCodeToGroup[as.character(data[, varParam])]
 						labGroupData[is.na(labGroupData)] <- "Other"
 						
 						labGroupsInData <- intersect(c(names(labGroups), "Other"), unique(labGroupData))
@@ -255,6 +265,8 @@ annotateData <- function(
 			# annotation by:?
 			varsBy <- annotations[["varsBy"]]
 			
+			annotData <- NULL
+			
 			# extract annotation data
 			if("dataset" %in% names(annotations)){
 				
@@ -264,11 +276,18 @@ annotateData <- function(
 					pattern = paste0("^(", annotDataset, ")\\..+$"), 
 					ignore.case = TRUE, full.names = TRUE
 				)
-				annotDataAll <- loadDataADaMSDTM(annotDataPath, verbose = FALSE)
-				annotData <- annotDataAll[[1]]
-				labelVarsAnnot <- attr(annotDataAll, "labelVars")
-				
-				if(is.null(varsBy))	varsBy <- subjectVar
+				if(length(annotDataPath) == 0){
+					warning(paste(simpleCap(labelData), "is not annotated with",
+						"the specified", shQuote(annotDataset), "dataset, because",
+						"it is not available in:", dataPath
+					))
+				}else{
+					annotDataAll <- loadDataADaMSDTM(annotDataPath, verbose = FALSE)
+					annotData <- annotDataAll[[1]]
+					labelVarsAnnot <- attr(annotDataAll, "labelVars")
+					
+					if(is.null(varsBy))	varsBy <- subjectVar
+				}
 				
 			}else if("data" %in% names(annotations)){
 				
@@ -289,118 +308,124 @@ annotateData <- function(
 				
 			}
 			
-			# filter if required:
-			annotFilter <- annotations$filters
-			if(!is.null(annotFilter)){
-				annotData <- filterData(
-					data = annotData, 
-					filters = annotFilter, 
-					returnAll = FALSE,
-					labelVars = labelVarsAnnot
-				)
-				labelVarsAnnot <- attr(annotData, "labelVars")
-				msgFilter <- attr(annotData, "msg")
-			}
+			if(!is.null(annotData)){
 			
-			# function to apply to extract new variables
-			varFct <- annotations$varFct
-			if(!is.null(varFct)){
-				
-				if(is.null(annotations$vars) || length(annotations$vars) != 1)
-					stop("'vars' should be specified and of length 1 for 'varFct':\n", 
-						capture.output(varFct))
-				
-				varNew <- annotations$vars
-				if(is.character(varFct)){
-					
-					varFctToFct <- try(eval(expr = parse(text = varFct)), silent = TRUE)
-					if(!inherits(varFctToFct, "try-error")){
-						annotData[[varNew]] <- varFctToFct(annotData)
-					}else{				
-						annotData[[varNew]] <- eval(
-							expr = parse(text = varFct), 
-							envir = annotData
-						)
-					}
-					msgVarFct <- varFct
-					
-				}else	if(is.function(varFct)){
-					
-					annotData[[varNew]] <- varFct(annotData)
-					msgVarFct <- paste(as.character(body(varFct)), collapse = "")
-					
-				}else	stop("'varFct' should be a character or a function.")
-				
-				# set label:
-				labelNew <- annotations$varLabel
-				if(is.null(labelNew))	labelNew <- msgVarFct
-				labelVarsAnnot[varNew] <- labelNew
-				
-				msgVarFct <- paste("based on:", msgVarFct)
-				
-				# remove variable in data if already present
-				data[[varNew]] <- NULL
-				
-			}
-			
-			# if 'vars' not specified, all columns of the annotation dataset are retained:
-			annotVar <- annotations$vars
-			if(is.null(annotVar))	annotVar <- colnames(annotData)
-			isAnnotInData <- annotVar %in% colnames(data)
-			if(any(isAnnotInData) & is.null(varFct)){
-				varAnnotInDataText <- toString(paste0(
-					getLabelVar(
-						var = annotVar[isAnnotInData], 
+				# filter if required:
+				annotFilter <- annotations$filters
+				if(!is.null(annotFilter)){
+					annotData <- filterData(
 						data = annotData, 
+						filters = annotFilter, 
+						returnAll = FALSE,
 						labelVars = labelVarsAnnot
-					), 
-					" (", 
-					sQuote(annotVar[isAnnotInData]), 
-					")"
-				))
-				warning(
-					simpleCap(labelData), " is not annotated with variable(s): ", 
-					varAnnotInDataText,
-					" from the ", sQuote(annotDataset), " dataset",
-					" because they are already available in data."
-				)
-				annotVar <- annotVar[!isAnnotInData]
+					)
+					labelVarsAnnot <- attr(annotData, "labelVars")
+					msgFilter <- attr(annotData, "msg")
+				}
+				
+				# function to apply to extract new variables
+				varFct <- annotations$varFct
+				if(!is.null(varFct)){
+					
+					if(is.null(annotations$vars) || length(annotations$vars) != 1)
+						stop("'vars' should be specified and of length 1 for 'varFct':\n", 
+							capture.output(varFct))
+					
+					varNew <- annotations$vars
+					if(is.character(varFct)){
+						
+						varFctToFct <- try(eval(expr = parse(text = varFct)), silent = TRUE)
+						if(!inherits(varFctToFct, "try-error")){
+							annotData[[varNew]] <- varFctToFct(annotData)
+						}else{				
+							annotData[[varNew]] <- eval(
+								expr = parse(text = varFct), 
+								envir = annotData
+							)
+						}
+						msgVarFct <- varFct
+						
+					}else	if(is.function(varFct)){
+						
+						annotData[[varNew]] <- varFct(annotData)
+						msgVarFct <- paste(as.character(body(varFct)), collapse = "")
+						
+					}else	stop("'varFct' should be a character or a function.")
+					
+					# set label:
+					labelNew <- annotations$varLabel
+					if(is.null(labelNew))	labelNew <- msgVarFct
+					labelVarsAnnot[varNew] <- labelNew
+					
+					msgVarFct <- paste("based on:", msgVarFct)
+					
+					# remove variable in data if already present
+					data[[varNew]] <- NULL
+					
+				}
+				
+				# if 'vars' not specified, all columns of the annotation dataset are retained:
+				annotVar <- annotations$vars
+				if(is.null(annotVar))	annotVar <- colnames(annotData)
+				annotVar <- setdiff(annotVar, varsBy)
+				isAnnotInData <- annotVar %in% colnames(data)
+				if(any(isAnnotInData) & is.null(varFct)){
+					varAnnotInDataText <- toString(paste0(
+						getLabelVar(
+							var = annotVar[isAnnotInData], 
+							data = annotData, 
+							labelVars = labelVarsAnnot
+						), 
+						" (", 
+						sQuote(annotVar[isAnnotInData]), 
+						")"
+					))
+					warning(
+						simpleCap(labelData), " is not annotated with variable(s): ", 
+						varAnnotInDataText,
+						" from the ", sQuote(annotDataset), " dataset",
+						" because they are already available in data."
+					)
+					annotVar <- annotVar[!isAnnotInData]
+				}
+				if(length(annotVar) > 0){
+					
+					varsByNotInData <- setdiff(varsBy, colnames(annotData))
+					if(length(varsByNotInData) > 0)
+						stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
+					
+					annotData <- unique(annotData[, unique(c(varsBy, annotVar)), drop = FALSE])
+		
+					data <- leftJoinBase(x = data, y = annotData, by = varsBy)
+										
+					msgAnnot <- paste0(
+						simpleCap(labelData), " annotated with variable(s): ", 
+						toString(paste0(
+							getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), 
+							" (", sQuote(annotVar), ")"
+						)),
+						" from the ", sQuote(annotDataset), " dataset",
+						if(!is.null(annotations$varFct))	paste0(" ", msgVarFct),
+						if(!is.null(annotFilter))	paste(" whose", msgFilter),
+						if(annotDataset != "current"){
+							paste0(
+								" based on the variable(s):	", 
+								getLabelVar(var = varsBy, data = annotData, labelVars = labelVarsAnnot), 
+								" (", sQuote(varsBy), ")"
+							)
+						},
+						"."
+					)
+					if(verbose)	message(msgAnnot)
+					
+					if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAnnot[annotVar])
+					
+				}
+				
 			}
-			if(length(annotVar) > 0){
-				
-				varsByNotInData <- setdiff(varsBy, colnames(annotData))
-				if(length(varsByNotInData) > 0)
-					stop(simpleCap(labelData), " is not annotated with ", sQuote(annotDataset), ", because doesn't contain variable:", toString(sQuote(varsByNotInData)), ".")
-				
-				annotData <- unique(annotData[, unique(c(varsBy, annotVar)), drop = FALSE])
-	
-				data <- leftJoinBase(x = data, y = annotData, by = varsBy)
-				
-				if(annotDataset == "current")	data$idAnnot <- NULL
-				
-				msgAnnot <- paste0(
-					simpleCap(labelData), " annotated with variable(s): ", 
-					toString(paste0(
-						getLabelVar(var = annotVar, data = annotData, labelVars = labelVarsAnnot), 
-						" (", sQuote(annotVar), ")"
-					)),
-					" from the ", sQuote(annotDataset), " dataset",
-					if(!is.null(annotations$varFct))	paste0(" ", msgVarFct),
-					if(!is.null(annotFilter))	paste(" whose", msgFilter),
-					if(annotDataset != "current"){
-						paste0(
-							" based on the variable(s):	", 
-							getLabelVar(var = varsBy, data = annotData, labelVars = labelVarsAnnot), 
-							" (", sQuote(varsBy), ")"
-						)
-					},
-					"."
-				)
-				if(verbose)	message(msgAnnot)
-				
-				if(!is.null(labelVars))	labelVars <- c(labelVars, labelVarsAnnot[annotVar])
-				
-			}
+			
+			if(annotDataset == "current")
+				data[["idAnnot"]] <- NULL
 			
 		}
 		

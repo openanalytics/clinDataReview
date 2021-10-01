@@ -1,14 +1,15 @@
-test_that("Width and height, if specified, are respected", {
+context("Get dimensions of clinical data plot")
+
+test_that("Plot width and height, if specified, are respected", {
 			
 	res <- clinDataReview:::getSizePlot(
 		width = 300,
 		height = 100
 	)
-	expect_is(res, "numeric")
-	expect_length(res, 2)
-	expect_named(res)
-	expect_equal(res[["height"]], 100)
-	expect_equal(res[["width"]], 300)
+	expect_mapequal(
+		object = res,
+		expected = c(height = 100, width = 300)
+	)
 	
 })
 
@@ -57,7 +58,10 @@ test_that("Height of the plot is increased if a legend is specified at the top",
 	sizeWithoutLegend <- clinDataReview:::getSizePlot(
 		includeLegend = FALSE
 	)
-	expect_gt(sizeWithLegend[["height"]], sizeWithoutLegend[["height"]])	
+	expect_gt(
+		object = sizeWithLegend[["height"]], 
+		expected = sizeWithoutLegend[["height"]]
+	)	
 		
 })
 
@@ -70,7 +74,10 @@ test_that("Height of the plot is increased if a legend is specified at the botto
 	sizeWithoutLegend <- clinDataReview:::getSizePlot(
 		includeLegend = FALSE
 	)
-	expect_gt(sizeWithLegend[["height"]], sizeWithoutLegend[["height"]])	
+	expect_gt(
+		object = sizeWithLegend[["height"]], 
+		expected = sizeWithoutLegend[["height"]]
+	)	
 			
 })
 
@@ -78,11 +85,14 @@ test_that("Height of the plot is increased if the plot contained multiple rows",
 			
 	size4Rows <- clinDataReview:::getSizePlot(nrow = 4)
 	size3Rows <- clinDataReview:::getSizePlot(nrow = 3)
-	expect_gt(size4Rows[["height"]], size3Rows[["height"]])	
+	expect_gt(
+		object = size4Rows[["height"]], 
+		expected = size3Rows[["height"]]
+	)	
 			
 })
 
-test_that("Height of the plot is takes into account the number of text elements in the y-axis", {
+test_that("Height of the plot takes into account the number of text elements in the y-axis", {
 			
 	size2Y <- clinDataReview:::getSizePlot(y = c("a", "b"))
 	size1Y <- clinDataReview:::getSizePlot(y = "a")
@@ -93,7 +103,7 @@ test_that("Height of the plot is takes into account the number of text elements 
 			
 })
 
-test_that("Height of the plot is takes into account the number of lines for text elements in the y-axis", {
+test_that("Height of the plot takes into account the number of lines for text elements in the y-axis", {
 			
 	size2Lines <- clinDataReview:::getSizePlot(y = "a\nb")
 	size1Line <- clinDataReview:::getSizePlot(y = "a")
@@ -105,10 +115,9 @@ test_that("Height of the plot is takes into account the number of lines for text
 })
 
 test_that("A top legend is positioned below the subtitle", {
-			
-	subtitle <- "Plot subtitle"
+
 	sizeDetails <- clinDataReview:::getPositionAndMargins(
-		subtitle = subtitle,
+		subtitle = "Plot subtitle",
 		includeLegend = TRUE, legendPosition = "top"
 	)
 	expect_lt(
@@ -119,12 +128,10 @@ test_that("A top legend is positioned below the subtitle", {
 })
 
 test_that("The label for the x-axis, bottom legend and caption are positioned in this order at the bottom of the plot", {
-			
-	xLab <- "Label for the x-axis"
-	caption <- "This is a caption"
+
 	sizeDetails <- clinDataReview:::getPositionAndMargins(
-		xLab = xLab,
-		caption = caption,
+		xLab = "Label for the x-axis",
+		caption = "This is a caption",
 		includeLegend = TRUE, legendPosition = "bottom"
 	)
 	expect_lt(

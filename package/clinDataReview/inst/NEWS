@@ -1,6 +1,10 @@
 1.2.0
     o new error bar plot
-    o annotateData: fix when filters specified for current dataset
+    o annotate data: 
+      - fix when filters specified for current dataset
+      - remove var by in check of variables already in data
+      - fix functional groups annotation when code variable is a factor
+    o transform data: fix extraction labels for multiple transformations
     o scatterplot: variables for labels for x-axis & plot template: table params
     o add caption & subtitle
     o plot dimensions:
@@ -10,6 +14,7 @@
         - automatic margins adjustments
     o time profile plot: include color lab
     o barplot: fix position legend
+    o scatterplot: track warning 'Ignoring unknown aesthetics: text' for hover
     o summary table template: 
         - new type of comparison: 'table-combine'
         - fix for extraction total data from old batch
@@ -21,6 +26,10 @@
     o skeleton: fix issue creation comparisonData folder in Windows
     o vignette: fix for Pandoc (CRAN Solaris) - interactive vis
     o template listing, summary plot/table: fix looping var with '.'
+    o report rendering: 
+      - copy extra directories only if they exist
+      - quiet now remove any pandoc output
+    o conversion Md to HTML: parameters can be passed to rmarkdown::render
 1.1.0
     o new boxplotClinData functionality
     o barplotClinData: textVar

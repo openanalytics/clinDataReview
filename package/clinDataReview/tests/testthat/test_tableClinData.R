@@ -1,65 +1,59 @@
-context("Test table for clinical data")
+context("Get clinical data as a table")
 
-# Seems from 'coverage' report that
-# 'tableClinData' is also tested through the other plot functionalities?
-# So other tests are skipped
+# 'tableClinData' is also tested through the other plot functionalities,
+# and via the tests for getClinDT in clinUtils
+# so other tests are skipped
 
-data <- data.frame(
-    USUBJID = c("ID1", "ID2", "ID3", "ID4"),
-    A = c(10, 12, 16, 18),
-    pathVar = "<a href=\"./path-to-report\">label</a>",
-    stringsAsFactors = FALSE
-)
+test_that("A table is successfully created for clinical data", {
+      
+	data <- data.frame(USUBJID = c("ID1", "ID2", "ID3", "ID4"))
+	tableMon <- tableClinData(data = data)
+	expect_s3_class(tableMon, "datatables")
+      
+})
 
-test_that("Table in the default application", {
+test_that("A warning is generated if the variable for the patient profile path is not available", {
       
-      expect_silent(
-          tableMon <- 
-              tableClinData(
-                  data
-              )
-      )
-      expect_is(tableMon, "datatables")
-      expect_is(tableMon, "htmlwidget")
+	data <- data.frame(USUBJID = c("ID1", "ID2", "ID3", "ID4"))	
+	expect_warning(
+		tableClinData(
+			data = data,
+			pathVar = "varName"
+		),
+		"Variable with path to subject profile: .* is not available"
+	)
       
-    })
+})
 
-test_that("Have warning for 'pathVar' argument", {
+test_that("The variable for the patient profile path is successfully included in a clinical data table", {
+			
+	data <- data.frame(
+		USUBJID = c("ID1", "ID2", "ID3", "ID4"),
+		path = sprintf("<a href=\"./path-to-report-%d\">label</a>", 1:4),
+		stringsAsFactors = FALSE
+	)
       
-      expect_warning(
-          tableClinData(
-              data,
-              pathVar = "varName"
-          ),
-          "Variable with path to subject profile: .* is not available"
-      )
-      
-    })
-
-test_that("Use 'pathVar' argument", {
-      
-      expect_silent(
-          tableMon <- tableClinData(
-              data,
-              pathVar = "pathVar"
-          )
-      )
-      expect_is(tableMon, "datatables")
-      expect_is(tableMon, "htmlwidget")
+	tableMon <- tableClinData(
+		data = data,
+		pathVar = "path"
+	)
+	expect_s3_class(tableMon, "datatables")
            
-    })
+})
 
-test_that("Use 'pathExpand' argument", {
+test_that("The variable for the patient profile path is successfully specified as expandable in a clinical data table", {
       
-      expect_silent(
-          tableMon <- tableClinData(
-              data,
-              pathVar = "pathVar",
-              pathExpand = TRUE
-          )
-      )
-      expect_is(tableMon, "datatables")
-      expect_is(tableMon, "htmlwidget")
-      
-    })
-
+	data <- data.frame(
+		USUBJID = c("ID1", "ID2", "ID3", "ID4"),
+		path = sprintf("<a href=\"./path-to-report-%d\">label</a>", 1:4),
+		stringsAsFactors = FALSE
+	)
+			
+	tableMon <- tableClinData(
+		data = data,
+		pathVar = "path",
+		pathExpand = TRUE
+	)
+	expect_s3_class(tableMon, "datatables")
+	
+})

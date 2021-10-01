@@ -1,128 +1,164 @@
-context("Test the 'render_clinDataReviewReport'")
+context("Render a clinical data review report")
 
 library(yaml)
-library(rmarkdown)
-
-testPathBase <- normalizePath(path = "../files")
-testPathConfig <- file.path(testPathBase, "config")
-testPathInterim <- file.path(testPathBase, "interim")
-indexPath <- file.path(testPathBase, "index.Rmd")
-
-configFiles <- list.files(testPathConfig)
-filePathConfig <- file.path(testPathConfig, configFiles)
-# Other config file
-otherConfigs <- configFiles[! grepl("config.yml", configFiles)]
-filePathOtherConfigs <- file.path(testPathConfig, otherConfigs)
-filePathGeneralConfig <- setdiff(filePathConfig, filePathOtherConfigs)
 
 test_that("Report titles are extracted for each config file", {
       
+	# get example config files
+	testPathConfig <- normalizePath(file.path("../files", "config"))
+	configFiles <- list.files(testPathConfig)
+	otherConfigs <- configFiles[!grepl("config.yml", configFiles)]
+			
 	reportTitles <- checkReportTitles(configFiles, configDir = testPathConfig)
-	expect_is(reportTitles, "character")
+	expect_type(reportTitles, "character")
 	expect_length(reportTitles, length(otherConfigs))
 	expect_named(reportTitles, otherConfigs)
       
 })
 
-test_that("Report titles are unique", {
+test_that("An error is generated if the multiple reports have the same titles", {
       
-      configFilesError <- c(configFiles[1], configFiles[1])
-      expect_error(
-          checkReportTitles(configFilesError, configDir = testPathConfig),
-          "The title .+ is duplicated."
-      )
-      configFilesWarning <- c(configFiles, "config-ciao")
-      expect_warning(
-          checkReportTitles(configFilesWarning, configDir = testPathConfig),
-          "Please check the spelling is correct"
-      )
-      
-    })
+	# get example config files
+	testPathConfig <- normalizePath(file.path("../files", "config"))
+	configFiles <- list.files(testPathConfig)
+			
+	configFilesError <- c(configFiles[1], configFiles[1])
+	expect_error(
+		checkReportTitles(configFilesError, configDir = testPathConfig),
+		"The title .+ is duplicated."
+	)
+	
+})
 
-test_that("Paths of markdown files are extracted correctly from the config files", {
-      
-      mdFiles <- clinDataReview:::getMdFromConfig(configFiles, intermediateDir = testPathInterim)
-      expect_is(mdFiles, "character")
-      expect_length(mdFiles, length(configFiles))
-      
-      mdNames <- file.path(
-          testPathInterim,
-          c(
-              gsub("config-(.+).yml", "\\1.md", otherConfigs),
-              "index.md"
-          ))
-      expect_identical(mdNames, mdFiles)
-      
-    })
 
-test_that("Names of markdown files are extracted correctly from the config files when custom index file is specified", {
-      
-      # Different name for indexPath
-      mdFilesIndex <- clinDataReview:::getMdFromConfig(
-          configFiles,
-          indexPath = "myIndex.Rmd",
-          intermediateDir = testPathInterim
-      )
-      expect_is(mdFilesIndex, "character")
-      expect_length(mdFilesIndex, length(configFiles))
-      mdNames <- file.path(
-          testPathInterim,
-          c(
-              gsub("config-(.+).yml", "\\1.md", otherConfigs),
-              "myIndex.md"
-          ))
-      expect_identical(mdNames, mdFilesIndex)
+test_that("A warning is generated if a config is generated if a config file doesn't exist", {
+	
+	# get example config files
+	testPathConfig <- normalizePath(file.path("../files", "config"))
+	configFiles <- list.files(testPathConfig)
+			
+	configFilesWarning <- c(configFiles, "config-ciao")
+	expect_warning(
+		checkReportTitles(configFilesWarning, configDir = testPathConfig),
+		"Please check the spelling is correct"
+	)
       
 })
 
-test_that("Names of markdown files are extracted correctly from the config files when custom intermediate directory is specified", {
-			 
-      # Different intermediateDir
-      mdFilesInterim <- clinDataReview:::getMdFromConfig(configFiles, intermediateDir = "myDir")
-      expect_is(mdFilesInterim, "character")
-      expect_length(mdFilesInterim, length(configFiles))
-      mdNames <- file.path("myDir", c(
-              gsub("config-(.+).yml", "\\1.md", otherConfigs),
-              "index.md"
-          ))
-      expect_identical(mdNames, mdFilesInterim)
+test_that("Paths of markdown files are extracted correctly from the config files", {
+	
+	# get example config files			
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	configFiles <- list.files(testPathConfig)
+	testPathInterim <- file.path(testPathBase, "interim")
+	otherConfigs <- configFiles[!grepl("config.yml", configFiles)]
       
-    })
+	mdFiles <- clinDataReview:::getMdFromConfig(configFiles, intermediateDir = testPathInterim)
+	expect_type(mdFiles, "character")
+	expect_length(mdFiles, length(configFiles))
+      
+	mdNames <- file.path(
+		testPathInterim,
+		c(
+			gsub("config-(.+).yml", "\\1.md", otherConfigs),
+			"index.md"
+		))
+	expect_identical(object = mdNames, expected = mdFiles)
+      
+})
+
+test_that("Names of markdown files are extracted correctly from the config files when a custom index file is specified", {
+    
+	# get example config files			
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	configFiles <- list.files(testPathConfig)
+	otherConfigs <- configFiles[!grepl("config.yml", configFiles)]
+	testPathInterim <- file.path(testPathBase, "interim")
+			
+	# Different name for indexPath
+	mdFilesIndex <- clinDataReview:::getMdFromConfig(
+		configFiles,
+		indexPath = "myIndex.Rmd",
+		intermediateDir = testPathInterim
+	)
+	expect_type(mdFilesIndex, "character")
+	expect_length(object = mdFilesIndex, n = length(configFiles))
+	mdNames <- file.path(
+		testPathInterim,
+		c(
+			gsub("config-(.+).yml", "\\1.md", otherConfigs),
+			"myIndex.md"
+		)
+	)
+	expect_identical(object = mdNames, expected = mdFilesIndex)
+      
+})
+
+test_that("Names of markdown files are extracted correctly from the config files when a custom intermediate directory is specified", {
+		
+	# get example config files			
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	configFiles <- list.files(testPathConfig)
+	otherConfigs <- configFiles[!grepl("config.yml", configFiles)]
+			
+	mdFilesInterim <- clinDataReview:::getMdFromConfig(configFiles, intermediateDir = "myDir")
+	expect_type(mdFilesInterim, "character")
+	expect_length(mdFilesInterim, length(configFiles))
+	mdNames <- file.path("myDir", c(
+		gsub("config-(.+).yml", "\\1.md", otherConfigs),
+		"index.md"
+	))
+	expect_identical(object = mdNames, expected = mdFilesInterim)
+      
+})
 
 
-test_that("Parameters are extracted successfully from a general config file", {
-      
-      listConfig <- getParamsFromConfig("config.yml", configDir = testPathConfig)
-      configFromYaml <- read_yaml(filePathGeneralConfig)
-      n <- length(configFromYaml)
-      expect_is(listConfig, "list")
-      expect_length(listConfig, n)
-      expect_identical(
-          names(listConfig),
-          names(configFromYaml)
-      ) 
-      
-    })
+test_that("Parameters are extracted correctly from a general config file", {
 
-test_that("Parameters are extracted successfully from a chapter-specific config file", {
+	# get example config files			
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	listConfig <- getParamsFromConfig("config.yml", configDir = testPathConfig)
+	filePathGeneralConfig <- file.path(testPathConfig, "config.yml")
+	
+	configFromYaml <- read_yaml(filePathGeneralConfig)
+	expect_type(listConfig, "list")
+	expect_length(configFromYaml, length(listConfig))
+	expect_identical(
+		object = listConfig,
+		expected = configFromYaml
+	)
       
-      listConfig <- getParamsFromConfig(otherConfigs, configDir = testPathConfig)
-      configFromYamlGeneral <- read_yaml(filePathGeneralConfig)
-      configFromYaml <- read_yaml(filePathOtherConfigs)
-      n <- length(configFromYamlGeneral) + length(configFromYaml)
-      expect_is(listConfig, "list")
-      expect_length(listConfig, n)
-      expect_identical(
-          names(listConfig),
-          c(names(configFromYamlGeneral), names(configFromYaml))
-      )
+})
+
+test_that("Parameters are extracted correctly from a chapter-specific config file", {
+			
+	# get example config files			
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
       
-    })
+	listConfig <- getParamsFromConfig("config-adverseEvents-division.yml", configDir = testPathConfig)
+
+	configFromYamlGeneral <- read_yaml(file.path(testPathConfig, "config.yml"))
+	configFromYaml <- read_yaml(file.path(testPathConfig, "config-adverseEvents-division.yml"))
+	expect_type(listConfig, "list")
+	expect_length(
+		object = listConfig, 
+		n = length(configFromYamlGeneral) + length(configFromYaml)
+	)
+	expect_mapequal(
+		object = listConfig,
+		expected = c(configFromYamlGeneral, configFromYaml)
+	)
+      
+})
 
 test_that("An error is generated if the config directory is not available", {
       
-	configDir <- tempfile(pattern = "config")		
-			
+	configDir <- tempfile(pattern = "config")
 	expect_error(
 		getParamsFromConfig(configFile = "config.yml", configDir = configDir),
 		"Config directory: .+ doesn't exist."
@@ -130,10 +166,14 @@ test_that("An error is generated if the config directory is not available", {
 	
 })
 
-test_that("An error is generated if the config directory is not available", {
-			
+test_that("An error is generated if a config file is not available", {
+	
 	configDir <- tempfile(pattern = "config")
 	dir.create(configDir)
+			
+	# get example general config file
+	testPathConfig <- normalizePath(file.path("../files", "config"))
+	file.copy(from = file.path(testPathConfig, "config.yml"), to = configDir)
 	
 	expect_error(
 		getParamsFromConfig(configFile = "config-test.yml", configDir = configDir),
@@ -158,16 +198,21 @@ test_that("A warning is generated if the general config file is not available", 
       
 })
 
-test_that("The creation of html file from markdown files is successful", {
+test_that("The creation of html file from markdown files for specified config files is successful", {
      
 	skip_if_not(
 		condition = rmarkdown::pandoc_available(), 
 		message = "pandoc is not available"
 	)
-			
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	testPathInterim <- file.path(testPathBase, "interim")
+	
+	# copy md file to temp directory
 	testDir <- tempfile("mdConversion")
 	dir.create(testDir)
-	
 	file.copy(from = testPathInterim, to = testDir, recursive = TRUE)
 	interimDir <- file.path(testDir, basename(testPathInterim))
 	
@@ -177,12 +222,33 @@ test_that("The creation of html file from markdown files is successful", {
 		intermediateDir = interimDir,
 		configDir = testPathConfig, 
 		mdFiles = NULL,
-		indexPath = "index.Rmd"
+		indexPath = "index.Rmd",
+		quiet = TRUE # suppress printing of pandoc cmd line
 	)
-	expect_is(htmlOutput, "character")
+	expect_type(htmlOutput, "character")
 	expect_true(file.exists(htmlOutput))
 	expect_equal(normalizePath(dirname(htmlOutput)), normalizePath(testDir))
-      
+	
+})
+
+test_that("The creation of html file from the specified markdown files is successful", {
+			
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(), 
+		message = "pandoc is not available"
+	)
+			
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	testPathInterim <- file.path(testPathBase, "interim")
+	
+	# copy md file to temp directory
+	testDir <- tempfile("mdConversion")
+	dir.create(testDir)
+	tmp <- file.copy(from = testPathInterim, to = testDir, recursive = TRUE)
+	interimDir <- file.path(testDir, basename(testPathInterim))
+
 	# Md files
 	filePathMd <- list.files(pattern = "md", interimDir, full.names = TRUE)
       
@@ -191,23 +257,29 @@ test_that("The creation of html file from markdown files is successful", {
 		intermediateDir = interimDir,
 		configDir = testPathConfig, 
 		mdFiles = filePathMd,
-		indexPath = "index.Rmd"
+		indexPath = "index.Rmd",
+		quiet = TRUE # suppress printing of pandoc cmd line
 	)
-	expect_is(htmlOutput, "character")
+	expect_type(htmlOutput, "character")
 	expect_true(file.exists(htmlOutput))
 	expect_equal(normalizePath(dirname(htmlOutput)), normalizePath(testDir))
       
 })
 
-test_that("The check of template name from correct config files is successful", {
+test_that("The template name is successfully checked from correct config files", {
+			
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	configFiles <- list.files(testPathConfig)
       
 	expect_silent(
 		checkedConfig <- clinDataReview:::checkTemplatesName(
 			configFiles = configFiles, configDir = testPathConfig
 		)
 	)
-	expect_is(checkedConfig, "character")
-	expect_identical(configFiles, checkedConfig)
+	expect_type(checkedConfig, "character")
+	expect_identical(object = checkedConfig, expected = configFiles)
       
 })
 
@@ -239,7 +311,7 @@ test_that("A warning is generated if a config file has no template name", {
       
 })
 
-test_that("A warning is generated if config files with the same template name in different package are used", {
+test_that("A warning is generated if config files with the same template name in different packages are used", {
       
 	testDir <- tempfile("config-sameTemplateName")
 	dir.create(testDir)
@@ -285,36 +357,41 @@ test_that("Session informations are merged successfully", {
       
 	sessionInfos <- list(sessionInfo(), sessionInfo())
 	sessionInfo <- do.call(clinDataReview:::merge.sessionInfo, sessionInfos)
-	expect_is(sessionInfo, "sessionInfo")
-	expect_is(sessionInfo, "list")
+	expect_s3_class(sessionInfo, "sessionInfo")
       
 })
 
-test_that("The export of empty session infos to Markdown returns empty output", {
+test_that("The export of empty session infos to Markdown returns an empty output", {
       
 	expect_null(clinDataReview:::exportSessionInfoToMd(sessionInfos = NULL))
 	
 })
 
-test_that("The export of session infos to Markdown runs successfully", {
+test_that("Session infos are successfully exported to Markdown", {
 			
-	interimDir <- tempfile("interim")		
-			
+	interimDir <- tempfile("interim")			
 	sessionInfos <- list(sessionInfo(), sessionInfo())
       
 	mdFile <- clinDataReview:::exportSessionInfoToMd(
 		sessionInfos = sessionInfos, 
-		intermediateDir = interimDir
+		intermediateDir = interimDir,
+		quiet = TRUE # suppress printing of pandoc cmd line
 	)
-	expect_is(mdFile, "character")
+	expect_type(mdFile, "character")
 	expect_true(file.exists(mdFile))
 	expect_identical(mdFile, file.path(interimDir, "sessionInfo.md"))
       
 })
 
-test_that("A clinical data report is created successfully via specification of config files", {
+test_that("A clinical data report is created successfully via the specification of config files", {
 	
 	skip_on_cran()
+			
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	configFiles <- list.files(testPathConfig)
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
@@ -325,12 +402,16 @@ test_that("A clinical data report is created successfully via specification of c
 	# copy configuration files
 	file.copy(from = testPathConfig, to = testDir, recursive = TRUE)
       
-	output <- render_clinDataReviewReport(
-		configFiles = configFiles,
-		configDir = testPathConfig,
-		inputDir = testDir,
-		intermediateDir = file.path(testDir, "interim"),
-		outputDir = outputDir
+	# progress messages during execution
+	expect_message(
+		output <- render_clinDataReviewReport(
+			configFiles = configFiles,
+			configDir = testPathConfig,
+			inputDir = testDir,
+			intermediateDir = file.path(testDir, "interim"),
+			outputDir = outputDir,
+			quiet = TRUE # suppress printing of pandoc cmd line
+		)
 	)
 	expect_type(output, "character")
 	expect_match(output, "introduction")
@@ -344,6 +425,11 @@ test_that("A clinical data report is created successfully via specification of c
 test_that("A clinical data report is created successfully with a log file", {
 			
 	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
@@ -355,12 +441,16 @@ test_that("A clinical data report is created successfully with a log file", {
       
 	logPath <- file.path(testDir, "log.txt")
       
-	output <- render_clinDataReviewReport(
-		configDir = testPathConfig,
-		inputDir = testDir,
-		intermediateDir = file.path(testDir, "interim"),
-		outputDir = file.path(testDir, "report"),
-		logFile = logPath
+	# progress messages during execution
+	expect_message(
+		output <- render_clinDataReviewReport(
+			configDir = testPathConfig,
+			inputDir = testDir,
+			intermediateDir = file.path(testDir, "interim"),
+			outputDir = file.path(testDir, "report"),
+			logFile = logPath,
+			quiet = TRUE # suppress printing of pandoc cmd line
+		)
 	)
 	expect_type(output, "character")
 	expect_match(output, "introduction")
@@ -368,9 +458,15 @@ test_that("A clinical data report is created successfully with a log file", {
 
 })
 
-test_that("A clinical data report is created successfully via config directory", {
+test_that("A clinical data report is created successfully via the specification of a config directory", {
 
 	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	testPathConfig <- file.path(testPathBase, "config")
+	configFiles <- list.files(testPathConfig)
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
@@ -380,13 +476,17 @@ test_that("A clinical data report is created successfully via config directory",
 	file.copy(from = indexPath, to = testDir)
 	# copy configuration files
 	file.copy(from = testPathConfig, to = testDir, recursive = TRUE)
-			
-	output <- render_clinDataReviewReport(
-		configFiles = NULL,
-		configDir = file.path(testDir, basename(testPathConfig)),
-		inputDir = testDir,
-		intermediateDir = file.path(testDir, "interim"),
-		outputDir = outputDir
+	
+	# progress messages during execution
+	expect_message(
+		output <- render_clinDataReviewReport(
+			configFiles = NULL,
+			configDir = file.path(testDir, basename(testPathConfig)),
+			inputDir = testDir,
+			intermediateDir = file.path(testDir, "interim"),
+			outputDir = outputDir,
+			quiet = TRUE # suppress printing of pandoc cmd line
+		)
 	)
 	expect_type(output, "character")
 	expect_match(output, "introduction")
@@ -402,108 +502,124 @@ test_that("A clinical data report is created successfully via config directory",
 test_that("A warning is generated if a specified config file doesn't exist", {
       
 	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
-      testDir <- tempfile("report")
-      dir.create(testDir)
+	testDir <- tempfile("report")
+	dir.create(testDir)
 	  
-	  # copy index file
-	  file.copy(from = indexPath, to = testDir)
+	# copy index file
+	file.copy(from = indexPath, to = testDir)
       
-      ############
-      ## File 1 ##
-      configFile1 <- file.path(testDir, "configFile1.yml")
-      write_yaml(
-          list(
-              template = "divisionTemplate.Rmd",
-              templatePackage = "clinDataReview",
-              reportTitle = "Adverse events",
-              reportTitleLevel = 1          
-          ),
-          configFile1 
-      )
+	# file 1
+	configFile1 <- file.path(testDir, "configFile1.yml")
+	write_yaml(
+		x = list(
+			template = "divisionTemplate.Rmd",
+			templatePackage = "clinDataReview",
+			reportTitle = "Adverse events",
+			reportTitleLevel = 1          
+		),
+		file = configFile1 
+	)
       
-      #########################
-      ## General config file ##
-      configFileGeneral <- file.path(testDir, "config.yml") 
-      write_yaml(
-          list(
-              study = "Study name",
-              pathDataFolder = "path/to/data",
-              config = list(
-                  basename(configFile1),
-                  "configFile2.yml"
-              )
-          ),
-          configFileGeneral
-      )
-      configFiles <- c(configFileGeneral, configFile1, "configFile2.yml")
-      configFiles <- basename(configFiles)
-      
-      expect_warning(
-          output <- render_clinDataReviewReport(
-              configDir = testDir,
-              outputDir = testDir,
-			  inputDir = testDir,
-              intermediateDir = testDir
-          ),
-		  "configFile2.* cannot be found"
-      )
-      expect_type(output, "character")
-      expect_match(output, "introduction")
+	# general config file
+	configFileGeneral <- file.path(testDir, "config.yml") 
+	write_yaml(
+		x = list(
+			study = "Study name",
+			pathDataFolder = "path/to/data",
+			config = list(
+				basename(configFile1),
+				"configFile2.yml"
+			)
+		),
+		file = configFileGeneral
+	)
+	configFiles <- c(configFileGeneral, configFile1, "configFile2.yml")
+	configFiles <- basename(configFiles)
+	
+	expect_warning(
+		# progress messages during execution
+		expect_message(
+			output <- render_clinDataReviewReport(
+				configDir = testDir,
+				outputDir = testDir,
+				inputDir = testDir,
+				intermediateDir = testDir,
+				quiet = TRUE # suppress printing of pandoc cmd line
+			)
+		),
+		"configFile2.* cannot be found"
+	)
+	expect_type(output, "character")
+	expect_match(output, "introduction")
       
 })
 
-test_that("A warning is generated if a template Rmd is already available", {
+test_that("A warning is generated if a template report is already available", {
 			
 	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	indexPath <- file.path(testPathBase, "index.Rmd")
       
 	testDir <- tempfile("report")
 	dir.create(testDir)
 			
 	file.copy(from = indexPath, to = testDir)
       
-	############
-	## File 1 ##
+	# file 1
 	configFile1 <- file.path(testDir, "configFile1.yml")
 	write_yaml(
-		list(
+		x = list(
 			template = "divisionTemplate.Rmd",
 			templatePackage = "clinDataReview",
 			reportTitle = "Adverse events",
 			reportTitleLevel = 1          
 		),
-		configFile1 
+		file = configFile1 
 	)
       
-	#########################
-	## General config file ##
+	# general config file
 	configFileGeneral <- file.path(testDir, "config.yml") 
 	write_yaml(
-		list(
+		x = list(
 			study = "Study name",
 			pathDataFolder = "path/to/data",
 			config = list(
 				basename(configFile1)
 			)
 		),
-		configFileGeneral
+		file = configFileGeneral
 	)
 	configFiles <- c(configFileGeneral, configFile1)
 	configFiles <- basename(configFiles)
-	  
-	firstRun <- render_clinDataReviewReport(
-		configDir = testDir,
-		outputDir = testDir,
-		inputDir = testDir,
-		intermediateDir = testDir
-	)
-      
-	expect_warning(
-		secondRun <- render_clinDataReviewReport(
+	
+	# progress messages during execution
+	expect_message(
+		firstRun <- render_clinDataReviewReport(
 			configDir = testDir,
 			outputDir = testDir,
 			inputDir = testDir,
-			intermediateDir = testDir    
+			intermediateDir = testDir,
+			quiet = TRUE # suppress printing of pandoc cmd line
+		)
+	)
+	
+	expect_warning(
+		# progress messages during execution
+		expect_message(
+			secondRun <- render_clinDataReviewReport(
+				configDir = testDir,
+				outputDir = testDir,
+				inputDir = testDir,
+				intermediateDir = testDir,
+				quiet = TRUE # suppress printing of pandoc cmd line   
+			)
 		),
 		"Document with similar name than specified template from"
 	)
@@ -515,14 +631,17 @@ test_that("A warning is generated if a template Rmd is already available", {
 test_that("A warning is generated if the creation of a chapter fails'", {
      
 	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 	
 	file.copy(from = indexPath, to = testDir)
       
-	############
-	## File 1 ##
+	# file 1
 	configFile1 <- file.path(testDir, "configFile1.yml")
 	write_yaml(x = list(template = "templateWithError.Rmd"), file = configFile1)
 	
@@ -535,11 +654,7 @@ test_that("A warning is generated if the creation of a chapter fails'", {
 		sep = "\n"
 	)
       
-	#########################
-	## General config file ##
-	
-	#########################
-	## General config file ##
+	# general config file
 	configFileGeneral <- file.path(testDir, "config.yml") 
 	write_yaml(
 		x = list(
@@ -554,11 +669,15 @@ test_that("A warning is generated if the creation of a chapter fails'", {
 	
 	expect_warning(
 		expect_error(
-			render_clinDataReviewReport(
-				configDir = testDir,
-				outputDir = testDir,
-				intermediateDir = testDir,
-				inputDir = testDir
+			# progress messages during execution
+			expect_message(
+				render_clinDataReviewReport(
+					configDir = testDir,
+					outputDir = testDir,
+					intermediateDir = testDir,
+					inputDir = testDir,
+					quiet = TRUE # suppress printing of pandoc cmd line   
+				)
 			)
 		),
 		"Rendering of the .+ report for config file: .+ failed, a report with only the section title is created."
@@ -569,14 +688,17 @@ test_that("A warning is generated if the creation of a chapter fails'", {
 test_that("A warning is generated if the template name is missing in a config file", {
 			
 	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 	
 	file.copy(from = indexPath, to = testDir)
       
-	############
-	## File 1 ##
+	# file 1
 	configFile1 <- file.path(testDir, "configFile1.yml")
 	write_yaml(
 		x = list(
@@ -586,8 +708,7 @@ test_that("A warning is generated if the template name is missing in a config fi
 		file = configFile1 
 	)
       
-	#########################
-	## General config file ##
+	# general config file
 	configFileGeneral <- file.path(testDir, "config.yml") 
 	write_yaml(
 		x = list(
@@ -599,13 +720,17 @@ test_that("A warning is generated if the template name is missing in a config fi
 	)
 	configFiles <- c(configFileGeneral, configFile1)
 	configFiles <- basename(configFiles)
-      
+	
 	expect_warning(
-		res <- render_clinDataReviewReport(
-			configDir = testDir,
-			outputDir = testDir,
-			intermediateDir = testDir,
-			inputDir = testDir
+		# progress messages during execution
+		expect_message(	
+			res <- render_clinDataReviewReport(
+				configDir = testDir,
+				outputDir = testDir,
+				intermediateDir = testDir,
+				inputDir = testDir,
+				quiet = TRUE # suppress printing of pandoc cmd line  
+			)
 		),
 		"Template missing for config file: .+."
 	)
@@ -617,14 +742,17 @@ test_that("A warning is generated if the template name is missing in a config fi
 test_that("A warning is generated if the config parameters don't comply to the template specifications", {
     
 	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 	
 	file.copy(from = indexPath, to = testDir)
       
-	############
-	## File 1 ##
+	# file 1
 	configFile1 <- file.path(testDir, "configFile1.yml")
 	write_yaml(
 		x = list(
@@ -634,8 +762,7 @@ test_that("A warning is generated if the config parameters don't comply to the t
 		file = configFile1 
 	)
       
-	#########################
-	## General config file ##
+	# general config file
 	configFileGeneral <- file.path(testDir, "config.yml") 
 	write_yaml(
 		x = list(
@@ -647,13 +774,17 @@ test_that("A warning is generated if the config parameters don't comply to the t
 	)
 	configFiles <- c(configFileGeneral, configFile1)
 	configFiles <- basename(configFiles)
-      
+	
 	expect_warning(
-		res <- render_clinDataReviewReport(
-			configDir = testDir,
-			outputDir = testDir,
-			intermediateDir = testDir,
-			inputDir = testDir     
+		# progress messages during execution
+		expect_message(
+			res <- render_clinDataReviewReport(
+				configDir = testDir,
+				outputDir = testDir,
+				intermediateDir = testDir,
+				inputDir = testDir,
+				quiet = TRUE # suppress printing of pandoc cmd line     
+			)
 		),
 		"The report for the config file: .+ is not created because the check of the parameters failed"
 	)
@@ -665,14 +796,17 @@ test_that("A warning is generated if the config parameters don't comply to the t
 test_that("A warning is generated if a template is not available in the specified package", {
       
 	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 			
 	file.copy(from = indexPath, to = testDir)
       
-	############
-	## File 1 ##
+	# file 1
 	configFile1 <- file.path(testDir, "configFile1.yml")
 	write_yaml(
 		x = list(
@@ -682,8 +816,7 @@ test_that("A warning is generated if a template is not available in the specifie
 		file = configFile1 
 	)
       
-	#########################
-	## General config file ##
+	# general config file
 	configFileGeneral <- file.path(testDir, "config.yml") 
 	write_yaml(
 		x = list(
@@ -695,13 +828,17 @@ test_that("A warning is generated if a template is not available in the specifie
 	)
 	configFiles <- c(configFileGeneral, configFile1)
 	configFiles <- basename(configFiles)
-
+	
 	expect_warning(
-		res <- render_clinDataReviewReport(
-			configDir = testDir,
-			outputDir = testDir,
-			intermediateDir = testDir,
-			inputDir = testDir     
+		# progress messages during execution
+		expect_message(	
+			res <- render_clinDataReviewReport(
+				configDir = testDir,
+				outputDir = testDir,
+				intermediateDir = testDir,
+				inputDir = testDir ,
+				quiet = TRUE # suppress printing of pandoc cmd line     
+			)
 		),
 		"Template file: .+ not available in.*myPackage.+ package."
 	)
@@ -712,15 +849,18 @@ test_that("A warning is generated if a template is not available in the specifie
 
 test_that("A warning is generated if no config parameters are available", {
       
-	skip_on_cran()		
+	skip_on_cran()
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
 			
 	file.copy(from = indexPath, to = testDir)
       
-	############
-	## File 1 ##
+	# file 1
 	configFile1 <- file.path(testDir, "configFile1.yml")
 	write_yaml(
 		x = list(
@@ -730,8 +870,7 @@ test_that("A warning is generated if no config parameters are available", {
 		file = configFile1 
 	)
       
-	#########################
-	## General config file ##
+	# general config file
 	configFileGeneral <- file.path(testDir, "config.yml") 
 	write_yaml(
 		x = list(
@@ -743,14 +882,18 @@ test_that("A warning is generated if no config parameters are available", {
 	)
 	configFiles <- c(configFileGeneral, configFile1)
 	configFiles <- basename(configFiles)
-
+	
 	expect_error(          
 		expect_warning(
-			res <- render_clinDataReviewReport(
-				configDir = testDir,
-				outputDir = testDir,
-				intermediateDir = testDir,
-				inputDir = testDir     
+			# progress messages during execution
+			expect_message(	
+				res <- render_clinDataReviewReport(
+					configDir = testDir,
+					outputDir = testDir,
+					intermediateDir = testDir,
+					inputDir = testDir,
+					quiet = TRUE # suppress printing of pandoc cmd line     
+				)
 			),
 			"No config parameter available, input parameters for the report are not checked."
 		)
@@ -762,11 +905,14 @@ test_that("A warning is generated if some Markdown files are missing for convers
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
+	
+	# get example config files
+	testPathBase <- normalizePath(path = "../files")
+	indexPath <- file.path(testPathBase, "index.Rmd")
 			
 	file.copy(from = indexPath, to = testDir)
       
-	############
-	## File 1 ##
+	# file 1
 	configFile1 <- file.path(testDir, "configFile1.yml")
 	write_yaml(
 		x = list(
@@ -776,8 +922,7 @@ test_that("A warning is generated if some Markdown files are missing for convers
 		file = configFile1 
 	)
       
-	#########################
-	## General config file ##
+	# general config file
 	configFileGeneral <- file.path(testDir, "config.yml") 
 	write_yaml(
 		x = list(
@@ -789,15 +934,19 @@ test_that("A warning is generated if some Markdown files are missing for convers
 	)
 	configFiles <- c(configFileGeneral, configFile1)
 	configFiles <- basename(configFiles)
-      
+	
 	expect_error(
 		expect_warning(
-			convertMdToHtml(
-				configDir = testDir,
-				outputDir = testDir,
-				intermediateDir = testDir,
-				inputDir = testDir,
-				mdFiles = NULL
+			# progress messages during execution
+			expect_message(	
+				convertMdToHtml(
+					configDir = testDir,
+					outputDir = testDir,
+					intermediateDir = testDir,
+					inputDir = testDir,
+					mdFiles = NULL,
+					quiet = TRUE # suppress printing of pandoc cmd line  
+				)
 			),
 			"Markdown file(s): .+ are missing, these files are ignored."
 		)
@@ -809,6 +958,10 @@ test_that("Config parameters with R code are correctly evaluated", {
 	
 	configDir <- tempfile("config-r-eval")
 	dir.create(configDir)
+	
+	# get example general config file
+	testPathConfig <- normalizePath(file.path("../files", "config"))
+	file.copy(from = file.path(testPathConfig, "config.yml"), to = configDir)
 			
 	configFileTemp <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = configDir)
 	write_yaml(list(param = structure("toString(c('a', 'b'))", tag = "!r")), configFileTemp)
@@ -826,6 +979,10 @@ test_that("Config parameters with R code and lazy-evaluation are imported non ev
 	
 	configDir <- tempfile("config-r-eval-lazy")
 	dir.create(configDir)
+	
+	# get example general config file
+	testPathConfig <- normalizePath(file.path("../files", "config"))
+	file.copy(from = file.path(testPathConfig, "config.yml"), to = configDir)
 			
 	configFileTemp <- tempfile(pattern = "config-", fileext = ".yml", tmpdir = configDir)
 	write_yaml(list(param = structure("nrow(dataI)", tag = "!r-lazy")), configFileTemp)
@@ -834,26 +991,31 @@ test_that("Config parameters with R code and lazy-evaluation are imported non ev
 		configFile = basename(configFileTemp), 
 		configDir = configDir
 	)
-	expect_is(params, "list")
-	expect_is(params[["param"]], c("r-lazy", "character"))
+	expect_type(params, "list")
+	expect_s3_class(params[["param"]], c("r-lazy", "character"))
 	expect_equal(as.character(params[["param"]]), "nrow(dataI)")
 				
 })
 
-test_that("Config parameters with R code and lazy-evaluation are evaluated when requested", {
+test_that("An error is generated if the R code specified in config parameters with lazy-evaluation contains errors", {
 	
 	params <- list(nrowData = structure("nrow(customData)", class = "r-lazy"))
-	
 	# error if R object is missing
 	expect_error(
 		forceParams(params),
 		".*customData.* not found"
 	)
 	
+})
+
+test_that("Config parameters with R code and lazy-evaluation are correctly evaluated when requested", {
+			
+	params <- list(nrowData = structure("nrow(customData)", class = "r-lazy"))
+	
 	# parameter is replaced by its evaluated version:
-	customData <- iris
+	customData <- data.frame(A = seq.int(2), B = c("A", "B"))
 	expect_silent(paramEvaluated <- forceParams(params))
-	expect_is(paramEvaluated, "list")
+	expect_type(paramEvaluated, "list")
 	expect_named(paramEvaluated, "nrowData")
 	expect_equal(paramEvaluated$nrowData, nrow(customData))
 			

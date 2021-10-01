@@ -62,7 +62,7 @@ general config file are included.
 All these folders should be available in \code{inputDir}.}
 
 \item{quiet}{Logical, if TRUE (FALSE by default)
-progress messages during report execution are not displayed
+messages during the execution of each report are not displayed
 in the console (see \code{\link[rmarkdown]{render}}).}
 }
 \value{

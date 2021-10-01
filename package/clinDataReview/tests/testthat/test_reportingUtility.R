@@ -1,26 +1,18 @@
-context("Test reporting utility funcitons")
+context("Test reporting utility functions")
 
-tmpdir <- tempdir()
+test_that("A report header is correctly set", {
+      
+	title <- getMdHeader("A title")
+	expect_type(title, "character")
+	expect_identical(object = title, expected = "\n# A title\n")
+	
+})
 
-test_that("Test extraction of md header", {
+test_that("A level is correctly set to a report header", {
       
-      title <- getMdHeader("A title")
-      expect_is(title, "character")
-      expect_identical(title, "\n# A title\n")
+	titleTwo <- getMdHeader("A title", level = 2)
+	expect_match(object = titleTwo, regexp = "##")
       
-      titleTwo <- getMdHeader("A title", level = 2)
-      expect_true(grepl("##", titleTwo))
-      
-    })
+})
 
-test_that("Invisible output from 'knitPrintClinDataReview'", {
-      
-      emptyList <- list()
-      class(emptyList) <- "clinDataReview"
-      
-      expect_silent(
-          res <- knitPrintClinDataReview(list = emptyList)
-      )
-      expect_null(res)
-      
-    })
+

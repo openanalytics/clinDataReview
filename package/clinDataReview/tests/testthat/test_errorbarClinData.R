@@ -1,4 +1,4 @@
-context("Visualization of error bars")
+context("Visualize clinical data with error bars")
 
 library(plotly)
 
@@ -232,7 +232,7 @@ test_that("Horizontal error bars are correctly colored based on a specified vari
 			
 })
 
-test_that("The plot is correctly colored with a specified palette", {
+test_that("A color palette is correctly set in the errorbar visualization", {
 			
 	data <- data.frame(
 		AVISIT = c("Baseline", "Week 2", "Baseline", "Week 2"),
@@ -278,7 +278,7 @@ test_that("The plot is correctly colored with a specified palette", {
 	
 })
 
-test_that("An interactive table is correctly displayed", {
+test_that("An interactive table is correctly included in the errorbar visualization", {
 			
 	data <- data.frame(
 		AVISIT = c("Baseline", "Week 2"),
@@ -302,7 +302,7 @@ test_that("An interactive table is correctly displayed", {
 			
 })
 
-test_that("Specified variables for the interactive table are correctly created", {
+test_that("Specified variables for the interactive table are correctly included in the errorbar visualization", {
 	
 	data <- data.frame(
 		AVISIT = c("Baseline", "Week 2"),

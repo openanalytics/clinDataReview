@@ -1,105 +1,100 @@
-context("Test skeleton")
+context("Test report skeleton")
 
-dirName <- tempfile("skeleton")
-dirSubfunctions <- file.path(dirName, "testSubfunctions")
-dirData <- file.path(dirSubfunctions, "data")
-dirSkeletonFiles <- file.path(dirSubfunctions, "files")
-dirSkeleton <- file.path(dirName, "skeleton")
+library(tools)
 
-test_that("Move data from clinUtils to folder", {
-      
-	expect_silent(
-		clinDataReview:::moveXpt(dirData)
-	)
+test_that("Example xpt files are correctly extracted to the specified folder", {
+			
+	dirData <- tempfile("data")
+	clinDataReview:::moveXpt(dirData)
 	res <- list.files(dirData)
 	expect_length(res, 8)
-	expect_true(all(grepl("xpt", res)))
+	expect_setequal(object = file_ext(res), expected = "xpt")
       
 })
 
-test_that("Create example metadata file", {
+test_that("An example metadata file is correctly created", {
       
-      expect_silent(
-          clinDataReview:::createExampleMetadata(dirData)
-      )
-      res <- list.files(dirData)
-      expect_length(res, 9)
-      expect_true(any(grepl("metadata.yml", res)))
+	dirData <- tempfile("data")
+	clinDataReview:::createExampleMetadata(dirData)
+	res <- list.files(dirData)
+	expect_length(res, 1)
+	expect_equal(object = basename(res), expected = "metadata.yml")
       
-    })
+})
 
-test_that("Move skeleton files", {
+test_that("Report skeleton files are correctly copied to the specified folder", {
+			
+	dirSkeletonFiles <- tempfile("skeleton")
+	tmp <- clinDataReview:::moveSkeletonFiles(dirSkeletonFiles)
+	res <- list.files(dirSkeletonFiles)
+	expect_setequal(
+		object = res,
+		expected = c("config", "figures", "index.Rmd")
+	)
+	resConfig <- list.files(file.path(dirSkeletonFiles, "config"))
+	expect_setequal(object = file_ext(resConfig), expected = "yml")
       
-      expect_silent(
-          clinDataReview:::moveSkeletonFiles(dirSkeletonFiles)
-      )
-      res <- list.files(dirSkeletonFiles)
-      expect_identical(
-          res,
-          c("config", "figures", "index.Rmd")
-      )
-      resConfig <- list.files(file.path(dirSkeletonFiles, "config"))
-      expect_true(all(grepl("yml", resConfig)))
+	resFigures <- list.files(file.path(dirSkeletonFiles, "figures"))
+	expect_setequal(object = file_ext(resFigures), expected = c("svg", "png"))
       
-      resFigures <- list.files(file.path(dirSkeletonFiles, "figures"))
-      expect_true(all(grepl("svg|png", resFigures)))
-      
-    })
+})
 
-test_that("Create example config file", {
+test_that("Example of the main config file is correctly created", {
       
-      expect_silent(
-          clinDataReview:::createMainConfigSkeleton(
-              dirSkeletonFiles,
-              dirData
-          )
-      )
-      res <- list.files(dirSkeletonFiles)
-      expect_true(any("config.yml" %in% res))
+	dirSkeleton <- tempfile("config")
+	clinDataReview:::createMainConfigSkeleton(
+		dir = dirSkeleton,
+		dirData = tempfile("data")
+	)
+	res <- list.files(dirSkeleton)
+	expect_equal(object = res, expected = "config.yml")
       
-    })
+})
 
-test_that("Create skeleton", {
-      
-      expect_message(
-          createClinDataReviewReportSkeleton(dirSkeleton),
-          "The skeleton of the report is ready!"
-      )
-      res <- list.files(dirSkeleton)
-      expect_identical(
-          res,
-          c("config", "data", "figures", "index.Rmd")
-      )
-	  unlink(dirSkeleton, recursive = TRUE)
-      
-      
-    })
+test_that("A report skeleton, consisting of config files, XPT datasets, figures and index file is correctly created", {
 
-test_that("Warning of skeleton creation", {
+	dirSkeleton <- tempfile("skeleton")
+	expect_message(
+		createClinDataReviewReportSkeleton(dirSkeleton),
+		"The skeleton of the report is ready!"
+	)
+	res <- list.files(dirSkeleton)
+	expect_identical(
+		object = res,
+		expected = c("config", "data", "figures", "index.Rmd")
+	)
+
+})
+
+test_that("A warning is generated during the skeleton creation when the specified folder is not empty", {
+
+	dirSkeleton <- tempfile("skeleton")
       
 	createClinDataReviewReportSkeleton(dirSkeleton)
 	expect_warning(
 		createClinDataReviewReportSkeleton(dirSkeleton),
 		".+ is not empty."
 	)
-	unlink(dirSkeleton, recursive = TRUE)
       
 })
 
-test_that("skeleton report is successfully executed", {
+test_that("A skeleton report is successfully executed", {
 			
 	skip_on_cran() 
 		
+	dirSkeleton <- tempfile("skeleton")
 	createClinDataReviewReportSkeleton(dirSkeleton)
 	
 	# Track warnings during execution of example report:
 	warn <- NULL
 	resReport <- withCallingHandlers(
-		render_clinDataReviewReport(
-			inputDir = dirSkeleton,
-			outputDir = file.path(dirSkeleton, "report"), 
-			intermediateDir = file.path(dirSkeleton, "interim"),
-			quiet = TRUE
+		expr = expect_message(
+			render_clinDataReviewReport(
+				inputDir = dirSkeleton,
+				outputDir = file.path(dirSkeleton, "report"), 
+				intermediateDir = file.path(dirSkeleton, "interim"),
+				quiet = TRUE # suppress printing of pandoc cmd line
+			)
 		),
 		warning = function(w){
 			warn <<- append(warn, conditionMessage(w))
@@ -117,5 +112,3 @@ test_that("skeleton report is successfully executed", {
 	))
 			
 })
-
-

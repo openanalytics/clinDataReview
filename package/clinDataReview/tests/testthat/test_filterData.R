@@ -1,323 +1,441 @@
 context("Filter data")
 
-dataDM <- data.frame(
-    "USUBJID" = 1 : 5,
-    "SAFFL" = "Y",
-    "SEX" = c("F", "F", "M", "M", "M"),
-    "AGE" = c(54, 78, 34, 51, 67),
-    "YEAR" = c(1967, 1943, 1987, 1970, 1954),
-    "ARMCD" = c("SCRNFAIL", "PLACEBO", "TRT", "TRT", "SCRNFAIL"),
-    stringsAsFactors = FALSE
-)
+test_that("Data is correctly filtered based on a inclusion criteria", {
+     
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		SEX = c("F", "F", "M", "M", "M")
+	)	
+	expect_message(
+		dataFiltered <- filterData(
+			data = data, 
+			filters = list(var = "SEX", value = "M"),
+			verbose = TRUE
+		),
+		"2 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, SEX == "M"),
+		check.attributes = FALSE # no message
+	)
+      
+})
 
-test_that("simple condition with inclusion criteria", {
+test_that("Data is correctly filtered based on a non inclusion criteria", {
+			
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		SEX = c("F", "F", "M", "M", "M")
+	)
+	expect_message(
+		dataFiltered <- filterData(
+			data = data, 
+			filters = list(var = "SEX", value = "M", rev = TRUE),
+			verbose = TRUE
+		),
+		"3 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, SEX != "M"),
+		check.attributes = FALSE # no message
+	)
       
-      dataFilt <- filterData(
-          dataDM, filters = list(var = "SEX", value = "M"), verbose = TRUE
-      )
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, SEX == "M"))
-      
-    })
+})
 
-test_that("simple condition with non inclusion criteria", {
-      
-      dataFilt <- filterData(
-          dataDM, filters = list(var = "SEX", value = "M", rev = TRUE), verbose = TRUE
-      )
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, SEX != "M"))
-      
-    })
+test_that("Data is correctly filtered based on a specified operator", {
 
-test_that("simple condition with specified operator", {
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		AGE = c(25, 78, 34, 51, 67)
+	)
+	expect_message(
+		dataFiltered <- filterData(
+			data = data, 
+			filters = list(var = "AGE", value = 50, op = "<="), 
+			verbose = TRUE
+		),
+		"3 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, AGE <= 50),
+		check.attributes = FALSE # no message
+	)
       
-      dataFilt <- filterData(
-          dataDM,  list(var = "AGE", value = 50, op = "<="), verbose = TRUE
-      )
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, AGE <= 50))
-      
-    })
+})
 
-test_that("missing values are included by default", {
+test_that("Missing values are included in the filtered dataset by default", {
       
-      dataDMNA <- dataDM
-      dataDMNA[1 : 2, "AGE"] <- NA
-      dataFilt <- filterData(
-          dataDMNA, list(var = "AGE", value = 50, op = "<="), verbose = TRUE
-      )
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDMNA, AGE <= 50 | is.na(AGE)))
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		AGE = c(NA_real_, NA_real_, 34, 51, 67)
+	)
+	expect_message(
+		dataFiltered <- filterData(
+	      	data = data, 
+			filters = list(var = "AGE", value = 50, op = "<="), 
+			verbose = TRUE
+		),
+		"2 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, AGE <= 50 | is.na(AGE)),
+		check.attributes = FALSE # no message
+	)
       
-    })
+})
 
-test_that("missing values are retained (keepNA)", {
-      
-      dataDMNA <- dataDM
-      dataDMNA[1 : 2, "AGE"] <- NA
-      dataFilt <- filterData(dataDMNA, list(var = "AGE", value = 50, op = "<=", keepNA = FALSE), verbose = TRUE)
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDMNA, AGE <= 50))
-      
-    })
+test_that("Missing values are included in the filtered dataset when requested", {
+			
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		AGE = c(NA_real_, NA_real_, 34, 51, 67)
+	)
+	expect_message(
+		dataFiltered <- filterData(
+			data = data, 
+			filters = list(var = "AGE", value = 50, op = "<="),
+			keepNA = TRUE,
+			verbose = TRUE
+		),
+		"2 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, AGE <= 50 | is.na(AGE)),
+		check.attributes = FALSE # no message
+	)
+			
+})
 
-test_that("multiple condition with specification operator and without", {
+test_that("Missing values are removed in the filtered dataset when specified", {
       
-      filters <- list(
-          list(var = "AGE", value = 50, op = "<="),
-          "|",
-          list(var = "SEX", value = "M"),
-          list(var = "ARMCD", value = "SCRNFAIL")
-      )
-      dataFilt <- filterData(data = dataDM, filters = filters, verbose = TRUE)
-      
-      expect_equal(structure(dataFilt, msg = NULL), subset(dataDM, (AGE <= 50 | SEX == "M") & ARMCD == "SCRNFAIL"))
-      
-    })
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		AGE = c(NA_real_, NA_real_, 34, 51, 67)
+	)
+	expect_message(
+		dataFiltered <- filterData(
+			data = data, 
+			filters = list(var = "AGE", value = 50, op = "<="), 
+			verbose = TRUE,
+			keepNA = FALSE
+		),
+		"4 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, AGE <= 50 & !is.na(AGE)),
+		check.attributes = FALSE # no message
+	)
+	
+})
 
-test_that("Filtering of missing values", {
-      
-      var <- "SEX"
-      nMissing <- 2
-      dataDM[seq_len(nMissing), "SEX"] <- NA_character_
-      
-      expect_error(
-          filterData(data = dataDM, filters = list(var = "SEX")), 
-          regexp = "should be specified for the filtering of data"
-      )
-      
-      expect_silent(dataFilterNA <- filterData(data = dataDM, filters = list(var = "SEX", keepNA = FALSE)))
-      expect_equal(nrow(dataFilterNA), nrow(dataDM)-nMissing)
-      
-      expect_silent(
-          dataFilterNA2 <- filterData(dataDM, 
-              filters = list(var = "SEX", value = NA_character_, keepNA = FALSE, rev = TRUE)
-          )
-      )
-      expect_equivalent(dataFilterNA, dataFilterNA2) # check without message attribute
-      
-    })
+test_that("Data is correctly filtered based on multiple conditions with and without a specified operator", {
 
-test_that("Filter data for a single filter in the simplest setting", {
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		SEX = c("F", "F", "M", "M", "M"),
+		AGE = c(54, 78, 34, 51, 67),
+		ARMCD = c("SCRNFAIL", "PLACEBO", "TRT", "TRT", "SCRNFAIL")
+	)	
+	filters <- list(
+		list(var = "AGE", value = 50, op = "<="),
+		"|",
+		list(var = "SEX", value = "M"),
+		list(var = "ARMCD", value = "SCRNFAIL")
+	)
+	expect_message(
+		dataFiltered <- filterData(
+			data = data, 
+			filters = filters, 
+			verbose = TRUE
+		),
+		"4 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, (AGE <= 50 | SEX == "M") & ARMCD == "SCRNFAIL"),
+		check.attributes = FALSE # no message
+	)
       
-      data <- data.frame(
-          A = c(1, 2, 3),
-          B = c(4, 5, 6),
-          C = c("a", "a", "b"),
-          stringsAsFactors = FALSE      
-      )
-      
-      expect_silent(
-          filterData <- clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(
-                  var = "C", value = "a"
-              )
-          )
-      )
-      expect_s3_class(filterData, "data.frame")
-      expect_equal(nrow(filterData), 2)
-      expect_identical(filterData$C, c("a", "a"))
-      expect_identical(class(filterData$C), "character")
-      expect_identical(class(attributes(filterData)), "list")
-      
-      attrData <- attributes(filterData)
-      expect_true("msg" %in% names(attrData))
-      expect_true(! "labelVars" %in% names(attrData))
-      
-    })
+})
 
-test_that("Errors in filtering data", {
-      
-      data <- data.frame(
-          A = c(1, 2, 3),
-          B = c(4, 5, 6),
-          C = c("a", "a", "b"),
-          stringsAsFactors = FALSE      
-      )
-      
-      expect_error(
-          clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(value = "a")
-          ),
-          "'var' used for filtering of data should be specified."
-      )
-      
-      expect_error(
-          clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "C")
-          ),
-          "'value' of interest or 'valueFct' to obtain it, or filtering of missing values should be specified"
-      )
-      
-    })
+test_that("An error is generated if the value of interest is not specified", {
+			
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		SEX = c(NA_character_, NA_character_, "M", "M", "M")
+	)
+	expect_error(
+		filterData(data = data, filters = list(var = "SEX")), 
+		regexp = "'value' of interest or 'valueFct' to obtain it, or filtering of missing values should be specified"
+	)
+	
+})
 
-test_that("Return all in filter data for a single filter", {
+test_that("Missing values are removed in the filtered dataset for a variable if specified", {
       
-      data <- data.frame(
-          A = c(1, 2, 3),
-          B = c(4, 5, 6),
-          C = c("a", "a", "b"),
-          stringsAsFactors = FALSE      
-      )
-      
-      expect_silent(
-          filterData <- clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "C", value = "a"),
-              returnAll = TRUE
-          )
-      )
-      expect_s3_class(filterData, "data.frame")
-      expect_true("keep" %in% colnames(filterData))
-      expect_identical(nrow(filterData), nrow(data))
-      expect_equal(ncol(filterData), (ncol(data) + 1))
-      expect_equal(filterData$keep, c(TRUE, TRUE, FALSE))
-      
-    })
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		SEX = c(NA_character_, NA_character_, "M", "M", "M")
+	)
+	expect_message(
+		dataFiltered <- filterData(
+			data = data, 
+			filters = list(var = "SEX", keepNA = FALSE),
+			verbose = TRUE
+		),
+		"2 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, !is.na(SEX)),
+		check.attributes = FALSE # no message
+	)
+	
+})
 
-test_that("Keep NA in filter data for single filter", {
-      
-      data <- data.frame(
-          A = c(NA, 2, 3),
-          B = c(4, 5, NA),
-          C = c("a", NA, "b"),
-          stringsAsFactors = FALSE      
-      )
-      expect_silent(
-          filterData <- clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "C", value = "a"),
-              keepNA = TRUE
-          )
-      )
-      expect_s3_class(filterData, "data.frame")
-      expect_true(any(is.na(filterData)))
-      expect_equal(nrow(filterData), 2)
-      expect_equal(filterData$A, c(NA, 2))
-      expect_equal(filterData$C, c("a", NA))
-      
-    })
+test_that("Missing values are included in the filtered dataset for a variable if specified", {
+			
+	data <- data.frame(
+		USUBJID = seq.int(5),
+		SEX = c(NA_character_, NA_character_, "M", "M", "M")
+	)
+	expect_message(
+		dataFiltered <- filterData(
+			data = data, 
+			filters = list(
+				var = "SEX", 
+				value = NA_character_, 
+				keepNA = FALSE, 
+				rev = TRUE
+			),
+			verbose = TRUE
+		),
+		"2 records.*are filtered"
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, !is.na(SEX)),
+		check.attributes = FALSE # no message
+	)
+			
+})
 
-test_that("Not keep NA in filter data for single filter", {
+test_that("Data is correctly filtered for a single inclusion criteria", {
       
-      data <- data.frame(
-          A = c(NA, 2, 3),
-          B = c(4, 5, NA),
-          C = c("a", NA, "b"),
-          stringsAsFactors = FALSE      
-      )
-      expect_silent(
-          filterData <- clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "C", value = "a"),
-              keepNA = FALSE
-          )
-      )
-      expect_s3_class(filterData, "data.frame")
-      expect_true(any(is.na(filterData)))
-      expect_equal(nrow(filterData), 1)
+	data <- data.frame(
+		A = c(1, 2, 3),
+		B = c(4, 5, 6),
+		C = c("a", "a", "b"),
+		stringsAsFactors = FALSE      
+	)
       
-    })
+	dataFiltered <- clinDataReview:::filterDataSingle(
+		data = data,
+		filters = list(
+			var = "C", value = "a"
+		)
+	)
+	expect_equal(
+		object = dataFiltered,
+		expected = subset(data, C == "a"),
+		check.attributes = FALSE # no message
+	)      
+	attrData <- attributes(dataFiltered)
+	expect_true("msg" %in% names(attrData))
+	expect_false("labelVars" %in% names(attrData))
+      
+})
 
-test_that("Filter column not in filter data for single filter", {
+test_that("An error is generated if no filtering variable is specified", {
       
-      data <- data.frame(
-          A = c(1, 2, 3),
-          B = c(4, 5, 6),
-          C = c("a", "a", "b"),
-          stringsAsFactors = FALSE      
-      )
-      expect_warning(
-          filterData <- clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "D", value = "a"),
-              keepNA = TRUE
-          ),
-          "Data is not filtered based on the variable: .* is not available in the input data."
-      )
-      expect_identical(data, filterData)
-      
-    })
+	expect_error(
+		filterData(
+			data = data.frame(),
+			filters = list(value = "a")
+		),
+		"'var' used for filtering of data should be specified."
+	)
+	  
+})
 
-test_that("Filter with 'byVar' in filter data for single filter", {
+test_that("An additional variable, specifying which values match the filter condition is correctly included", {
       
-      data <- data.frame(
-          A = c(1, 2, 3, 4),
-          B = c(5, 6, 7, 8),
-          C = c("a", "a", "b", "c"),
-          D = c("cat1", "cat2", "cat1", "cat1"),
-          stringsAsFactors = FALSE      
-      )
-      filterData <- clinDataReview:::filterDataSingle(
-          data = data,
-          filters = list(
-              var = "A", valueFct = function(x) x > 2,
-              rev = TRUE, varsBy = c("C", "D")
-          )
-      )
-      expect_s3_class(filterData, "data.frame")
-      #expect_true(nrow(filterData) == 2)
+	data <- data.frame(
+		A = c(1, 2, 3),
+		B = c(4, 5, 6),
+		C = c("a", "a", "b"),
+		stringsAsFactors = FALSE      
+	)
       
-    })
+	dataFiltered <- filterData(
+		data = data,
+		filters = list(var = "C", value = "a"),
+		returnAll = TRUE
+	)
+	
+	expect_equal(
+		object = dataFiltered,
+		expected = data.frame(
+			A = c(1, 2, 3),
+			B = c(4, 5, 6),
+			C = c("a", "a", "b"),
+			keep = c(TRUE, TRUE, FALSE),
+			stringsAsFactors = FALSE      
+		),
+		check.attributes = FALSE # no message
+	)
+      
+})
 
-test_that("Filter with 'varNew' in filter data for single filter", {
+test_that("A warning is generated when a variable is specified, but not present in the data", {
       
-      data <- data.frame(
-          A = c(1, 2, 3),
-          B = c(4, 5, 6),
-          C = c("a", "a", "b"),
-          stringsAsFactors = FALSE      
-      )
-      expect_silent(
-          filterData <- clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "C", value = "a", varNew = "newVar"),
-          )
-      )
-      expect_s3_class(filterData, "data.frame")
-      expect_equal(ncol(filterData), (ncol(data) + 1))
-      expect_equal(filterData$newVar, c(TRUE, TRUE))
-      
-      expect_warning(
-          clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "C", value = "a", varNew = "B"),
-          ),
-          ".* is overwritten in the data."
-      )
-    })
+	data <- data.frame(
+		A = c(1, 2, 3),
+		stringsAsFactors = FALSE      
+	)
+	expect_warning(
+		dataFiltered <- filterData(
+			data = data,
+			filters = list(var = "D", value = "a"),
+			keepNA = TRUE
+		),
+		"Data is not filtered based on the variable: .* is not available in the input data."
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = data,
+		check.attributes = FALSE # no message
+	)
 
-test_that("Filter with 'valueFct' in filter data for single filter", {
+})
+
+test_that("Data is correctly filtered based on a grouping variable", {
+
+	# example of selection of worst-case records (for one subject)
+	data <- data.frame(
+		USUBJID = c("1", "1", "1", "1"),
+		AEDECOD = c("a", "a", "b", "b"),
+		AESEV = c("Mild", "Moderate", "Moderate", "Severe"),
+		AESEVN = c(1, 2, 2, 3) 
+	)
+	
+	dataFiltered <- filterData(
+		data = data,
+		filters = list(
+			var = "AESEVN",		
+			valueFct = function(x) x[which.max(x)],
+			varsBy = "AEDECOD"
+		)
+	)
+	expect_equal(
+		object = dataFiltered,
+		expected = subset(data, 
+			(AEDECOD == "a" & AESEVN == 2) |
+			(AEDECOD == "b" & AESEVN == 3)
+		),
+		check.attributes = FALSE # no message
+	)
+	
+})
+
+test_that("A new variable tracking if a record fulfills the filtering condition is correctly created when requested", {
       
-      data <- data.frame(
-          A = c(1, 2, 3),
-          B = c(4, 5, 6),
-          C = c("a", "a", "b"),
-          stringsAsFactors = FALSE      
-      )
-      expect_error(
-          clinDataReview:::filterDataSingle(
+	data <- data.frame(
+		A = c(1, 2, 3),
+		B = c(4, 5, 6),
+		C = c("a", "a", "b"),
+		stringsAsFactors = FALSE      
+	)
+	dataFiltered <- filterData(
+		data = data,
+		filters = list(var = "C", value = "a", varNew = "newVar"),
+	)
+	expect_equal(
+		object = dataFiltered,
+		expected = cbind.data.frame(
+			subset(data, C == "a"),
+			newVar = c(TRUE, TRUE)
+		),
+		check.attributes = FALSE # no message
+	)
+	
+})
+
+test_that("A warning is generated if a new variable is created with the same name as a variable in the data", {
+			
+	data <- data.frame(
+		B = c("1", "2", "3"),
+		C = c("a", "a", "b"),
+		stringsAsFactors = FALSE      
+	)
+	expect_warning(
+		clinDataReview:::filterDataSingle(
+			data = data,
+			filters = list(var = "C", value = "a", varNew = "B"),
+		),
+		".* is overwritten in the data."
+	)
+	  
+})
+
+test_that("Data is correctly filtered based on a specified function", {
+      
+	data <- data.frame(
+		A = c(1, 2, 3, 3),
+		B = c(4, 5, 6, 1),
+		C = c("a", "a", "b", "b"),
+		stringsAsFactors = FALSE      
+	)
+	dataFiltered <- filterData(
+		data = data,
+		filters = list(var = "A", valueFct = max)
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, A == max(A)), 
+		check.attributes = FALSE
+	)
+	
+})
+
+test_that("Data is correctly filtered based on a function specified as a character", {
+			
+	data <- data.frame(
+		A = c(1, 2, 3, 3),
+		B = c(4, 5, 6, 1),
+		C = c("a", "a", "b", "b"),
+		stringsAsFactors = FALSE      
+	)
+	dataFiltered <- filterData(
+		data = data,
+		filters = list(var = "A", valueFct = "function(x) max(x)")
+	)
+	expect_equal(
+		object = dataFiltered, 
+		expected = subset(data, A == max(A)), 
+		check.attributes = FALSE
+	)
+			
+})
+
+test_that("An error is generated if the filtering function is not correctly specified", {
+			
+	data <- data.frame(
+		C = c("a", "a", "b", "b"),
+		stringsAsFactors = FALSE      
+	)
+	expect_error(
+		filterData(
               data = data,
               filters = list(var = "C", valueFct = grepl("a", data$C))
-          ),
-          "'valueFct' should be a character or a function."
-      )
-      
-      expect_silent(
-          filterData <- clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "A", valueFct = function(x) x > 1)
-          )
-      )
-      expect_s3_class(filterData, "data.frame")
-      expect_equal(nrow(filterData), 1)
-      
-      expect_silent(
-          filterData2 <- clinDataReview:::filterDataSingle(
-              data = data,
-              filters = list(var = "A", valueFct = "function(x) x > 1")
-          )
-      )
-      expect_s3_class(filterData2, "data.frame")
-      #expect_equal(filterData, filterData2)
-      
-    })
+		),
+		"'valueFct' should be a character or a function."
+	)
+	
+})

@@ -5,7 +5,7 @@
 \title{Combine all session informations across all clinical data reports
 and export them into a dedicated Markdown document}
 \usage{
-exportSessionInfoToMd(sessionInfos, mdFiles, intermediateDir = "interim")
+exportSessionInfoToMd(sessionInfos, mdFiles, intermediateDir = "interim", ...)
 }
 \arguments{
 \item{sessionInfos}{List with \code{\link{sessionInfo}} objects}
@@ -16,6 +16,9 @@ exportSessionInfoToMd(sessionInfos, mdFiles, intermediateDir = "interim")
 by default), where
 markdown files and rds file specifying Js libraries (with \code{knit_meta}) for
 each sub report are stored.}
+
+\item{...}{Any parameters passed to \code{\link{renderInNewSession}},
+for expert use only.}
 }
 \value{
 String with path to Markdown file containing the session information,

@@ -48,7 +48,7 @@ transformData <- function(
 					verbose = verbose,
 					labelVars = labelVars
 				)
-				if(!is.null(labelVars))
+				if(!is.null(attr(data, "labelVars")))
 					labelVars <- attr(data, "labelVars")
 			}
 			return(data)
@@ -101,6 +101,9 @@ transformData <- function(
 				)
 				names(labelVarsNew) <- attrTransf$varying
 				
+				# remove label of value and pivot columns
+				# as no longer in the data
+				labelVars <- labelVars[!names(labelVars) %in% c(varsValue, varPivot)]
 				labelVars <- c(labelVars, labelVarsNew)
 				
 				## print message

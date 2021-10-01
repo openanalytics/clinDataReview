@@ -152,14 +152,28 @@ staticScatterplotClinData <- function(
 	## scatterplot
 	if(length(aesPointVar) > 0)
 		aesPointVar <- sapply(aesPointVar, sym, simplify = FALSE)
-	aesGeom <- c(aesPointVar, if(!is.null(hoverVars))	list(text = sym("hover")))
+	aesGeom <- c(aesPointVar, 
+		if(!is.null(hoverVars))	
+			list(text = sym("hover"))
+	)
 	argsGeom <- c(
 		list(mapping = do.call(aes, aesGeom)),
 		geomAes[c("color", "colour", "fill", "shape")]
 	)
 	argsGeom <- Filter(Negate(is.null), argsGeom)
 	geomFct <- switch(geomType, point = geom_point, col = geom_col)
-	gg <- gg + do.call(geomFct, argsGeom)
+	
+	# Expected warning:
+	# Hover is set via the 'text' aesthetic in ggplot
+	# to have it available in plotly
+	# but text aesthetic is not used by geom_point
+	gg <- withCallingHandlers(
+		expr = {gg + do.call(geomFct, argsGeom)},
+		warning = function(w){
+			if(grepl("unknown aesthetics.+text", conditionMessage(w)))
+				invokeRestart("muffleWarning")
+		}
+	)
 	
 	# aesthetic scales
 	for(scaleParsI in scalePars){

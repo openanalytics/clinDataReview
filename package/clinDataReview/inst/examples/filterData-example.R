@@ -81,3 +81,21 @@ filterData(
 	), 
 	verbose = TRUE
 )
+
+# filter by group
+
+# only retain adverse event records with worst-case severity
+dataAE <- dataADaMCDISCP01$ADAE
+dataAE$AESEV <- factor(dataAE$AESEV, levels = c("MILD", "MODERATE", "SEVERE"))
+dataAE$AESEVN <- as.numeric(dataAE$AESEV)
+nrow(dataAE)
+dataAEWorst <- filterData(
+	data = dataAE,
+	filters = list(
+		var = "AESEVN",		
+		valueFct = max,
+		varsBy = c("USUBJID", "AEDECOD"),
+		keepNA = FALSE
+	)
+)
+nrow(dataAEWorst)

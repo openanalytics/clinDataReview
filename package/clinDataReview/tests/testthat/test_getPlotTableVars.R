@@ -1,10 +1,10 @@
-context("Test extraction of table variables")
+context("Get variables for the plot table")
 
 # 'getPlotTableVars' is also tested through the other plot functionalities
 # if a table is extracted for a specific plot
 # So other tests are skipped
 
-test_that("error is triggered if plotting function not available", {
+test_that("An error is generated if the plotting function is not available", {
 			
 	data <- data.frame(A = c(1, 2), B = c(3, 4))		
 	plotArgs <- list(
@@ -18,7 +18,7 @@ test_that("error is triggered if plotting function not available", {
       
 })
 
-test_that("variable and labels are extracted from table variables", {
+test_that("Variable and labels are correctly extracted from the table variables", {
       
 	data <- data.frame(A = c(1, 2), B = c(3, 4), C = c(3, 5))
 	
@@ -41,20 +41,20 @@ test_that("variable and labels are extracted from table variables", {
 	for(fctName in plotFctNames){
 		
 		expect_equal(
-			getPlotTableVars(!!fctName, plotArgs), 
-			c("C", "A", "B"), 
+			object = getPlotTableVars(!!fctName, plotArgs), 
+			expected = c("C", "A", "B"), 
 			check.attributes = FALSE
 		)
 		expect_mapequal(
-			attr(getPlotTableVars(!!fctName, plotArgs), "tableLab"), 
-			c(C = "C", B  = "secondName", A = "firstName")
+			object = attr(getPlotTableVars(!!fctName, plotArgs), "tableLab"), 
+			expected = c(C = "C", B  = "secondName", A = "firstName")
 		)
 		
 	}
       
 })
 
-test_that("variable/labels are extracted from scatterplot parameters", {
+test_that("Variable and labels are correctly extracted from the parameters of the scatterplot", {
 			
 	data <- data.frame(
 		A = c(1, 2), B = c(3, 4), 
@@ -72,20 +72,19 @@ test_that("variable/labels are extracted from scatterplot parameters", {
 		yLab = "variable A",
 		labelVars = c(D = "variable D")
 	)
-	expect_silent(
-		res <- getPlotTableVars(
-			"scatterplotClinData", 
-			plotArgs
-		)
+	res <- getPlotTableVars(
+		plotFunction = "scatterplotClinData", 
+		plotArgs = plotArgs
 	)
 	expect_equal(
-		res, 
-		c("USUBJID", "B", "A", "D", "C"), 
+		object = res, 
+		expected = c("USUBJID", "B", "A", "D", "C"),
 		check.attributes = FALSE
 	)
 	expect_mapequal(
-		attr(res, "tableLab"), 
-		c(A = "variable A", B = "variable B", C = "variable C",
+		object = attr(res, "tableLab"), 
+		expected = c(
+			A = "variable A", B = "variable B", C = "variable C",
 			D = "variable D",
 			USUBJID = "USUBJID"
 		)
@@ -93,7 +92,7 @@ test_that("variable/labels are extracted from scatterplot parameters", {
 			
 })
 
-test_that("variable/labels are extracted from barplot parameters", {
+test_that("Variable and labels are correctly extracted from the parameters of the barplot", {
 			
 	data <- data.frame(
 		A = c(1, 2), B = c(3, 4), 
@@ -103,46 +102,29 @@ test_that("variable/labels are extracted from barplot parameters", {
 	plotArgs <- list(
 		data = data,
 		xVar = "B", yVar = "A",
-		colorVar = "C"
-	)
-	
-	# labels extracted from variable lab
-	plotArgsParLab <- c(plotArgs, list(
-		xLab = "variable B",
+		colorVar = "C",
 		yLab = "variable A",
-		colorLab = "variable C"
-	))	
-	expect_silent(
-		res <- getPlotTableVars(
-			"barplotClinData", 
-			plotArgsParLab
-		)
-	)	
-	expect_equal(res, c("B", "C", "A"), check.attributes = FALSE)
+		colorLab = "variable C",
+		labelVars = c(B = "variable B")
+	)
+
+	res <- getPlotTableVars(
+		plotFunction = "barplotClinData", 
+		plotArgs = plotArgs
+	)
+	expect_equal(
+		object = res, 
+		expected = c("B", "C", "A"),
+		check.attributes = FALSE
+	)
 	expect_mapequal(
-		attr(res, "tableLab"), 
-		c(A = "variable A", B = "variable B", C = "variable C")
+		object = attr(res, "tableLab"), 
+		expected = c(A = "variable A", B = "variable B", C = "variable C")
 	)
 	
-	# labels extracted from general var lab or var name
-	plotArgsLab <- c(plotArgs,
-		list(labelVars = c(C = "variable C"))
-	)
-	expect_silent(
-		res <- getPlotTableVars(
-			"barplotClinData", 
-			plotArgsLab
-		)
-	)
-	expect_equal(res, c("B", "C", "A"), check.attributes = FALSE)
-	expect_mapequal(
-		attr(res, "tableLab"), 
-		c(A = "A", B = "B", C = "variable C")
-	)
-			
 })
 
-test_that("variable/labels are extracted from count plot(s) parameters", {
+test_that("Variable and labels are correctly extracted from the parameters of the count plots", {
 			
 	data <- data.frame(
 		A = c(1, 2), B = c(3, 4), 
@@ -168,24 +150,27 @@ test_that("variable/labels are extracted from count plot(s) parameters", {
 	for(fctName in plotFctNames){
 		
 		expect_equal(
-			getPlotTableVars(!!fctName, plotArgs), 
-			c("C",  "B", "E", "A", "D"), 
+			object = getPlotTableVars(plotFunction = !!fctName, plotArgs = plotArgs), 
+			expected = c("C",  "B", "E", "A", "D"),
 			check.attributes = FALSE
 		)
-		expect_mapequal({
-			res <- getPlotTableVars(!!fctName, plotArgs)
-			attr(res, "tableLab")
+		expect_mapequal(
+			object = {
+				res <- getPlotTableVars(plotFunction = !!fctName, plotArgs = plotArgs)
+				attr(res, "tableLab")
 			},
-			expected = c(A = "variable A", B = "B",
+			expected = c(
+				A = "variable A", B = "B",
 				C = "variable C",
-				D = "variable D", E = "variable E")
+				D = "variable D", E = "variable E"
+			)
 		)
 		
 	}
 	
 })
 
-test_that("variable/labels are extracted from time profile interval plot parameters", {
+test_that("Variable and labels are correctly extracted from the parameters of the time interval plot", {
 			
 	data <- data.frame(
 		CAT = c("A", "A"), TERM = c("a1", "a2"), 
@@ -215,15 +200,13 @@ test_that("variable/labels are extracted from time profile interval plot paramet
 		timeEndShapeLab = "end status",
 		colorLab = "treatment"
 	)
-	expect_silent(
-		res <- getPlotTableVars(
-			"timeProfileIntervalPlot", 
-			c(plotArgs, plotArgsParLab)
-		)
+	res <- getPlotTableVars(
+		plotFunction = "timeProfileIntervalPlot", 
+		plotArgs = c(plotArgs, plotArgsParLab)
 	)	
 	expect_equal(
-		res, 
-		c("CAT", "TERM", "ASTDY", "AENDY", 
+		object = res, 
+		expected = c("CAT", "TERM", "ASTDY", "AENDY", 
 			"TRT", "ASTFLG", "AENFLG"), 
 		check.attributes = FALSE
 	)
@@ -240,15 +223,13 @@ test_that("variable/labels are extracted from time profile interval plot paramet
 	plotArgsParLab <- c(plotArgs,
 		list(labelVars = c(TRT = "treatment", TERM = "term of interest"))
 	)
-	expect_silent(
-		res <- getPlotTableVars(
-			"timeProfileIntervalPlot", 
-			c(plotArgs, plotArgsParLab)
-		)
+	res <- getPlotTableVars(
+		plotFunction = "timeProfileIntervalPlot", 
+		plotArgs = c(plotArgs, plotArgsParLab)
 	)
 	expect_equal(
-		res, 
-		c("CAT", "TERM", "ASTDY", "AENDY", 
+		object = res, 
+		expected = c("CAT", "TERM", "ASTDY", "AENDY", 
 			"TRT", "ASTFLG", "AENFLG"), 
 		check.attributes = FALSE
 	)
@@ -258,6 +239,9 @@ test_that("variable/labels are extracted from time profile interval plot paramet
 		CAT = "CAT", ASTDY = "ASTDY", AENDY = "AENDY", 
 		ASTFLG = "ASTFLG", AENFLG = "AENFLG"
 	)
-	expect_mapequal(attr(res, "tableLab"), tableLabRef)
+	expect_mapequal(
+		object = attr(res, "tableLab"), 
+		expected = tableLabRef
+	)
 
 })

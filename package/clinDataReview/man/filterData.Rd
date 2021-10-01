@@ -21,21 +21,28 @@ filterData(
 Each filter should be a list containing:
 \itemize{
 \item{'var': }{String with variable from \code{data} to filter on.}
-\item{'value': }{(optional) Character vector with values from \code{var} to consider.}
-\item{'valueFct': }{(optional) Function (or string wit this function)
-to be applied on \code{var} to extract value to consider}
-\item{'op': }{(optional) String with operator used to retain records from \code{value}.
+\item{'value': }{(optional) Character vector with values from \code{var} 
+\strong{to consider/keep}.}
+\item{'valueFct': }{(optional) Function (or string with this function)
+to be applied on \code{var} to extract value to consider.
+For example, \code{valueFct = max} will extract the records
+with the maximum variable value.}
+\item{'op': }{(optional) String with operator used to retain records 
+from \code{value}.
 If not specified, the inclusion operator: '\%in\%' is considered, a.k.a
 records with \code{var} in \code{value} are retained.}
 \item{'rev': }{(optional) Logical, if TRUE (FALSE by default), 
 filtering condition based on \code{value}/\code{valueFct} is reversed.}
-\item{'keepNA': }{(optional) Logical, if TRUE (by default), missing values in \code{var}
-are retained. If not specified, \code{keepNA} general parameter is used.}
-\item{'varsBy': }{(optional) Character vector with variables in \code{data} containing groups to filter by}
+\item{'keepNA': }{(optional) Logical, if TRUE (by default), 
+missing values in \code{var} are retained.\cr
+If not specified, \code{keepNA} general parameter is used.}
+\item{'varsBy': }{(optional) Character vector with variables in 
+\code{data} containing groups to filter by}
 \item{'varNew': }{(optional) String with name for the new variable created}
 \item{'labelNew': }{(optional) String with label for \code{varNew}}
 }
-If a list of filters is specified, the logical operator (see \code{\link[base]{Logic}})
+If a list of filters is specified, the logical operator 
+(see \code{\link[base]{Logic}})
 linking the different conditions
 can be specified between the two conditions, e.g.: 
 \code{list(list(var = "SEX", value = "F"), "&", list(var = "COUNTRY", value = "DEU"))}.}
@@ -171,6 +178,24 @@ filterData(
 	), 
 	verbose = TRUE
 )
+
+# filter by group
+
+# only retain adverse event records with worst-case severity
+dataAE <- dataADaMCDISCP01$ADAE
+dataAE$AESEV <- factor(dataAE$AESEV, levels = c("MILD", "MODERATE", "SEVERE"))
+dataAE$AESEVN <- as.numeric(dataAE$AESEV)
+nrow(dataAE)
+dataAEWorst <- filterData(
+	data = dataAE,
+	filters = list(
+		var = "AESEVN",		
+		valueFct = max,
+		varsBy = c("USUBJID", "AEDECOD"),
+		keepNA = FALSE
+	)
+)
+nrow(dataAEWorst)
 }
 \author{
 Laure Cougnaud

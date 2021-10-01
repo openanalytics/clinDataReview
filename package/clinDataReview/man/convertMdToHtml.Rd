@@ -10,7 +10,8 @@ convertMdToHtml(
   configDir = file.path(inputDir, "config"),
   indexPath = file.path(inputDir, "index.Rmd"),
   intermediateDir = "./interim",
-  mdFiles = NULL
+  mdFiles = NULL,
+  ...
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ each sub report are stored.}
 \item{mdFiles}{(optional) Path to the \code{Markdown} files that
 should be converted. If specified, the specified config files 
 in \code{configDir} are ignored.}
+
+\item{...}{Any parameters passed to \code{\link[rmarkdown]{render}},
+for expert use only.}
 }
 \value{
 String with path to the front page of the 

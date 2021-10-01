@@ -32,7 +32,8 @@ These parameters should be accessed in the Rmd document via
 These parameters will be saved to a RDS file and imported 
 during the report rendering.}
 
-\item{...}{Any extra parameters passed to \code{\link[rmarkdown]{render}}}
+\item{...}{Any extra parameters passed to \code{\link[rmarkdown]{render}},
+for expert use only.}
 }
 \value{
 Output of the function executed in the new R session 
