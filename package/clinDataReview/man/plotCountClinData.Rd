@@ -56,7 +56,7 @@ and associated label.}
 (NULL by default).
 By default, the treemap is colored based by section.}
 
-\item{colorLab}{(optional) String with label for \code{colorVar}.}
+\item{colorLab}{String with label for \code{colorVar}.}
 
 \item{colorPalette}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr

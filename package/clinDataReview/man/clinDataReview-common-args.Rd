@@ -101,6 +101,8 @@ below the title.}
 
 \item{colorVar}{(optional) String with color variable.}
 
+\item{colorLab}{String with label for \code{colorVar}.}
+
 \item{colorPalette}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}

@@ -43,7 +43,8 @@ errorbarClinData(
 	yVar = "statMean", yLab = "Mean",
 	yErrorVar = "statSE", yErrorLab = "Standard error",
 	mode = "markers+lines",
-	title = "Diastolic Blood Pressure summary profile by actual visit and and analysis timepoint",
+	title = paste("Diastolic Blood Pressure summary profile by actual visit",
+		"and analysis timepoint"),
 	labelVars = labelVars
 )
 

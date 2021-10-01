@@ -1,11 +1,11 @@
 #' Set layout for a clinical data plot.
-#' @param pl a \code{\link[plotly]{plotly}} object
 #' @param facet Logical (FALSE by default), 
 #' does the plot contains facets?
-#' @param ... Any parameters for the \link{code[plotly]{layout}}
+#' @param ... Any parameters for the \code{\link[plotly]{layout}}
 #' function. This should contain at least the plot object.
+#' @inheritParams clinDataReview-common-args
 #' @inheritParams getSizePlot
-#' @return The updated \code{\link[plotly]{plotly}} object
+#' @return The updated \code{plotly} object
 #' @importFrom plotly layout
 #' @author Laure Cougnaud
 layoutClinData <- function(

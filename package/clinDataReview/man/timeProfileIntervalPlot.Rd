@@ -83,7 +83,7 @@ of the end of the time interval.}
 
 \item{colorVar}{(optional) String with color variable.}
 
-\item{colorLab}{(optional) String with label for \code{colorVar}.}
+\item{colorLab}{String with label for \code{colorVar}.}
 
 \item{colorPalette}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr

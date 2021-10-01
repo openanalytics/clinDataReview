@@ -7,7 +7,8 @@ test_that("The data is correctly displayed in vertical error bars", {
 	data <- data.frame(
 		AVISIT = c("Baseline", "Week 2"),
 		Mean = c(25.6, 40),
-		SE = c(2, 3)
+		SE = c(2, 3),
+		stringsAsFactors = FALSE
 	)
 			
 	pl <- errorbarClinData(
@@ -30,7 +31,7 @@ test_that("The data is correctly displayed in vertical error bars", {
 	plDataScatterDf <- do.call(rbind,
 		lapply(plDataScatter, function(x) 
 			data.frame(
-				x = x[["x"]], 
+				x = as.character(x[["x"]]), 
 				y = x[["y"]], 
 				yError = x[["error_y"]]$array)
 		)
@@ -283,7 +284,8 @@ test_that("An interactive table is correctly included in the errorbar visualizat
 	data <- data.frame(
 		AVISIT = c("Baseline", "Week 2"),
 		Mean = c(25.6, 40),
-		SE = c(2, 3)
+		SE = c(2, 3),
+		stringsAsFactors = FALSE
 	)
 			
 	res <- errorbarClinData(
@@ -295,9 +297,11 @@ test_that("An interactive table is correctly included in the errorbar visualizat
 	)
 			
 	expect_s3_class(res$table, "datatables")
+	dataTable <- res$table$x$data[, colnames(data)]
+	dataTable$AVISIT <- as.character(dataTable$AVISIT)
 	expect_equal(
-		res$table$x$data[, colnames(data)],
-		data[, colnames(data)]
+		object = dataTable,
+		expected = data[, colnames(data)]
 	)
 			
 })
@@ -308,7 +312,8 @@ test_that("Specified variables for the interactive table are correctly included 
 		AVISIT = c("Baseline", "Week 2"),
 		Mean = c(25.6, 40),
 		SE = c(2, 3),
-		TRT = "A"
+		TRT = "A",
+		stringsAsFactors = FALSE
 	)
 			
 	tableVars <- c("TRT", "AVISIT", "Mean")
@@ -322,9 +327,11 @@ test_that("Specified variables for the interactive table are correctly included 
 	)
 			
 	expect_s3_class(res$table, "datatables")
+	dataTable <- res$table$x$data[, tableVars]
+	dataTable[, c("TRT", "AVISIT")] <- lapply(dataTable[, c("TRT", "AVISIT")], as.character)
 	expect_identical(
-		res$table$x$data[, tableVars],
-		data[, tableVars]
+		object = dataTable,
+		expected = data[, tableVars]
 	)
 			
 })

@@ -62,6 +62,9 @@ containing the width of the interval (from
 the center of the interval) for
 horizontal or vertical intervals.}
 
+\item{xErrorLab, yErrorLab}{String with labels
+for \code{xErrorVar}/\code{yErrorVar} variables.}
+
 \item{xLabVars}{(vertical error bars) 
 Character vector with variable(s) to be displayed 
 as the labels of the ticks in the x-axis.\cr
@@ -70,7 +73,11 @@ In case the variable(s) contain different elements
 by \code{xVar}, they are combined
 and displayed below each other.}
 
+\item{xAxisLab, yAxisLab}{Label for the x/y-axis.}
+
 \item{colorVar}{(optional) String with color variable.}
+
+\item{colorLab}{String with label for \code{colorVar}.}
 
 \item{colorPalette}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr
@@ -235,7 +242,8 @@ errorbarClinData(
 	yVar = "statMean", yLab = "Mean",
 	yErrorVar = "statSE", yErrorLab = "Standard error",
 	mode = "markers+lines",
-	title = "Diastolic Blood Pressure summary profile by actual visit and and analysis timepoint",
+	title = paste("Diastolic Blood Pressure summary profile by actual visit",
+		"and analysis timepoint"),
 	labelVars = labelVars
 )
 

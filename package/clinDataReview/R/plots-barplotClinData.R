@@ -1,5 +1,4 @@
 #' Barplot interactive plot.
-#' @param colorLab String with label for \code{colorVar}.
 #' @param barmode String with type of barplot, either:
 #' 'group' or 'stack' (see parameter in \code{\link[plotly]{layout}}).
 #' @param textVar (optional) String with a text variable,

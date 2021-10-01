@@ -14,6 +14,9 @@
 #' containing the width of the interval (from
 #' the center of the interval) for
 #' horizontal or vertical intervals.
+#' @param xErrorLab,yErrorLab String with labels
+#' for \code{xErrorVar}/\code{yErrorVar} variables.
+#' @param xAxisLab,yAxisLab Label for the x/y-axis.
 #' @param xLabVars (vertical error bars) 
 #' Character vector with variable(s) to be displayed 
 #' as the labels of the ticks in the x-axis.\cr
@@ -351,7 +354,7 @@ getJitterVar <- function(data, var, byVar){
 		
 		jitter <- ifelse(
 			is.numeric(data[, var]), 
-			ifelse(n_distinct(data[, var]) == 1, 0.1, min(diff(sort(unique(data[, var])))) * 0.1), 
+			ifelse(length(unique(data[, var])) == 1, 0.1, min(diff(sort(unique(data[, var])))) * 0.1), 
 			0.3
 		)
 		

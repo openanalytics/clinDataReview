@@ -7,7 +7,8 @@ test_that("A barplot is correctly created", {
 	data <- data.frame(
 		parent = c("A", "A", "B"),
 		child = c("a", "b", "c"),
-		n = c(1, 2, 5)
+		n = c(1, 2, 5),
+		stringsAsFactors = FALSE
 	)
 			
 	# create plot
@@ -30,7 +31,7 @@ test_that("A barplot is correctly created", {
 			data.frame(
 				child = as.character(x[["x"]]), 
 				n = x$y, 
-				stringsAsFactors = TRUE
+				stringsAsFactors = FALSE
 			)
 		)
 	)

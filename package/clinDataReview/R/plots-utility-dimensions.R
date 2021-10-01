@@ -296,7 +296,7 @@ getPositionAndMargins <- function(
 }
 
 #' Get height of labels: title, subtitle or caption
-#' @inheritParams clinDataReview-common-args
+#' @param lab String with label.
 #' @return Integer with height in pixels 
 #' for this element.
 #' @author Laure Cougnaud

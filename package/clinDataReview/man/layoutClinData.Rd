@@ -23,6 +23,8 @@ layoutClinData(
 \arguments{
 \item{xLab}{String with label for \code{xVar}.}
 
+\item{yLab}{String with label for \code{xVar}.}
+
 \item{title}{String with title for the plot.}
 
 \item{caption}{String with caption. \cr
@@ -57,13 +59,11 @@ Overwritten if \code{gg} is specified.}
 \item{height}{Numeric, height of the plot in pixels,
 700 by default.}
 
-\item{...}{Any parameters for the \link{code[plotly]{layout}}
+\item{...}{Any parameters for the \code{\link[plotly]{layout}}
 function. This should contain at least the plot object.}
-
-\item{pl}{a \code{\link[plotly]{plotly}} object}
 }
 \value{
-The updated \code{\link[plotly]{plotly}} object
+The updated \code{plotly} object
 }
 \description{
 Set layout for a clinical data plot.

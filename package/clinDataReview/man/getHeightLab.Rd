@@ -6,6 +6,9 @@
 \usage{
 getHeightLab(lab)
 }
+\arguments{
+\item{lab}{String with label.}
+}
 \value{
 Integer with height in pixels 
 for this element.

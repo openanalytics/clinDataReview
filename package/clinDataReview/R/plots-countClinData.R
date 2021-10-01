@@ -5,7 +5,6 @@
 #' @param colorVar (optional) String with coloring variable
 #' (NULL by default).
 #' By default, the treemap is colored based by section.
-#' @param colorLab (optional) String with label for \code{colorVar}.
 #' @param colorRange (optional) Numeric vector of length 2 with range 
 #' for the color variable, in case it is a numeric variable.
 #' @inheritParams clinDataReview-common-args-summaryStatsVis
@@ -166,6 +165,8 @@ plotCountClinData <- function(
 		subtitle = subtitle,
 		caption = caption,
 		includeLegend = FALSE,
+		# fix for partial matching of args (legend <-> legendPosition)
+		legendPosition = "none",
 		width = width,
 		height = height,
 		# extra params passed to plotly::layout
