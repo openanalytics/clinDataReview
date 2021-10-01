@@ -2,7 +2,7 @@ Package: clinDataReview
 Type: Package
 Title: Clinical Data Review Tool
 Version: 1.2.0
-Date: 2021-08-13
+Date: 2021-10-01
 Authors@R: c(
   person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"), 
   email = "laure.cougnaud@openanalytics.eu"),
@@ -59,4 +59,3 @@ BugReports: https://github.com/openanalytics/clinDataReview/issues
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 RoxygenNote: 7.1.1
-
