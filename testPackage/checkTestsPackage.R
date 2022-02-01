@@ -1,9 +1,9 @@
-# Run tests and check tests coverage for the 'medicalMonitoring' package
+# Run tests and check tests coverage for the 'clinDataReview' package
 # 
 # Author: Laure Cougnaud
 ###############################################################################
 
-packagePath <- "../package/medicalMonitoring/"
+packagePath <- "../clinDataReview/"
 
 ## create reference figures for vdiffr::expect_doppelganger
 
@@ -40,5 +40,5 @@ pc <- package_coverage(
 #	function_exclusions = "^(?!subjectProfile.*Plot)", 
 	combine_types = TRUE # report coverage for each type
 )
-report(x = pc, file = "testCoverage-medicalMonitoring.html")
+report(x = pc, file = "testCoverage-clinDataReview.html")
 

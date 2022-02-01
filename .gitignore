@@ -4,13 +4,13 @@
 *.tar.gz
 # comments all js folder, excepted in the package
 js
-!package/clinDataReview/inst/js
+!clinDataReview/inst/js
 *.Rproj
 .Rproj.user/
 testPackage/lib
 *.sas7bdat
 patientProfiles
-!package/clinDataReview/inst/template/patientProfiles
+!clinDataReview/inst/template/patientProfiles
 *.pdf
 *cache*
 *.zip
@@ -18,21 +18,21 @@ data/
 *.Rhistory
 documentation
 *.rds
-!package/clinDataReview/tests/**/*.rds
+!clinDataReview/tests/**/*.rds
 _main.Rmd
 *.docx
 libs
 
 tests
-!/package/clinDataReview/tests
+!/clinDataReview/tests
 
-package/doc
-package/Meta
+doc
+Meta
 
 figures_vignette
 *.css
-!package/clinDataReview/inst/js/**/*.css
-!package/clinDataReview/inst/css/gitbook.css
+!clinDataReview/inst/js/**/*.css
+!clinDataReview/inst/css/gitbook.css
 
 report/
 
