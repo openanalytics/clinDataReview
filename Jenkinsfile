@@ -10,6 +10,7 @@ pipeline {
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         DOCKER_BUILDKIT = '1'
         NOT_CRAN = 'true'
+        _R_CHECK_TESTS_NLINES_ = 0
     }
     stages {
         stage('Build Image') {
@@ -63,6 +64,11 @@ pipeline {
             stages {
                 stage('clinDataReview') {
                     stages {
+                        stage('Rcpp Compile Attributes') {
+                            steps {
+                                sh 'R -q -e \'Rcpp::compileAttributes("clinDataReview")\''
+                            }
+                        }
                         stage('Roxygen') {
                             steps {
                                 sh 'R -q -e \'roxygen2::roxygenize("clinDataReview")\''
@@ -73,31 +79,38 @@ pipeline {
                                 sh 'R CMD build clinDataReview'
                             }
                         }
-                        stage('Check (no tests)') {
+                        stage('Check') {
                             steps {
-                                sh 'ls clinDataReview_*.tar.gz && R CMD check clinDataReview_*.tar.gz --no-manual --no-tests'
+                                script() {
+                                    switch(sh(script: 'ls clinDataReview_*.tar.gz && R CMD check clinDataReview_*.tar.gz', returnStatus: true)) {
+                                        case 0: currentBuild.result = 'SUCCESS'
+                                        default: currentBuild.result = 'FAILURE'; error('script exited with failure status')
+                                    }
+                                }
                             }
                         }
                         stage('Install') {
                             steps {
-                                  sh 'R -q -e \'install.packages(list.files(".", "clinDataReview_.*.tar.gz"), repos = NULL) \''
+                                sh 'R -q -e \'install.packages(list.files(".", "clinDataReview_.*.tar.gz"), repos = NULL)\''
                             }
                         }
                         stage('Test and coverage') {
                             steps {
-                              sh '''
-                                R -q -e \'
-                                pc <- covr::package_coverage("clinDataReview", type = "none", code = "testthat::test_package(\\"clinDataReview\\", reporter = testthat::JunitReporter$new(file = file.path(Sys.getenv(\\"WORKSPACE\\"), \\"results.xml\\")))")
-                                covr::report(x = pc, file = paste0("testCoverage-", attr(pc, "package")$package, "-", attr(pc, "package")$version, ".html"))
-                                covr::to_cobertura(pc)
-                                \'
-                                zip -r testCoverage.zip lib/ testCoverage*.html
-                               '''
+                                dir('.') {
+                                    sh '''R -q -e \'code <- "testthat::test_package(\\"clinDataReview\\", reporter = testthat::MultiReporter$new(list(testthat::ProgressReporter$new(file = file.path(getwd(), \\"results.txt\\")), testthat::JunitReporter$new(file = file.path(getwd(), \\"results.xml\\")))))"
+                                    packageCoverage <- covr::package_coverage("clinDataReview", type = "none", code = code)
+                                    cat(paste(readLines(file.path(getwd(), "results.txt")), collapse="\n"), "\n")
+                                    covr::report(x = packageCoverage, file = paste0("testCoverage-", attr(packageCoverage, "package")$package, "-", attr(packageCoverage, "package")$version, ".html"));
+                                    covr::to_cobertura(packageCoverage)\''''
+                                    sh 'zip -r testCoverage.zip lib/ testCoverage*.html'
+                                }
                             }
                             post {
                                 always {
-                                    junit 'results.xml'
-                                    cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                                    dir('.') {
+                                        junit 'results.xml'
+                                        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'cobertura.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+                                    }
                                 }
                             }
                         }

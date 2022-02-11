@@ -1,3 +1,5 @@
+1.2.2
+    o remove space before start chunk sessionInfo.Rmd
 1.2.1
     o fix unit tests R < 4.0.0
 1.2.0

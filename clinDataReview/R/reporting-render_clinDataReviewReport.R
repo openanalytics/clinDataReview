@@ -895,7 +895,7 @@ exportSessionInfoToMd <- function(sessionInfos, mdFiles,
     cat(
         '\n\n# Appendix  \n\n## Session information  \n\n',
         '```{r, echo = FALSE, results = "asis"}\nparams$sessionInfoAll\n```', 
-        file = sessionInfoFile
+        file = sessionInfoFile, sep = ""
     )
     sessionInfoMd <- "sessionInfo.md"
     outputRmd <- renderInNewSession(
