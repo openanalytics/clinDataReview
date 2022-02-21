@@ -82,7 +82,7 @@ pipeline {
                         stage('Check') {
                             steps {
                                 script() {
-                                    switch(sh(script: 'ls clinDataReview_*.tar.gz && R CMD check clinDataReview_*.tar.gz', returnStatus: true)) {
+                                    switch(sh(script: 'ls clinDataReview_*.tar.gz && R CMD check --as-cran clinDataReview_*.tar.gz', returnStatus: true)) {
                                         case 0: currentBuild.result = 'SUCCESS'
                                         default: currentBuild.result = 'FAILURE'; error('script exited with failure status')
                                     }
