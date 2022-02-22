@@ -7,8 +7,6 @@ output:
     toc: true
     toc_depth: 5
     number_sections: true
-params:
-  patientProfilesCreate: FALSE
 vignette: >
   %\VignetteIndexEntry{Visualization of clinical data}
   %\VignetteEngine{knitr::rmarkdown}
@@ -91,7 +89,7 @@ template report available in the `clinDataReview` package.
 A simple patient profile report for each subject in the example
 dataset is created below.
 
-```{r patientProfilesCreate, results = "hide", eval = hasPandoc & params$patientProfilesCreate}
+```{r patientProfilesCreate, results = "hide", eval = hasPandoc}
 # create a directory to store the patient profiles:
 patientProfilesDir <- "patientProfiles"
 dir.create(patientProfilesDir)
@@ -112,8 +110,11 @@ params$patientProfilePath <- patientProfilesDir
 # create patient profiles
 pathTemplate <- clinDataReview::getPathTemplate(params$template)
 file.copy(from = pathTemplate, to = ".")
-report <- rmarkdown::render(input = basename(pathTemplate), envir = new.env())
-rm(basename(pathTemplate))
+report <- rmarkdown::render(
+	input = basename(pathTemplate), 
+	envir = new.env()
+)
+unlink(basename(pathTemplate))
 ```
 
 Please refer to the vignette about reporting for more details on how 
