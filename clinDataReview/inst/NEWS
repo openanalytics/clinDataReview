@@ -1,6 +1,6 @@
 1.2.2
     o remove space before start chunk sessionInfo.Rmd
-    o create patient profiles in 'data visualization' vignette
+    o 'data visualization' vignette: include patient profiles only in interactive mode
 1.2.1
     o fix unit tests R < 4.0.0
 1.2.0
