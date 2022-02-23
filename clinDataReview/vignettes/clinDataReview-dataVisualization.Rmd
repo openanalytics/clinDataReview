@@ -7,8 +7,6 @@ output:
     toc: true
     toc_depth: 5
     number_sections: true
-params:
-  patientProfilesCreate: FALSE
 vignette: >
   %\VignetteIndexEntry{Visualization of clinical data}
   %\VignetteEngine{knitr::rmarkdown}
@@ -91,7 +89,11 @@ template report available in the `clinDataReview` package.
 A simple patient profile report for each subject in the example
 dataset is created below.
 
-```{r patientProfilesCreate, results = "hide", eval = hasPandoc & params$patientProfilesCreate}
+Please note that the patient profiles are created and included in 
+the interactive visualizations only during an interactive session
+ (via `interactive()`) .
+
+```{r patientProfilesCreate, results = "hide", eval = hasPandoc & interactive()}
 # create a directory to store the patient profiles:
 patientProfilesDir <- "patientProfiles"
 dir.create(patientProfilesDir)
@@ -112,8 +114,12 @@ params$patientProfilePath <- patientProfilesDir
 # create patient profiles
 pathTemplate <- clinDataReview::getPathTemplate(params$template)
 file.copy(from = pathTemplate, to = ".")
-report <- rmarkdown::render(input = basename(pathTemplate), envir = new.env())
-rm(basename(pathTemplate))
+report <- rmarkdown::render(
+	input = basename(pathTemplate), 
+	envir = new.env()
+)
+unlink(basename(pathTemplate))
+unlink(basename(report))
 ```
 
 Please refer to the vignette about reporting for more details on how 
@@ -167,10 +173,11 @@ visitLab <- with(dataPlot, tapply(ADY, VISIT, median))
 names(visitLab) <- sub("-", "\n", names(visitLab))
 
 # link to patient profiles
-dataPlot$patientProfilePath <- paste0(
-    "patientProfiles/subjectProfile-", 
-    sub("/", "-", dataPlot$USUBJID), ".pdf"
-)
+if(interactive())
+	dataPlot$patientProfilePath <- paste0(
+	    "patientProfiles/subjectProfile-", 
+	    sub("/", "-", dataPlot$USUBJID), ".pdf"
+	)
 
 scatterplotClinData(
     data = dataPlot, 
@@ -187,7 +194,7 @@ scatterplotClinData(
         )
     ),
     # include link to patient profiles:
-    pathVar = "patientProfilePath",
+    pathVar = if(interactive())	"patientProfilePath",
 	subtitle = paste(
 		"Profile plot by subject",
 		"Points are positioned at relative day",
@@ -215,10 +222,11 @@ dataPlotWide <- dcast(
 )
 
 # link to patient profiles
-dataPlotWide$patientProfilePath <- paste0(
-    "patientProfiles/subjectProfile-", 
-    sub("/", "-", dataPlotWide$USUBJID), ".pdf"
-)
+if(interactive())
+	dataPlotWide$patientProfilePath <- paste0(
+	    "patientProfiles/subjectProfile-", 
+	    sub("/", "-", dataPlotWide$USUBJID), ".pdf"
+	)
 
 # scatterplot per visit
 scatterplotClinData(
@@ -233,7 +241,7 @@ scatterplotClinData(
     aesPointVar = list(color = "USUBJID", fill = "USUBJID"),
     facetPars = list(facets = ~ VISIT),
     labelVars = labelVars,
-    pathVar = "patientProfilePath",
+    pathVar = if(interactive())	"patientProfilePath",
     table = FALSE
 )
 
@@ -263,10 +271,11 @@ labelVars[paste0("LBSTRESN.", c("ALT", "BILI"))] <-
     )
 
 # link to patient profiles
-dataPlot$patientProfilePath <- paste0(
-    "patientProfiles/subjectProfile-", 
-    sub("/", "-", dataPlot$USUBJID), ".pdf"
-)
+if(interactive())
+	dataPlot$patientProfilePath <- paste0(
+	    "patientProfiles/subjectProfile-", 
+	    sub("/", "-", dataPlot$USUBJID), ".pdf"
+	)
 
 # scatterplot per visit
 scatterplotClinData(
@@ -283,7 +292,7 @@ scatterplotClinData(
     hoverVars = "USUBJID",
     labelVars = labelVars,
     table = FALSE, 
-    pathVar = "patientProfilePath"
+    pathVar = if(interactive())	"patientProfilePath"
 )
 
 ```
@@ -295,10 +304,11 @@ Time-intervals are displayed with the **`timeProfileIntervalPlot`** function:
 ```{r timeProfileIntervalPlot, eval = hasPandoc}
 
 # link to patient profiles
-dataAE$patientProfilePath <- paste0(
-    "patientProfiles/subjectProfile-", 
-    sub("/", "-", dataAE$USUBJID), ".pdf"
-)
+if(interactive())
+	dataAE$patientProfilePath <- paste0(
+	    "patientProfiles/subjectProfile-", 
+	    sub("/", "-", dataAE$USUBJID), ".pdf"
+	)
 timeProfileIntervalPlot(
     data = dataAE,
     paramVar = "USUBJID",
@@ -308,7 +318,8 @@ timeProfileIntervalPlot(
     colorVar = "AESEV",
     hoverVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV"),
     labelVars = labelVars,
-    table = FALSE, pathVar = "patientProfilePath",
+    table = FALSE, 
+	pathVar = if(interactive())	"patientProfilePath",
     tableVars = c("USUBJID", "AEDECOD", "ASTDY", "AENDY", "AESEV")
 )
 
@@ -351,7 +362,7 @@ timeProfileIntervalPlot(
     labelVars = labelVars,
     table = FALSE, 
     tableVars = c("USUBJID", "AEDECOD", "AESEV", "ASTDY", "AESTFLG", "AENDY", "AEENFLG"),
-    pathVar = "patientProfilePath"
+    pathVar = if(interactive())	"patientProfilePath"
 )
 
 ```
@@ -393,39 +404,45 @@ dataTotal <- subset(dataDM, RFSTDTC != "")
 
 ## patient profiles report
 
-# add path in data
-dataAE$patientProfilePath <- paste0(
-    "patientProfiles/subjectProfile-", 
-    sub("/", "-", dataAE$USUBJID), ".pdf"
-)
+if(interactive()){
 
-# add link in data (for attached table)
-dataAE$patientProfileLink <- with(dataAE,
-    paste0(
-        '<a href="', patientProfilePath, 
-        '" target="_blank">', USUBJID, '</a>'
-    )
-)
+	# add path in data
+	
+	dataAE$patientProfilePath <- paste0(
+	    "patientProfiles/subjectProfile-", 
+	    sub("/", "-", dataAE$USUBJID), ".pdf"
+	)
 
-# Specify extra summarizations besides the standard stats
-# When the data is summarized,
-# the patient profile path are summarized
-# as well across patients
-# (the paths should be collapsed with: ', ')
-statsExtraPP <- list(
-    statPatientProfilePath = function(data)	
-      toString(sort(unique(data$patientProfilePath))),
-    statPatientProfileLink = function(data)
-      toString(sort(unique(data$patientProfileLink)))
-)
+	# add link in data (for attached table)
+	dataAE$patientProfileLink <- with(dataAE,
+	    paste0(
+	        '<a href="', patientProfilePath, 
+	        '" target="_blank">', USUBJID, '</a>'
+	    )
+	)
+
+	# Specify extra summarizations besides the standard stats
+	# When the data is summarized,
+	# the patient profile path are summarized
+	# as well across patients
+	# (the paths should be collapsed with: ', ')
+	statsExtraPP <- list(
+	    statPatientProfilePath = function(data)	
+	      toString(sort(unique(data$patientProfilePath))),
+	    statPatientProfileLink = function(data)
+	      toString(sort(unique(data$patientProfileLink)))
+	)
+	
+}
 
 # get counts (records, subjects, % subjects) + stats with subjects profiles path
 statsPP <- c(
     getStats(type = "count"),
-    list(
-        patientProfilePath = quote(statPatientProfilePath),
-        patientProfileLink = quote(statPatientProfileLink)
-    )
+    if(interactive())
+		list(
+        	patientProfilePath = quote(statPatientProfilePath),
+        	patientProfileLink = quote(statPatientProfileLink)
+    	)
 )
 
 dataAE$AESEV <- factor(
@@ -452,7 +469,7 @@ tableAE <- computeSummaryStatisticsTable(
     # include columns with patients
     stats = statsPP, 
     # add extra 'statistic': concatenate subject IDs
-    statsExtra = statsExtraPP
+    statsExtra = if(interactive())	statsExtraPP
 
 )
 pander(head(tableAE),
@@ -485,7 +502,7 @@ sunburstClinData(
     vars = c("AESOC", "AEDECOD"),
     valueVar = "m", 
 	valueLab = "Number of adverse events",
-    pathVar = "patientProfileLink",
+    pathVar = if(interactive())	"patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = FALSE,
     labelVars = labelVars
@@ -514,7 +531,7 @@ treemapClinData(
     vars = c("AESOC", "AEDECOD"),
     valueVar = "m",
     valueLab = "Number of adverse events",
-    pathVar = "patientProfileLink",
+    pathVar = if(interactive()) "patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = FALSE,
     labelVars = labelVars
@@ -540,7 +557,7 @@ barplotClinData(
     yLab = "Number of patients with adverse events",
 	textVar = "n",
     labelVars = labelVars,
-    pathVar = "patientProfileLink",
+    pathVar = if(interactive())	"patientProfileLink",
     pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
     table = FALSE
 )
@@ -559,18 +576,22 @@ dataVSDIABP <- subset(dataADaMCDISCP01$ADVS,
 # add link to patient profiles report
 
 # add path in data
-dataVSDIABP$patientProfilePath <- paste0(
-	"patientProfiles/subjectProfile-", 
-	sub("/", "-", dataVSDIABP$USUBJID), ".pdf"
-)
-
-# add link in data (for attached table)
-dataVSDIABP$patientProfileLink <- with(dataVSDIABP,
-	paste0(
-		'<a href="', patientProfilePath, 
-		'" target="_blank">', USUBJID, '</a>'
+if(interactive()){
+	
+	dataVSDIABP$patientProfilePath <- paste0(
+		"patientProfiles/subjectProfile-", 
+		sub("/", "-", dataVSDIABP$USUBJID), ".pdf"
 	)
-)
+
+	# add link in data (for attached table)
+	dataVSDIABP$patientProfileLink <- with(dataVSDIABP,
+		paste0(
+			'<a href="', patientProfilePath, 
+			'" target="_blank">', USUBJID, '</a>'
+		)
+	)
+
+}
 
 ```
 
@@ -585,20 +606,22 @@ library(inTextSummaryTable)
 # the patient profile path are summarized
 # as well across patients
 # (the paths should be collapsed with: ', ')
-statsExtraPP <- list(
-    statPatientProfilePath = function(data)	
-      toString(sort(unique(data$patientProfilePath))),
-    statPatientProfileLink = function(data)
-      toString(sort(unique(data$patientProfileLink)))
-)
-
+if(interactive())
+	statsExtraPP <- list(
+	    statPatientProfilePath = function(data)	
+	      toString(sort(unique(data$patientProfilePath))),
+	    statPatientProfileLink = function(data)
+	      toString(sort(unique(data$patientProfileLink)))
+	)
+	
 # get default counts + stats with subjects profiles path
 statsPP <- c(
     getStats(x = dataVSDIABP$AVAL, type = "summary"),
-    list(
-        patientProfilePath = quote(statPatientProfilePath),
-        patientProfileLink = quote(statPatientProfileLink)
-    )
+	if(interactive())
+	    list(
+	        patientProfilePath = quote(statPatientProfilePath),
+	        patientProfileLink = quote(statPatientProfileLink)
+	    )
 )
 
 # compute summary table of actual value
@@ -614,7 +637,7 @@ summaryTableCont <- computeSummaryStatisticsTable(
     # for DT output, include columns with patients
     stats = statsPP, 
     # add extra 'statistic': concatenate subject IDs
-    statsExtra = statsExtraPP
+    statsExtra = if(interactive())	statsExtraPP
 
 )
 pander(head(summaryTableCont, 1))
@@ -645,7 +668,7 @@ errorbarClinData(
 	mode = "markers+lines", 
 	
 	table = FALSE, labelVars = labelVars,
-	pathVar = "patientProfileLink",
+	pathVar = if(interactive())	"patientProfileLink",
 	pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars)
 
 )
@@ -667,11 +690,13 @@ dataPlot <- subset(dataADaMCDISCP01$ADVS,
 	PARAMCD == "DIABP" & ANL01FL == "Y" &
 	AVISIT %in% c("Baseline", "Week 2", "Week 4", "Week 6", "Week 8")
 )
+
 # link to patient profiles
-dataPlot$patientProfilePath <- paste0(
-	"patientProfiles/subjectProfile-", 
-	sub("/", "-", dataPlot$USUBJID), ".pdf"
-)
+if(interactive())
+	dataPlot$patientProfilePath <- paste0(
+		"patientProfiles/subjectProfile-", 
+		sub("/", "-", dataPlot$USUBJID), ".pdf"
+	)
 
 boxplotClinData(
 	data = dataPlot,
@@ -682,7 +707,7 @@ boxplotClinData(
 	title = "Diastolic Blood Pressure distribution by actual visit and analysis timepoint",
 	yLab = "Actual value of the Diastolic Blood Pressure parameter (mmHg)",
 	labelVars = labelVars,
-	pathVar = "patientProfilePath",
+	pathVar = if(interactive())	"patientProfilePath",
 	pathLab = clinUtils::getLabelVar(var = "USUBJID", labelVars = labelVars),
 	table = FALSE
 )
@@ -702,10 +727,11 @@ package.
 dataPlot <- subset(dataLB, PARAMCD %in% c("SODIUM", "K"))
 
 # link to patient profiles
-dataPlot$patientProfilePath <- paste0(
-    "patientProfiles/subjectProfile-", 
-    sub("/", "-", dataPlot$USUBJID), ".pdf"
-)
+if(interactive())
+	dataPlot$patientProfilePath <- paste0(
+	    "patientProfiles/subjectProfile-", 
+	    sub("/", "-", dataPlot$USUBJID), ".pdf"
+	)
 
 # 1) create plot+table for each laboratory parameter:
 library(plyr) # for ddply
@@ -726,7 +752,7 @@ plotsLab <- dlply(dataPlot, "PARAMCD", function(dataLBParam){
               )
           ),
           # include link to patient profiles:
-          pathVar = "patientProfilePath",
+          pathVar = if(interactive())	"patientProfilePath",
           table = FALSE, 
           # important: each plot should have an unique ID!
           # for unique relationship of interactivity between plot <-> table
