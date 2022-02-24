@@ -3,7 +3,7 @@ library(clinUtils)
 data(dataADaMCDISCP01)
 labelVars <- attr(dataADaMCDISCP01, "labelVars")
 
-## example of basic barplot:
+## example of basic boxplot:
 
 data <- subset(dataADaMCDISCP01$ADVS, 
 	PARAMCD == "DIABP" & ANL01FL == "Y" &
@@ -37,6 +37,8 @@ boxplotClinData(
 	labelVars = labelVars
 )
 
+\dontrun{
+
 # Facet or color is optional:
 boxplotClinData(
 	data = data,
@@ -65,3 +67,5 @@ boxplotClinData(
 	caption = "Summary statistics are computed internally.",
 	labelVars = labelVars
 )
+
+}

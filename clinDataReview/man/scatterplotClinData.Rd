@@ -289,6 +289,8 @@ scatterplotClinData(
 	labelVars = labelVars
 )
 
+\dontrun{
+
 # add number of subjects below each visit
 
 # compute number of subjects by visit
@@ -309,6 +311,8 @@ scatterplotClinData(
 	aesLineVar = list(group = "USUBJID", color = "TRTP"),
 	labelVars = labelVars
 )
+
+}
 
 ## pairwise comparison plot of two parameters of interest:
 
@@ -333,6 +337,8 @@ scatterplotClinData(
 	subtitle = "Visualization is split by visit",
 	caption = "Points are colored by subject ID"
 )
+
+\dontrun{
 
 # scatterplot with all visits, link subjects
 xLab <- getLabelParamcd(paramcd = "ALT", data = dataLB, 
@@ -387,6 +393,8 @@ scatterplotClinData(
 			label = "Reference Range Upper Limit")
 	)
 )
+
+}
 }
 \author{
 Laure Cougnaud

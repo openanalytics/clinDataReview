@@ -190,6 +190,8 @@ barplotClinData(
 	labelVars = labelVars
 )
 
+\dontrun{
+
 # display percentage of events per severity
 tableAEBySeverity <- computeSummaryStatisticsTable(
 	data = dataAE,
@@ -219,6 +221,8 @@ barplotClinData(
 	# add subtitle
 	subtitle = "Group: severity"
 )
+
+}
 }
 \seealso{
 Other visualizations of summary statistics for clinical data: 

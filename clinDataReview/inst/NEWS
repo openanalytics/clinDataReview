@@ -1,7 +1,7 @@
 1.2.2
     o remove space before start chunk sessionInfo.Rmd
     o 'data visualization' vignette: include patient profiles only in interactive mode
-    o example scatterplotClinData: smaller dataset (to reduce time R CMD check)
+    o run less examples (to reduce time R CMD check)
 1.2.1
     o fix unit tests R < 4.0.0
 1.2.0
