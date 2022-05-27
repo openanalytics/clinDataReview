@@ -280,8 +280,7 @@ varToFm <- function(var){
 #' of lines
 #' @author Laure Cougnaud
 #' @examples 
-#' countNLines(x = c("A\nB", "blabla", "This\nis\na\nsentence."))
-#' @export
+#' clinDataReview:::countNLines(x = c("A\nB", "blabla", "This\nis\na\nsentence."))
 countNLines <- function(x){
 	
 	lines <- regmatches(

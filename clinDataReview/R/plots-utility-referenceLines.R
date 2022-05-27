@@ -6,7 +6,6 @@
 #' @importFrom plyr ddply
 #' @importFrom stats setNames
 #' @importFrom ggplot2 geom_text geom_vline geom_hline geom_abline aes_string
-#' @export
 addReferenceLinesClinDataPlot <- function(
 	gg, data, 
 	xVar, yVar, xLim = NULL, yLim = NULL,
@@ -137,7 +136,6 @@ addReferenceLinesClinDataPlot <- function(
 #' @return List of type of each reference lines, among:
 #' 'vline', 'hline' and 'abline'.
 #' @author Laure Cougnaud
-#' @export
 getFctTypeReferenceLines <- function(refLinePars){
 	
 	refLineFct <- vector("list", length = length(refLinePars))

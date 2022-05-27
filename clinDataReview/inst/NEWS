@@ -1,3 +1,9 @@
+1.2.3
+    o clean exports: no exports of: 
+      - addReferenceLinesClinDataPlot
+      - countNLines
+      - formatDataForPlotClinData
+      - getFctTypeReferenceLines
 1.2.2
     o remove space before start chunk sessionInfo.Rmd
     o 'data visualization' vignette: include patient profiles only in interactive mode

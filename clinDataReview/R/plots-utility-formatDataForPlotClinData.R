@@ -13,7 +13,6 @@
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
 #' @importFrom crosstalk SharedData
-#' @export
 formatDataForPlotClinData <- function(
 	data, 
 	hoverVars = NULL,
