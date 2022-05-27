@@ -4,7 +4,7 @@ library(yaml)
 library(jsonlite)
 
 test_that("A config file with all required parameters is checked successfully", {
-      
+  
 	# R CMD check runs on package binary, so without 'inst' folder:
 	refConfig <- system.file(package = "clinDataReview", "template", "divisionTemplate.json")
       
@@ -17,6 +17,9 @@ test_that("A config file with all required parameters is checked successfully", 
 		),
 		configFileDivision
 	)
+	
+	# no message for migration from imjv -> ajv validator
+	options(jsonvalidate.no_note_imjv = TRUE)
 	expect_silent(
 		checkConfigFile(configFileDivision, configSpecFile = refConfig)
 	)

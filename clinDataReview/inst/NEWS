@@ -4,6 +4,7 @@
       - countNLines
       - formatDataForPlotClinData
       - getFctTypeReferenceLines
+    o checkConfigFile: update test
 1.2.2
     o remove space before start chunk sessionInfo.Rmd
     o 'data visualization' vignette: include patient profiles only in interactive mode
