@@ -38,7 +38,13 @@ Records are flagged based on the \code{filters} condition, in a new column:
 that will be included in progress messages.}
 }
 \value{
-Updated \code{data}.
+Updated \code{data} with attributes:
+\itemize{
+\item{'labelVars': }{input \code{labelVars} with any new variables 
+ if \code{labelNew} is specified.}
+\item{'msg': }{message describing the filtering process}
+\item{'warn': }{warning describing the filtering process}
+}
 }
 \description{
 Filter data for a single filter

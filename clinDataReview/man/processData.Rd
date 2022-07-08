@@ -2,22 +2,32 @@
 % Please edit documentation in R/dataManipulation-processData.R
 \name{processData}
 \alias{processData}
-\title{Run specified data processing steps.}
+\title{Process a dataset.}
 \usage{
 processData(data, processing, labelVars = NULL, ...)
 }
 \arguments{
 \item{data}{Data.frame with data.}
 
-\item{processing}{List with details of the steps to process the data.
+\item{processing}{List with processing steps for the data.
 Each element in the list should be a named list containing the parameters
-for the specific processing function. The name specifies which processing
+for the specific processing function. The name specifies the processing
 step, among: 
 \itemize{
 \item{'annotate' for \code{\link{annotateData}} (\code{annotations} parameter)}
 \item{'filter' for \code{\link{filterData}} (\code{filters} parameter)}
 \item{'transform' for \code{\link{transformData}} (\code{transformations} parameter)}
-}}
+}
+Multiple steps of each kind can be specified after each other (e.g. 1: filter,
+2: transform,  3: filter, ...).\cr
+If a filter step is specified as a list of multiple filters, the filters are run 
+\strong{independently of each other on the entire dataset} (see the documentation of \code{filters} in 
+\code{\link{filterData}}). \cr
+If filters should be run \strong{sequentially}, i.e. filter from step 2
+should be applied on the filtered dataset from step 1, \strong{separated 
+filtering steps} should be specified, e.g. \cr
+\code{list(filter = list(var = "ANL01FL", value = "Y"), 
+filter = list(var = "PARAM", value = "QTCF"))}}
 
 \item{labelVars}{Named character vector containing variable labels.}
 
@@ -32,6 +42,75 @@ with extra attribute: \code{labelVars}.
 \description{
 This function is intended to automate all data processing
 steps for use in the 'clinDataReview' reports using config files.
+}
+\examples{
+library(clinUtils)
+
+data(dataADaMCDISCP01)
+
+dataLB <- dataADaMCDISCP01$ADLBC
+
+# filter and annotate data
+processData(
+  data = dataLB,
+  processing = list(
+    list(filter = list(var = "ANL01FL", value = "Y")),
+    list(annotate = list(vars = "ANRIND", varFct = 'factor(ANRIND, levels = c("L", "N", "H"))'))
+  )
+)
+
+## multiple filtering steps:
+
+# If these are specified in the same 'filter' step condition, these are considered independently,
+# and the selected records combined with an 'AND' operator.
+# Example: consider only records:
+# - with analysis flag AND
+# - from subject with high/low measurement (for all records) for each parameter
+processData(
+  data = dataLB,
+  processing = list(
+    list(filter = list(
+      list(var = "ANL01FL", value = "Y"),
+      list(var = "ANRIND", value = c("L", "H"), 
+           postFct = any, varsBy = c("USUBJID", "PARAM"))
+    )
+    )
+  )
+)
+
+# a custom operator to combine the selected records can be specified
+# Example: consider only records:
+# - with analysis flag OR
+# - from subject with high/low measurement (for all records) for each parameter
+processData(
+  data = dataLB,
+  processing = list(
+    list(filter = list(
+      list(var = "ANL01FL", value = "Y"),
+      "|",
+      list(var = "ANRIND", value = c("L", "H"), 
+           postFct = any, varsBy = c("USUBJID", "PARAM"))
+    )
+    )
+  )
+)
+
+# If the filtering conditions are specified in different filtering steps, these are
+# considered sequentially.
+# Example: 
+# 1) consider only analysis records and 
+# 2) from these records, consider only subject with high/low measurement for 
+# each parameter
+processData(
+  data = dataLB,
+  processing = list(
+    list(filter = list(var = "ANL01FL", value = "Y")),
+    list(filter = list(var = "ANRIND", value = c("L", "H"), 
+      postFct = any, varsBy = c("USUBJID", "PARAM")))
+  )
+)
+# Note for this particular 
+
 }
 \author{
 Laure Cougnaud

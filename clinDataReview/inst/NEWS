@@ -1,3 +1,14 @@
+1.2.3.9000
+    o filterData: 
+      - post-processing function (postFct)
+      - grouping variable:
+        - remove rownames with groups & improve message
+        - one single warning instead of one warning per group
+        - fix issue in case of multiple filters and a grouping variable
+    o filterData and annotateData:
+      - valueFct: support primitive function for verbose message
+    o processData: add examples in doc
+    o plotTemplate: no failure if data is empty and tableParams is specified
 1.2.3
     o clean exports: no exports of: 
       - addReferenceLinesClinDataPlot

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataManipulation-filterData.R
 \name{filterData}
 \alias{filterData}
-\title{Filter dataset based on specified filters.}
+\title{Filter a dataset based on specified filters.}
 \usage{
 filterData(
   data,
@@ -17,19 +17,19 @@ filterData(
 \arguments{
 \item{data}{Data.frame with data.}
 
-\item{filters}{Unique filter or list of filters.
-Each filter should be a list containing:
+\item{filters}{Unique filter or list of filters.\cr
+Each filter is a list containing:
 \itemize{
 \item{'var': }{String with variable from \code{data} to filter on.}
 \item{'value': }{(optional) Character vector with values from \code{var} 
 \strong{to consider/keep}.}
 \item{'valueFct': }{(optional) Function (or string with this function)
-to be applied on \code{var} to extract value to consider.
+to be applied on \code{var} to extract value to consider.\cr
 For example, \code{valueFct = max} will extract the records
-with the maximum variable value.}
+with the maximum value of the variable.}
 \item{'op': }{(optional) String with operator used to retain records 
 from \code{value}.
-If not specified, the inclusion operator: '\%in\%' is considered, a.k.a
+If not specified, the inclusion operator: '\%in\%' is considered, so
 records with \code{var} in \code{value} are retained.}
 \item{'rev': }{(optional) Logical, if TRUE (FALSE by default), 
 filtering condition based on \code{value}/\code{valueFct} is reversed.}
@@ -38,14 +38,25 @@ missing values in \code{var} are retained.\cr
 If not specified, \code{keepNA} general parameter is used.}
 \item{'varsBy': }{(optional) Character vector with variables in 
 \code{data} containing groups to filter by}
-\item{'varNew': }{(optional) String with name for the new variable created}
-\item{'labelNew': }{(optional) String with label for \code{varNew}}
+\item{'postFct': }{(optional) Function (or string with this function) with
+post-processing applied on the results of the filtering criteria 
+(TRUE/FALSE for each record). This function should return TRUE/FALSE
+(for each record or for all considered records).\cr
+For example, '\code{postFct = any, varsBy = "group"}' retains all groups
+which contain at least one record that fulfills the criteria.}
+\item{'varNew': }{(optional) String with name of a new variable containing
+the results of the filtering criteria (as TRUE/FALSE).}
+\item{'labelNew': }{(optional) String with label for the \code{varNew} variable.}
 }
-If a list of filters is specified, the logical operator 
-(see \code{\link[base]{Logic}})
-linking the different conditions
-can be specified between the two conditions, e.g.: 
-\code{list(list(var = "SEX", value = "F"), "&", list(var = "COUNTRY", value = "DEU"))}.}
+If a list of filters is specified, the different filters are \strong{independently
+executed on the entire dataset to identify the records to retain for
+each filtering condition.}\cr
+The resulting selections are combined 
+with a \code{\link[base]{Logic}} operator ('&' by default, i.e. 'AND' condition).
+A custom logic operator can be specified between the lists describing the filter, 
+for example:\cr
+\code{list(list(var = "SEX", value = "F"), "&", 
+list(var = "COUNTRY", value = "DEU"))}.}
 
 \item{keepNA}{Logical, if TRUE (by default) missing values in \code{var} are retained.
 If set to FALSE, missing values are ignored for all filters.
@@ -72,26 +83,28 @@ of subject-specific report are displayed in the browser console.}
 that will be included in progress messages.}
 }
 \value{
-Filtered \code{data} if \code{returnAll} is FALSE (by default).
-Otherwise \code{data} with additional column: \code{keep} or \code{varNew} (if specified),
-containing TRUE for records which fullfill the specified
-condition(s) and FALSE otherwise.
+If \code{returnAll}
+\itemize{
+\item{is \code{FALSE}: }{\code{data} filtered with the specified filters}
+\item{is \code{TRUE}: }{\code{data} with the additional column: \code{keep} 
+ or \code{varNew} (if specified), containing \code{TRUE} for records 
+ which fulfill the specified condition(s) and \code{FALSE} otherwise.}
+}
+The output contains the additional attribute: \code{msg} which contains a message
+describing the filtered records.
 }
 \description{
 A dataset can be filtered:
 \itemize{
-\item{based:
-\itemize{
-\item{on a specific \code{value} of interest)}
-\item{on a function of the variable (\code{valueFct} parameter), 
+\item{on a specific \code{value} of interest}
+\item{on a function of a variable (\code{valueFct} parameter), 
 e.g. maximum of the variable)}
-\item{to retain only non missing values of a variable (\code{keepNA} set to \code{FALSE})}
-}
-}
+\item{to retain only non missing values of a variable (\code{keepNA} 
+set to \code{FALSE})}
 \item{by groups (\code{varsBy} parameter)}
 }
-**Note that by default, missing values in the filtering variable are retained
-(which differs from the default behaviour in R)**.
+\strong{Note that by default, missing values in the filtering variable are retained
+(which differs from the default behaviour in R).}
 To filter missing records, please set the \code{keepNA} parameter to \code{FALSE}.
 }
 \examples{
@@ -107,22 +120,25 @@ dataDM <- dataADaMCDISCP01$ADSL
 # filter with inclusion criteria:
 filterData(
 	data = dataDM, 
-	filters = list(var = "SEX", value = "M"), 
-	verbose = TRUE
+	filters = list(var = "SEX", value = "M"),
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 # filter with non-inclusion criteria
 filterData(
 	data = dataDM, 
 	filters = list(var = "SEX", value = "M", rev = TRUE), 
-	verbose = TRUE
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 # filter based on inequality operator
 filterData(
 	data = dataDM, 
 	filters = list(var = "AGE", value = 75, op = "<="), 
-	verbose = TRUE
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 # missing values are retained by default!
@@ -131,28 +147,32 @@ dataDMNA[1 : 2, "AGE"] <- NA
 filterData(
 	data = dataDMNA, 
 	filters = list(var = "AGE", value = 75, op = "<="), 
-	verbose = TRUE
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 # filter missing values on variable
 filterData(
 	data = dataDMNA, 
 	filters = list(var = "AGE", value = 75, op = "<=", keepNA = FALSE), 
-	verbose = TRUE
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 # retain only missing values
 filterData(
 	data = dataDMNA, 
 	filters = list(var = "AGE", value = NA, keepNA = TRUE), 
-	verbose = TRUE
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 # filter missing values
 filterData(
 	data = dataDMNA, 
 	filters = list(var = "AGE", keepNA = FALSE), 
-	verbose = TRUE
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 
@@ -165,7 +185,8 @@ filterData(
 		list(var = "AGE", value = 75, op = "<="),
 		list(var = "SEX", value = "M")
 	), 
-	verbose = TRUE
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 # custom operator:
@@ -176,7 +197,8 @@ filterData(
 		"|",
 		list(var = "SEX", value = "M")
 	), 
-	verbose = TRUE
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 
 # filter by group
@@ -193,9 +215,40 @@ dataAEWorst <- filterData(
 		valueFct = max,
 		varsBy = c("USUBJID", "AEDECOD"),
 		keepNA = FALSE
-	)
+	),
+	# optional
+	labelVars = labelVars, verbose = TRUE
 )
 nrow(dataAEWorst)
+
+# post-processing function
+# keep subjects with at least one severe AE:
+dataSubjectWithSevereAE <- filterData(
+  data = dataAE,
+  filters = list(
+    var = "AESEV",		
+    value = "SEVERE",
+    varsBy = "USUBJID",
+    postFct = any
+  ),
+  # optional
+  labelVars = labelVars, verbose = TRUE
+)
+
+# for each laboratory parameter: keep only subjects which have at least one
+# measurement classified as low or high
+dataLB <- subset(dataADaMCDISCP01$ADLBC, !grepl("change", PARAM))
+dataLBFiltered <- filterData(
+  data = dataLB,
+  filters = list(
+    var = "LBNRIND",		
+    value = c("LOW", "HIGH"),
+    varsBy = c("PARAMCD", "USUBJID"),
+    postFct = any
+  ),
+  # optional
+  labelVars = labelVars, verbose = TRUE
+)
 }
 \author{
 Laure Cougnaud

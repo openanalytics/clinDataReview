@@ -1,4 +1,4 @@
-#' Annotate a SDTM dataset.
+#' Annotate a dataset.
 #' 
 #' Standard annotation variables are available via the 
 #' parameter \code{annotType}. Custom dataset/variables of interest
@@ -348,7 +348,7 @@ annotateData <- function(
 					}else	if(is.function(varFct)){
 						
 						annotData[[varNew]] <- varFct(annotData)
-						msgVarFct <- paste(as.character(body(varFct)), collapse = "")
+						msgVarFct <- getFctCode(varFct)
 						
 					}else	stop("'varFct' should be a character or a function.")
 					

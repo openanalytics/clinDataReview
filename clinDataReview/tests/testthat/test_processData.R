@@ -85,3 +85,61 @@ test_that("An error is generated when each processing step is not specified as a
 	)
       
 })
+
+test_that("Filter steps are run on the entire dataset when specified in the same filter step", {
+  
+  data <- data.frame(
+    PARAM = c("A", "B", "B"),
+    ANL01FL = c("Y", "Y", "N"),
+    ANRIND = c("L", "N", "H"), 
+    stringsAsFactors = FALSE
+  )
+  
+  dataProcessed <- processData(
+    data = data,
+    processing = list(
+      list(filter = list(
+        list(var = "ANL01FL", value = "Y"),
+        list(var = "ANRIND", value = c("L", "H"), 
+          postFct = any, varsBy = "PARAM")
+      ))
+    )
+  )
+  
+  expect_equal(
+    object = dataProcessed,
+    expected = subset(data, (PARAM == "A") | (PARAM == "B" & ANL01FL == "Y")),
+    check.attributes = FALSE # no message
+  )
+  
+})
+
+test_that("Filter steps are run sequentially when specified in separate filter steps", {
+  
+  data <- data.frame(
+    PARAM = c("A", "B", "B"),
+    ANL01FL = c("Y", "Y", "N"),
+    ANRIND = c("L", "N", "H"), 
+    stringsAsFactors = FALSE
+  )
+  
+  expect_warning(
+    dataProcessed <- processData(
+      data = data,
+      processing = list(
+        list(filter = list(var = "ANL01FL", value = "Y")),
+        list(filter = list(var = "ANRIND", value = c("L", "H"), 
+          postFct = any, varsBy = "PARAM"))
+      )
+    ),
+    "No data is retained"
+  )
+  
+  expect_equal(
+    object = dataProcessed,
+    expected = subset(data, PARAM == "A"),
+    check.attributes = FALSE # no message
+  )
+  
+})
+

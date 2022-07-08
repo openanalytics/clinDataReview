@@ -140,7 +140,7 @@ labelVars <- attr(dataList$currentData, "labelVars")
 
 ```
 
-```{r plotTemplate-computeSummaryStatisticsTable, eval = exists("tableParams")}
+```{r plotTemplate-computeSummaryStatisticsTable, eval = exists("tableParams") & nrow(data) > 0}
   
 dataList <- sapply(dataList, function(dataBatch) {
 

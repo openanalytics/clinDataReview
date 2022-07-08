@@ -235,7 +235,7 @@ test_that("Data is correctly filtered for a single inclusion criteria", {
 		stringsAsFactors = FALSE      
 	)
       
-	dataFiltered <- clinDataReview:::filterDataSingle(
+	dataFiltered <- clinDataReview::filterData(
 		data = data,
 		filters = list(
 			var = "C", value = "a"
@@ -259,7 +259,7 @@ test_that("An error is generated if no filtering variable is specified", {
 			data = data.frame(),
 			filters = list(value = "a")
 		),
-		"'var' used for filtering of data should be specified."
+		"'var' used for filtering of the data should be specified."
 	)
 	  
 })
@@ -305,7 +305,7 @@ test_that("A warning is generated when a variable is specified, but not present 
 			filters = list(var = "D", value = "a"),
 			keepNA = TRUE
 		),
-		"Data is not filtered based on the variable: .* is not available in the input data."
+		"Data is not filtered based on the variable: .* is not available in the data."
 	)
 	expect_equal(
 		object = dataFiltered, 
@@ -344,6 +344,37 @@ test_that("Data is correctly filtered based on a grouping variable", {
 	
 })
 
+test_that("Data is correctly filtered based on multiple filters and one filter with a grouping variable", {
+  
+  # Note: this test is set up such as the categories of the grouping variable are
+  # not ordered alphabetically in the input data
+  data <- data.frame(
+    AEDECOD = c("b", "b", "a", "a", "c", "c"),
+    AESEV = c("Mild", "Moderate", "Moderate", "Severe", "Mild", "Severe")
+  )
+  
+  expect_warning(
+    dataFiltered <- filterData(
+      data = data,
+      filters = list(
+        list(var = "AEDECOD", value = c("b", "c")),
+        list(
+          var = "AESEV",		
+          value = "Severe",
+          varsBy = "AEDECOD",
+          postFct = any
+        )
+      )
+    )
+  )
+  expect_equal(
+    object = dataFiltered,
+    expected = subset(data, AEDECOD == "c"),
+    check.attributes = FALSE
+  )
+  
+})
+
 test_that("A new variable tracking if a record fulfills the filtering condition is correctly created when requested", {
       
 	data <- data.frame(
@@ -375,7 +406,7 @@ test_that("A warning is generated if a new variable is created with the same nam
 		stringsAsFactors = FALSE      
 	)
 	expect_warning(
-		clinDataReview:::filterDataSingle(
+		clinDataReview::filterData(
 			data = data,
 			filters = list(var = "C", value = "a", varNew = "B"),
 		),
@@ -438,4 +469,93 @@ test_that("An error is generated if the filtering function is not correctly spec
 		"'valueFct' should be a character or a function."
 	)
 	
+})
+
+test_that("Data is correctly filtered based on a post-processing function", {
+  
+  data <- data.frame(
+    AEDECOD = c("a", "b", "c"),
+    AESEV = c("Mild", "Moderate", "Severe")
+  )
+  
+  expect_message(
+    expect_warning(
+      dataFiltered <- filterData(
+        data = data,
+        filters = list(
+          var = "AESEV",		
+          value = "Severe",
+          postFct = all
+        ),
+        verbose = TRUE
+      )
+    ),
+    "3 records with all of AESEV .+not %in% .+Severe.+ are filtered"
+  )
+  expect_equal(
+    object = dataFiltered,
+    expected = data[0, ], 
+    check.attributes = FALSE
+  )
+  
+})
+
+test_that("Data is correctly filtered based on a post-processing function specified as a character", {
+  
+  data <- data.frame(
+    AEDECOD = c("a", "b", "c"),
+    AESEV = c("Mild", "Moderate", "Severe")
+  )
+  
+  expect_message(
+    expect_warning(
+      dataFiltered <- filterData(
+        data = data,
+        filters = list(
+          var = "AESEV",		
+          value = "Severe",
+          postFct = "all"
+        ),
+        verbose = TRUE
+      )
+    ),
+    "3 records with all of AESEV .+not %in% .+Severe.+ are filtered"
+  )
+  expect_equal(
+    object = dataFiltered,
+    expected = data[0, ], 
+    check.attributes = FALSE
+  )
+  
+})
+
+test_that("Data is correctly filtered based on a post-processing function and grouping variables", {
+  
+  data <- data.frame(
+    USUBJID = c("1", "1", "2", "1", "2", "2"),
+    PARAM = c("a", "a", "a", "b", "b", "b"),
+    ANRIND = c("Abnormal", "Normal", "Normal", "Normal", "Abnormal", "Normal")
+  )
+  
+  expect_message(
+    expect_warning(
+      dataFiltered <- filterData(
+        data = data,
+        filters = list(
+          var = "ANRIND",		
+          value = "Abnormal",
+          varsBy = c("PARAM", "USUBJID"),
+          postFct = any
+        ),
+        verbose = TRUE
+      )
+    ),
+    "Records with any of ANRIND.+not %in% .+Abnormal.+ by PARAM.+, USUBJID.+are filtered"
+  )
+  expect_equal(
+    object = dataFiltered,
+    expected = subset(data, (PARAM == "a" & USUBJID == "1") | (PARAM == "b" & USUBJID == "2")), 
+    check.attributes = FALSE
+  )
+  
 })

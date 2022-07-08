@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataManipulation-annotateData.R
 \name{annotateData}
 \alias{annotateData}
-\title{Annotate a SDTM dataset.}
+\title{Annotate a dataset.}
 \usage{
 annotateData(
   data,
