@@ -54,17 +54,14 @@ the left and right side of the main panel can be used to navigate the report. An
 **empty page** (with a header) indicates that the data is split in subsections
 and you should navigate further to the subsection of interest.  
 
-For **instructions** on how to use the graphs and tables please go to the next
+For **instructions** on how to use the visualizations and tables please go to the next
 section by either clicking the ">" button on the right, or by selecting
-"Tutorial: Subject-level graphs and tables" in the table of contents on the
+"Tutorial: Subject-level visualizations and tables" in the table of contents on the
 left.  
 
 
 ```{r getMetadata, dateReportRun = TRUE}
-
-##################################################
-## Current metadata associated with this report ##
-##################################################
+# Current metadata associated with this report
 metadataFile <- list.files(
     path = params$pathDataFolder, 
     pattern = "metadata.yml", 
@@ -82,10 +79,7 @@ cat("\n\n")
 ```
 
 ```{r getMetadataOld, dateReportRun = FALSE, eval = (! is.null(params$pathDataFolderOld))}
-
-##################################################
-## Old metadata associated with comparison data ##
-##################################################
+# Old metadata associated with comparison data
 metadataFileOldData <- list.files(
     path = params$pathDataFolderOld, 
     pattern = "metadata.yml", 
@@ -99,15 +93,14 @@ if(length(metadataFileOldData) > 0) {
   cat("The **metadata associated with the comparison data** are:\n\n")
   getMetadata(metadataFileOldData, namesInfo = namesInfo)
 }
-
 ```
 
 
-## Tutorial: Subject-level graphs and tables
+## Tutorial: Subject-level visualizations and tables {#tutorialSubjectLevel}
 
-Subject-level analyses (e.g. spaghettiplots, shiftplots, eDISH,...) are
-represented with crosslinked interactive graphs and tables. Patient profiles can
-be opened from the graphs as well as the tables. More detailed instructions can
+Subject-level analyses (e.g. spaghetti plots, shift plots, eDISH,...) are
+represented with interactive visualizations and tables. Patient profiles can
+be opened from the visualizations as well as the tables. More detailed instructions can
 be found in the screenshots below.
 
 ### Scatter plots and spaghetti plots
@@ -115,6 +108,7 @@ be found in the screenshots below.
 In the scatter and spaghetti plots of the reports, points are selectable
 and associated patient profiles (if available) are downloaded by pressing the 'P'
 key on your keyboard.
+![](figures/subjectPlots.png)
 
 Records selected on the visualizations are filtered on the interactive table
 available at the bottom of the visualization.
@@ -124,16 +118,20 @@ available at the bottom of the visualization.
 Patients profiles are downloaded when clicking on the
 subject identifier hyperlink in the table (if available).
 
-## Tutorial: Summarized visualizations.
+![](figures/subjectTables.png)
 
-Visualization of summary data (e.g. counts per category) follows the same
-principles as highlighted in "Tutorial: Subject-level graphs and tables", some
-specifics are mentioned below.  
+## Tutorial: Summarized visualizations and tables
 
-### Treemap graphs
+Summary data (e.g. counts per category) are displayed in interactive summary 
+visualizations and tables. They follow the same
+principles as highlighted in section \@ref(tutorialSubjectLevel). Functionalities 
+specific of these visualizations and tables are mentioned in sections \@ref(tutorialSummaryPlots) and
+\@ref(tutorialSummaryTables).  
+
+### Summary plots {#tutorialSummaryPlots}
 
 ![](figures/treemap.png)
 
-### Summary tables
+### Summary tables {#tutorialSummaryTables}
 
 ![](figures/summaryTables.png)
