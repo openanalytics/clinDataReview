@@ -10,6 +10,7 @@
     o processData: add examples in doc
     o plotTemplate: no failure if data is empty and tableParams is specified
     o update tutorial section and screenshots
+    o template: support multiple dataFileName
 1.2.3
     o clean exports: no exports of: 
       - addReferenceLinesClinDataPlot

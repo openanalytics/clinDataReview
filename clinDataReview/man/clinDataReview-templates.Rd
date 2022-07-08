@@ -22,7 +22,7 @@ This report compute counts of variable(s) of interest (with the \code{inTextSumm
 \item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
+\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
@@ -54,7 +54,7 @@ This report displays a listing of the variables and data of interest, displayed 
 \item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
+\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
@@ -93,7 +93,7 @@ This report visualizes input data with a function of the clinical data review pa
 \item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
+\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
 \item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'boxplotClinData' } , plotting function of the package to consider}
 \item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr \code{[parameterName]: !r-lazy [dataI]}}
@@ -113,7 +113,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
+\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
@@ -134,7 +134,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
 \item{\strong{\code{reportTitle}}: }{string , header title}
 \item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
+\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
 \item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
 \item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
 \item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}

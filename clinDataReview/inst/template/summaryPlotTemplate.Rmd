@@ -59,7 +59,7 @@ if(!exists("loopingTotal"))	loopingTotal <- TRUE
 library(clinDataReview)
 library(clinUtils)
 library(inTextSummaryTable)
-library(plyr)
+library(plyr)# for dlply, rbind.fill
 
 ```
 
@@ -81,7 +81,7 @@ cat(getMdHeader(title = reportTitle, level = reportTitleLevel))
 pathData <- file.path(pathDataFolder, dataFileName)
 
 dataAll <- clinUtils::loadDataADaMSDTM(pathData, verbose = FALSE)
-data <- dataAll[[1]]
+data <- do.call(plyr::rbind.fill, dataAll)
 
 # Extract label information
 labelVars <- attr(dataAll, "labelVars")

@@ -67,7 +67,7 @@ if(!exists("patientProfilePath"))	patientProfilePath <- NULL
 
 library(clinDataReview)
 library(clinUtils)
-library(plyr)
+library(plyr) # for dlply, rbind.fill
 
 if(exists("tableParams"))
 	library(inTextSummaryTable)
@@ -105,7 +105,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 			
 	pathData <- file.path(pathDataBatch, dataFileName)
 	dataAll <- loadDataADaMSDTM(pathData, verbose = FALSE)
-	data <- dataAll[[1]]
+	data <- do.call(plyr::rbind.fill, dataAll)
 	
 	# Extract label information
 	labelVars <- attr(dataAll, "labelVars")

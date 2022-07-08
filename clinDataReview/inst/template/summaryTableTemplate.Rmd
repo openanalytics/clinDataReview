@@ -72,7 +72,7 @@ if(!exists("loopingTotal"))	loopingTotal <- TRUE
 library(clinDataReview)
 library(clinUtils)
 library(inTextSummaryTable)
-library(plyr)
+library(plyr)# for dlply, rbind.fill
 library(tools)
 library(htmltools)
 
@@ -105,7 +105,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 	
 	pathData <- file.path(pathDataBatch, dataFileName)
 	dataAll <- clinUtils::loadDataADaMSDTM(pathData, verbose = FALSE)
-	data <- dataAll[[1]]
+	data <- do.call(plyr::rbind.fill, dataAll)
       
       # Extract label information
       labelVars <- attr(dataAll, "labelVars")

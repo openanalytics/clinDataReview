@@ -71,7 +71,7 @@ if(!exists("listingDocx"))	listingDocx <- FALSE
 library(clinUtils)
 library(inTextSummaryTable)
 library(clinDataReview)
-library(plyr)
+library(plyr)# for dlply, rbind.fill
 library(htmltools)
 
 ```
@@ -103,7 +103,7 @@ dataList <- sapply(names(pathsData), function(dataBatch) {
 	# Load data
 	pathData <- file.path(pathDataBatch, dataFileName)
 	dataAll <- clinUtils::loadDataADaMSDTM(pathData, verbose = FALSE)
-	data <- dataAll[[1]]
+	data <- do.call(plyr::rbind.fill, dataAll)
 	
 	# Extract label information
 	labelVars <- attr(dataAll, "labelVars")

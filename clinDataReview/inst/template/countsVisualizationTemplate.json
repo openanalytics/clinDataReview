@@ -27,8 +27,8 @@
       "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
     },
     "dataFileName" : {
-      "type": "string",
-      "doc": "name of the data file of interest"
+      "type": ["string", "array"],
+      "doc": "name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from."
     },
     "dataProcessing": {
       "type": "array",
