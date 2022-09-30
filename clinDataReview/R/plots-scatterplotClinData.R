@@ -42,8 +42,14 @@ scatterplotClinData <- function(
 	xLab = getLabelVar(xVar, labelVars = labelVars),
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetics specifications
-	aesPointVar = list(), 
-	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
+	aesPointVar = list(),
+	pointPars = list(),
+	aesLineVar = list(),
+	linePars = list(),
+	lineInclude = length(aesLineVar) > 0,
+	aesSmoothVar = list(),
+	smoothPars = list(),
+	smoothInclude = length( c( aesSmoothVar, smoothPars ) ) > 0,
 	aesLab,
 	# axis specification:
 	xTrans = "identity", yTrans = "identity",
@@ -71,6 +77,7 @@ scatterplotClinData <- function(
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
+  
 
 	if(missing(aesLab)){
 		
@@ -125,27 +132,41 @@ scatterplotClinData <- function(
 		hoverByVar = idVars
 	)
 	
+
 	# create static plot:
 	gg <- staticScatterplotClinData(
 		data = dataSharedData, 
 		# x/y variables:
-		xVar = xVar, yVar = yVar, 
-		xLab = xLab, yLab = yLab, 
+		xVar = xVar,
+		yVar = yVar, 
+		xLab = xLab,
+		yLab = yLab, 
 		# aesthetics specifications
-		aesPointVar = aesPointVar, 
-		aesLineVar = aesLineVar, lineInclude = lineInclude,
+		aesPointVar = aesPointVar,
+		pointPars = pointPars,
+		aesLineVar = aesLineVar,
+		linePars = linePars,
+		lineInclude = lineInclude,
+		aesSmoothVar = aesSmoothVar,
+		smoothPars = smoothPars,
+		smoothInclude = smoothInclude,
 		aesLab = aesLab,
-		scalePars = scalePars,
 		# axis specification:
-		xTrans = xTrans, yTrans = yTrans,
-		xPars = xPars, yPars = yPars,
+		xTrans = xTrans,
+		yTrans = yTrans,
+		xPars = xPars,
+		yPars = yPars,
 		xLabVars = xLabVars,
-		yLim = yLim, xLim = xLim, 
-		yLimExpandData = yLimExpandData, xLimExpandData = xLimExpandData,
+		yLim = yLim,
+		xLim = xLim, 
+		yLimExpandData = yLimExpandData,
+		xLimExpandData = xLimExpandData,
 		# general plot:
 		titleExtra = titleExtra,
 		title = title,
-		facetPars = facetPars, facetType = facetType,
+		facetPars = facetPars,
+		facetType = facetType,
+		scalePars = scalePars,
 		themePars = themePars,
 		refLinePars = refLinePars,
 		labelVars = labelVars,

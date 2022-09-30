@@ -18,6 +18,9 @@
       - formatDataForPlotClinData
       - getFctTypeReferenceLines
     o checkConfigFile: update test
+    o scatterplot:
+      - include smoothing layer
+      - include passing additional parameters via pointPars, linePars and smoothPars
 1.2.2
     o remove space before start chunk sessionInfo.Rmd
     o 'data visualization' vignette: include patient profiles only in interactive mode

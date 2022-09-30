@@ -185,6 +185,7 @@ scatterplotClinData(
     yVar = "LBSTRESN",
     aesPointVar = list(color = "TRTP", fill = "TRTP"),
     aesLineVar = list(group = "USUBJID", color = "TRTP"),
+    linePars = list(size = 0.5, alpha = 0.7),
     hoverVars = c("USUBJID", "VISIT", "ADY", "LBSTRESN", "TRTP"),
     labelVars = labelVars,
     xPars = list(breaks = visitLab, labels = names(visitLab)),

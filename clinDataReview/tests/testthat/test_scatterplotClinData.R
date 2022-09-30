@@ -81,6 +81,190 @@ test_that("A scatterplot is correctly created", {
             
 })
 
+
+
+
+test_that('Point parameters are set correctly in a scatterplot', {
+
+  pl <- scatterplotClinData(
+    data = exampleDataScatter(),
+    xVar = "time", yVar = "response",
+    aesPointVar = list(color = "treat"),
+    pointPars = list( color = 'red'),
+    idVar = "subj"
+  )
+  
+  plData <- plotly_build(pl)$x$data
+  plmarkerData <- plData[[ 
+    which(
+      sapply(plData, function(x){
+        x$mode == 'markers'} )
+    )
+  ]]
+  # test color parameter correclty
+  colorRGB <- sub("^rgba\\((\\d{1,},\\d{1,},\\d{1,}),.+", "\\1\\2\\3", plmarkerData$marker$line$color)
+  expect_setequal(object = colorRGB, expected = paste(col2rgb('red'), collapse =","))
+  
+  
+})
+
+
+test_that('Line parameters are set correctly in a scatterplot', {
+ 
+   pl <- scatterplotClinData(
+    data = exampleDataScatter(),
+    xVar = "time", yVar = "response",
+    aesPointVar = list(color = "treat"),
+    aesLineVar = list(group = 'subj'),
+    linePars = list(linetype='dotted'),
+    idVar = "subj"
+  )
+   
+  plData <- plotly_build(pl)$x$data
+  
+  pllineData <- plData[[ 
+    which(
+      sapply(plData, function(x){
+        x$mode == 'lines'} )
+    )
+  ]]
+  
+  expect_equal(pllineData$line$dash , 'dot')
+  
+})
+
+
+test_that("Smoothing variables are set correctly in a scatterplot", {
+  
+  exampleData <- exampleDataScatter()
+  
+  plSmoothLayer <- scatterplotClinData(
+    data = exampleData,
+    xVar = "time", yVar = "response",
+    aesSmoothVar = list(group = 'subj'),
+    idVar = "subj",
+    smoothPars = list(se=FALSE)
+  )
+  
+  plSmoothData <- plotly_build(plSmoothLayer)$x$data
+  
+  
+  plNoSmooth <- scatterplotClinData(
+    data = exampleData,
+    xVar = "time", yVar = "response",
+    idVar = "subj")
+    
+
+  plNoSmoothData <- plotly_build(plNoSmooth)$x$data
+  
+  # test smoothing line added for each subject
+  lineData <- plSmoothData[[which(sapply(plSmoothData, `[[`, "mode") == "lines")]]
+  lineKeys <-  unique(unlist(lineData$key))
+  lineKeys <-  lineKeys[!is.na(lineKeys)]
+  expect_equal(
+    object = lineKeys,
+    expected = unique(exampleData$subj)
+  )
+})
+
+
+test_that("Smoothing parameters are set correctly in a scatterplot", {
+  
+  exampleData <- exampleDataScatter()
+  
+  plSmoothLayer <- scatterplotClinData(
+    data = exampleData,
+    xVar = "time", yVar = "response",
+    aesPointVar = list(color = "treat"),
+    pointPars = list( color = 'red'),
+    aesLineVar = list(group = 'subj'),
+    linePars = list(linetype='dotted'),
+    aesSmoothVar = list(group = 'subj'),
+    smoothPars = list(col='green', se=TRUE) ,
+    idVar = "subj")
+  
+  plSmoothData <- plotly_build(plSmoothLayer)$x$data
+  
+  # no standard error means one plotting layer less
+  
+  plSmoothNoSE <- scatterplotClinData(
+    data = exampleData,
+    xVar = "time", yVar = "response",
+    aesPointVar = list(color = "treat"),
+    pointPars = list( color = 'red'),
+    aesLineVar = list(group = 'subj'),
+    linePars = list(linetype='dotted'),
+    aesSmoothVar = list(group = 'subj'),
+    smoothPars = list(col='green', se=FALSE),
+    idVar = "subj"
+  ) 
+
+  plSmoothNoSEData <-  plotly_build(plSmoothNoSE)$x$data
+  
+  # test that error band parameters added 
+  expect_gt(
+    length(plSmoothData),
+    length(plSmoothNoSEData)
+  )
+  
+  # test that color is smoothing curves is set correctly
+  
+  isLine <- sapply(plSmoothNoSEData, `[[`, "mode") == "lines"
+  colors <- sapply(plSmoothNoSEData[isLine], function(x) x$line$color)
+  colorsRGB <- sub("^rgba\\((\\d{1,},\\d{1,},\\d{1,}),.+", "\\1\\2\\3", colors)[-1]
+  
+  expect_setequal(object = colorsRGB, expected = paste(col2rgb('green'), collapse =","))
+  
+}
+)
+
+test_that("Smoothing layer can be disabled in scatterplot", {
+  
+  exampleData <- exampleDataScatter()
+  
+  plWithSmoothLayer <- scatterplotClinData(
+    data = exampleData,
+    xVar = "time", yVar = "response",
+    aesPointVar = list(color = "treat"),
+    pointPars = list( color = 'red'),
+    aesLineVar = list(group = 'subj'),
+    linePars = list(linetype='dotted'),
+    aesSmoothVar = list(group = 'subj'),
+    smoothPars = list(col='green', se=TRUE),
+    smoothInclude = TRUE,
+    idVar = "subj"
+  )
+
+  dataWithSmooth <- plotly_build(plWithSmoothLayer)$x$data
+  
+  plNoSmoothLayer <- scatterplotClinData(
+    data = exampleData,
+    xVar = "time", yVar = "response",
+    aesPointVar = list(color = "treat"),
+    pointPars = list( color = 'red'),
+    aesLineVar = list(group = 'subj'),
+    linePars = list(linetype='dotted'),
+    aesSmoothVar = list(group = 'subj'),
+    smoothPars = list(col='green', se=TRUE),
+    smoothInclude = FALSE,
+    idVar = "subj"
+    )
+  
+  dataNoSmooth <- plotly_build(plNoSmoothLayer)$x$data
+
+  
+  
+  # test that smoothing layer not included when smoothInclude = FALSE
+  expect_equal(
+    length(dataWithSmooth),
+    length(dataNoSmooth) + 2 # one layer for smooth, 1 for se
+  )
+}
+)
+  
+
+
+
 test_that("Reference lines are correctly implemented in a scatterplot", {
 			
 	data <- data.frame(

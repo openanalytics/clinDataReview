@@ -8,11 +8,20 @@
 #' Color is used for the outside of the points, fill for the inside
 #' and the hover. Usually, you might want to specify both
 #' filling and coloring.
+#' @param pointPars List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_point}},
+#'  defaults to empty list.
 #' @param aesLineVar List with specification of aesthetic variable(s),
-#' for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
+#' for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_line}},
 #' e.g. \code{list(group = "USUBJID")}.
+#' @param linePars List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_line}},
+#'  defaults to empty list.
 #' @param lineInclude Logical, if TRUE (by default if \code{aesLineVar} is specified)
 #' include a scatterplot.
+#' @param aesSmoothVar  List with specification of aesthetic variable(s),
+#' for the smoothing layer, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_smooth}} defaults to empty list.
+#' @param smoothPars List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_smooth}},
+#'  defaults to empty list. Note this parameter overwrites other parameters set by \code{aesSmoothVar}.
+#' @param smoothInclude Logical, if TRUE (by default if one of \code{aesSmoothVar or smoothPars} is non-empty)
 #' @param aesLab Named character vector with labels for each aesthetic variable.
 #' @param xTrans,yTrans Transformation for the x/y- variables,
 #' passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
@@ -50,29 +59,40 @@
 #' @inheritParams clinDataReview-common-args
 #' @inheritParams setPaletteStaticScatterplotClinData
 #' @return \code{\link[ggplot2]{ggplot}} object
-#' @importFrom ggplot2 sym ggplot aes geom_point geom_col geom_line 
+#' @importFrom ggplot2 sym ggplot aes geom_point geom_col geom_line geom_smooth
 #' scale_discrete_manual scale_x_continuous scale_y_continuous 
 #' scale_x_discrete scale_y_discrete
 #' labs ggtitle facet_wrap facet_grid theme_bw theme
 #' @importFrom clinUtils getLabelVar
 #' @importFrom stats setNames
-#' @author Laure Cougnaud
+#' @author Laure Cougnaud, Adriaan Blommaert
 staticScatterplotClinData <- function(
 	data, 
 	# x/y variables:
-	xVar, yVar, 
+	xVar,
+	yVar, 
 	xLab = getLabelVar(xVar, labelVars = labelVars),
 	yLab = getLabelVar(yVar, labelVars = labelVars), 
 	# aesthetics specifications
-	aesPointVar = list(), 
-	aesLineVar = list(), lineInclude = length(aesLineVar) > 0,
+	aesPointVar = list(),
+	pointPars = list(),
+	aesLineVar = list(),
+	linePars = list(),
+	lineInclude = length( c(aesLineVar, linePars ) ) > 0,
+	aesSmoothVar = list(),
+	smoothPars = list(),
+	smoothInclude = length( c( aesSmoothVar, smoothPars ) ) > 0,
 	aesLab,
 	# axis specification:
-	xTrans = "identity", yTrans = "identity",
-	xPars = list(), yPars = list(),
+	xTrans = "identity",
+	yTrans = "identity",
+	xPars = list(),
+	yPars = list(),
 	xLabVars = NULL,
-	yLim = NULL, xLim = NULL, 
-	yLimExpandData = TRUE, xLimExpandData = TRUE,
+	yLim = NULL,
+	xLim = NULL, 
+	yLimExpandData = TRUE,
+	xLimExpandData = TRUE,
 	# general plot:
 	titleExtra = NULL,
 	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
@@ -83,7 +103,9 @@ staticScatterplotClinData <- function(
 	refLinePars = NULL,
 	labelVars = NULL,
 	hoverVars = NULL,
-	geomType = c("point", "col")){
+	geomType = c("point", "col")
+	){
+  
 
 	facetType <- match.arg(facetType)
 	geomType <- match.arg(geomType)
@@ -118,7 +140,7 @@ staticScatterplotClinData <- function(
 	for(aesType in c("color", "fill", "linetype", "shape")){
 		aesOpt <- ifelse(aesType == "fill", "color", aesType)
 		aesTypeVar <- if(aesType == "color"){c("color", "colour")}else{aesType}
-		aesVar <- unique(unlist(c(aesPointVar[aesTypeVar], aesLineVar[aesTypeVar])))
+		aesVar <- unique(unlist(c(aesPointVar[aesTypeVar], aesLineVar[aesTypeVar], aesSmoothVar[aesTypeVar])))
 		resPalette <- setPaletteStaticScatterplotClinData(
 			data = dataContent,
 			var = aesVar, aes = aesType, 
@@ -139,41 +161,38 @@ staticScatterplotClinData <- function(
 #		if(!"group" %in% names(aesLineVar)){
 #			warning("'group' should be specified in the 'aesLineVar'; no line is created.")
 #		}else{
-			aesLineVar <- sapply(aesLineVar, sym, simplify = FALSE)
-			argsGeomLine <- c(
-				list(mapping = do.call(aes, aesLineVar)),
-				geomAes[c("color", "colour", "linetype")]
-			)
-			argsGeomLine <- Filter(Negate(is.null), argsGeomLine)
-			gg <- gg + do.call(geom_line, argsGeomLine)
+	    gg <- addLayerToScatterPlot(
+	      gg,
+	      aesVar = aesLineVar,
+	      pars = linePars,
+	      generalPars = geomAes[c("color", "colour", "linetype")],
+	      layerFunction = geom_line
+	      )
 #		}
 	}
 	
 	## scatterplot
-	if(length(aesPointVar) > 0)
-		aesPointVar <- sapply(aesPointVar, sym, simplify = FALSE)
-	aesGeom <- c(aesPointVar, 
-		if(!is.null(hoverVars))	
-			list(text = sym("hover"))
-	)
-	argsGeom <- c(
-		list(mapping = do.call(aes, aesGeom)),
-		geomAes[c("color", "colour", "fill", "shape")]
-	)
-	argsGeom <- Filter(Negate(is.null), argsGeom)
-	geomFct <- switch(geomType, point = geom_point, col = geom_col)
 	
-	# Expected warning:
-	# Hover is set via the 'text' aesthetic in ggplot
-	# to have it available in plotly
-	# but text aesthetic is not used by geom_point
-	gg <- withCallingHandlers(
-		expr = {gg + do.call(geomFct, argsGeom)},
-		warning = function(w){
-			if(grepl("unknown aesthetics.+text", conditionMessage(w)))
-				invokeRestart("muffleWarning")
-		}
-	)
+	gg <- addLayerToScatterPlot(
+	  gg,
+	  aesVar = c(aesPointVar, if(!is.null(hoverVars))	{list(text = sym("hover"))}),
+    pars = pointPars,
+	  generalPars = geomAes[c("color", "colour", "fill", "shape")],
+	  layerFunction = switch(geomType, point = geom_point, col = geom_col),
+	  useHandlers = TRUE
+	  )
+	
+	
+	## add smoothing layer
+	if(smoothInclude){
+	  gg <- addLayerToScatterPlot(
+	    gg,
+	    aesVar = aesSmoothVar,
+	    pars = smoothPars,
+	    generalPars = geomAes[c("color", "colour", "linetype")],
+	    layerFunction = geom_smooth
+	  )
+	}
 	
 	# aesthetic scales
 	for(scaleParsI in scalePars){
@@ -269,6 +288,8 @@ staticScatterplotClinData <- function(
 		refLinePars = refLinePars, facetPars = facetPars
 	)
 	
+
+	
 	attr(gg, "metaData") <- metadata
 	
 	return(gg)
@@ -277,6 +298,7 @@ staticScatterplotClinData <- function(
 
 #' Get standard palette for the \code{staticScatterplotClinData}
 #' function.
+#' 
 #' @param data Data.frame with data for the plot.
 #' @param var Character vector with variable(s) to consider.
 #' If multiple, currently only the first one is considered.
@@ -350,3 +372,44 @@ setPaletteStaticScatterplotClinData <- function(
 	return(list(scalePars = scalePars, geomAes = geomAes))
 	
 }
+
+
+#' Helper function to add layer to scatter plot
+#'
+#' @param gg \code{\link[ggplot2]{ggplot}} object
+#' @param aesVar layers specific aesthetics list of layer specific aesthetics
+#' @param pars list of parameters specific to the layer \code{\link[ggplot2]{aes}}
+#' @param generalPars overall, not layer specific parameters can be overwritten by \code{pars} 
+#' @param layerFunction function to use for adding the layer e.g. \code{\link[ggplot2]{geom_line}}
+#' @param useHandlers if \code{TRUE} we use handlers to repress the expected warning:
+#'  \code{Hover is set via the 'text' aesthetic in ggplot}, we need to pass this aesthetic to have it available
+#'  in plotly even though it is not used by geom_point. Defaults to \code{FALSE}
+#' @author Adriaan Blommaert Laure Cougnaud
+#' @importFrom utils modifyList
+#' @importFrom ggplot2 sym aes
+#' @return \code{\link[ggplot2]{ggplot}} object
+addLayerToScatterPlot <- function(gg, aesVar, pars, generalPars, layerFunction, useHandlers=FALSE){
+  
+  if( length(aesVar) > 0  ){
+    aesVar <- sapply(aesVar, sym, simplify = FALSE)
+  }
+  argsGeom <- modifyList(generalPars, pars)
+  argsGeom <- c(
+    list(mapping = do.call(aes, aesVar)),
+    argsGeom
+  )
+  argsGeom <- Filter(Negate(is.null), argsGeom)
+  if(useHandlers){
+    gg <- withCallingHandlers(
+      expr = {gg + do.call(layerFunction, argsGeom)},
+      warning = function(w){
+        if(grepl("unknown aesthetics.+text", conditionMessage(w)))
+          invokeRestart("muffleWarning")
+      }
+    )
+  } else {
+    gg <- gg + do.call(layerFunction, argsGeom)
+  }
+  gg
+}
+

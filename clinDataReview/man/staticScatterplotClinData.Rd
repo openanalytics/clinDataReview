@@ -11,8 +11,13 @@ staticScatterplotClinData(
   xLab = getLabelVar(xVar, labelVars = labelVars),
   yLab = getLabelVar(yVar, labelVars = labelVars),
   aesPointVar = list(),
+  pointPars = list(),
   aesLineVar = list(),
-  lineInclude = length(aesLineVar) > 0,
+  linePars = list(),
+  lineInclude = length(c(aesLineVar, linePars)) > 0,
+  aesSmoothVar = list(),
+  smoothPars = list(),
+  smoothInclude = length(c(aesSmoothVar, smoothPars)) > 0,
   aesLab,
   xTrans = "identity",
   yTrans = "identity",
@@ -54,12 +59,26 @@ Color is used for the outside of the points, fill for the inside
 and the hover. Usually, you might want to specify both
 filling and coloring.}
 
+\item{pointPars}{List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_point}},
+defaults to empty list.}
+
 \item{aesLineVar}{List with specification of aesthetic variable(s),
-for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
+for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_line}},
 e.g. \code{list(group = "USUBJID")}.}
+
+\item{linePars}{List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_line}},
+defaults to empty list.}
 
 \item{lineInclude}{Logical, if TRUE (by default if \code{aesLineVar} is specified)
 include a scatterplot.}
+
+\item{aesSmoothVar}{List with specification of aesthetic variable(s),
+for the smoothing layer, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_smooth}} defaults to empty list.}
+
+\item{smoothPars}{List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_smooth}},
+defaults to empty list. Note this parameter overwrites other parameters set by \code{aesSmoothVar}.}
+
+\item{smoothInclude}{Logical, if TRUE (by default if one of \code{aesSmoothVar or smoothPars} is non-empty)}
 
 \item{aesLab}{Named character vector with labels for each aesthetic variable.}
 
@@ -150,5 +169,5 @@ by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 Scatterplot of variables of interest for clinical data visualization
 }
 \author{
-Laure Cougnaud
+Laure Cougnaud, Adriaan Blommaert
 }

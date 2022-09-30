@@ -11,8 +11,13 @@ scatterplotClinData(
   xLab = getLabelVar(xVar, labelVars = labelVars),
   yLab = getLabelVar(yVar, labelVars = labelVars),
   aesPointVar = list(),
+  pointPars = list(),
   aesLineVar = list(),
+  linePars = list(),
   lineInclude = length(aesLineVar) > 0,
+  aesSmoothVar = list(),
+  smoothPars = list(),
+  smoothInclude = length(c(aesSmoothVar, smoothPars)) > 0,
   aesLab,
   xTrans = "identity",
   yTrans = "identity",
@@ -69,12 +74,26 @@ Color is used for the outside of the points, fill for the inside
 and the hover. Usually, you might want to specify both
 filling and coloring.}
 
+\item{pointPars}{List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_point}},
+defaults to empty list.}
+
 \item{aesLineVar}{List with specification of aesthetic variable(s),
-for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
+for the line, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_line}},
 e.g. \code{list(group = "USUBJID")}.}
+
+\item{linePars}{List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_line}},
+defaults to empty list.}
 
 \item{lineInclude}{Logical, if TRUE (by default if \code{aesLineVar} is specified)
 include a scatterplot.}
+
+\item{aesSmoothVar}{List with specification of aesthetic variable(s),
+for the smoothing layer, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_smooth}} defaults to empty list.}
+
+\item{smoothPars}{List with parameters other than aesthetic variables to pass to \code{\link[ggplot2]{geom_smooth}},
+defaults to empty list. Note this parameter overwrites other parameters set by \code{aesSmoothVar}.}
+
+\item{smoothInclude}{Logical, if TRUE (by default if one of \code{aesSmoothVar or smoothPars} is non-empty)}
 
 \item{aesLab}{Named character vector with labels for each aesthetic variable.}
 
@@ -289,6 +308,8 @@ scatterplotClinData(
 	labelVars = labelVars
 )
 
+
+
 \dontrun{
 
 # add number of subjects below each visit
@@ -393,6 +414,42 @@ scatterplotClinData(
 			label = "Reference Range Upper Limit")
 	)
 )
+
+
+## scatterplot with smoothing layer
+
+data <- data.frame(
+  subj = c(rep('subj1', 20), rep('subj2', 20)),
+  time = rep( 1:20 , 2 ),
+  response =  c(1:20, 50:31) + runif(min =-3, max = +3, 40),
+  treat =  rep(c('trA', 'trB'), 20),
+  stringsAsFactors = FALSE
+)
+
+# smoothing per subject
+smoothPlot <- scatterplotClinData(
+  data = data,
+  xVar = "time", yVar = "response",
+  aesPointVar = list(color = "treat"),
+  aesLineVar = list(group = 'subj'),
+  linePars = list(linetype='dotted'),
+  aesSmoothVar = list(color='subj', group='subj'), 
+  smoothPars =  list(alpha=0.5, size=0.3 , se=TRUE, color = 'black')
+)
+smoothPlot
+
+
+# plot smoothing over subjects
+smoothPlot <- scatterplotClinData(
+  data = data,
+  xVar = "time", yVar = "response",
+  aesPointVar = list(color = "treat"),
+  aesLineVar = list(group = 'subj'),
+  linePars = list(linetype='dotted'),
+  aesSmoothVar = list(), 
+  smoothPars =  list(alpha=0.5, size=0.3 , se=TRUE, color = 'black')
+)
+smoothPlot
 
 }
 }
