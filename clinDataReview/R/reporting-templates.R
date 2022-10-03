@@ -22,7 +22,7 @@ checkConfigFile <- function(configFile, configSpecFile, configDir = "./config"){
 
 	# import JSON schema file
 	# str(jsonlite::fromJSON(configSpecFile))
-	jsonSchV <- jsonvalidate::json_validator(configSpecFile)
+	jsonSchV <- jsonvalidate::json_validator(configSpecFile, engine = "ajv" )
 
 	# validate output
 	resValidate <- jsonSchV(paramsJSON, verbose = TRUE, error = TRUE)

@@ -18,8 +18,6 @@ test_that("A config file with all required parameters is checked successfully", 
 		configFileDivision
 	)
 	
-	# no message for migration from imjv -> ajv validator
-	options(jsonvalidate.no_note_imjv = TRUE)
 	expect_silent(
 		checkConfigFile(
 			configFile = basename(configFileDivision), 
@@ -59,7 +57,7 @@ test_that("A chapter split is correctly specified as a character with an expecte
   configFileDivision <- tempfile(pattern = "configDivision", fileext = ".yml")
   write_yaml(
     x = list(reportTitle = "Study name", split_by = 'chapter', 
-      template = "divisionTemplate", templatePackage = "clinDataReview"),
+      template = "divisionTemplate.Rmd", templatePackage = "clinDataReview"),
     file = configFileDivision
   )
   
@@ -82,7 +80,7 @@ test_that("An error is generated if the chapter split is specified as a characte
   configFileDivision <- tempfile(pattern = "configDivision", fileext = ".yml")
   write_yaml(
     x = list(reportTitle = "Study name", split_by = '1', 
-      template = "divisionTemplate", templatePackage = "clinDataReview"),
+      template = "divisionTemplate.Rmd", templatePackage = "clinDataReview"),
     file = configFileDivision
   )
   
@@ -105,7 +103,7 @@ test_that("A chapter split is correctly specified as an integer with an expected
   configFileDivision <- tempfile(pattern = "configDivision", fileext = ".yml")
   write_yaml(
     x = list(reportTitle = "Study name", split_by = 7L, 
-      template = "divisionTemplate", templatePackage = "clinDataReview"),
+      template = "divisionTemplate.Rmd", templatePackage = "clinDataReview"),
     file = configFileDivision
   )
   
@@ -129,7 +127,7 @@ test_that("An error is generated if the chapter split is specified as an integer
   configFileDivision <- tempfile(pattern = "configDivision", fileext = ".yml")
   write_yaml(
     x = list(reportTitle = "Study name", split_by = 8L, 
-      template = "divisionTemplate", templatePackage = "clinDataReview"),
+      template = "divisionTemplate.Rmd", templatePackage = "clinDataReview"),
     file = configFileDivision
   )
   

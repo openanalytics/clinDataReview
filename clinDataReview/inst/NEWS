@@ -20,6 +20,7 @@
     o template: support multiple dataFileName
     o time profile plot: add colorVar to default hoverVars
     o selection button for time profile, scatterplot, barplot and errorbar plots
+    o checkConfigFile: use 'ajv' engine to fix note meta schema version
 1.2.3
     o clean exports: no exports of: 
       - addReferenceLinesClinDataPlot
