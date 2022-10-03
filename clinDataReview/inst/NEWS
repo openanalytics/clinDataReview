@@ -1,4 +1,11 @@
 1.2.3.9000
+    o render clinical data review report:
+      - new implementation to support: parallelization ('nCores' and 'parallel'), and 'split_by' by config file
+      - internal functions: convertMdToHTML and checkReportTitles
+      - a warning is returned when report fails and inputDir is different than working dir
+      - Rmd -> Md output is printed during chapter run, not at the end
+    o merge session infos: fix when session infos have different elements
+    o checkConfigFile: add configDir parameter for consistency with other fcts
     o filterData: 
       - post-processing function (postFct)
       - grouping variable:

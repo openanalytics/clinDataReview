@@ -93,11 +93,12 @@ There should be a `config` directory containing:
     + `study` (optional): study name
     + `version` (optional): data version, e.g. batch
     
-* a configuration file for each chapter, as: _config-[chapterName].yml_.
-This file should contain input parameters
-  containing:
+* a configuration file for each chapter, as: _config-[chapterName].yml_.  
+This file should contain input parameters containing:
     + `template`: filename of the _Rmd_ file to consider for this chapter
-    + `templatePackage`: name of the R package where the _Rmd_ should be extracted from
+    + `templatePackage`: name of the R package where the _Rmd_ should be extracted from.  
+    If not specified, the template _Rmd_ file should be available in the input
+    directory (`inputDir`).
     + template-specific parameters:  
     For the template reports available in the `clinDataReview` package, these include:
         + `reportTitle`: chapter title, used for section header
@@ -107,9 +108,7 @@ This file should contain input parameters
         +  extra parameters, accessed inside the template via
       `params$`
       
-Please see the `? clinDataReview-templates` documentation for further information
-on the template reports available in the `clinDataReview` package, and their
-input parameters.
+Please see the section [Template reports](#template-reports) for details on the template reports.
         
 ## Output
 
@@ -136,13 +135,14 @@ A folder of intermediary results ('interim' by default) containing:
 the  _Javascript_ libraries (via `knit_meta` object) and
 session information required for each report part
     
-# Template reports
+# Template reports {#template-reports}
 
 A set of template reports are available in the `clinDataReview` package
 itself.
 
-**The full list of the reports and the corresponding input parameters is
-available at: `? `clinDataReview-templates` `**.
+The full list of the reports and the corresponding input parameters is
+available at:  
+**``? `clinDataReview-templates` ``** (please note the backticks!).
 
 To use a template available in the package for one of your report, your config
 file should contain the corresponding name of the template via the `template`
@@ -158,6 +158,9 @@ reportTitle: "Title for a chapter"
 reportTitleLevel: 1
 ```
 
+Please note that you can create your own template reports and store
+it in your custom R package (in a 'inst/template' folder).
+
 # Render a clinical data review report
 
 ## Production
@@ -172,8 +175,7 @@ report for production**.
 clinDataReview::render_clinDataReviewReport()
 
 ```
-The `render_clinDataReviewReport` creates several html files, one per
-section/subsection.
+The `render_clinDataReviewReport` creates several html files, one per configuration file, split based on the `split_by` parameter.
 
 To open the full report, the user should open the _introduction.html_ file.
 
@@ -183,7 +185,7 @@ to guide the end-user to the opening of the report.
 ### Create redirect page
 
 A convenient way to store all html files into one location, and have only one
-page to look for to open the report is the function 
+page to look for to open the report is the function: 
 
 ```{r createRedirectPage, eval = FALSE}
 
@@ -260,11 +262,11 @@ clinDataReview::render_clinDataReviewReport(configFiles = list.files(pattern = "
 #### Create the final clinical data report from the Markdown reports
 
 To convert all created _Markdown_ files to HTML, the dedicated function
-`convertMdToHtml` can be used.
+`postProcessReport` can be used.
 
-```{r convertMdToHtml, eval = FALSE}
+```{r postProcessReport, eval = FALSE}
 
-convertMdToHtml()
+postProcessReport()
 
 ```
 
@@ -295,6 +297,55 @@ bookdown::render_book(input = params$template, preview = TRUE)
 bookdown::render_book(input = c("index.Rmd", params$template), preview = TRUE)
 
 ```
+
+## Optimization for big clinical trial data
+
+### Optimize the report creation
+
+The creation of the report can be time-consuming for big clinical trial data.
+
+The creation of the report is speed up via the use of the `nCores` parameter.
+If specified, the creation of the Markdown file corresponding to each config file,
+and the creation of the HTML file for each (split) Markdown file are run in 
+parallel.
+
+```{r, eval = FALSE}
+clinDataReview::render_clinDataReviewReport(nCores = 4)
+```
+
+### Optimize the report loading time
+
+The report can take some time to load in the browser for big clinical trial data.
+
+The loading time can be improved by splitting the HTML page into smaller HTML pages,
+via the `split_by` parameter. This can be set at a level 7 of sectioning 
+(level 1 corresponds to a chapter), and for a specific part of the report,
+corresponding to a specific config file.
+
+```{js, eval = FALSE}
+template: plotTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: 'Laboratory profiles'
+reportTitleLevel: 2
+split_by: 4
+loopingVar: ["LBCAT", "LBTEST"]
+```
+_Example of config file with the use of the `split_by` parameter_
+
+In the example above, the report contains a section titled: 
+'2.1 Laboratory profiles' (level 2 of sectioning via the `reportTitleLevel` parameter), containing a subsection for each category of laboratory parameter (`LBCAT`) and a (nested) subsubsection for each laboratory test (`LBTEST`).  
+For example, this report can contain the subsubsection: '2.1.1.1 Alanine Aminotransferase' with
+the laboratory profile for the Alanine Aminotransferase laboratory parameter.
+
+This chapter is split at level 4 of sectioning: [level 2 for the title + 2 levels for the `loopingVar` variables], so the subsubsections containing the content for a laboratory parameter are available in separate HTML pages.
+
+### Optimize the report structure
+
+In case a lot of sections with interactive plots are created via the `loopingVar` parameter, the table of contents can be quite extensive.
+
+An alternative is to create a selection box (instead of a section) to select/filter the data
+of the plot based on grouping of a specific variable, via the `selectVars`
+parameter in the plotting function.
 
 # Appendix
 

@@ -40,12 +40,12 @@ of such outputs in a Rmarkdown report, with an appropriate title.
 \seealso{
 Other clinical data reporting: 
 \code{\link{checkReportTitles}()},
-\code{\link{convertMdToHtml}()},
 \code{\link{forceParams}()},
 \code{\link{getMdHeader}()},
 \code{\link{getParamsFromConfig}()},
 \code{\link{gitbook_clinDataReview_report}()},
 \code{\link{html_clinDataReview_report}()},
+\code{\link{postProcessReport}()},
 \code{\link{render_clinDataReviewReport}()}
 }
 \author{

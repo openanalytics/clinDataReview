@@ -2,7 +2,8 @@
 template: plotTemplate.Rmd
 templatePackage: clinDataReview
 reportTitle: Laboratory profiles by visit
-reportTitleLevel: 1
+reportTitleLevel: 2
+split_by: 3
 
 # Dataset of interest
 dataFileName: lb.xpt
@@ -30,7 +31,7 @@ tableProcessing:
       varFct: 'paste0(ARMCD, ": N = ", n)'
 
 # Looping parameters
-loopingVar: "LBTEST"
+loopingVar: ["LBCAT", "LBTEST"]
 
 # Plot parameters
 plotFunction: "scatterplotClinData"

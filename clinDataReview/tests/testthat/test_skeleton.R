@@ -93,6 +93,7 @@ test_that("A skeleton report is successfully executed", {
 				inputDir = dirSkeleton,
 				outputDir = file.path(dirSkeleton, "report"), 
 				intermediateDir = file.path(dirSkeleton, "interim"),
+				# configFiles = "config-alert-division.yml",
 				quiet = TRUE # suppress printing of pandoc cmd line
 			)
 		),

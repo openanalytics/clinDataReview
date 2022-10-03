@@ -5,14 +5,20 @@
 \title{Check a configuration file (in _YAML_ format)
 based on a requirement file in JSON Schema format.}
 \usage{
-checkConfigFile(configFile, configSpecFile)
+checkConfigFile(configFile, configSpecFile, configDir = "./config")
 }
 \arguments{
-\item{configFile}{String with name of the config
-file of interest in YAML format.}
+\item{configFile}{path to the config file}
 
-\item{configSpecFile}{String with name of the config file
+\item{configSpecFile}{String with path to the file
 containing requirements in JSON Schema format.}
+
+\item{configDir}{String with directory with config files,
+by default a 'config' folder in \code{inputDir}.\cr
+It should contain a general 'config.yml' file and dedicated
+'config-[X].yml' for each chapter.
+The order of each chapter is specified in the 'config' slot in the general 
+general 'config.yml'.}
 }
 \value{
 No returned value, an error message is printed

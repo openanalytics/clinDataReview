@@ -1,9 +1,9 @@
 #' Check a configuration file (in _YAML_ format)
 #' based on a requirement file in JSON Schema format.
-#' @param configFile String with name of the config
-#' file of interest in YAML format.
-#' @param configSpecFile String with name of the config file
+#' @param configSpecFile String with path to the file
 #' containing requirements in JSON Schema format.
+#' @param configFile path to the config file
+#' @inheritParams clinDataReview-common-args-report
 #' @return No returned value, an error message is printed
 #' in the console if the configuration file doesn't comply
 #' to the specified specifications.
@@ -12,10 +12,10 @@
 #' @importFrom jsonlite toJSON
 #' @importFrom jsonvalidate json_validator
 #' @export
-checkConfigFile <- function(configFile, configSpecFile){
+checkConfigFile <- function(configFile, configSpecFile, configDir = "./config"){
 	
 	# import parameters from specified config file
-	params <- read_yaml(file = configFile)
+	params <- read_yaml(file = file.path(configDir, configFile))
 	
 	# convert to JSON file
 	paramsJSON <- jsonlite::toJSON(params, auto_unbox = TRUE)
@@ -88,7 +88,6 @@ createTemplateDoc <- function(
 	names(templateSpecFilePaths) <- getBaseName(templateSpecFilePaths, type = "spec file")
 	
 	docRox2 <- lapply(names(templateFiles), function(template){
-				
 		fileSpecPath <- templateSpecFilePaths[template]
 		if(!is.na(fileSpecPath)){
 			
@@ -152,6 +151,7 @@ createTemplateDoc <- function(
 #' This will combined with the JSON schema 'title' tag if this is specified.
 #' is not available.
 #' @return Character vector with R documentation for the specified JSON schema.
+#' @importFrom utils hasName
 #' @author Laure Cougnaud
 JSONSchToRd <- function(JSONSch, title = NULL){
 	
@@ -169,8 +169,71 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 		return(c("\\itemize{", x, "}"))
 	}
 	
+	getElement <- function(param){
+	  
+	  param <- param[!sapply(param, function(x) is.null(x) || is.na(x))]
+	  
+	  pDocVect <- c()
+	
+  	# type(s)
+  	if(hasName(param, "type"))
+  	  pDocVect <- c(pDocVect, paste(param$type, collapse = " or "))
+  	
+  	# constant
+  	if(hasName(param, "const")){
+  	  pDocVect <- c(pDocVect, paste("string set to:", shQuote(param$const)))
+  	}
+  	
+  	# for list ('object'): type of elements in the list
+  	if(hasName(param, "items")){
+  	  
+  	  items <- param[["items"]]
+  	  
+  	  if(hasName(items, "type"))
+  	    pDocVect <- c(pDocVect, paste0("of ", items$type, "(s)"))
+  	  
+  	  # for array of object, might be nested
+  	  pDocVect <- c(pDocVect, JSONSchToRd(JSONSch = items))
+  	  
+  	}
+  	
+  	# for array: min/max number of items
+  	if(any(c("minItems", "maxItems") %in% names(param))){
+  	  itemSize <- paste(
+  	    "of length:", toString(c(
+  	      if(!is.null(param$minItems))	paste("minimum", param$minItems),
+  	      if(!is.null(param$maxItems))	paste("maximum", param$maxItems)
+  	    ))
+  	  )
+  	  pDocVect <- c(pDocVect, itemSize)
+  	}
+  	
+  	# for integer/numeric: min/max
+  	if(any(c("minimum", "maximum") %in% names(param))){
+  	  itemSize <- paste(
+  	    "of length:", toString(c(
+  	      if(!is.null(param$minimum))	paste("minimum", param$minimum),
+  	      if(!is.null(param$maximum))	paste("maximum", param$maximum)
+  	    ))
+  	  )
+  	  pDocVect <- c(pDocVect, itemSize)
+  	}
+  	
+  	# pattern (for fixed parameter)
+  	if(hasName(param, "pattern"))
+  	  pDocVect <- c(pDocVect, paste("with value as:\\emph{", 
+  	   shQuote(param$pattern), "}"))
+  	
+  	if(hasName(param, "enum"))
+  	  pDocVect <- c(pDocVect, paste("among: \\emph{", 
+  	     toString(shQuote(trimws(param$enum))), "}"))
+  
+  	return(pDocVect)
+  		
+	}
+	
 	# build doc for each parameter
-	if(!is.null(JSONSch$properties)){
+	if(hasName(JSONSch, "properties")){
 		
 		paramsDocList <- lapply(names(JSONSch$properties), function(param){
 					
@@ -182,53 +245,23 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			isRequired <- (param %in% paramsReq)
 			if(!isRequired)	pDocVect <- c("(optional)", pDocVect)
 			
-			# type(s)
-			type <- jsonSchPropParam$type
-			if(!is.null(type))
-				pDocVect <- c(pDocVect, paste(type, collapse = " or "))
-			
-			# constant
-			const <- jsonSchPropParam$const
-			if(!is.null(const)){
-				pDocVect <- c(pDocVect, paste("string set to:", shQuote(const)))
+		  if(hasName(jsonSchPropParam, "oneOf")){
+			  pDocElVect <- apply(jsonSchPropParam$oneOf, 1, function(x){
+			    docElVect <- getElement(param = as.list(x))
+			    paste(docElVect, collapse = " ")
+			  })
+			  pDocEl <- paste(pDocElVect, collapse = " or ")
+			}else{
+			  pDocEl <- getElement(param = jsonSchPropParam)
 			}
-			
-			# for list ('object'): type of elements in the list
-			items <- jsonSchPropParam[["items"]]
-			if(!is.null(items)){
-				
-				if(!is.null(items))
-					pDocVect <- c(pDocVect, paste0("of ", items$type, "(s)"))
-			
-				# for array of object, might be nested
-				pDocVect <- c(pDocVect, JSONSchToRd(JSONSch = items))
-				
-			}
-			
-			# for array: min/max number of items
-			if(any(c("minItems", "maxItems") %in% names(jsonSchPropParam))){
-				itemSize <- paste(
-					"of length:", toString(c(
-						if(!is.null(jsonSchPropParam$minItems))	paste("minimum", jsonSchPropParam$minItems),
-						if(!is.null(jsonSchPropParam$maxItems))	paste("maximum", jsonSchPropParam$maxItems)
-					))
-				)
-				pDocVect <- c(pDocVect, itemSize)
-			}
-			
-			# pattern (for fixed parameter)
-			if(!is.null(jsonSchPropParam$pattern))
-				pDocVect <- c(pDocVect, paste("with value as:\\emph{", shQuote(jsonSchPropParam$pattern), "}"))
-			
-			if(!is.null(jsonSchPropParam$enum))
-				pDocVect <- c(pDocVect, paste("among: \\emph{", toString(shQuote(jsonSchPropParam$enum)), "}"))
-			
-			# Rd doc
-			if(!is.null(jsonSchPropParam$doc))	
-				pDocVect <- c(pDocVect, paste(",", jsonSchPropParam$doc))
+			pDocVect <-c(pDocVect, pDocEl)
 			
 			# combine all elements to build the doc
 			pDocText <- paste(pDocVect, collapse = " ")
+      
+			# Rd doc
+			if(hasName(jsonSchPropParam, "doc"))	
+			  pDocText <- paste0(pDocText, ",", jsonSchPropParam$doc)
 					
 			pDocName <- paste0(
 				if(isRequired)	"\\strong{",

@@ -1,7 +1,7 @@
 # Report-specific parameters
 template: summaryPlotTemplate.Rmd
 templatePackage: clinDataReview
-reportTitleLevel: 1
+reportTitleLevel: 2
 reportTitle: "Laboratory abnormalities: post-baseline patient counts per (ab)normality"
 # Dataset of interest
 dataFileName: lb.xpt

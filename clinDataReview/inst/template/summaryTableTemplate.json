@@ -26,6 +26,18 @@
       "type": "integer",
       "doc": "header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)"
     },
+    "parallel": {
+      "type": "boolean",
+      "doc": "does this chapter use parallel execution? If the entire report is run in parallel, this ensures that this specific chapter is created outside of the report parallelization."
+    },
+    "split_by": {
+      "oneOf": [
+        {"type": "integer", "minimum": 0, "maximum": 7},
+        {"type": "string", "enum": ["none", "chapter", "section"]}
+      ],
+      "doc": "split the chapter at the specified level: 1 (for 'chapter'), 2 (for 'section') until 7. This overwrites the 'split_by' parameter defined in the output format of the report."
+    },
+    
     "dataFileName" : {
       "type": ["string", "array"],
       "doc": "name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from."

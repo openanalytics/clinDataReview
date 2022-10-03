@@ -18,134 +18,148 @@ For each template, required parameters are indicated in \strong{bold}.
 \section{Clinical data template for a visualization of count data : countsVisualizationTemplate}{
 This report compute counts of variable(s) of interest (with the \code{inTextSummaryTable} package) and visualize them with a treemap and/or sunburst.
 \cr The following parameters are available: \itemize{
-\item{\strong{\code{template}}: }{string set to: 'countsVisualizationTemplate.Rmd' , name of the template report}
-\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
-\item{\strong{\code{reportTitle}}: }{string , header title}
-\item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
-\item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
-\item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
-\item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{countVar}}: }{string , variable of data to count on}
-\item{\code{parentVar}: }{(optional) string or array , parent variable(s) of the counting variable, used for grouping}
-\item{\code{colorVar}: }{(optional) string or object , numeric variable(s) to consider for coloring, named by count/parent variable if different for each variable}
-\item{\code{colorRange}: }{(optional) array of number(s) of length: minimum 2, maximum 2 , range of the color variable for the visualization}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
-\item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
-\item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
+\item{\strong{\code{template}}: }{string set to: 'countsVisualizationTemplate.Rmd',name of the template report}
+\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview',package from which the template should be extracted}
+\item{\strong{\code{reportTitle}}: }{string,header title}
+\item{\code{reportTitleLevel}: }{(optional) integer,header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{parallel}: }{(optional) boolean,does this chapter use parallel execution? If the entire report is run in parallel, this ensures that this specific chapter is created outside of the report parallelization.}
+\item{\code{split_by}: }{(optional) integer of length: minimum 0, maximum 7 or string among: \emph{ 'none', 'chapter', 'section' },split the chapter at the specified level: 1 (for 'chapter'), 2 (for 'section') until 7. This overwrites the 'split_by' parameter defined in the output format of the report.}
+\item{\strong{\code{dataFileName}}: }{string or array,name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
+\item{\code{dataProcessing}: }{(optional) array,data processing parameters, passed to \link[clinDataReview]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string,filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array,data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
+\item{\strong{\code{countVar}}: }{string,variable of data to count on}
+\item{\code{parentVar}: }{(optional) string or array,parent variable(s) of the counting variable, used for grouping}
+\item{\code{colorVar}: }{(optional) string or object,numeric variable(s) to consider for coloring, named by count/parent variable if different for each variable}
+\item{\code{colorRange}: }{(optional) array of number(s) of length: minimum 2, maximum 2,range of the color variable for the visualization}
+\item{\code{loopingVar}: }{(optional) array or string,data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
+\item{\code{loopingNMax}: }{(optional) integer,maximum number of elements of \code{loopingVar} to include in the report}
+\item{\code{loopingTotal}: }{(optional) boolean,should the total also be computed by \code{loopingVar} (TRUE by default)?}
 \item{\code{typePlot}: }{(optional) array or string of string(s)}
-\item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
+\item{\code{startup}: }{(optional) array or string,R commands that should be run at the start of the report}
 }
 }
 \section{Clinical data template to create a report division : divisionTemplate}{
 This report includes a division, i.e. extra chapter, section of subsection in the report.
 \cr The following parameters are available: \itemize{
-\item{\strong{\code{template}}: }{string set to: 'divisionTemplate.Rmd' , name of the template report}
-\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
-\item{\strong{\code{reportTitle}}: }{string , header title}
-\item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\code{content}: }{(optional) string , any content that should be included after the title}
+\item{\strong{\code{template}}: }{string set to: 'divisionTemplate.Rmd',name of the template report}
+\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview',package from which the template should be extracted}
+\item{\strong{\code{reportTitle}}: }{string,header title}
+\item{\code{reportTitleLevel}: }{(optional) integer,header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{parallel}: }{(optional) boolean,does this chapter use parallel execution? If the entire report is run in parallel, this ensures that this specific chapter is created outside of the report parallelization.}
+\item{\code{split_by}: }{(optional) integer of length: minimum 0, maximum 7 or string among: \emph{ 'none', 'chapter', 'section' },split the chapter at the specified level: 1 (for 'chapter'), 2 (for 'section') until 7. This overwrites the 'split_by' parameter defined in the output format of the report.}
+\item{\code{content}: }{(optional) string,any content that should be included after the title}
 }
 }
 \section{Clinical data template to create a listing : listingTemplate}{
 This report displays a listing of the variables and data of interest, displayed in an interactive table. This table can contains comparison with a previous batch ('comparisonTable' parameters).
 \cr The following parameters are available: \itemize{
-\item{\strong{\code{template}}: }{string set to: 'listingTemplate.Rmd' , name of the template report}
-\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
-\item{\strong{\code{reportTitle}}: }{string , header title}
-\item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
-\item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
-\item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
-\item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
-\item{\code{tableParams}: }{(optional) object , parameters to create the table, passed to \link[clinDataReview]{tableClinData}}
-\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff-interactive', 'table-comparison-interactive' } , output type of the comparison table}
-\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
-\item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
-\item{\code{listingDocx}: }{(optional) boolean , export listing to Word}
+\item{\strong{\code{template}}: }{string set to: 'listingTemplate.Rmd',name of the template report}
+\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview',package from which the template should be extracted}
+\item{\strong{\code{reportTitle}}: }{string,header title}
+\item{\code{reportTitleLevel}: }{(optional) integer,header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{parallel}: }{(optional) boolean,does this chapter use parallel execution? If the entire report is run in parallel, this ensures that this specific chapter is created outside of the report parallelization.}
+\item{\code{split_by}: }{(optional) integer of length: minimum 0, maximum 7 or string among: \emph{ 'none', 'chapter', 'section' },split the chapter at the specified level: 1 (for 'chapter'), 2 (for 'section') until 7. This overwrites the 'split_by' parameter defined in the output format of the report.}
+\item{\strong{\code{dataFileName}}: }{string or array,name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
+\item{\code{dataProcessing}: }{(optional) array,data processing parameters, passed to \link[clinDataReview]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string,filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array,data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
+\item{\code{tableParams}: }{(optional) object,parameters to create the table, passed to \link[clinDataReview]{tableClinData}}
+\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff-interactive', 'table-comparison-interactive' },output type of the comparison table}
+\item{\code{comparisonTableParams}: }{(optional) object,parameters for the comparison table, passed to \link[clinUtils]{compareTables}}
+\item{\code{loopingVar}: }{(optional) array or string,data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
+\item{\code{loopingNMax}: }{(optional) integer,maximum number of elements of \code{loopingVar} to include in the report}
+\item{\code{listingDocx}: }{(optional) boolean,export listing to Word}
 }
 }
 \section{Clinical data template for the creation of patient profiles : patientProfilesTemplate}{
 This report creates the specified patient profiles (with the \code{patientProfilesVis} package) by subject, and export them to a specified directory.
 \cr The following parameters are available: \itemize{
-\item{\strong{\code{template}}: }{string set to: 'patientProfilesTemplate.Rmd' , name of the template report}
-\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
-\item{\strong{\code{reportTitle}}: }{string , header title}
-\item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\code{createPatientProfiles}: }{(optional) boolean , Should the patient profiles be created or only loaded from a previous execution?}
-\item{\code{patientProfilesGeneralParams}: }{(optional) object , set of parameters used for all patient profiles modules. These parameters are passed to all \code{subjectProfile[]Plot} functions.}
+\item{\strong{\code{template}}: }{string set to: 'patientProfilesTemplate.Rmd',name of the template report}
+\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview',package from which the template should be extracted}
+\item{\strong{\code{reportTitle}}: }{string,header title}
+\item{\code{reportTitleLevel}: }{(optional) integer,header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{parallel}: }{(optional) boolean,does this chapter use parallel execution? If the entire report is run in parallel, this ensures that this specific chapter is created outside of the report parallelization.}
+\item{\code{split_by}: }{(optional) integer of length: minimum 0, maximum 7 or string among: \emph{ 'none', 'chapter', 'section' },split the chapter at the specified level: 1 (for 'chapter'), 2 (for 'section') until 7. This overwrites the 'split_by' parameter defined in the output format of the report.}
+\item{\code{createPatientProfiles}: }{(optional) boolean,Should the patient profiles be created or only loaded from a previous execution?}
+\item{\code{patientProfilesGeneralParams}: }{(optional) object,set of parameters used for all patient profiles modules. These parameters are passed to all \code{subjectProfile[]Plot} functions.}
 \item{\strong{\code{patientProfilesParams}}: }{array of object(s) \cr The following parameters are available: \itemize{
-\item{\strong{\code{typePlot}}: }{string among: \emph{ 'text', 'line', 'interval', 'event' } , plot type, used to get the appropriate plot module function: \itemize{\item{'text': }{\link[patientProfilesVis]{subjectProfileTextPlot}}\item{'line': }{\link[patientProfilesVis]{subjectProfileLinePlot}}\item{'interval': }{\link[patientProfilesVis]{subjectProfileIntervalPlot}}\item{'event': }{\link[patientProfilesVis]{subjectProfileEventPlot}}}}
-\item{\strong{\code{dataFileName}}: }{string , name of the data file of interest}
-\item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !r-lazy [dataI]}}
-} , parameters for each patient profile module}
-\item{\code{patientProfilesCreateReportParams}: }{(optional) object , parameters for the creation of the patient profile report(s), passed to \link[patientProfilesVis]{createSubjectProfileReport}}
-\item{\code{tableParams}: }{(optional) object , parameters specifying a table containing data of interest and links to created patient profiles}
-\item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
+\item{\strong{\code{typePlot}}: }{string among: \emph{ 'text', 'line', 'interval', 'event' },plot type, used to get the appropriate plot module function: \itemize{\item{'text': }{\link[patientProfilesVis]{subjectProfileTextPlot}}\item{'line': }{\link[patientProfilesVis]{subjectProfileLinePlot}}\item{'interval': }{\link[patientProfilesVis]{subjectProfileIntervalPlot}}\item{'event': }{\link[patientProfilesVis]{subjectProfileEventPlot}}}}
+\item{\strong{\code{dataFileName}}: }{string,name of the data file of interest}
+\item{\code{dataProcessing}: }{(optional) array,data processing parameters, passed to \link[clinDataReview]{processData}}
+\item{\strong{\code{plotParams}}: }{object,parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !r-lazy [dataI]}}
+},parameters for each patient profile module}
+\item{\code{patientProfilesCreateReportParams}: }{(optional) object,parameters for the creation of the patient profile report(s), passed to \link[patientProfilesVis]{createSubjectProfileReport}}
+\item{\code{tableParams}: }{(optional) object,parameters specifying a table containing data of interest and links to created patient profiles}
+\item{\code{startup}: }{(optional) array or string,R commands that should be run at the start of the report}
 }
 }
 \section{Clinical data generic template for visualization : plotTemplate}{
 This report visualizes input data with a function of the clinical data review package. The data can be compared to the data of a previous batch, in the table associated to the plot ('comparisonTable' parameters).Summary statistics can be computed optionally and included in the plot (see 'tableParams' parameter).
 \cr The following parameters are available: \itemize{
-\item{\strong{\code{template}}: }{string set to: 'plotTemplate.Rmd' , name of the template report}
-\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
-\item{\strong{\code{reportTitle}}: }{string , header title}
-\item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
-\item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'boxplotClinData' } , plotting function of the package to consider}
-\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr \code{[parameterName]: !r-lazy [dataI]}}
-\item{\code{tableParams}: }{(optional) object , parameters for a summary table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}\cr Summary statistics are computed and merged as extra columns available for the plot data.}
-\item{\code{tableProcessing}: }{(optional) array , data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
-\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff' } , output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.}
-\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
-\item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
-\item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
+\item{\strong{\code{template}}: }{string set to: 'plotTemplate.Rmd',name of the template report}
+\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview',package from which the template should be extracted}
+\item{\strong{\code{reportTitle}}: }{string,header title}
+\item{\code{reportTitleLevel}: }{(optional) integer,header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{parallel}: }{(optional) boolean,does this chapter use parallel execution? If the entire report is run in parallel, this ensures that this specific chapter is created outside of the report parallelization.}
+\item{\code{split_by}: }{(optional) integer of length: minimum 0, maximum 7 or string among: \emph{ 'none', 'chapter', 'section' },split the chapter at the specified level: 1 (for 'chapter'), 2 (for 'section') until 7. This overwrites the 'split_by' parameter defined in the output format of the report.}
+\item{\strong{\code{dataFileName}}: }{string or array,name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
+\item{\code{dataProcessing}: }{(optional) array,data processing parameters, passed to \link[clinDataReview]{processData}}
+\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'boxplotClinData' },plotting function of the package to consider}
+\item{\strong{\code{plotParams}}: }{object,parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr \code{[parameterName]: !r-lazy [dataI]}}
+\item{\code{tableParams}: }{(optional) object,parameters for a summary table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}\cr Summary statistics are computed and merged as extra columns available for the plot data.}
+\item{\code{tableProcessing}: }{(optional) array,data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
+\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'newData-diff' },output type of the comparison table. If specified, an additional column: 'Comparison Type' is included in the table attached to the plot.}
+\item{\code{comparisonTableParams}: }{(optional) object,parameters for the comparison table, passed to \link[clinUtils]{compareTables}. If referenceVars is not specified, all variables displayed in the plot are used.}
+\item{\code{loopingVar}: }{(optional) array or string,data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
+\item{\code{loopingNMax}: }{(optional) integer,maximum number of elements of \code{loopingVar} to include in the report}
+\item{\code{startup}: }{(optional) array or string,R commands that should be run at the start of the report}
 }
 }
 \section{Clinical data template for visualization of summarized data : summaryPlotTemplate}{
 This report summarizes the data of interest (with the \code{inTextSummaryTable} package) and visualize it with any clinical data review plot function.
 \cr The following parameters are available: \itemize{
-\item{\strong{\code{template}}: }{string set to: 'summaryPlotTemplate.Rmd' , name of the template report}
-\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
-\item{\strong{\code{reportTitle}}: }{string , header title}
-\item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
-\item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
-\item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
-\item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{tableParams}}: }{object , parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}}
-\item{\code{tableProcessing}: }{(optional) array , data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'sunburstClinData', 'treemapClinData', 'barplotClinData', 'errorbarClinData' } , plotting function to visualize summary data}
-\item{\strong{\code{plotParams}}: }{object , parameters for the plotting function}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
-\item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
-\item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
-\item{\code{startup}: }{(optional) array or string , R commands that should be run at the start of the report}
+\item{\strong{\code{template}}: }{string set to: 'summaryPlotTemplate.Rmd',name of the template report}
+\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview',package from which the template should be extracted}
+\item{\strong{\code{reportTitle}}: }{string,header title}
+\item{\code{reportTitleLevel}: }{(optional) integer,header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{parallel}: }{(optional) boolean,does this chapter use parallel execution? If the entire report is run in parallel, this ensures that this specific chapter is created outside of the report parallelization.}
+\item{\code{split_by}: }{(optional) integer of length: minimum 0, maximum 7 or string among: \emph{ 'none', 'chapter', 'section' },split the chapter at the specified level: 1 (for 'chapter'), 2 (for 'section') until 7. This overwrites the 'split_by' parameter defined in the output format of the report.}
+\item{\strong{\code{dataFileName}}: }{string or array,name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
+\item{\code{dataProcessing}: }{(optional) array,data processing parameters, passed to \link[clinDataReview]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string,filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array,data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
+\item{\strong{\code{tableParams}}: }{object,parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}}
+\item{\code{tableProcessing}: }{(optional) array,data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
+\item{\strong{\code{plotFunction}}: }{string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'sunburstClinData', 'treemapClinData', 'barplotClinData', 'errorbarClinData' },plotting function to visualize summary data}
+\item{\strong{\code{plotParams}}: }{object,parameters for the plotting function}
+\item{\code{loopingVar}: }{(optional) array or string,data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
+\item{\code{loopingNMax}: }{(optional) integer,maximum number of elements of \code{loopingVar} to include in the report}
+\item{\code{loopingTotal}: }{(optional) boolean,should the total also be computed by \code{loopingVar} (TRUE by default)?}
+\item{\code{startup}: }{(optional) array or string,R commands that should be run at the start of the report}
 }
 }
 \section{Clinical data template for a summary table of the data : summaryTableTemplate}{
 This report summarizes the data of interest (with the \code{inTextSummaryTable} package). This table is displayed with an interactive table in the report, and exported to a docx file. This table can be compared to a summary table of a previous batch ('comparisonTable' parameters).
 \cr The following parameters are available: \itemize{
-\item{\strong{\code{template}}: }{string set to: 'summaryTableTemplate.Rmd' , name of the template report}
-\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview' , package from which the template should be extracted}
-\item{\strong{\code{reportTitle}}: }{string , header title}
-\item{\code{reportTitleLevel}: }{(optional) integer , header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
-\item{\strong{\code{dataFileName}}: }{string or array , name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
-\item{\code{dataProcessing}: }{(optional) array , data processing parameters, passed to \link[clinDataReview]{processData}}
-\item{\code{dataTotalFileName}: }{(optional) string , filename of the total dataset}
-\item{\code{dataTotalProcessing}: }{(optional) array , data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
-\item{\strong{\code{tableParams}}: }{object , parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}
+\item{\strong{\code{template}}: }{string set to: 'summaryTableTemplate.Rmd',name of the template report}
+\item{\strong{\code{templatePackage}}: }{string set to: 'clinDataReview',package from which the template should be extracted}
+\item{\strong{\code{reportTitle}}: }{string,header title}
+\item{\code{reportTitleLevel}: }{(optional) integer,header level, 1 by default (1: 'chapter', '2': 'section', '3': subsection, ...)}
+\item{\code{parallel}: }{(optional) boolean,does this chapter use parallel execution? If the entire report is run in parallel, this ensures that this specific chapter is created outside of the report parallelization.}
+\item{\code{split_by}: }{(optional) integer of length: minimum 0, maximum 7 or string among: \emph{ 'none', 'chapter', 'section' },split the chapter at the specified level: 1 (for 'chapter'), 2 (for 'section') until 7. This overwrites the 'split_by' parameter defined in the output format of the report.}
+\item{\strong{\code{dataFileName}}: }{string or array,name of the data file(s) of interest. If multiple files are specified, the data are combined by rows ('row bind'), with a column: 'DATASET' containing the name of the file (in upper case and without extension) the data originate from.}
+\item{\code{dataProcessing}: }{(optional) array,data processing parameters, passed to \link[clinDataReview]{processData}}
+\item{\code{dataTotalFileName}: }{(optional) string,filename of the total dataset}
+\item{\code{dataTotalProcessing}: }{(optional) array,data processing parameters for 'dataTotalFileName', passed to \link[clinDataReview]{processData}}
+\item{\strong{\code{tableParams}}: }{object,parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}
 .Parameters depending on the dataset of interest can be specified as:\cr\code{[parameterName]: !r-lazy [dataI]}.}
-\item{\code{tableParamsDocx}: }{(optional) object , parameters to format the table to the docx format, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
-\item{\code{tableParamsDT}: }{(optional) object , parameters to format the table to the DT interactive table included in the report, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
-\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'table-comparison-interactive', 'newData-diff', 'table-combine' } , output type of the comparison table}
-\item{\code{comparisonTableParams}: }{(optional) object , parameters for the comparison table, passed to \link[clinUtils]{compareTables}. By default, statistics variables are compared across row and column elements.}
-\item{\code{loopingVar}: }{(optional) array or string , data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
-\item{\code{loopingNMax}: }{(optional) integer , maximum number of elements of \code{loopingVar} to include in the report}
-\item{\code{loopingTotal}: }{(optional) boolean , should the total also be computed by \code{loopingVar} (TRUE by default)?}
+\item{\code{tableParamsDocx}: }{(optional) object,parameters to format the table to the docx format, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
+\item{\code{tableParamsDT}: }{(optional) object,parameters to format the table to the DT interactive table included in the report, passed to \link[inTextSummaryTable]{exportSummaryStatisticsTable}}
+\item{\code{comparisonTableType}: }{(optional) string among: \emph{ 'none', 'table-comparison-interactive', 'newData-diff', 'table-combine' },output type of the comparison table}
+\item{\code{comparisonTableParams}: }{(optional) object,parameters for the comparison table, passed to \link[clinUtils]{compareTables}. By default, statistics variables are compared across row and column elements.}
+\item{\code{loopingVar}: }{(optional) array or string,data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
+\item{\code{loopingNMax}: }{(optional) integer,maximum number of elements of \code{loopingVar} to include in the report}
+\item{\code{loopingTotal}: }{(optional) boolean,should the total also be computed by \code{loopingVar} (TRUE by default)?}
 }
 }

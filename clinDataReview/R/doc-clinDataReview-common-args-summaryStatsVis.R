@@ -1,10 +1,11 @@
 #' Common arguments for the plotting functions summary statistics of the clinDataReview package
 #' @param vars Character vector with variables of \code{data}
-#' containing plot nodes.
-#' If multiple, they should be specified in hierarchical order (from parent to child node).
+#' containing the groups. If multiple, they should be specified in 
+#' hierarchical order (from parent to child node).
 #' @param varsLab Named character vector with labels for \code{vars}.
-#' @param valueVar,valueLab String with numeric variable of \code{data} containing node value,
-#' and associated label.
+#' @param valueVar String with numeric variable of \code{data} 
+#' containing the value to display.
+#' @param valueLab String with label for the \code{valueVar} variable.
 #' @param valueType String with type of values in \code{valueVar}
 #' (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
 #' among others: 'total' (default, only if sum(child) <= to parent)

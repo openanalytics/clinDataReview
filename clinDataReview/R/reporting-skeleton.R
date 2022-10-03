@@ -178,39 +178,40 @@ createMainConfigSkeleton <- function(dir, dirData) {
   fileName <- file.path(dir, "config.yml")
   
   write_yaml(
-      list(
-          study = "Example study",
-          version = "Version 1",
-          title = "Clinical data review for the example study",
-          contactPerson = "Pippo",
-          currentDataTransfer = "2021-01-01",
-          previousDataTransfer = "2020-12-01",
-          pathDataFolder = dirData,
-          pathDataFolderOld = file.path(dirData, "comparisonData"),
-          patientProfilePath = "patientProfiles",
-          config = c(
-              "config-patientProfiles.yml",
-              "config-alert-division.yml",
-              "config-alert-death.yml",
-			  "config-subjectDisposition-division.yml",
-			  "config-enrollment-countsVisualization.yml",
-			  "config-cumulativeEnrollment.yml",
-			  "config-demographics-summaryTable.yml",
-              "config-adverseEvents-division.yml",
-              "config-adverseEvents-summaryTable.yml",
+    x = list(
+      study = "Example study",
+      version = "Version 1",
+      title = "Clinical data review for the example study",
+      contactPerson = "Pippo",
+      currentDataTransfer = "2021-01-01",
+      previousDataTransfer = "2020-12-01",
+      pathDataFolder = dirData,
+      pathDataFolderOld = file.path(dirData, "comparisonData"),
+      patientProfilePath = "patientProfiles",
+      config = c(
+        "config-patientProfiles.yml",
+        "config-alert-division.yml",
+        "config-alert-death.yml",
+        "config-subjectDisposition-division.yml",
+        "config-enrollment-countsVisualization.yml",
+        "config-cumulativeEnrollment.yml",
+        "config-demographics-summaryTable.yml",
+        "config-adverseEvents-division.yml",
+        "config-adverseEvents-summaryTable.yml",
 			  "config-adverseEvents-summaryTable-comparison.yml",
-              "config-adverseEvents-all-countsVisualization.yml",
+			  "config-adverseEvents-all-countsVisualization.yml",
 			  "config-adverseEvents-listing-comparison.yml",
 			  "config-adverseEvents-timeProfiles.yml",
-              "config-concomitantMedications-division.yml",
-              "config-concomitantMedications-listing.yml",
+			  "config-concomitantMedications-division.yml",
+			  "config-concomitantMedications-listing.yml",
+			  "config-laboratory-division.yml",
 			  "config-laboratory-summaryBarplot.yml",
-              "config-laboratory-eDISH-ALT.yml",
-              "config-laboratory-spaghettiPlot.yml",
+			  "config-laboratory-eDISH-ALT.yml",
+			  "config-laboratory-spaghettiPlot.yml",
 			  "config-laboratory-spaghettiPlot-byVisit.yml"
-          )
-      ),
-      fileName
+      )
+    ),
+    file = fileName
   )
   
 }

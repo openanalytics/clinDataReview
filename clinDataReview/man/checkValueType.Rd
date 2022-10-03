@@ -11,11 +11,11 @@ checkValueType(data, vars, valueVar, valueType = "total", labelVars = NULL)
 \item{data}{Data.frame with data.}
 
 \item{vars}{Character vector with variables of \code{data}
-containing plot nodes.
-If multiple, they should be specified in hierarchical order (from parent to child node).}
+containing the groups. If multiple, they should be specified in 
+hierarchical order (from parent to child node).}
 
-\item{valueVar}{String with numeric variable of \code{data} containing node value,
-and associated label.}
+\item{valueVar}{String with numeric variable of \code{data} 
+containing the value to display.}
 
 \item{valueType}{String with type of values in \code{valueVar}
 (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),

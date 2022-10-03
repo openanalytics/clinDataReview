@@ -16,13 +16,12 @@ By default, the treemap is colored based by section.}
     \item{\code{colorRange}}{(optional) Numeric vector of length 2 with range 
 for the color variable, in case it is a numeric variable.}
     \item{\code{vars}}{Character vector with variables of \code{data}
-containing plot nodes.
-If multiple, they should be specified in hierarchical order (from parent to child node).}
+containing the groups. If multiple, they should be specified in 
+hierarchical order (from parent to child node).}
     \item{\code{varsLab}}{Named character vector with labels for \code{vars}.}
-    \item{\code{valueVar}}{String with numeric variable of \code{data} containing node value,
-and associated label.}
-    \item{\code{valueLab}}{String with numeric variable of \code{data} containing node value,
-and associated label.}
+    \item{\code{valueVar}}{String with numeric variable of \code{data} 
+containing the value to display.}
+    \item{\code{valueLab}}{String with label for the \code{valueVar} variable.}
     \item{\code{valueType}}{String with type of values in \code{valueVar}
 (\code{branchvalues} of the \code{\link[plotly]{plot_ly}}) function),
 among others: 'total' (default, only if sum(child) <= to parent)

@@ -44,7 +44,9 @@ Imports:
   stringr,
   utils,
   tools,
-  yaml
+  yaml,
+  xml2,
+  xfun
 Suggests: 
   countrycode,
   inTextSummaryTable (>= 3.1.0),
@@ -52,11 +54,10 @@ Suggests:
   patientProfilesVis (>= 0.12.0), 
   reshape2,
   testthat,
-  xml2,
   DT
 SystemRequirements: pandoc (to create a clinical data review report)
 URL: https://github.com/openanalytics/clinDataReview
 BugReports: https://github.com/openanalytics/clinDataReview/issues
 License: MIT + file LICENSE
 VignetteBuilder: knitr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
