@@ -314,14 +314,12 @@ boxplotClinData <- function(
 
 
 #' Add facet-panel to single plotly plot.
-#' 
-#' @param pl a plotly object to which to add a single facet panel
 #' @param panelLab text to be shown in the facet panel
 #' @param panelWidth thickness of the panel in pixels. 
 #' @param fontSize fontsize of \code{facetText}
 #' @param side the side of the plot to show the panel 
 #' 		(currently only right panels are implemented.)
-#' 
+#' @inheritParams clinDataReview-common-args
 #' @return plotly object with the facet panel added. 
 #' @author lennart tuijnder
 #' @import plotly

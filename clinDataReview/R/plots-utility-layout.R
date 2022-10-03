@@ -120,7 +120,8 @@ layoutClinData <- function(
 	# set margins
 	args$margin <- margins
 	# margins are expanded if labels of the x-axis are too long
-	args$xaxis$automargin  <- TRUE
+	if(is.null(args$xaxis$automargin))
+	  args$xaxis$automargin  <- TRUE
 	
 	if(includeLegend){
 		

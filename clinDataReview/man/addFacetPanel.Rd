@@ -13,7 +13,7 @@ addFacetPanel(
 )
 }
 \arguments{
-\item{pl}{a plotly object to which to add a single facet panel}
+\item{pl}{\code{plotly} object.}
 
 \item{panelLab}{text to be shown in the facet panel}
 

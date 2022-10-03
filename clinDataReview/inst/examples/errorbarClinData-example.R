@@ -48,6 +48,31 @@ errorbarClinData(
 	labelVars = labelVars
 )
 
+## Add a selection box
+summaryTable <- computeSummaryStatisticsTable(
+  data = subset(dataADaMCDISCP01$ADVS, 
+    ANL01FL == "Y" &
+    AVISIT %in% c("Baseline", "Week 2", "Week 4", "Week 6", "Week 8")
+  ),
+  rowVar = c("PARAM", "AVISIT", "ATPT"),
+  var = "AVAL",
+  stats = getStats(c("Mean", "SE")),
+  labelVars = labelVars
+)
+dataPlot <- subset(summaryTable, !isTotal)
+errorbarClinData(
+  data = dataPlot,
+  xVar = "AVISIT", 
+  colorVar = "ATPT",
+  yVar = "statMean", yLab = "Mean",
+  yErrorVar = "statSE", yErrorLab = "Standard error",
+  mode = "markers+lines",
+  title = paste("Lab parameters summary profile by actual visit",
+    "and analysis timepoint"),
+  labelVars = labelVars,
+  selectVars = "PARAM"
+)
+
 ## Summary plot with horizontal error bars
 
 # Data of interest: ratio from baseline at week 16

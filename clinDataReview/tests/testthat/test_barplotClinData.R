@@ -141,3 +141,39 @@ test_that("A text variable is correctly displayed in the barplot", {
 	
 })
 
+
+test_that("A selection variable is correctly included in a barplot", {
+  
+  data <- data.frame(
+    parent = factor(c("A", "A", "B"), levels = c("B", "A")),
+    child = c("a", "b", "c"),
+    n = c(1, 2, 5),
+    stringsAsFactors = FALSE
+  )
+  
+  # create plot
+  res <- barplotClinData(
+    data = data,
+    xVar = "child", 
+    selectVars = "parent",
+    yVar = "n"
+  )
+  
+  # check the output:
+  expect_s3_class(res, "clinDataReview")
+  expect_named(res, expected = c("buttons", "plot"))
+  expect_s3_class(res$plot, "plotly")
+  
+  expect_length(res$buttons, 1)
+  
+  # check button values
+  buttonData <- jsonlite::fromJSON(
+    txt = rapply(res$buttons[[1]], function(x) x, class = "json")
+  )
+  expect_equal(object = buttonData$items$value, expected = levels(data$parent))
+  
+  # check that the output can be printed without any output/errors/warnings
+  expect_silent(print(res))
+  
+})
+

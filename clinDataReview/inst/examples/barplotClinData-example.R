@@ -18,6 +18,7 @@ dataTotal <- subset(dataDM, RFSTDTC != "")
 tableAE <- computeSummaryStatisticsTable(
 	data = dataAE,
 	rowVar = c("AEBODSYS", "AEDECOD"),
+	rowOrder = "total",
 	dataTotal = dataTotal,
 	labelVars = labelVars,
 	stats = getStats("count")
@@ -42,6 +43,15 @@ barplotClinData(
 	yVar = "n", yLab = "Number of patients with adverse events",
 	textVar = "n",
 	labelVars = labelVars
+)
+
+# add a selection box
+barplotClinData(
+  data = dataPlot,
+  xVar = "AEDECOD", 
+  yVar = "n", yLab = "Number of patients with adverse events",
+  labelVars = labelVars,
+  selectVars = "AEBODSYS"
 )
 
 \dontrun{

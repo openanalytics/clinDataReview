@@ -178,3 +178,16 @@ smoothPlot <- scatterplotClinData(
 smoothPlot
 
 }
+
+# add a selection box
+dataPlot <- subset(dataLB, PARAMCD == "ALT")
+dataPlot$TRTA <- with(dataPlot, reorder(TRTA, TRTAN))
+scatterplotClinData(
+  data = dataPlot, 
+  xVar = "ADY",
+  yVar = "LBSTRESN",
+  aesPointVar = list(fill = "TRTA", color = "TRTA"),
+  aesLineVar = list(group = "USUBJID", color = "TRTA"),
+  selectVars = "TRTA",
+  labelVars = labelVars
+)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/plots-barplotClinData.R
 \name{barplotClinData}
 \alias{barplotClinData}
-\title{Barplot interactive plot.}
+\title{Barplot visualization of clinical data.}
 \usage{
 barplotClinData(
   data,
@@ -32,6 +32,8 @@ barplotClinData(
   tableButton = TRUE,
   tablePars = list(),
   id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+  selectVars = NULL,
+  selectLab = getLabelVar(selectVars, labelVars = labelVars),
   verbose = FALSE
 )
 }
@@ -125,6 +127,12 @@ the table is included within an HTML button.}
 }
 If not specified, a random id, as 'plotClinData[X]' is used.}
 
+\item{selectVars}{(optional) Character vector with variable(s) from \code{data}
+for which a selection box should be included. This enables to select the data
+displayed in the plot (and associated table).}
+
+\item{selectLab}{(Named) character vector with label for \code{selectVars}.}
+
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.
 For the visualizations, progress messages during download
@@ -141,7 +149,7 @@ a \code{clinDataReview} object, a.k.a a list with the
 }
 }
 \description{
-Barplot interactive plot.
+Barplot visualization of clinical data.
 }
 \examples{
 library(clinUtils)
@@ -164,6 +172,7 @@ dataTotal <- subset(dataDM, RFSTDTC != "")
 tableAE <- computeSummaryStatisticsTable(
 	data = dataAE,
 	rowVar = c("AEBODSYS", "AEDECOD"),
+	rowOrder = "total",
 	dataTotal = dataTotal,
 	labelVars = labelVars,
 	stats = getStats("count")
@@ -188,6 +197,15 @@ barplotClinData(
 	yVar = "n", yLab = "Number of patients with adverse events",
 	textVar = "n",
 	labelVars = labelVars
+)
+
+# add a selection box
+barplotClinData(
+  data = dataPlot,
+  xVar = "AEDECOD", 
+  yVar = "n", yLab = "Number of patients with adverse events",
+  labelVars = labelVars,
+  selectVars = "AEBODSYS"
 )
 
 \dontrun{

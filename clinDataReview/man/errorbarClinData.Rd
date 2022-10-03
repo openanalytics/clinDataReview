@@ -37,12 +37,14 @@ errorbarClinData(
   pathLab = getLabelVar(pathVar, labelVars = labelVars),
   hoverVars,
   hoverLab,
+  id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+  selectVars = NULL,
+  selectLab = getLabelVar(selectVars, labelVars = labelVars),
   table = FALSE,
   tableVars,
   tableLab,
   tableButton = TRUE,
   tablePars = list(),
-  id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
   verbose = FALSE
 )
 }
@@ -146,6 +148,19 @@ by default any position and aesthetic variables displayed in the plot.}
 
 \item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
 
+\item{id}{String with general id for the plot:
+\itemize{
+\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
+\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+}
+If not specified, a random id, as 'plotClinData[X]' is used.}
+
+\item{selectVars}{(optional) Character vector with variable(s) from \code{data}
+for which a selection box should be included. This enables to select the data
+displayed in the plot (and associated table).}
+
+\item{selectLab}{(Named) character vector with label for \code{selectVars}.}
+
 \item{table}{Logical, if TRUE (FALSE by default)
 returns also a \code{datatable} containing the plot data.
 (The plot and the table are not linked.)}
@@ -161,13 +176,6 @@ the table is included within an HTML button.}
 
 \item{tablePars}{List with parameters passed to the
 \code{\link[clinUtils]{getClinDT}} function.}
-
-\item{id}{String with general id for the plot:
-\itemize{
-\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-\item{'button:[id]' is used as button ID if \code{table} is TRUE}
-}
-If not specified, a random id, as 'plotClinData[X]' is used.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.
@@ -245,6 +253,31 @@ errorbarClinData(
 	title = paste("Diastolic Blood Pressure summary profile by actual visit",
 		"and analysis timepoint"),
 	labelVars = labelVars
+)
+
+## Add a selection box
+summaryTable <- computeSummaryStatisticsTable(
+  data = subset(dataADaMCDISCP01$ADVS, 
+    ANL01FL == "Y" &
+    AVISIT \%in\% c("Baseline", "Week 2", "Week 4", "Week 6", "Week 8")
+  ),
+  rowVar = c("PARAM", "AVISIT", "ATPT"),
+  var = "AVAL",
+  stats = getStats(c("Mean", "SE")),
+  labelVars = labelVars
+)
+dataPlot <- subset(summaryTable, !isTotal)
+errorbarClinData(
+  data = dataPlot,
+  xVar = "AVISIT", 
+  colorVar = "ATPT",
+  yVar = "statMean", yLab = "Mean",
+  yErrorVar = "statSE", yErrorLab = "Standard error",
+  mode = "markers+lines",
+  title = paste("Lab parameters summary profile by actual visit",
+    "and analysis timepoint"),
+  labelVars = labelVars,
+  selectVars = "PARAM"
 )
 
 ## Summary plot with horizontal error bars

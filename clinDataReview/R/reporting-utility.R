@@ -44,6 +44,62 @@ getMdHeader <- function(
   
 }
 
+#' Combine select box(es) and the plot
+#' @param x Object of class \code{clinDataReview}
+#' @return \code{x} object:
+#' \itemize{
+#' \item{with the \code{plot} element containing a combination of the 
+#' \code{buttons} and the \code{plot}}
+#' \item{without the \code{buttons} element}
+#' }
+#' @importFrom utils hasName
+#' @importFrom htmltools div
+combineButtonsAndPlot <- function(x){
+  
+  if(is.list(x) && hasName(x, "buttons")){
+  
+    btns <- x$buttons
+    
+    # set the size of the button
+    widthBtn <- floor(100/length(btns))
+    divBnt <- lapply(btns, htmltools::div, style = paste0("width:", widthBtn, "%;"))
+    
+    # create a css flexbox with all widgets
+    divPlot <- htmltools::div(x$plot, style = "width:100%;")
+    argsFlex <- do.call(tagList, c(divBnt, list(divPlot)))
+    x$plot <- htmltools::div(argsFlex, style = "display: flex; flex-wrap: wrap;")
+    x$buttons <- NULL
+    
+  }
+  
+  return(x)
+  
+}
+
+#' Print a \code{clinDataReview} object in the console
+#' @param x Object of class \code{clinDataReview}
+#' @param ... Extra parameters for compatibility with \code{\link{print}},
+#' not used currently.
+#' @return No returned value, the object is printed into the console.
+#' @importFrom htmltools browsable
+#' @importFrom utils hasName
+#' @export
+print.clinDataReview <- function(x, ...){
+  
+  x <- combineButtonsAndPlot(x)
+  
+  if(!inherits(x$plot, "plotly"))
+    x$plot <- browsable(x$plot)
+  
+  class(x) <- setdiff(class(x), "clinDataReview")
+  
+  if(!utils::hasName(x, "table"))
+    x <- x$plot
+  
+  print(x)
+  
+}
+
 #' Print \code{clinDataReviewTable} object in a knitted document
 #' (e.g. Rmarkdown document).
 #' @param x Object of class \code{clinDataReview}
@@ -56,6 +112,7 @@ getMdHeader <- function(
 knit_print.clinDataReview <- function(x, ...){
   
   # extract plot
+  x <- combineButtonsAndPlot(x)
   plot <- x$plot
   
   # extract table and include it within a button if required
@@ -104,7 +161,7 @@ knit_print.clinDataReview <- function(x, ...){
 #' @family clinical data reporting
 #' @export
 knitPrintClinDataReview <- function(
-    list, sep = ".", level = 1){
+  list, sep = ".", level = 1){
   
   classes <- c("clinDataReview", "datatables", "plotly")
   if(is.null(list) || length(list) == 0){

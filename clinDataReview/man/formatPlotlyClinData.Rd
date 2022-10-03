@@ -2,8 +2,7 @@
 % Please edit documentation in R/plots-utility-formatPlotlyClinData.R
 \name{formatPlotlyClinData}
 \alias{formatPlotlyClinData}
-\title{Format interactive plot,
-with possibility to download patient profiles
+\title{Format interactive plot, with possibility to download patient profiles
 on a click event.}
 \usage{
 formatPlotlyClinData(
@@ -18,11 +17,15 @@ formatPlotlyClinData(
   highlightOn = "plotly_click",
   highlightOff = "plotly_doubleclick",
   id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+  selectVars = NULL,
+  selectLab = getLabelVar(selectVars, labelVars = labelVars),
+  keyVar = NULL,
+  labelVars = NULL,
   verbose = FALSE
 )
 }
 \arguments{
-\item{pl}{\code{\link[plotly]{ggplotly}} object.}
+\item{pl}{\code{plotly} object.}
 
 \item{data}{Data.frame with data.}
 
@@ -67,6 +70,17 @@ of the selected plot element.}
 }
 If not specified, a random id, as 'plotClinData[X]' is used.}
 
+\item{selectVars}{(optional) Character vector with variable(s) from \code{data}
+for which a selection box should be included. This enables to select the data
+displayed in the plot (and associated table).}
+
+\item{selectLab}{(Named) character vector with label for \code{selectVars}.}
+
+\item{keyVar}{String with unique key variable, identifying unique
+group for which the link between the table and the plot should be done.}
+
+\item{labelVars}{Named character vector containing variable labels.}
+
 \item{verbose}{Logical, if TRUE report progress messages
 during execution (included in the browser 'Console').}
 }
@@ -74,8 +88,7 @@ during execution (included in the browser 'Console').}
 Updated \code{\link[plotly]{plotly}} object.
 }
 \description{
-Format interactive plot,
-with possibility to download patient profiles
+Format interactive plot, with possibility to download patient profiles
 on a click event.
 }
 \author{

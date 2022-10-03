@@ -3,13 +3,10 @@
 #' unique elements in the plot, usually x, y, facet variables.
 #' These variables are used to identify records with the same position
 #' in the plot, their information are combined in the hover.
-#' @param keyVar String with unique key variable, identifying unique
-#' group for which the link between the table and the plot should be done.
 #' @inheritParams clinDataReview-common-args
-#' @return Updated \code{\link[crosstalk]{SharedData}} with:
-#' \itemize{
-#' \item{extra column: 'hover' with combined info from \code{hoverVars}}
-#' }
+#' @return \code{\link[crosstalk]{SharedData}} object containing the \code{data},
+#' with an extra column: 'hover' with the combined info from \code{hoverVars},
+#' and the key defined as \code{keyVar} and group as \code{id}.
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
 #' @importFrom crosstalk SharedData

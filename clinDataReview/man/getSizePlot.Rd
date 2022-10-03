@@ -59,7 +59,9 @@ a legend is available in the plot.}
 \item{legendPosition}{String with position of the legend,
 among: 'top'/'left'/'bottom'/'right', 'right' by default.}
 
-\item{y}{Character vector or factor with elements in the y-axis.}
+\item{y}{Character vector or factor with elements in the y-axis,
+or list of such vectors. If a list is provided, the maximum height
+obtained across the different list elements is used.}
 }
 \value{
 Numeric vector with width ('width')

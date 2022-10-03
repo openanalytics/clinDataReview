@@ -26,6 +26,8 @@
 #' @author Laure Cougnaud
 #' @import plotly
 #' @importFrom clinUtils formatVarForPlotLabel getColorPalette getShapePalette
+#' @importFrom crosstalk bscols filter_select
+#' @importFrom plyr dlply
 #' @export
 timeProfileIntervalPlot <- function(data,
 	paramVar, paramLab = getLabelVar(paramVar, labelVars = labelVars),
@@ -54,11 +56,13 @@ timeProfileIntervalPlot <- function(data,
 	# path to subject-specific report
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+	# selection
+	selectVars = NULL, selectLab = getLabelVar(selectVars, labelVars = labelVars),
 	# table
 	table = FALSE, 
 	tableVars, tableLab,
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 
 	# store input parameter values for further use
@@ -82,26 +86,32 @@ timeProfileIntervalPlot <- function(data,
 	
 	# concatenate variable(s) if multiple are specified
 	if(length(paramVar) > 1){
-		data$yVar <- apply(data[, paramVar], 1, paste, collapse = paramVarSep)	
+		data$paramVar <- apply(data[, paramVar], 1, paste, collapse = paramVarSep)	
 	}else{
-		data$yVar <- data[, paramVar]
+		data$paramVar <- data[, paramVar]
 	}
 	
+	# include the selection variable in the y-axis as well
+	# to have range of the y axis reset to only contain selected parameters
+	if(!is.null(selectVars)){
+	  data$yVar <- apply(data[, c(selectVars, "paramVar")], 1, paste, collapse = paramVarSep)	
+	}else{
+	  data$yVar <- data[, "paramVar"]
+	}
+	
+	# order y-variable based on selection, grouping and parameter variables
 	data$yVar <- formatVarForPlotLabel(
 		data = data, 
-		paramVar = "yVar", paramGroupVar = paramGroupVar, 
-		width = 20, revert = TRUE
+		paramVar = "yVar", paramGroupVar = c(selectVars, paramGroupVar, paramVar), 
+		width = 20
 	)
 	
-	yLevels <- levels(data$yVar)
-	
-	# plotly ignores missing values by default,
-	# so convert y-variable to numeric to ensure that all values are represented
-	data$yVar <- as.numeric(data$yVar)
+	# in order to specify layout/yaxis/range
+	if(is.null(selectVars))
+	  data$yVar <- as.numeric(data$yVar)
 	
 	# variables used to uniquely identify a record
 	# between the table and the plot
-#	keyVars <- c(paramVar, timeStartVar, timeEndVarPlot)
 	# issue when key variable is too long in highlight_key
 	# so use row IDs
 	data$key <- as.character(seq_len(nrow(data)))
@@ -127,13 +137,18 @@ timeProfileIntervalPlot <- function(data,
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
 		
-		hoverVars <- c(paramVar, timeStartVar, timeStartShapeVar, timeEndVar, timeEndShapeVar)
+		hoverVars <- c(paramVar, 
+      timeStartVar, timeStartShapeVar, timeEndVar, timeEndShapeVar,
+      colorVar, selectVars
+		)
 		hoverLab <- c(
 			getLabelVar(var = paramVar, label = paramLab, labelVars = labelVars),
 			getLabelVar(var = timeStartVar, label = timeStartLab, labelVars = labelVars),
 			getLabelVar(var = timeEndVar, label = timeEndLab, labelVars = labelVars),
+			getLabelVar(var = colorVar, label = colorLab, labelVars = labelVars),
 			getLabelVar(var = timeStartShapeVar, label = timeStartShapeLab, labelVars = labelVars),
-			getLabelVar(var = timeEndShapeVar, label = timeEndShapeLab, labelVars = labelVars)
+			getLabelVar(var = timeEndShapeVar, label = timeEndShapeLab, labelVars = labelVars),
+			getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 		)
 		
 	}else	if(missing(hoverLab)){
@@ -149,7 +164,7 @@ timeProfileIntervalPlot <- function(data,
 			keyVar = keyVar,
 			labelVars = labelVars,
 			hoverVars = hoverVars, hoverLab = hoverLab,
-			hoverByVar = c(paramVar, timeStartVar, timeEndVar)
+			hoverByVar = c(selectVars, paramVar, timeStartVar, timeEndVar)
 		)
 	dataPlotSharedData <- convertToSharedDataIntPlot(data)
 	
@@ -163,6 +178,7 @@ timeProfileIntervalPlot <- function(data,
 		}else	colorPalette <- getColorPalette(n = 1, palette = colorPaletteOpt)
 	}
 
+	# extract y-values and corresponding labels
 	dimPlot <- getSizePlot(
 		width = width, height = height,
 		title = title, 
@@ -171,7 +187,8 @@ timeProfileIntervalPlot <- function(data,
 		xLab = xLab,
 		includeLegend = !is.null(colorVar), 
 		legendPosition = "bottom",
-		y = yLevels
+		# take the maximum plot height across selection groups
+		y = dlply(data, selectVars, function(x) droplevels(as.factor(x[, "paramVar"])))
 	)
 	width <- dimPlot[["width"]]
 	height <- dimPlot[["height"]]
@@ -250,6 +267,7 @@ timeProfileIntervalPlot <- function(data,
 	}
 	
 	# set layout
+	yData <- unique(data[order(data[, "yVar"]), c("yVar", "paramVar")])
 	pl <- layoutClinData(
 		p = pl,
 		title = title,
@@ -263,21 +281,25 @@ timeProfileIntervalPlot <- function(data,
 		height = height,
 		# extra params passed to plotly::layout
 		legend = list(title = list(text = colorLab)),
-		yaxis = list(
-			showgrid = TRUE,
-			title = list(text = yLab),
-			type = "array", 
-			tickvals = seq_along(yLevels), 
-			ticktext = yLevels,
-			tickangle = 0,
-			range = c(0.5, length(yLevels)+0.5)
+		yaxis = c(
+		  list(
+  			showgrid = TRUE,
+  			title = list(text = yLab),
+  			type = "array",
+  			tickvals = yData[, "yVar"], 
+  			ticktext = yData[, "paramVar"],
+  			tickangle = 0
+  		),
+		  # reduce padding axis <-> plot & plot <-> title
+		  if(is.null(selectVars))
+		    list(range = c(0.5, nrow(yData)+0.5))
 		),
 		hovermode = "closest"
 	)
 	
 	# specific formatting for clinical data
-	pl <- formatPlotlyClinData(
-		data = data, pl = pl,
+  res <- formatPlotlyClinData(
+    data = data, pl = pl,
 		# extract patient profile based on the 'key' variable
 		# (not yVar because different records could be grouped in the same yVar)
 		# (should be included in the plot)
@@ -286,7 +308,11 @@ timeProfileIntervalPlot <- function(data,
 		idVarPlot = "key", idFromDataPlot = TRUE, 
 		# no label for patient prof filename because y is a numeric (not informative)
 #		labelVarPlot = "y",
-		id = id, 
+    id = id, 
+    # selection
+    selectVars = selectVars, selectLab = selectLab, 
+    labelVars = labelVars,
+    keyVar = keyVar, 
 		verbose = verbose,
 		pathDownload = FALSE # open in new tab
 	)
@@ -311,14 +337,16 @@ timeProfileIntervalPlot <- function(data,
 			labelVars = labelVars,
 			verbose = verbose
 		)
-		res <- list(plot = pl, table = table)
+		res <- c(
+		  if(inherits(res, "plotly")){list(plot = res)}else{res}, 
+		  list(table = table)
+		)
 		
-		class(res) <- c("clinDataReview", class(res))
-		
-	}else res <- pl
+	}
+  
+  if(!inherits(res, "plotly"))
+    class(res) <- c("clinDataReview", class(res))
 	
 	return(res)
-	
-	
 	
 }

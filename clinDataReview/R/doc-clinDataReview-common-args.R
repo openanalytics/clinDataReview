@@ -5,6 +5,7 @@
 #' For the visualizations, progress messages during download
 #' of subject-specific report are displayed in the browser console.
 #' @param gg \code{\link[ggplot2]{ggplot}} object.
+#' @param pl \code{plotly} object.
 #' @param xVar String with column of \code{data} containing x-variable.
 #' @param yVar String with column of \code{data} containing y-variable.
 #' @param xLab String with label for \code{xVar}.
@@ -74,6 +75,12 @@
 #' @param colorPalette (optional) Named character vector with color palette.
 #' If not specified, the viridis color palette is used.\cr
 #' See \code{\link[clinUtils]{clinColors}}.
+#' @param selectVars (optional) Character vector with variable(s) from \code{data}
+#' for which a selection box should be included. This enables to select the data
+#' displayed in the plot (and associated table).
+#' @param selectLab (Named) character vector with label for \code{selectVars}.
+#' @param keyVar String with unique key variable, identifying unique
+#' group for which the link between the table and the plot should be done.
 #' @name clinDataReview-common-args
 #' @return No return value, used for the documentation of 
 #' the functions of the package.

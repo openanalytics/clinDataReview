@@ -1,6 +1,7 @@
 context("Visualize time intervals in clinical data")
 
 library(plotly)
+library(jsonlite)
 
 test_that("A time interval plot is succesfully created", {
 			
@@ -147,4 +148,78 @@ test_that("A color variable is correctly set in the time interval plot", {
 	
 	expect_s3_class(pl, "plotly")
       
+})
+
+test_that("A selection variable is correctly included in the time interval plot", {
+  
+  data <- data.frame(
+    group = factor(c("A", "B", "B"), levels = c("B", "A")),
+    subjectID = c(1, 2, 3),
+    startDay = c(1, 3, 4),
+    endDay = c(2, 5, 7),
+    stringsAsFactors = FALSE
+  )
+  
+  res <- timeProfileIntervalPlot(
+    data = data,
+    paramVar = "subjectID",
+    timeStartVar = "startDay",
+    timeEndVar = "endDay",
+    selectVars = "group"
+  )
+  
+  # check the output:
+  expect_s3_class(res, "clinDataReview")
+  expect_named(res, expected = c("buttons", "plot"))
+  expect_s3_class(res$plot, "plotly")
+  
+  expect_length(res$buttons, 1)
+  
+  # check button values
+  buttonData <- jsonlite::fromJSON(
+    txt = rapply(res$buttons[[1]], function(x) x, class = "json")
+  )
+  expect_equal(object = buttonData$items$value, expected = levels(data$group))
+  
+  # check that the output can be printed without any output/errors/warnings
+  expect_silent(print(res))
+  
+})
+
+test_that("A label is correctly set for the selection variable in the time interval plot", {
+  
+  data <- data.frame(
+    group1 = c("A", "B", "B"), 
+    group2 = c("A1", "B1", "B2"), 
+    subjectID = c(1, 2, 3),
+    startDay = c(1, 3, 4),
+    endDay = c(2, 5, 7),
+    stringsAsFactors = FALSE
+  )
+  
+  selectVars <- c("group1", "group2")
+  selectLab <- c(group2 = "Group 2", group1 = "Group 1")
+  res <- timeProfileIntervalPlot(
+    data = data,
+    paramVar = "subjectID",
+    timeStartVar = "startDay",
+    timeEndVar = "endDay",
+    selectVars = selectVars, 
+    selectLab = selectLab
+  )
+  
+  expect_length(res$buttons, length(selectVars))
+  
+  for(iButton in seq_along(selectVars)){
+    
+    button <- res$buttons[[iButton]]
+    buttonCnt <- button[sapply(button, `[[`, "name") == "div"]
+    buttonCntChild <- buttonCnt[[1]]$children
+    idx <- which(sapply(buttonCntChild, `[[`, "name") == "label")
+    expect_equal(
+      object = unname(unlist(buttonCntChild[[idx]]$children)),
+      expected = unname(selectLab[selectVars[iButton]])
+    )
+  }
+  
 })

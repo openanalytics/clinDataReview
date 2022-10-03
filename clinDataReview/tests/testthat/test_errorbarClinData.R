@@ -509,3 +509,39 @@ test_that("The points are correctly shaped with a specified palette", {
 	expect_mapequal(object = plShapePalette, expected = shapePalette)
 			
 })
+
+test_that("A selection variable is correctly included in a vertical errorbar visualization", {
+  
+  data <- data.frame(
+    group = factor(c("A", "A", "B", "B"), levels = c("B", "A")),
+    AVISIT = c("Baseline", "Week 1", "Baseline", "Week 2"),
+    Mean = c(10, 26, 25.6, 40),
+    SE = c(1, 2, 3, 4),
+    stringsAsFactors = FALSE
+  )
+  
+  res <- errorbarClinData(
+    data = data,
+    xVar = "AVISIT", 
+    yVar = "Mean", 
+    yErrorVar = "SE",
+    selectVars = "group"
+  )
+  
+  # check the output:
+  expect_s3_class(res, "clinDataReview")
+  expect_named(res, expected = c("buttons", "plot"))
+  expect_s3_class(res$plot, "plotly")
+  
+  expect_length(res$buttons, 1)
+  
+  # check button values
+  buttonData <- jsonlite::fromJSON(
+    txt = rapply(res$buttons[[1]], function(x) x, class = "json")
+  )
+  expect_equal(object = buttonData$items$value, expected = levels(data$group))
+  
+  # check that the output can be printed without any output/errors/warnings
+  expect_silent(print(res))
+  
+})

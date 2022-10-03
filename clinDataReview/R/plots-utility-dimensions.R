@@ -97,7 +97,9 @@ getDimGgplot <- function(gg){
 #' among: 'top'/'left'/'bottom'/'right', 'right' by default.
 #' @param facet Logical, if TRUE the plot
 #' contains facets.
-#' @param y Character vector or factor with elements in the y-axis.
+#' @param y Character vector or factor with elements in the y-axis,
+#' or list of such vectors. If a list is provided, the maximum height
+#' obtained across the different list elements is used.
 #' @inheritParams clinDataReview-common-args
 #' @return Numeric vector with width ('width')
 #' and height ('height') of the plot
@@ -124,13 +126,24 @@ getSizePlot <- function(
 	
 	# if y is specified, the height is based
 	# on number of lines
+
 	if(!is.null(y)){
-		if(is.factor(y)){
-			yUnique <- levels(y)
-		}else	yUnique <- unique(y)
-		nLinesY <- countNLines(yUnique)
-		nLinesY <- sum(nLinesY)
-		heightDef <- nLinesY * 30
+	  
+	  getNLinesY <- function(y){
+	    if(is.factor(y)){
+	      yUnique <- levels(y)
+	    }else	yUnique <- unique(y)
+	    nLinesY <- countNLines(yUnique)
+	    nLinesY <- sum(nLinesY)
+	    return(nLinesY)
+	  }
+	  if(is.list(y)){
+	    nLinesY <- max(sapply(y, getNLinesY))
+	  }else{
+	    nLinesY <- getNLinesY(y = y)
+	  }
+	  heightDef <- nLinesY * 30
+
 	# otherwise set default height
 	}else	heightDef <- 500
 

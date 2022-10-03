@@ -1,4 +1,4 @@
-#' Barplot interactive plot.
+#' Barplot visualization of clinical data.
 #' @param barmode String with type of barplot, either:
 #' 'group' or 'stack' (see parameter in \code{\link[plotly]{layout}}).
 #' @param textVar (optional) String with a text variable,
@@ -38,6 +38,8 @@ barplotClinData <- function(
 	tableVars, tableLab,
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+	# selection
+	selectVars = NULL, selectLab = getLabelVar(selectVars, labelVars = labelVars),
 	verbose = FALSE){
 
 	# store input parameter values for further use
@@ -49,11 +51,17 @@ barplotClinData <- function(
 
 	idVars <- c(xVar, colorVar)
 	data$idEl <- interaction(data[, idVars, drop = FALSE])
+	keyVar <- "idEl"
 	
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
-		hoverVars <- c(xVar, colorVar, yVar)
-		hoverLab <- setNames(c(xLab, colorLab, yLab), hoverVars)
+		hoverVars <- c(xVar, colorVar, yVar, selectVars)
+		hoverLab <- c(
+		  getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
+		  getLabelVar(var = colorVar, label = colorLab, labelVars = labelVars),
+		  getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
+		  getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
+		)
 	}else	if(missing(hoverLab)){
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
@@ -62,8 +70,8 @@ barplotClinData <- function(
 	dataSharedData <- formatDataForPlotClinData(
 		data = data, 
 		hoverVars = hoverVars, hoverLab = hoverLab,
-		hoverByVar = "idEl",
-		keyVar = "idEl", id = id,
+		hoverByVar = keyVar,
+		keyVar = keyVar, id = id,
 		labelVars = labelVars
 	)
 	
@@ -109,7 +117,11 @@ barplotClinData <- function(
 	)
 	
 	## layout option
-	xaxisArgs <- list(tickangle = 45)
+	xaxisArgs <- list(
+	  tickangle = 45, 
+	  # to have x-axis reset when a group from selectVars is selected
+	  categoryorder = "trace"
+	)
 	
 	# in case x-var is not nested within color variable
 	# when elements are selected in the legend,
@@ -126,6 +138,7 @@ barplotClinData <- function(
 			}else	sort(unique(data[, xVar]))
 			xaxisArgs <- c(xaxisArgs, 
 				list(
+				  type = "array",
 					# text displayed at the ticks position
 					ticktext = xEl,
 					# values at which the ticks on the axis appear
@@ -159,15 +172,18 @@ barplotClinData <- function(
 	)
 		
 	# specific formatting for clinical data
-	pl <- formatPlotlyClinData(
+	res <- formatPlotlyClinData(
 		data = data, pl = pl,
-		idVar = "idEl", pathVar = pathVar,
+		idVar = keyVar, pathVar = pathVar,
 		# extract ID from 'label' column directly the plot output object
 		idFromDataPlot = FALSE, idVarPlot = "label",
 		# patient prof filename based on the 'y' label
 		labelVarPlot = "label",
 		id = id, 
-		verbose = verbose
+		verbose = verbose,
+		# selection
+		selectVars = selectVars, selectLab = selectLab, labelVars = labelVars,
+		keyVar = keyVar
 	)
 	
 	# create associated table
@@ -181,7 +197,7 @@ barplotClinData <- function(
 		
 		table <- tableClinData(
 			data = data, 
-			keyVar = "idEl", idVar = xVar,
+			keyVar = keyVar, idVar = xVar,
 			pathVar = pathVar, pathLab = pathLab,
 			pathExpand = TRUE,
 			tableVars = tableVars,
@@ -190,11 +206,15 @@ barplotClinData <- function(
 			id = id, 
 			labelVars = labelVars
 		)
-		res <- list(plot = pl, table = table)
+		res <- c(
+		  if(inherits(res, "plotly")){list(plot = res)}else{res}, 
+		  list(table = table)
+		)
 		
-		class(res) <- c("clinDataReview", class(res))
-		
-	}else res <- pl
+	}
+	
+	if(!inherits(res, "plotly"))
+	  class(res) <- c("clinDataReview", class(res))
 	
 	return(res)
 	

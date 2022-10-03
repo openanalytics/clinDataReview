@@ -29,3 +29,16 @@ timeProfileIntervalPlot(
 	subtitle = "Time intervals",
 	caption = "Day is relative to the study baseline"
 )
+
+# add a selection box
+timeProfileIntervalPlot(
+  data = dataAE,
+  paramVar = "USUBJID",
+  # time-variables
+  timeStartVar = "ASTDY",
+  timeEndVar = "ASTDY",
+  # colored by severity
+  colorVar = "AESEV",
+  labelVars = labelVars,
+  selectVars = "AEDECOD"
+)

@@ -71,11 +71,14 @@ scatterplotClinData <- function(
 	hoverVars, hoverLab,
 	idVar = "USUBJID", idLab = getLabelVar(idVar, labelVars = labelVars),
 	pathVar = NULL, pathExpand = FALSE,
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+	# selection
+	selectVars = NULL, selectLab = getLabelVar(selectVars, labelVars = labelVars),
+	# table
 	table = FALSE, 
 	tableVars,
 	tableLab,
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
   
 
@@ -103,11 +106,12 @@ scatterplotClinData <- function(
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
 		aesVar <- unlist(c(aesPointVar, aesLineVar))
-		hoverVars <- c(xVar, yVar, aesVar)
+		hoverVars <- c(xVar, yVar, aesVar, selectVars)
 		hoverLab <- c(
 			getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
 			getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
-			getLabelVar(var = aesVar, label = aesLab, labelVars = labelVars)
+			getLabelVar(var = aesVar, label = aesLab, labelVars = labelVars),
+			getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 		)
 	}else	if(missing(hoverLab)){
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
@@ -217,13 +221,16 @@ scatterplotClinData <- function(
 	)
 
 	# convert static to interactive plot
-	pl <- formatPlotlyClinData(
+	res <- formatPlotlyClinData(
 		data = data, pl = pl,
 		idVar = idVar, pathVar = pathVar,
 		id = id, verbose = verbose,
 		# extract ID from 'key' column in 'data' of the plot output object
 		idFromDataPlot = TRUE, idVarPlot = "key",
-		pathDownload = FALSE # open in new tab
+		pathDownload = FALSE, # open in new tab
+		# selection
+		selectVars = selectVars, selectLab = selectLab, labelVars = labelVars,
+		keyVar = idVar
 	)
 	
 	# create associated table
@@ -246,11 +253,15 @@ scatterplotClinData <- function(
 			id = id,
 			labelVars = labelVars
 		)
-		res <- list(plot = pl, table = table)
-	
-		class(res) <- c("clinDataReview", class(res))
+		res <- c(
+		  if(inherits(res, "plotly")){list(plot = res)}else{res}, 
+		  list(table = table)
+		)
 		
-	}else res <- pl
+	}
+	
+	if(!inherits(res, "plotly"))
+	  class(res) <- c("clinDataReview", class(res))
 		
 	return(res)
 

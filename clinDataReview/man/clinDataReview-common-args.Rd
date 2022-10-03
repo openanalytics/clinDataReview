@@ -13,6 +13,8 @@ of subject-specific report are displayed in the browser console.}
 
 \item{gg}{\code{\link[ggplot2]{ggplot}} object.}
 
+\item{pl}{\code{plotly} object.}
+
 \item{xVar}{String with column of \code{data} containing x-variable.}
 
 \item{yVar}{String with column of \code{data} containing y-variable.}
@@ -106,6 +108,15 @@ below the title.}
 \item{colorPalette}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}
+
+\item{selectVars}{(optional) Character vector with variable(s) from \code{data}
+for which a selection box should be included. This enables to select the data
+displayed in the plot (and associated table).}
+
+\item{selectLab}{(Named) character vector with label for \code{selectVars}.}
+
+\item{keyVar}{String with unique key variable, identifying unique
+group for which the link between the table and the plot should be done.}
 }
 \value{
 No return value, used for the documentation of 

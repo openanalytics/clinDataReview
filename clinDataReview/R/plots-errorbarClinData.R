@@ -79,11 +79,14 @@ errorbarClinData <- function(
 	width = NULL, height = NULL,
 	pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
 	hoverVars, hoverLab,
+	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+	# selection
+	selectVars = NULL, selectLab = getLabelVar(selectVars, labelVars = labelVars),
+	# table
 	table = FALSE, 
 	tableVars,
 	tableLab,
 	tableButton = TRUE, tablePars = list(),
-	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	verbose = FALSE){
 	
 	# store input parameter values for further use
@@ -96,19 +99,26 @@ errorbarClinData <- function(
 		stop(paste("Variable with width of the interval",
 			"error should be specified."))
 	
+	if(!is.null(selectVars) & !is.null(xLabVars)){
+	  warning(paste("The specification of the x label variable(s) is not",
+	    "compatible with the specification of the filtering variable(s)",
+	    "so the x label variables are not considered."))
+	  xLabVars <- NULL
+	}
+	
 	# extract variable without error bar
 	groupAxis <- ifelse(!is.null(yErrorVar), "x", "y")
 	groupVar <- switch(groupAxis, x = xVar, y = yVar)
 	
 	# extract unique ID for each plot element
-	idVars <- c(groupVar, colorVar)
+	idVars <- c(groupVar, colorVar, selectVars)
 	data$idEl <- interaction(data[, idVars, drop = FALSE])
 	
 	# extract default hover variables
 	if(missing(hoverVars)){
-		hoverVars <- c(xVar, xErrorVar, colorVar, yVar, yErrorVar, shapeVar)
+		hoverVars <- c(xVar, xErrorVar, colorVar, yVar, yErrorVar, shapeVar, selectVars)
 		hoverLab <- setNames(
-			c(xLab, xErrorLab, colorLab, yLab, yErrorLab, shapeLab), 
+			c(xLab, xErrorLab, colorLab, yLab, yErrorLab, shapeLab, selectLab), 
 			hoverVars
 		)
 	}else	if(missing(hoverLab)){
@@ -157,11 +167,12 @@ errorbarClinData <- function(
 	}
 	
 	# format data to: 'SharedData' object
+	keyVar <- "idEl"
 	dataSharedData <- formatDataForPlotClinData(
 		data = data, 
 		hoverVars = hoverVars, hoverLab = hoverLab,
 		hoverByVar = "idEl",
-		keyVar = "idEl", id = id,
+		keyVar = keyVar, id = id,
 		labelVars = labelVars
 	)
 	
@@ -171,7 +182,7 @@ errorbarClinData <- function(
 		title = title, 
 		subtitle = subtitle,
 		caption = caption,
-		xLab = xAxisLab,
+		xLab = xAxisLab, 
 		includeLegend = !is.null(colorVar), 
 		legendPosition = legendPosition,
 		y = if(groupAxis == "y")
@@ -256,14 +267,21 @@ errorbarClinData <- function(
 				xLabVars
 			}else	groupVar
 		)
-		axisArgs <- list(
-			tickvals = seq_along(axisArgs), 
-			ticktext = axisArgs,
-			range = c(0.5, length(axisArgs)+0.5)
+		axisArgs <- c(
+		  list(
+		    type = "array",
+			  tickvals = seq_along(axisArgs), 
+			  ticktext = axisArgs
+			),
+			if(is.null(selectVars))
+			  list(range = c(0.5, length(axisArgs)+0.5))
 		)
 		switch(groupAxis,
 			`x` = {
 				xAxisArgs <- axisArgs
+				# fix for automatic shrink of figure when select box
+				if(!is.null(selectVars))
+				  xAxisArgs$automargin <- FALSE
 			},
 			`y` = {
 				yAxisArgs <- axisArgs
@@ -290,12 +308,15 @@ errorbarClinData <- function(
 	)
 	
 	# specific formatting for clinical data
-	pl <- formatPlotlyClinData(
+	res <- formatPlotlyClinData(
 		data = data, pl = pl,
 		idVar = "idEl", pathVar = pathVar,
 		# extract ID from 'id' column directly the plot output object
 		idFromDataPlot = FALSE, idVarPlot = "id",
 		id = id, 
+		# selection
+		selectVars = selectVars, selectLab = selectLab, labelVars = labelVars,
+		keyVar = keyVar, 
 		verbose = verbose
 	)
 	
@@ -310,7 +331,7 @@ errorbarClinData <- function(
 		
 		table <- tableClinData(
 			data = data, 
-			keyVar = "idEl", idVar = groupVar,
+			keyVar = keyVar, idVar = groupVar,
 			pathVar = pathVar, pathLab = pathLab,
 			pathExpand = TRUE,
 			tableVars = tableVars,
@@ -319,11 +340,15 @@ errorbarClinData <- function(
 			id = id, 
 			labelVars = labelVars
 		)
-		res <- list(plot = pl, table = table)
-		
-		class(res) <- c("clinDataReview", class(res))
+		res <- c(
+		  if(inherits(res, "plotly")){list(plot = res)}else{res}, 
+		  list(table = table)
+		)
 	
-	}else res <- pl
+	}
+	
+	if(!inherits(res, "plotly"))
+	  class(res) <- c("clinDataReview", class(res))
 
 	return(res)
 	

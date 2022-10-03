@@ -40,10 +40,9 @@ If not specified, a random id, as 'plotClinData[X]' is used.}
 \item{labelVars}{Named character vector containing variable labels.}
 }
 \value{
-Updated \code{\link[crosstalk]{SharedData}} with:
-\itemize{
-\item{extra column: 'hover' with combined info from \code{hoverVars}}
-}
+\code{\link[crosstalk]{SharedData}} object containing the \code{data},
+with an extra column: 'hover' with the combined info from \code{hoverVars},
+and the key defined as \code{keyVar} and group as \code{id}.
 }
 \description{
 Format data for interactive plot for clinical data

@@ -742,3 +742,40 @@ test_that("A caption is correctly set in a scatterplot", {
 		expected = plotly_build(plNoCaption)$x$layout$margin$b
 	)			
 })
+
+test_that("A selection variable is correctly included in a scatterplot", {
+  
+  data <- data.frame(
+    group = factor(c("A", "A", "A", "A", "B"), levels = c("B", "A")),
+    DY = c(1, 2, 1, 2, 3),
+    AVAL = c(3, 4, 2, 6, 5),
+    USUBJID = c(1, 1, 2, 2, 3),
+    stringsAsFactors = FALSE
+  )	
+  
+  res <- scatterplotClinData(
+    data = data, 
+    xVar = "DY",
+    yVar = "AVAL",
+    aesLineVar = list(group = "USUBJID"),
+    selectVars = "group"
+  )
+  
+  # check the output:
+  expect_s3_class(res, "clinDataReview")
+  expect_named(res, expected = c("buttons", "plot"))
+  expect_s3_class(res$plot, "plotly")
+  
+  expect_length(res$buttons, 1)
+  
+  # check button values
+  buttonData <- jsonlite::fromJSON(
+    txt = rapply(res$buttons[[1]], function(x) x, class = "json")
+  )
+  expect_equal(object = buttonData$items$value, expected = levels(data$group))
+  
+  # check that the output can be printed without any output/errors/warnings
+  expect_silent(print(res))
+
+  
+})

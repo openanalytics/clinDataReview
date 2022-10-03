@@ -1,5 +1,4 @@
-#' Format interactive plot,
-#' with possibility to download patient profiles
+#' Format interactive plot, with possibility to download patient profiles
 #' on a click event.
 #' @param idVar String with variable of \code{data}
 #' containing plot element.
@@ -10,7 +9,6 @@
 #' was created from \code{\link[plotly]{ggplotly}}), otherwise
 #' directly from the plot object 
 #' (if the plot was created from \code{\link[plotly]{plot_ly}} directly).
-#' @param pl \code{\link[plotly]{ggplotly}} object.
 #' @param highlightOn String with event to turn on the selection
 #' (\code{on} parameter of \code{\link[plotly]{highlight}}),
 #' 'plotly_click' by default.
@@ -37,9 +35,10 @@
 #' @importFrom plotly highlight
 #' @importFrom htmlwidgets onRender JS
 #' @importFrom htmlwidgets prependContent
+#' @importFrom clinUtils getLabelVar
 #' @export
 formatPlotlyClinData <- function(
-	pl, data,
+	pl, data, 
 	idVar = "USUBJID", 
 	pathVar = NULL, pathDownload = TRUE,
 	idFromDataPlot = FALSE, 
@@ -47,6 +46,9 @@ formatPlotlyClinData <- function(
 	highlightOn = "plotly_click",
 	highlightOff = "plotly_doubleclick",
 	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+	# selection
+	selectVars = NULL, selectLab = getLabelVar(selectVars, labelVars = labelVars),
+	keyVar = NULL, labelVars = NULL,
 	verbose = FALSE){
 
 	idVarInit <- idVar
@@ -121,6 +123,99 @@ formatPlotlyClinData <- function(
 	
 	}
 	
-	return(pl)
+  if(!is.null(selectVars)){
+	  
+	  res <- addSelectBtn(
+	    data = data, pl = pl,
+	    selectVars = selectVars, selectLab = selectLab, labelVars = labelVars,
+	    keyVar = keyVar,
+	    id = id
+    )
+	  
+	}else{res <- pl}
 	
+	return(res)
+	
+}
+
+#' Add selection box(es) to a plotly plot.
+#' @param data \code{\link[crosstalk]{SharedData}} object used for the plot.
+#' @inheritParams clinDataReview-common-args
+#' @return if \code{selectVars} is specified: a \code{\link[htmltools]{browsable}}
+#' object combining the select buttons and the \code{plotly} object.\cr
+#' Otherwise, the input \code{plotly} object.
+#' @importFrom clinUtils getLabelVar
+#' @importFrom crosstalk filter_select SharedData
+#' @importFrom htmlwidgets JS
+#' @importFrom htmltools tags tagList
+#' @importFrom stats as.formula
+addSelectBtn <- function(
+  data, pl,
+  selectVars = NULL, selectLab = NULL, labelVars = NULL,
+  id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+  keyVar){
+    
+  # (from doc) limitation: the highlighting variable has to be nested inside filter variable(s)
+  xKey <- data[, keyVar]
+  if(is.factor(xKey)) xKey <- droplevels(xKey)
+  xFilters <- do.call(interaction, data[, selectVars, drop = FALSE])
+  isNested <- tapply(xFilters, xKey, function(x) length(unique(x)))
+  if(any(isNested > 1)){
+    
+    warning(paste("The selection variable(s):", toString(shQuote(selectVars)),
+      "is/are not nested in the key variable:", shQuote(keyVar),
+      "so the select button cannot be created.'"))
+    res <- pl
+    
+  }else{
+    
+    selectLab <- getLabelVar(selectVars, labelVars = labelVars, label = selectLab)
+    
+    dataSharedData <- crosstalk::SharedData$new(
+      data = unique(data[, c(keyVar, selectVars)]), 
+      key = varToFm(keyVar), 
+      group = id
+    )
+    
+    filterBtn <- lapply(seq_along(selectVars), function(iVar){
+      
+      var <- selectVars[iVar]
+      idBtn <- paste0(id, iVar)
+      btn <- crosstalk::filter_select(
+        id = idBtn,
+        label = selectLab[var],
+        sharedData = dataSharedData, 
+        group = as.formula(paste("~", var)), 
+        multiple = FALSE
+      )
+      
+      # set default to first element in the vector
+      default <- if(is.factor(data[, var])){
+        levels(droplevels(data[, var]))[1]
+      }else{sort(unique(data[, var]))[1]}
+      
+      # add custom JS to set default value for the button
+      # and remove the 'All' option ('')
+      js <- htmlwidgets::JS(
+        'function set_btn(){',
+        paste0(
+          'var btn = document.getElementById("', idBtn, 
+          '").getElementsByClassName("selectized")[0].selectize'
+        ),
+        paste0('btn.setValue("', default, '", false);'),
+        'btn.removeOption("")',
+        '}',
+        '$(document).ready(set_btn);'
+      )
+      script <- htmltools::tags$script(js)
+      btnCustom <- htmltools::tagList(script, btn)
+      
+    })
+    
+    res <- list(buttons = filterBtn, plot = pl)
+    
+  }
+  
+  return(res)
+  
 }

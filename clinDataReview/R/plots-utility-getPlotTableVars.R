@@ -78,13 +78,15 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 		if(tableVarsNotSpec){
 			
 			aesVar <- getPlotArgsAsVect(c("aesPointVar", "aesLineVar"))
-			tableVars <- unique(c(getPlotArgsAsVect(c("idVar", "xVar", "yVar")), aesVar))
+			selectVars <- getPlotArgsAsVect("selectVars")
+			tableVars <- unique(c(getPlotArgsAsVect(c("idVar", "xVar", "yVar")), aesVar, selectVars))
 			tableLab <- with(plotArgs, 
 				c(
 					getLabelVar(var = idVar, label = if(!missing(idLab))	idLab, labelVars = labelVars),
 					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
 					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
-					getLabelVar(var = aesVar, label = if(!missing(aesLab))	aesLab, labelVars = labelVars)
+					getLabelVar(var = aesVar, label = if(!missing(aesLab))	aesLab, labelVars = labelVars),
+					getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 				)
 			)
 		}else{
@@ -120,7 +122,7 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			tableVars <- with(plotArgs, c(
 				if(!is.null(xErrorVar))	c(yVar, xVar, xErrorVar),
 				if(!is.null(yErrorVar))	c(xVar, yVar, yErrorVar),
-				colorVar
+				colorVar, selectVars
 			))
 			tableLab <- with(plotArgs, 
 				c(
@@ -128,7 +130,8 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 					getLabelVar(var = xErrorVar, label = if(!missing(xErrorLab))	xErrorLab, labelVars = labelVars),
 					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
 					getLabelVar(var = yErrorVar, label = if(!missing(yErrorLab))	yErrorLab, labelVars = labelVars),
-					getLabelVar(var = colorVar, label = if(!missing(colorLab))	colorLab, labelVars = labelVars)
+					getLabelVar(var = colorVar, label = if(!missing(colorLab))	colorLab, labelVars = labelVars),
+					getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 				)
 			)
 		}else{
@@ -201,7 +204,8 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			
 			tableVars <- with(plotArgs, c(
 				paramGroupVar, paramVar, timeStartVar, timeEndVar, 
-				colorVar, timeStartShapeVar, timeEndShapeVar
+				colorVar, timeStartShapeVar, timeEndShapeVar,
+				selectVars
 			))
 			tableLab <- with(plotArgs, 
 				c(
@@ -211,7 +215,8 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 					getLabelVar(var = timeEndVar, label = timeEndLab, labelVars = labelVars),
 					getLabelVar(var = colorVar, label = colorLab, labelVars = labelVars),
 					getLabelVar(var = timeStartShapeVar, label = timeStartShapeLab, labelVars = labelVars),
-					getLabelVar(var = timeEndShapeVar, label = timeEndShapeLab, labelVars = labelVars)
+					getLabelVar(var = timeEndShapeVar, label = timeEndShapeLab, labelVars = labelVars),
+					getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 				)
 			)
 			

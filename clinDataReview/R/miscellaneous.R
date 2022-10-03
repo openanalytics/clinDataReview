@@ -196,10 +196,7 @@ collapseHtmlContent <- function(
 	title = "Click to show or hide"
 	){
 	
-	btnStyle <- paste0(
-		#"border: none;",
-		"background-color: transparent"
-	)
+	btnStyle <- "background-color: transparent"
 		
 	btn <- tags$input(
 		type = "button", 
@@ -215,10 +212,7 @@ collapseHtmlContent <- function(
 		class = "hideshow_cnt"
 	)
 	
-	res <- tagList(
-		btn, 
-		btnContent, br(), br()
-	)
+	res <- tagList(btn, btnContent, br(), br())
 	
 	res <- prependContent(res, getJsDepClinDataReview(type = "collapsibleButton"))
 	
