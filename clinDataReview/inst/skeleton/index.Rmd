@@ -124,9 +124,9 @@ subject identifier hyperlink in the table (if available).
 
 Summary data (e.g. counts per category) are displayed in interactive summary 
 visualizations and tables. They follow the same
-principles as highlighted in section \@ref(tutorialSubjectLevel). Functionalities 
-specific of these visualizations and tables are mentioned in sections \@ref(tutorialSummaryPlots) and
-\@ref(tutorialSummaryTables).  
+principles as highlighted in the previous section.  
+Functionalities specific of these visualizations and tables are mentioned in 
+the sections below.
 
 ### Summary plots {#tutorialSummaryPlots}
 
