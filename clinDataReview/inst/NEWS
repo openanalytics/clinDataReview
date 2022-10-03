@@ -1,26 +1,32 @@
-1.2.3.9000
+1.3.0
     o render clinical data review report:
       - new implementation to support: parallelization ('nCores' and 'parallel'), and 'split_by' by config file
       - internal functions: convertMdToHTML and checkReportTitles
       - a warning is returned when report fails and inputDir is different than working dir
       - Rmd -> Md output is printed during chapter run, not at the end
     o merge session infos: fix when session infos have different elements
-    o checkConfigFile: add configDir parameter for consistency with other fcts
-    o filterData: 
+    o skeleton report: update tutorial section and screenshots
+    o template reports: 
+      - support multiple dataFileName
+      - plot template: no failure if data is empty and tableParams is specified
+    o check config file: 
+      - use 'ajv' engine to fix note meta schema version
+      - add configDir parameter for consistency with other fcts
+    o filter data: 
       - post-processing function (postFct)
       - grouping variable:
         - remove rownames with groups & improve message
         - one single warning instead of one warning per group
         - fix issue in case of multiple filters and a grouping variable
-    o filterData and annotateData:
+    o filter and annotate data:
       - valueFct: support primitive function for verbose message
-    o processData: add examples in doc
-    o plotTemplate: no failure if data is empty and tableParams is specified
-    o update tutorial section and screenshots
-    o template: support multiple dataFileName
-    o time profile plot: add colorVar to default hoverVars
-    o selection button for time profile, scatterplot, barplot and errorbar plots
-    o checkConfigFile: use 'ajv' engine to fix note meta schema version
+    o process data: add examples in doc
+    o plots:
+      - scatterplot:
+        - include smoothing layer
+        - include passing additional parameters via pointPars, linePars and smoothPars
+      - time profile, scatterplot, barplot and errorbar plots: selection button
+      - time profile plot: add colorVar to default hoverVars
 1.2.3
     o clean exports: no exports of: 
       - addReferenceLinesClinDataPlot
@@ -28,9 +34,6 @@
       - formatDataForPlotClinData
       - getFctTypeReferenceLines
     o checkConfigFile: update test
-    o scatterplot:
-      - include smoothing layer
-      - include passing additional parameters via pointPars, linePars and smoothPars
 1.2.2
     o remove space before start chunk sessionInfo.Rmd
     o 'data visualization' vignette: include patient profiles only in interactive mode
