@@ -11,6 +11,7 @@ convertMdToHtml(
   intermediateDir = "./interim",
   outputDir = "./report",
   setTitle = TRUE,
+  verbose = TRUE,
   ...
 )
 }
@@ -34,6 +35,9 @@ each sub report are stored.}
 \item{setTitle}{Logical (TRUE by default), should the title be set 
 to the document? If so, the pandoc metadata option: 'pagetitle' is set to:
 base file name of \code{mdFile}.}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+during the report execution.}
 
 \item{...}{Arguments passed to \code{\link{renderFile}}}
 }

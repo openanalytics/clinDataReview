@@ -14,6 +14,7 @@ postProcessReport(
   mdFiles = NULL,
   nCores = 1,
   logFile = NULL,
+  verbose = TRUE,
   ...
 )
 }
@@ -61,6 +62,9 @@ run in parallel across chapters:
 \item{logFile}{(optional) String with path to a log file,
 where output (also error/messages/warnings) should be stored.
 If specified, the entire output is re-directed to this file.}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+during the report execution.}
 
 \item{...}{Any parameters passed to \code{\link[rmarkdown]{render}},
 for expert use only.}

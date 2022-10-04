@@ -48,6 +48,9 @@ run in parallel across chapters:
 \item{the rendering of the Rmarkdown file to Markdown}
 \item{the conversion from Markdown to HTML}
 }}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+during the report execution.}
 }
 \value{
 No return value, used for the documentation of 

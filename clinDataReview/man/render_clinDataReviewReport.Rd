@@ -14,6 +14,7 @@ render_clinDataReviewReport(
   intermediateDir = "./interim",
   extraDirs = getExtraDirs(inputDir = inputDir, configDir = configDir),
   quiet = FALSE,
+  verbose = TRUE,
   nCores = 1
 )
 }
@@ -65,6 +66,9 @@ All these folders should be available in \code{inputDir}.}
 \item{quiet}{Logical, if TRUE (FALSE by default)
 messages during the execution of each report are not displayed
 in the console (see \code{\link[rmarkdown]{render}}).}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+during the report execution.}
 
 \item{nCores}{Integer containing the number of cores used to render the report
 (1 by default). If more than 1, two steps of the report creation are 

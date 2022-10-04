@@ -14,6 +14,7 @@ renderChapter(
   inputDir = ".",
   intermediateDir = "./interim",
   logFile = NULL,
+  verbose = TRUE,
   ...
 )
 }
@@ -44,6 +45,9 @@ each sub report are stored.}
 \item{logFile}{(optional) String with path to a log file,
 where output (also error/messages/warnings) should be stored.
 If specified, the entire output is re-directed to this file.}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+during the report execution.}
 
 \item{...}{options passed to \code{\link{renderFile}}}
 }

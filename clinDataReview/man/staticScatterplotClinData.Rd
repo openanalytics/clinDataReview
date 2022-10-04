@@ -99,9 +99,7 @@ In case the variable(s) contain different elements
 by \code{xVar} or between facets, they are combined
 and displayed below each other.}
 
-\item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
-
-\item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
+\item{xLim, yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
 \item{xLimExpandData, yLimExpandData}{Logical (TRUE by default), should the
 limits specified via \code{xLim}/\code{yLim} be 

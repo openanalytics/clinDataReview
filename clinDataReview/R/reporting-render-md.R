@@ -21,6 +21,7 @@ renderChapter <- function(
   inputDir = ".",
   intermediateDir = "./interim",
   logFile = NULL,
+  verbose = TRUE,
   ...){
   
   runDocument <- TRUE
@@ -146,7 +147,8 @@ renderChapter <- function(
     )
     
     # run report
-    message("Run report for config file: ", sQuote(configFile), ".")
+	if(verbose)
+    	message("Run report for config file: ", sQuote(configFile), ".")
     
     resRender <- try(
       outputRmd <- renderFile(

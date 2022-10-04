@@ -81,6 +81,12 @@ test_that("A warning is generated during the skeleton creation when the specifie
 test_that("A skeleton report is successfully executed", {
 			
 	skip_on_cran() 
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+			condition = rmarkdown::pandoc_available(version = "2.0"), 
+			message = "pandoc 2.0 is not available"
+	)
 		
 	dirSkeleton <- tempfile("skeleton")
 	createClinDataReviewReportSkeleton(dirSkeleton)
@@ -88,14 +94,13 @@ test_that("A skeleton report is successfully executed", {
 	# Track warnings during execution of example report:
 	warn <- NULL
 	resReport <- withCallingHandlers(
-		expr = expect_message(
-			render_clinDataReviewReport(
-				inputDir = dirSkeleton,
-				outputDir = file.path(dirSkeleton, "report"), 
-				intermediateDir = file.path(dirSkeleton, "interim"),
-				# configFiles = "config-alert-division.yml",
-				quiet = TRUE # suppress printing of pandoc cmd line
-			)
+		expr = render_clinDataReviewReport(
+			inputDir = dirSkeleton,
+			outputDir = file.path(dirSkeleton, "report"), 
+			intermediateDir = file.path(dirSkeleton, "interim"),
+			# configFiles = "config-alert-division.yml",
+			quiet = TRUE, # suppress printing of pandoc cmd line
+			verbose = FALSE
 		),
 		warning = function(w){
 			warn <<- append(warn, conditionMessage(w))

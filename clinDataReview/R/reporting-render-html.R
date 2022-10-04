@@ -21,6 +21,7 @@ postProcessReport <- function(
   mdFiles = NULL,
   nCores = 1,
   logFile = NULL,
+  verbose = TRUE,
   ...
 ){
   
@@ -96,7 +97,8 @@ postProcessReport <- function(
       indexPath = indexPath,
       configDir = configDir,
       intermediateDir = intermediateDir,
-      outputDir = outputDir
+      outputDir = outputDir,
+	  verbose = verbose
     )
     configMd[mdFileSplit] <- file
   }
@@ -105,7 +107,8 @@ postProcessReport <- function(
     mdFile = sessionInfoMd,
     indexPath = indexPath, 
     intermediateDir = "interim", 
-    outputDir = outputDir
+    outputDir = outputDir,
+	verbose = verbose
   )
   configMd[mdSessionInfoFileSplit] <- ""
   
@@ -152,6 +155,7 @@ postProcessReport <- function(
           configFile = if(configFile != ""){configFile},
           setTitle = (iFile > 1),
           outputDir = outputDirTmp,
+		  verbose = verbose,
           ...
         )
         
@@ -187,6 +191,7 @@ postProcessReport <- function(
         intermediateDir = intermediateDir, 
         outputDir = outputDir,
         setTitle = (iFile > 1),
+		verbose = verbose,
         ...
       )
       htmlFiles <- c(htmlFiles, htmlFileChapter)
@@ -194,7 +199,7 @@ postProcessReport <- function(
   }
   
   # resolve TOC
-  indexHTMLFile <- buildBook(htmlFiles = htmlFiles)
+  indexHTMLFile <- buildBook(htmlFiles = htmlFiles, verbose = verbose)
   
   # delete split md files
   tmp <- file.remove(names(configMd))
@@ -235,7 +240,8 @@ splitChapter <- function(
   mdFile = NULL,
   indexPath = "index.Rmd", 
   intermediateDir = "./interim", 
-  outputDir = "./report"){
+  outputDir = "./report",
+  verbose = TRUE){
   
   if(is.null(configFile) & is.null(mdFile)){
     stop("The configuration or the Markdown file should be specified",
@@ -287,9 +293,9 @@ splitChapter <- function(
       indexPath = indexPath, 
       intermediateDir = intermediateDir
     )
-    message("Split chapter: ", sQuote(configFile), ".")
+    if(verbose)	message("Split chapter: ", sQuote(configFile), ".")
   }else{
-    message("Split chapter: ", sQuote(basename(mdFile)), ".")
+	if(verbose)	message("Split chapter: ", sQuote(basename(mdFile)), ".")
   }
   
   # import Markdown content
@@ -334,11 +340,11 @@ splitChapter <- function(
 }
 
 #' Convert the Md file for a specific chapter to html
-#' @inheritParams clinDataReview-common-args-report
 #' @param setTitle Logical (TRUE by default), should the title be set 
 #' to the document? If so, the pandoc metadata option: 'pagetitle' is set to:
 #' base file name of \code{mdFile}.
 #' @param ... Arguments passed to \code{\link{renderFile}}
+#' @inheritParams clinDataReview-common-args-report
 #' @inheritParams splitChapter
 #' @return No returned value, the files in the \code{intermediateDir}
 #' are converted to HTML
@@ -352,10 +358,12 @@ convertMdToHtml <- function(
   intermediateDir = "./interim", 
   outputDir = "./report",
   setTitle = TRUE,
+  verbose = TRUE,
   ...){
   
-  message("Convert the Markdown file(s) to html for the chapter: ",
-    sQuote(basename(mdFile)), ".")
+	if(verbose)
+		message("Convert the Markdown file(s) to html for the chapter: ",
+			sQuote(basename(mdFile)), ".")
   
   # interim file with e.g. library dependencies
   interimRes <- if(!is.null(configFile)){
@@ -444,14 +452,16 @@ createOutputYaml <- function(indexPath, outputDir){
 
 #' Build the book
 #' @param htmlFiles character vector with path to HTML files
+#' @inheritParams clinDataReview-common-args-report
 #' @return String with path to the front page of the 
 #' report.
 #' @importFrom xml2 xml_text read_xml
 #' @importFrom xfun read_utf8
 #' @author Laure Cougnaud
-buildBook <- function(htmlFiles){
+buildBook <- function(htmlFiles, verbose = TRUE){
   
-  message("Build the book.")
+	if(verbose)
+		message("Build the book.")
   
   # import the html files
   htmlContentList <- sapply(htmlFiles, xfun::read_utf8, simplify = FALSE)

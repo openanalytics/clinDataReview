@@ -25,9 +25,7 @@ addReferenceLinesClinDataPlot(
 
 \item{yVar}{String with column of \code{data} containing y-variable.}
 
-\item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
-
-\item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
+\item{xLim, yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
 \item{refLinePars}{(optional) Nested list, with parameters for each reference line(s).
 Each sublist (a.k.a reference line) contains:

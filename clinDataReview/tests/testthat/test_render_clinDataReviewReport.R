@@ -202,9 +202,10 @@ test_that("A warning is generated if the general config file is not available", 
 
 test_that("The creation of html file from the specified markdown files is successful", {
 			
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
 	skip_if_not(
-		condition = rmarkdown::pandoc_available(), 
-		message = "pandoc is not available"
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
 	)
 			
 	# get example config files
@@ -227,7 +228,7 @@ test_that("The creation of html file from the specified markdown files is succes
 			indexPath = file.path(testPathBase, "index.Rmd"), 
 			intermediateDir = interimDir,
 			outputDir = interimDir,
-			quiet = TRUE # suppress printing of pandoc cmd line
+			quiet = TRUE, # suppress printing of pandoc cmd line
 		),
 		"Convert the Markdown file.+to html.+"
 	)
@@ -368,6 +369,12 @@ test_that("Session infos are successfully exported to Markdown", {
 test_that("A clinical data report is created successfully via the specification of config files", {
 	
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 			
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -384,16 +391,14 @@ test_that("A clinical data report is created successfully via the specification 
 	# copy configuration files
 	file.copy(from = testPathConfig, to = testDir, recursive = TRUE)
       
-	# progress messages during execution
-	expect_message(
-		output <- render_clinDataReviewReport(
-			configFiles = configFiles,
-			configDir = testPathConfig,
-			inputDir = testDir,
-			intermediateDir = file.path(testDir, "interim"),
-			outputDir = outputDir,
-			quiet = TRUE # suppress printing of pandoc cmd line
-		)
+	output <- render_clinDataReviewReport(
+		configFiles = configFiles,
+		configDir = testPathConfig,
+		inputDir = testDir,
+		intermediateDir = file.path(testDir, "interim"),
+		outputDir = outputDir,
+		quiet = TRUE, # suppress printing of pandoc cmd line
+		verbose = FALSE
 	)
 	expect_type(output, "character")
 	expect_match(output, "introduction")
@@ -407,6 +412,12 @@ test_that("A clinical data report is created successfully via the specification 
 test_that("A clinical data report is created successfully with a log file", {
 			
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -423,14 +434,13 @@ test_that("A clinical data report is created successfully with a log file", {
       
 	logPath <- file.path(testDir, "log.txt")
       
-	# progress messages during execution
-  output <- render_clinDataReviewReport(
-    configDir = testPathConfig,
-    inputDir = testDir,
-    intermediateDir = file.path(testDir, "interim"),
-    outputDir = file.path(testDir, "report"),
-    logFile = logPath
-  )
+	output <- render_clinDataReviewReport(
+		configDir = testPathConfig,
+		inputDir = testDir,
+		intermediateDir = file.path(testDir, "interim"),
+		outputDir = file.path(testDir, "report"),
+		logFile = logPath
+	)
 	expect_type(output, "character")
 	expect_match(output, "introduction")
 	expect_true(file.exists(logPath))
@@ -440,6 +450,12 @@ test_that("A clinical data report is created successfully with a log file", {
 test_that("A clinical data report is created successfully via the specification of a config directory", {
 
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -456,16 +472,14 @@ test_that("A clinical data report is created successfully via the specification 
 	# copy configuration files
 	file.copy(from = testPathConfig, to = testDir, recursive = TRUE)
 	
-	# progress messages during execution
-	expect_message(
-		output <- render_clinDataReviewReport(
-			configFiles = NULL,
-			configDir = file.path(testDir, basename(testPathConfig)),
-			inputDir = testDir,
-			intermediateDir = file.path(testDir, "interim"),
-			outputDir = outputDir,
-			quiet = TRUE # suppress printing of pandoc cmd line
-		)
+	output <- render_clinDataReviewReport(
+		configFiles = NULL,
+		configDir = file.path(testDir, basename(testPathConfig)),
+		inputDir = testDir,
+		intermediateDir = file.path(testDir, "interim"),
+		outputDir = outputDir,
+		quiet = TRUE, # suppress printing of pandoc cmd line
+		verbose = FALSE
 	)
 	expect_type(output, "character")
 	expect_match(output, "introduction")
@@ -481,6 +495,12 @@ test_that("A clinical data report is created successfully via the specification 
 test_that("A warning is generated if a specified config file doesn't exist", {
       
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -521,15 +541,13 @@ test_that("A warning is generated if a specified config file doesn't exist", {
 	configFiles <- basename(configFiles)
 	
 	expect_warning(
-		# progress messages during execution
-		expect_message(
-			output <- render_clinDataReviewReport(
-				configDir = testDir,
-				outputDir = testDir,
-				inputDir = testDir,
-				intermediateDir = testDir,
-				quiet = TRUE # suppress printing of pandoc cmd line
-			)
+		output <- render_clinDataReviewReport(
+			configDir = testDir,
+			outputDir = testDir,
+			inputDir = testDir,
+			intermediateDir = testDir,
+			quiet = TRUE, # suppress printing of pandoc cmd line
+			verbose = FALSE
 		),
 		"configFile2.* cannot be found"
 	)
@@ -541,6 +559,12 @@ test_that("A warning is generated if a specified config file doesn't exist", {
 test_that("A warning is generated if a template report is already available", {
 			
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -579,26 +603,23 @@ test_that("A warning is generated if a template report is already available", {
 	configFiles <- basename(configFiles)
 	
 	# progress messages during execution
-	expect_message(
-		firstRun <- render_clinDataReviewReport(
+	firstRun <- render_clinDataReviewReport(
+		configDir = testDir,
+		outputDir = testDir,
+		inputDir = testDir,
+		intermediateDir = testDir,
+		quiet = TRUE, # suppress printing of pandoc cmd line
+		verbose = FALSE
+	)
+	
+	expect_warning(
+		secondRun <- render_clinDataReviewReport(
 			configDir = testDir,
 			outputDir = testDir,
 			inputDir = testDir,
 			intermediateDir = testDir,
-			quiet = TRUE # suppress printing of pandoc cmd line
-		)
-	)
-	
-	expect_warning(
-		# progress messages during execution
-		expect_message(
-			secondRun <- render_clinDataReviewReport(
-				configDir = testDir,
-				outputDir = testDir,
-				inputDir = testDir,
-				intermediateDir = testDir,
-				quiet = TRUE # suppress printing of pandoc cmd line   
-			)
+			quiet = TRUE, # suppress printing of pandoc cmd line 
+			verbose = FALSE
 		),
 		"Document with similar name than specified template from"
 	)
@@ -610,6 +631,12 @@ test_that("A warning is generated if a template report is already available", {
 test_that("A warning is generated if the creation of a chapter fails'", {
      
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -653,18 +680,17 @@ test_that("A warning is generated if the creation of a chapter fails'", {
 	configFiles <- basename(configFiles)
 	
 	expect_warning(
-	  # progress messages during execution
-	  expect_message(
 	    render_clinDataReviewReport(
 	      configDir = testDir,
 	      outputDir = testDir,
 	      intermediateDir = testDir,
 	      inputDir = testDir,
-	      quiet = TRUE # suppress printing of pandoc cmd line   
-	    )
+	      quiet = TRUE, # suppress printing of pandoc cmd line 
+		  verbose = FALSE
 		),
-    paste("Rendering of the .+ report for config file:.+configFile1.yml.+failed,",
-      "a report with only the section title is created.+")
+    	paste(
+		"Rendering of the .+ report for config file:.+configFile1.yml.+failed,",
+      	"a report with only the section title is created.+")
   )
       
 })
@@ -672,6 +698,12 @@ test_that("A warning is generated if the creation of a chapter fails'", {
 test_that("A warning is generated if the template name is missing in a config file", {
 			
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -706,15 +738,13 @@ test_that("A warning is generated if the template name is missing in a config fi
 	configFiles <- basename(configFiles)
 	
 	expect_warning(
-		# progress messages during execution
-		expect_message(	
-			res <- render_clinDataReviewReport(
-				configDir = testDir,
-				outputDir = testDir,
-				intermediateDir = testDir,
-				inputDir = testDir,
-				quiet = TRUE # suppress printing of pandoc cmd line  
-			)
+		res <- render_clinDataReviewReport(
+			configDir = testDir,
+			outputDir = testDir,
+			intermediateDir = testDir,
+			inputDir = testDir,
+			quiet = TRUE, # suppress printing of pandoc cmd line 
+			verbose = FALSE
 		),
 		"Template missing for config file: .+."
 	)
@@ -726,6 +756,12 @@ test_that("A warning is generated if the template name is missing in a config fi
 test_that("A warning is generated if the config parameters don't comply to the template specifications", {
     
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -760,15 +796,13 @@ test_that("A warning is generated if the config parameters don't comply to the t
 	configFiles <- basename(configFiles)
 	
 	expect_warning(
-		# progress messages during execution
-		expect_message(
-			res <- render_clinDataReviewReport(
-				configDir = testDir,
-				outputDir = testDir,
-				intermediateDir = testDir,
-				inputDir = testDir,
-				quiet = TRUE # suppress printing of pandoc cmd line     
-			)
+		res <- render_clinDataReviewReport(
+			configDir = testDir,
+			outputDir = testDir,
+			intermediateDir = testDir,
+			inputDir = testDir,
+			quiet = TRUE, # suppress printing of pandoc cmd line     
+			verbose = FALSE
 		),
 		"The report for the config file: .+ is not created because the check of the parameters failed"
 	)
@@ -780,6 +814,12 @@ test_that("A warning is generated if the config parameters don't comply to the t
 test_that("A warning is generated if a template is not available in the specified package", {
       
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -814,15 +854,13 @@ test_that("A warning is generated if a template is not available in the specifie
 	configFiles <- basename(configFiles)
 	
 	expect_warning(
-		# progress messages during execution
-		expect_message(	
-			res <- render_clinDataReviewReport(
-				configDir = testDir,
-				outputDir = testDir,
-				intermediateDir = testDir,
-				inputDir = testDir ,
-				quiet = TRUE # suppress printing of pandoc cmd line     
-			)
+		res <- render_clinDataReviewReport(
+			configDir = testDir,
+			outputDir = testDir,
+			intermediateDir = testDir,
+			inputDir = testDir ,
+			quiet = TRUE, # suppress printing of pandoc cmd line 
+			verbose = FALSE
 		),
 		"Template file: .+ not available in.*myPackage.+ package."
 	)
@@ -834,6 +872,12 @@ test_that("A warning is generated if a template is not available in the specifie
 test_that("A warning is generated if no config parameters are available", {
       
 	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 	
 	# get example config files
 	testPathBase <- normalizePath(path = "../files")
@@ -868,15 +912,13 @@ test_that("A warning is generated if no config parameters are available", {
 	configFiles <- basename(configFiles)
 	     
 	expect_warning(
-		# progress messages during execution
-		expect_message(	
-			res <- render_clinDataReviewReport(
-				configDir = testDir,
-				outputDir = testDir,
-				intermediateDir = testDir,
-				inputDir = testDir,
-				quiet = TRUE # suppress printing of pandoc cmd line     
-			)
+		res <- render_clinDataReviewReport(
+			configDir = testDir,
+			outputDir = testDir,
+			intermediateDir = testDir,
+			inputDir = testDir,
+			quiet = TRUE, # suppress printing of pandoc cmd line     
+			verbose = FALSE
 		),
 		"No config parameter available, input parameters for the report are not checked."
 	)
@@ -919,16 +961,14 @@ test_that("A warning is generated if some Markdown files are missing for convers
 	
 	expect_error(
 		expect_warning(
-			# progress messages during execution
-			expect_message(	
-				convertMdToHtml(
-					configDir = testDir,
-					outputDir = testDir,
-					intermediateDir = testDir,
-					inputDir = testDir,
-					mdFiles = NULL,
-					quiet = TRUE # suppress printing of pandoc cmd line  
-				)
+			postProcessReport(
+				configDir = testDir,
+				outputDir = testDir,
+				intermediateDir = testDir,
+				inputDir = testDir,
+				mdFiles = NULL,
+				quiet = TRUE, # suppress printing of pandoc cmd line  
+				verbose = FALSE
 			),
 			"Markdown file(s): .+ are missing, these files are ignored."
 		)
@@ -1007,6 +1047,12 @@ test_that("A clinical data report is created successfully in parallel", {
 			
 	skip_on_cran()
 	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
+	
 	testDir <- tempfile("report")
 	dir.create(testDir)
 	
@@ -1045,18 +1091,16 @@ test_that("A clinical data report is created successfully in parallel", {
 		file = indexPath, sep = "\n"
 	)
 	
-	# progress messages during execution
 	outputDir <- file.path(testDir, "report")
-  expect_message(
-    output <- render_clinDataReviewReport(
-      configDir = configDir,
-      inputDir = testDir,
-      intermediateDir = file.path(testDir, "interim"),
-      outputDir = outputDir,
-      nCores = min(parallel::detectCores(), 2),
-      quiet = TRUE # suppress printing of pandoc cmd line
-    )
-  )
+	output <- render_clinDataReviewReport(
+		configDir = configDir,
+		inputDir = testDir,
+		intermediateDir = file.path(testDir, "interim"),
+		outputDir = outputDir,
+		nCores = min(parallel::detectCores(), 2),
+		quiet = TRUE, # suppress printing of pandoc cmd line
+		verbose = FALSE
+	)
 	
 	# check that all filenames are correct
 	htmlFiles <- list.files(pattern = ".html$", outputDir)
@@ -1073,6 +1117,12 @@ test_that("A clinical data report is created successfully in parallel", {
 test_that("A clinical data report is created successfully in parallel with one chapter containing parallel execution", {
   
   skip_on_cran()
+  
+  # fix for: 'Using anchor_sections requires Pandoc 2.0+'
+  skip_if_not(
+	  condition = rmarkdown::pandoc_available(version = "2.0"), 
+	  message = "pandoc 2.0 is not available"
+  )
   
   testDir <- tempfile("report")
   dir.create(testDir)
@@ -1139,14 +1189,15 @@ test_that("A clinical data report is created successfully in parallel with one c
   # progress messages during execution
   outputDir <- file.path(testDir, "report")
   expect_error(
-    output <- render_clinDataReviewReport(
-      configDir = configDir,
-      inputDir = testDir,
-      intermediateDir = file.path(testDir, "interim"),
-      outputDir = outputDir,
-      nCores = min(parallel::detectCores(), 2),
-      quiet = TRUE # suppress printing of pandoc cmd line
-    ),
+	output <- render_clinDataReviewReport(
+		configDir = configDir,
+		inputDir = testDir,
+		intermediateDir = file.path(testDir, "interim"),
+		outputDir = outputDir,
+		nCores = min(parallel::detectCores(), 2),
+		quiet = TRUE, # suppress printing of pandoc cmd line
+		verbose = FALSE
+	),
     NA
   )
   
@@ -1176,7 +1227,13 @@ test_that("A clinical data report is created successfully in parallel with one c
 
 test_that("A report is correctly split at different chapter-specific levels", {
 			
-	skip_on_cran()		
+	skip_on_cran()
+	
+	# fix for: 'Using anchor_sections requires Pandoc 2.0+'
+	skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+	)
 			
 	testDir <- tempfile("report")
 	dir.create(testDir)
@@ -1227,14 +1284,13 @@ test_that("A report is correctly split at different chapter-specific levels", {
 			
 	# progress messages during execution
 	outputDir <- file.path(testDir, "report")
-	expect_message(
-		output <- render_clinDataReviewReport(
-			configDir = configDir,
-			inputDir = testDir,
-			intermediateDir = file.path(testDir, "interim"),
-			outputDir = outputDir,
-			quiet = TRUE # suppress printing of pandoc cmd line
-		)
+	output <- render_clinDataReviewReport(
+		configDir = configDir,
+		inputDir = testDir,
+		intermediateDir = file.path(testDir, "interim"),
+		outputDir = outputDir,
+		quiet = TRUE, # suppress printing of pandoc cmd line
+		verbose = FALSE
 	)
 	expect_type(output, "character")
 	expect_match(output, "introduction")
@@ -1312,7 +1368,13 @@ test_that("A report is correctly split at different chapter-specific levels", {
 
 test_that("The page titles are correctly set for a report", {
   
-  skip_on_cran()		
+  skip_on_cran()
+  
+  # fix for: 'Using anchor_sections requires Pandoc 2.0+'
+  skip_if_not(
+		condition = rmarkdown::pandoc_available(version = "2.0"), 
+		message = "pandoc 2.0 is not available"
+  )
   
   testDir <- tempfile("report")
   dir.create(testDir)
@@ -1363,15 +1425,14 @@ test_that("The page titles are correctly set for a report", {
   
   # progress messages during execution
   outputDir <- file.path(testDir, "report")
-  expect_message(
-    output <- render_clinDataReviewReport(
+	output <- render_clinDataReviewReport(
       configDir = configDir,
       inputDir = testDir,
       intermediateDir = file.path(testDir, "interim"),
       outputDir = outputDir,
-      quiet = TRUE # suppress printing of pandoc cmd line
+      quiet = TRUE, # suppress printing of pandoc cmd line
+	  verbose = FALSE
     )
-  )
   
   getTitle <- function(file){
     x <- xml2::read_xml(x = file)
@@ -1425,7 +1486,13 @@ test_that("The page titles are correctly set for a report", {
 
 test_that("The table of contents is correctly set for a report", {
   
-  skip_on_cran()		
+  skip_on_cran()
+  
+  # fix for: 'Using anchor_sections requires Pandoc 2.0+'
+  skip_if_not(
+		  condition = rmarkdown::pandoc_available(version = "2.0"), 
+		  message = "pandoc 2.0 is not available"
+  )
   
   testDir <- tempfile("report")
   dir.create(testDir)
@@ -1476,15 +1543,14 @@ test_that("The table of contents is correctly set for a report", {
   
   # progress messages during execution
   outputDir <- file.path(testDir, "report")
-  expect_message(
     output <- render_clinDataReviewReport(
       configDir = configDir,
       inputDir = testDir,
       intermediateDir = file.path(testDir, "interim"),
       outputDir = outputDir,
-      quiet = TRUE # suppress printing of pandoc cmd line
+      quiet = TRUE, # suppress printing of pandoc cmd line
+	  verbose = FALSE
     )
-  )
   
 	# import introduction and table of contents
 	book <- read_html(x = file.path(outputDir, "1-introduction.html"))

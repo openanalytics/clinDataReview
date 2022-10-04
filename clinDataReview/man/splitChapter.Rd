@@ -10,7 +10,8 @@ splitChapter(
   mdFile = NULL,
   indexPath = "index.Rmd",
   intermediateDir = "./interim",
-  outputDir = "./report"
+  outputDir = "./report",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -38,6 +39,9 @@ each sub report are stored.}
 
 \item{outputDir}{String with output directory,
 ('report' by default).}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+during the report execution.}
 }
 \value{
 No return value, the Markdown files are split as specified.

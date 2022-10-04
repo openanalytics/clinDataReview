@@ -72,11 +72,11 @@ getParamsFromConfig <- function(
     
     paramsDuplicated <- intersect(names(configGeneralParams), names(configParams))
     if(length(paramsDuplicated) > 0){
-      message(paste(
-        "Parameter(s):", toString(shQuote(paramsDuplicated)), "are",
-        "both defined in the general and chapter-specific config",
-        "file.\nThe parameter(s) from the chapter-specific config file are considered."
-      ))
+	      warning(paste(
+	        "Parameter(s):", toString(shQuote(paramsDuplicated)), "are",
+	        "both defined in the general and chapter-specific config",
+	        "file.\nThe parameter(s) from the chapter-specific config file are considered."
+	      ))
       configGeneralParams <- configGeneralParams[
         -which(names(configGeneralParams) %in% paramsDuplicated)
       ]

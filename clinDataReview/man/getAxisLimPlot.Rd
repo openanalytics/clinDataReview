@@ -22,9 +22,7 @@ getAxisLimPlot(
 
 \item{yVar}{String with column of \code{data} containing y-variable.}
 
-\item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
-
-\item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
+\item{xLim, yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
 \item{facetPars}{List with facetting parameters, 
 passed to the facetting function. Variables should be specified

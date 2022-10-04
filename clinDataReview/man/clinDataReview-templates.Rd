@@ -35,7 +35,7 @@ This report compute counts of variable(s) of interest (with the \code{inTextSumm
 \item{\code{loopingVar}: }{(optional) array or string,data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
 \item{\code{loopingNMax}: }{(optional) integer,maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: }{(optional) boolean,should the total also be computed by \code{loopingVar} (TRUE by default)?}
-\item{\code{typePlot}: }{(optional) array or string of string(s)}
+\item{\code{typePlot}: }{(optional) array or string of string(s) among: \emph{ 'sunburst', 'treemap' }}
 \item{\code{startup}: }{(optional) array or string,R commands that should be run at the start of the report}
 }
 }

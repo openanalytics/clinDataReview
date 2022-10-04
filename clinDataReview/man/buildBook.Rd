@@ -4,10 +4,13 @@
 \alias{buildBook}
 \title{Build the book}
 \usage{
-buildBook(htmlFiles)
+buildBook(htmlFiles, verbose = TRUE)
 }
 \arguments{
 \item{htmlFiles}{character vector with path to HTML files}
+
+\item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
+during the report execution.}
 }
 \value{
 String with path to the front page of the 

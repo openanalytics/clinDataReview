@@ -4,14 +4,16 @@
       - internal functions: convertMdToHTML and checkReportTitles
       - a warning is returned when report fails and inputDir is different than working dir
       - Rmd -> Md output is printed during chapter run, not at the end
+      - new 'verbose' parameter
     o merge session infos: fix when session infos have different elements
     o skeleton report: update tutorial section and screenshots
     o template reports: 
       - support multiple dataFileName
       - plot template: no failure if data is empty and tableParams is specified
-    o check config file: 
-      - use 'ajv' engine to fix note meta schema version
-      - add configDir parameter for consistency with other fcts
+    o config file: 
+      - check: use 'ajv' engine to fix note meta schema version
+      - check: add configDir parameter for consistency with other fcts
+      - get parameters: warning instead of message when parameters in general and specific config
     o filter data: 
       - post-processing function (postFct)
       - grouping variable:

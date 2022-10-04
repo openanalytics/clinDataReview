@@ -89,7 +89,7 @@ render_clinDataReviewReport <- function(
 	outputDir = "./report", 
 	intermediateDir = "./interim",
 	extraDirs = getExtraDirs(inputDir = inputDir, configDir = configDir),
-	quiet = FALSE,
+	quiet = FALSE, verbose = TRUE,
 	nCores = 1){
   
   # log output
@@ -165,7 +165,8 @@ render_clinDataReviewReport <- function(
       indexPath = indexPath, 
       inputDir = inputDir,
       intermediateDir = intermediateDir,
-      quiet = quiet, logFile = logFile
+      quiet = quiet, verbose = verbose,
+	  logFile = logFile
     )
     
     stopCluster(cl = cl)
@@ -182,7 +183,8 @@ render_clinDataReviewReport <- function(
         indexPath = indexPath,
         inputDir = inputDir,
         intermediateDir = intermediateDir,
-        quiet = quiet, logFile = logFile
+        quiet = quiet, verbose = verbose,
+		logFile = logFile
       )
     }
   }
@@ -196,7 +198,8 @@ render_clinDataReviewReport <- function(
     quiet = quiet,
     nCores = nCores,
     extraDirs = extraDirs,
-    logFile = logFile
+    logFile = logFile,
+	verbose = verbose
   )
   
   return(outputFile)
@@ -400,6 +403,8 @@ checkReportTitles <- function(
 #' \item{the rendering of the Rmarkdown file to Markdown}
 #' \item{the conversion from Markdown to HTML}
 #' }
+#' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
+#' during the report execution.
 #' @name clinDataReview-common-args-report
 #' @return No return value, used for the documentation of 
 #' the clinical data reporting functions of the package.
