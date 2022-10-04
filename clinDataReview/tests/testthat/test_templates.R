@@ -4,9 +4,10 @@ library(yaml)
 library(rmarkdown)
 library(haven)
 
-# Note: these tests might generate the pandoc warning:
-# This document format requires a nonempty <title> element.
-# That can be ignored
+# fix for pandoc warning: 'This document format requires a nonempty <title> element.'
+outputOpts <- list(pandoc_args = 
+	rmarkdown::pandoc_metadata_arg(name = "pagetitle", value = "test report")
+)
 
 test_that("The division template is successfully rendered", {
 			
@@ -37,7 +38,8 @@ test_that("The division template is successfully rendered", {
 			input = pathTemplate,
 			output_dir = dir,
 			intermediates_dir = dir,
-			quiet = TRUE
+			quiet = TRUE,
+			output_options = outputOpts
 		),
 		NA
 	)
@@ -82,7 +84,8 @@ test_that("The listing template is successfully rendered", {
 			input = pathTemplate,
 			output_dir = dir,
 			intermediates_dir = dir,
-			quiet = TRUE
+			quiet = TRUE,
+			output_options = outputOpts
 		),
 		NA
   	)
@@ -143,7 +146,8 @@ test_that("The listing template with multiple input data files is successfully r
       input = pathTemplate,
       output_dir = dir,
       intermediates_dir = dir,
-      quiet = TRUE
+      quiet = TRUE,
+	  output_options = outputOpts
     ),
     NA
   )
@@ -188,7 +192,8 @@ test_that("The count visualization template is successfully rendered", {
 			input = pathTemplate,
 			output_dir = dir,
 			intermediates_dir = dir,
-			quiet = TRUE
+			quiet = TRUE,
+			output_options = outputOpts
 		),
 		NA
 	)
@@ -234,7 +239,8 @@ test_that("The plot template is successfully rendered", {
 			input = pathTemplate,
 			output_dir = dir,
 			intermediates_dir = dir,
-			quiet = TRUE
+			quiet = TRUE,
+			output_options = outputOpts
 		),
 		NA
   	)
@@ -284,7 +290,8 @@ test_that("The summary plot template is successfully rendered", {
 			input = pathTemplate,
 			output_dir = dir,
 			intermediates_dir = dir,
-			quiet = TRUE
+			quiet = TRUE,
+			output_options = outputOpts
 		),
 		NA
 	)
@@ -332,7 +339,8 @@ test_that("The summary table template is successfully rendered", {
 			input = pathTemplate,
 			output_dir = dir,
 			intermediates_dir = dir,
-			quiet = TRUE
+			quiet = TRUE,
+			output_options = outputOpts
 		),
 		NA
 	)
@@ -386,7 +394,8 @@ test_that("The patient profile template is successfully rendered", {
 			input = pathTemplate,
 			output_dir = dir,
 			intermediates_dir = dir,
-			quiet = TRUE
+			quiet = TRUE,
+			output_options = outputOpts
 		),
 		NA
 	)
