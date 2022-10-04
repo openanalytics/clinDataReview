@@ -171,65 +171,66 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 	
 	getElement <- function(param){
 	  
-	  param <- param[!sapply(param, function(x) is.null(x) || is.na(x))]
+		param <- param[!sapply(param, function(x) 
+			is.null(x) || (length(x) == 1 && is.na(x)))
+		]
 	  
-	  pDocVect <- c()
+		pDocVect <- c()
 	
-  	# type(s)
-  	if(hasName(param, "type"))
-  	  pDocVect <- c(pDocVect, paste(param$type, collapse = " or "))
+		# type(s)
+		if(hasName(param, "type"))
+ 			pDocVect <- c(pDocVect, paste(param$type, collapse = " or "))
   	
-  	# constant
-  	if(hasName(param, "const")){
-  	  pDocVect <- c(pDocVect, paste("string set to:", shQuote(param$const)))
-  	}
+		# constant
+		if(hasName(param, "const")){
+			pDocVect <- c(pDocVect, paste("string set to:", shQuote(param$const)))
+		}
   	
-  	# for list ('object'): type of elements in the list
-  	if(hasName(param, "items")){
-  	  
-  	  items <- param[["items"]]
-  	  
-  	  if(hasName(items, "type"))
-  	    pDocVect <- c(pDocVect, paste0("of ", items$type, "(s)"))
-  	  
-  	  # for array of object, might be nested
-  	  pDocVect <- c(pDocVect, JSONSchToRd(JSONSch = items))
-  	  
-  	}
-  	
-  	# for array: min/max number of items
-  	if(any(c("minItems", "maxItems") %in% names(param))){
-  	  itemSize <- paste(
-  	    "of length:", toString(c(
-  	      if(!is.null(param$minItems))	paste("minimum", param$minItems),
-  	      if(!is.null(param$maxItems))	paste("maximum", param$maxItems)
-  	    ))
-  	  )
-  	  pDocVect <- c(pDocVect, itemSize)
-  	}
-  	
-  	# for integer/numeric: min/max
-  	if(any(c("minimum", "maximum") %in% names(param))){
-  	  itemSize <- paste(
-  	    "of length:", toString(c(
-  	      if(!is.null(param$minimum))	paste("minimum", param$minimum),
-  	      if(!is.null(param$maximum))	paste("maximum", param$maximum)
-  	    ))
-  	  )
-  	  pDocVect <- c(pDocVect, itemSize)
-  	}
-  	
-  	# pattern (for fixed parameter)
-  	if(hasName(param, "pattern"))
-  	  pDocVect <- c(pDocVect, paste("with value as:\\emph{", 
-  	   shQuote(param$pattern), "}"))
-  	
-  	if(hasName(param, "enum"))
-  	  pDocVect <- c(pDocVect, paste("among: \\emph{", 
-  	     toString(shQuote(trimws(param$enum))), "}"))
-  
-  	return(pDocVect)
-  		
+		# for list ('object'): type of elements in the list
+		if(hasName(param, "items")){
+			items <- param[["items"]]
+			if(hasName(items, "type"))
+				pDocVect <- c(pDocVect, paste0("of ", items$type, "(s)"))
+			if(hasName(items, "enum"))
+				pDocVect <- c(pDocVect, paste("among: \\emph{", 
+					toString(shQuote(trimws(items$enum))), "}"))
+			# for array of object, might be nested
+			pDocVect <- c(pDocVect, JSONSchToRd(JSONSch = items))
+		}
+
+		# for array: min/max number of items
+		if(any(c("minItems", "maxItems") %in% names(param))){
+			itemSize <- paste(
+				"of length:", toString(c(
+					if(!is.null(param$minItems))	paste("minimum", param$minItems),
+					if(!is.null(param$maxItems))	paste("maximum", param$maxItems)
+				))
+			)
+			pDocVect <- c(pDocVect, itemSize)
+		}
+		
+		# for integer/numeric: min/max
+		if(any(c("minimum", "maximum") %in% names(param))){
+			itemSize <- paste(
+				"of length:", toString(c(
+				if(!is.null(param$minimum))	paste("minimum", param$minimum),
+				if(!is.null(param$maximum))	paste("maximum", param$maximum)
+				))
+			)
+			pDocVect <- c(pDocVect, itemSize)
+		}
+		
+		# pattern (for fixed parameter)
+		if(hasName(param, "pattern"))
+			pDocVect <- c(pDocVect, paste("with value as:\\emph{", 
+				shQuote(param$pattern), "}"))
+
+		if(hasName(param, "enum"))
+			pDocVect <- c(pDocVect, paste("among: \\emph{", 
+				toString(shQuote(trimws(param$enum))), "}"))
+
+		return(pDocVect)
+		
 	}
 	
 	# build doc for each parameter
@@ -245,23 +246,23 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			isRequired <- (param %in% paramsReq)
 			if(!isRequired)	pDocVect <- c("(optional)", pDocVect)
 			
-		  if(hasName(jsonSchPropParam, "oneOf")){
-			  pDocElVect <- apply(jsonSchPropParam$oneOf, 1, function(x){
-			    docElVect <- getElement(param = as.list(x))
-			    paste(docElVect, collapse = " ")
-			  })
-			  pDocEl <- paste(pDocElVect, collapse = " or ")
+			if(hasName(jsonSchPropParam, "oneOf")){
+				pDocElVect <- apply(jsonSchPropParam$oneOf, 1, function(x){
+					docElVect <- getElement(param = as.list(x))
+					paste(docElVect, collapse = " ")
+				})
+				pDocEl <- paste(pDocElVect, collapse = " or ")
 			}else{
-			  pDocEl <- getElement(param = jsonSchPropParam)
+				pDocEl <- getElement(param = jsonSchPropParam)
 			}
 			pDocVect <-c(pDocVect, pDocEl)
 			
 			# combine all elements to build the doc
 			pDocText <- paste(pDocVect, collapse = " ")
-      
+			
 			# Rd doc
 			if(hasName(jsonSchPropParam, "doc"))	
-			  pDocText <- paste0(pDocText, ",", jsonSchPropParam$doc)
+				pDocText <- paste0(pDocText, ",", jsonSchPropParam$doc)
 					
 			pDocName <- paste0(
 				if(isRequired)	"\\strong{",
