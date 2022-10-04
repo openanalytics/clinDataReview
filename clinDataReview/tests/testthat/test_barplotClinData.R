@@ -172,8 +172,5 @@ test_that("A selection variable is correctly included in a barplot", {
   )
   expect_equal(object = buttonData$items$value, expected = levels(data$parent))
   
-  # check that the output can be printed without any output/errors/warnings
-  expect_silent(print(res))
-  
 })
 
