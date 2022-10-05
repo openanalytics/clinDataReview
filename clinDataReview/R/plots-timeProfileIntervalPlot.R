@@ -23,7 +23,9 @@
 #' @inheritParams clinDataReview-common-args
 #' @inheritParams tableClinData
 #' @inherit scatterplotClinData return
+#' @example inst/examples/timeProfileIntervalPlot-example.R
 #' @author Laure Cougnaud
+#' @family Clinical data visualization of individual profiles.
 #' @import plotly
 #' @importFrom clinUtils formatVarForPlotLabel getColorPalette getShapePalette
 #' @importFrom crosstalk bscols filter_select

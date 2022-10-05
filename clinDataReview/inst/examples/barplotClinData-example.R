@@ -46,13 +46,15 @@ barplotClinData(
 )
 
 # add a selection box
-barplotClinData(
-  data = dataPlot,
-  xVar = "AEDECOD", 
-  yVar = "n", yLab = "Number of patients with adverse events",
-  labelVars = labelVars,
-  selectVars = "AEBODSYS"
-)
+if(interactive()){
+  barplotClinData(
+    data = dataPlot,
+    xVar = "AEDECOD", 
+    yVar = "n", yLab = "Number of patients with adverse events",
+    labelVars = labelVars,
+    selectVars = "AEBODSYS"
+  )
+}
 
 \dontrun{
 

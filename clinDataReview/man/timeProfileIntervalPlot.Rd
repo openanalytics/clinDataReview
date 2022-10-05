@@ -190,6 +190,59 @@ a \code{clinDataReview} object, a.k.a a list with the
 \description{
 Visualize time intervals across subjects/parameters.
 }
+\examples{
+library(clinUtils)
+
+data(dataADaMCDISCP01)
+labelVars <- attr(dataADaMCDISCP01, "labelVars")
+
+dataAE <- dataADaMCDISCP01$ADAE
+
+# basic plot
+timeProfileIntervalPlot(
+	data = dataAE,
+	paramVar = "USUBJID",
+	# time-variables
+	timeStartVar = "ASTDY",
+	timeEndVar = "ASTDY",
+	# colored by severity
+	colorVar = "AESEV",
+	labelVars = labelVars
+)
+
+# add caption & subtitle
+timeProfileIntervalPlot(
+	data = dataAE,
+	paramVar = "USUBJID",
+	timeStartVar = "ASTDY",
+	timeEndVar = "ASTDY",
+	colorVar = "AESEV",
+	labelVars = labelVars,
+	title = "Adverse events",
+	subtitle = "Time intervals",
+	caption = "Day is relative to the study baseline"
+)
+
+# add a selection box
+if(interactive()){
+  timeProfileIntervalPlot(
+    data = dataAE,
+    paramVar = "USUBJID",
+    # time-variables
+    timeStartVar = "ASTDY",
+    timeEndVar = "ASTDY",
+    # colored by severity
+    colorVar = "AESEV",
+    labelVars = labelVars,
+    selectVars = "AEDECOD"
+  )
+}
+}
+\seealso{
+Other Clinical data visualization of individual profiles.: 
+\code{\link{scatterplotClinData}()}
+}
 \author{
 Laure Cougnaud
 }
+\concept{Clinical data visualization of individual profiles.}

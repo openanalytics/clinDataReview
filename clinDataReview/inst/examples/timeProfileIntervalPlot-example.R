@@ -31,14 +31,16 @@ timeProfileIntervalPlot(
 )
 
 # add a selection box
-timeProfileIntervalPlot(
-  data = dataAE,
-  paramVar = "USUBJID",
-  # time-variables
-  timeStartVar = "ASTDY",
-  timeEndVar = "ASTDY",
-  # colored by severity
-  colorVar = "AESEV",
-  labelVars = labelVars,
-  selectVars = "AEDECOD"
-)
+if(interactive()){
+  timeProfileIntervalPlot(
+    data = dataAE,
+    paramVar = "USUBJID",
+    # time-variables
+    timeStartVar = "ASTDY",
+    timeEndVar = "ASTDY",
+    # colored by severity
+    colorVar = "AESEV",
+    labelVars = labelVars,
+    selectVars = "AEDECOD"
+  )
+}
