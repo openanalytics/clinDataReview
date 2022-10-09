@@ -9,20 +9,20 @@ dataDM <- dataADaMCDISCP01$ADSL
 ## example of basic sunburst:
 
 # sunburst takes as input table with counts
-library(inTextSummaryTable)
+if (requireNamespace("inTextSummaryTable", quietly = TRUE)) {
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
 dataTotal <- subset(dataDM, RFSTDTC != "")
 
 # compute adverse event table
-tableAE <- getSummaryStatisticsTable(
+tableAE <- inTextSummaryTable::getSummaryStatisticsTable(
 		
 	data = dataAE,
 	rowVar = c("AESOC", "AEDECOD"),
 	dataTotal = dataTotal,
 	rowOrder = "total",
 	labelVars = labelVars,
-	stats = getStats("count"),
+	stats = inTextSummaryTable::getStats("count"),
 	
 	# plotly treemap requires records (rows) for each group
 	rowVarTotalInclude = "AEDECOD",
@@ -45,7 +45,7 @@ sunburstClinData(
 ## example where sum(counts) of child = counts of parent
 
 # counts of patients per arm/site
-tableDM <- getSummaryStatisticsTable(
+tableDM <- inTextSummaryTable::getSummaryStatisticsTable(
 	data = dataDM,
 	rowVar = c("ARM", "SITEID"),
 	labelVars = labelVars,
@@ -65,3 +65,5 @@ sunburstClinData(
 	caption = "The sectors are colored by category.",
 	subtitle = "Group: treatment and site"
 )
+
+}

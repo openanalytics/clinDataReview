@@ -112,20 +112,20 @@ library(plyr)
 ## basic treemap:
 
 # treemap takes as input table with counts
-library(inTextSummaryTable)
+if (requireNamespace("inTextSummaryTable", quietly = TRUE)) {
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
 dataTotal <- subset(dataDM, RFSTDTC != "")
 
 # compute adverse event table
-tableAE <- getSummaryStatisticsTable(
+tableAE <- inTextSummaryTable::getSummaryStatisticsTable(
 		
 	data = dataAE,
 	rowVar = c("AESOC", "AEDECOD"),
 	dataTotal = dataTotal,
 	rowOrder = "total",
 	labelVars = labelVars,
-	stats = getStats("count"),
+	stats = inTextSummaryTable::getStats("count"),
 	
 	# plotly treemap requires records (rows) for each group
 	rowVarTotalInclude = "AEDECOD",
@@ -163,7 +163,7 @@ dataTotalRow <- list(AEDECOD =
 
 
 # compute adverse event table
-tableAE <- getSummaryStatisticsTable(
+tableAE <- inTextSummaryTable::getSummaryStatisticsTable(
 		
 	data = dataAEWC,
 	rowVar = c("AESOC", "AEDECOD"),
@@ -191,6 +191,8 @@ treemapClinData(
 	valueVar = "statN", valueLab = "Number of patients with adverse events",
 	colorVar = "statMean", colorLab = "Mean severity"
 )
+
+}
 }
 \seealso{
 Other visualizations of summary statistics for clinical data: 

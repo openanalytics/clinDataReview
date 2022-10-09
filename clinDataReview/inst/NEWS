@@ -1,3 +1,7 @@
+1.3.1
+    o fix for CRAN suggests packages:
+      - remove pander, reshape2 dependency
+      - use inTextSummaryTable conditionally in examples 
 1.3.0
     o render clinical data review report:
       - new implementation to support: parallelization ('nCores' and 'parallel'), and 'split_by' by config file

@@ -99,20 +99,11 @@ defaults to empty list. Note this parameter overwrites other parameters set by \
 
 \item{aesLab}{Named character vector with labels for each aesthetic variable.}
 
-\item{xTrans}{Transformation for the x/y- variables,
+\item{xTrans, yTrans}{Transformation for the x/y- variables,
 passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
 \code{\link[ggplot2]{scale_y_continuous}}.}
 
-\item{yTrans}{Transformation for the x/y- variables,
-passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
-\code{\link[ggplot2]{scale_y_continuous}}.}
-
-\item{xPars}{List with extra parameters for x/y axis, passed to the
-\code{\link[ggplot2]{scale_x_continuous}}/
-\code{\link[ggplot2]{scale_y_continuous}} functions,
-besides \code{trans} and \code{limits}.}
-
-\item{yPars}{List with extra parameters for x/y axis, passed to the
+\item{xPars, yPars}{List with extra parameters for x/y axis, passed to the
 \code{\link[ggplot2]{scale_x_continuous}}/
 \code{\link[ggplot2]{scale_y_continuous}} functions,
 besides \code{trans} and \code{limits}.}
@@ -125,17 +116,9 @@ In case the variable(s) contain different elements
 by \code{xVar} or between facets, they are combined
 and displayed below each other.}
 
-\item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
+\item{xLim, yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
-\item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
-
-\item{yLimExpandData}{Logical (TRUE by default), should the
-limits specified via \code{xLim}/\code{yLim} be 
-expanded to include any data points outside of these
-limits?
-Please note that the same limits are set for all facets.}
-
-\item{xLimExpandData}{Logical (TRUE by default), should the
+\item{xLimExpandData, yLimExpandData}{Logical (TRUE by default), should the
 limits specified via \code{xLim}/\code{yLim} be 
 expanded to include any data points outside of these
 limits?
@@ -321,6 +304,8 @@ scatterplotClinData(
 \dontrun{
 
 # add number of subjects below each visit
+	
+if (requireNamespace("inTextSummaryTable", quietly = TRUE)) {
 
 # compute number of subjects by visit
 summaryTable <- inTextSummaryTable::computeSummaryStatisticsTable(
@@ -343,18 +328,23 @@ scatterplotClinData(
 
 }
 
+}
+
 ## pairwise comparison plot of two parameters of interest:
 
 # format data long -> wide format (one column per lab param)
 dataPlot <- subset(dataLB, PARAMCD \%in\% c("ALT", "AST"))
-library(reshape2)
-dataPlotWide <- dcast(
+dataPlot <- stats::aggregate(
+	LBSTRESN ~ USUBJID + VISIT + VISITNUM + PARAMCD, 
 	data = dataPlot,
-	formula = USUBJID + VISIT + VISITNUM ~ PARAMCD, 
-	value.var = "LBSTRESN",
-	fun.aggregate = mean
+	FUN = mean
 )
-
+dataPlotWide <- stats::reshape(
+	data = dataPlot,
+	timevar = "PARAMCD", idvar = c("USUBJID", "VISIT", "VISITNUM"),
+	direction = "wide"
+)
+colnames(dataPlotWide) <- sub("^LBSTRESN.", "", colnames(dataPlotWide))
 # scatterplot per visit
 scatterplotClinData(
 	data = dataPlotWide, 

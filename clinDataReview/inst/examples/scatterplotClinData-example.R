@@ -39,6 +39,8 @@ scatterplotClinData(
 \dontrun{
 
 # add number of subjects below each visit
+	
+if (requireNamespace("inTextSummaryTable", quietly = TRUE)) {
 
 # compute number of subjects by visit
 summaryTable <- inTextSummaryTable::computeSummaryStatisticsTable(
@@ -61,18 +63,23 @@ scatterplotClinData(
 
 }
 
+}
+
 ## pairwise comparison plot of two parameters of interest:
 
 # format data long -> wide format (one column per lab param)
 dataPlot <- subset(dataLB, PARAMCD %in% c("ALT", "AST"))
-library(reshape2)
-dataPlotWide <- dcast(
+dataPlot <- stats::aggregate(
+	LBSTRESN ~ USUBJID + VISIT + VISITNUM + PARAMCD, 
 	data = dataPlot,
-	formula = USUBJID + VISIT + VISITNUM ~ PARAMCD, 
-	value.var = "LBSTRESN",
-	fun.aggregate = mean
+	FUN = mean
 )
-
+dataPlotWide <- stats::reshape(
+	data = dataPlot,
+	timevar = "PARAMCD", idvar = c("USUBJID", "VISIT", "VISITNUM"),
+	direction = "wide"
+)
+colnames(dataPlotWide) <- sub("^LBSTRESN.", "", colnames(dataPlotWide))
 # scatterplot per visit
 scatterplotClinData(
 	data = dataPlotWide, 

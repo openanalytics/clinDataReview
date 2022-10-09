@@ -9,19 +9,21 @@ dataDM <- dataADaMCDISCP01$ADSL
 ## example of basic barplot:
 
 # treemap takes as input table with counts
-library(inTextSummaryTable)
+
+if (requireNamespace("inTextSummaryTable", quietly = TRUE)) {
 
 # total counts: Safety Analysis Set (patients with start date for the first treatment)
 dataTotal <- subset(dataDM, RFSTDTC != "")
 
 # compute adverse event table
-tableAE <- computeSummaryStatisticsTable(
+
+tableAE <- inTextSummaryTable::computeSummaryStatisticsTable(
 	data = dataAE,
 	rowVar = c("AEBODSYS", "AEDECOD"),
 	rowOrder = "total",
 	dataTotal = dataTotal,
 	labelVars = labelVars,
-	stats = getStats("count")
+	stats = inTextSummaryTable::getStats("count")
 )
 
 dataPlot <- subset(tableAE, AEDECOD != "Total")
@@ -59,13 +61,13 @@ if(interactive()){
 \dontrun{
 
 # display percentage of events per severity
-tableAEBySeverity <- computeSummaryStatisticsTable(
+tableAEBySeverity <- inTextSummaryTable::computeSummaryStatisticsTable(
 	data = dataAE,
 	rowVar = c("AEDECOD", "AESEV"),
 	dataTotal = dataTotal,
 	labelVars = labelVars,
 	statsPerc = "statm",
-	stats = getStats("%m"),
+	stats = inTextSummaryTable::getStats("%m"),
 	dataTotalPerc = dataAE,
 	rowVarTotalPerc = "AEDECOD"
 )
@@ -87,5 +89,7 @@ barplotClinData(
 	# add subtitle
 	subtitle = "Group: severity"
 )
+
+}
 
 }

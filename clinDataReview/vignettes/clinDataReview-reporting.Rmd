@@ -16,7 +16,6 @@ vignette: >
 ```{r options, echo = FALSE, message = FALSE}
 
 library(knitr)
-library(pander)
 opts_chunk$set(
     echo = TRUE, 
     results = 'asis', 
@@ -353,7 +352,7 @@ parameter in the plotting function.
 
 ```{r sessionInfo, echo = FALSE}
 
-pander(sessionInfo())
+print(sessionInfo())
 
 ```
 
