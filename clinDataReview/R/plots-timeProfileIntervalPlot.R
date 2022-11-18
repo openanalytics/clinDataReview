@@ -101,10 +101,11 @@ timeProfileIntervalPlot <- function(data,
 	  data$yVar <- data[, "paramVar"]
 	}
 	
+	
 	# order y-variable based on selection, grouping and parameter variables
 	data$yVar <- formatVarForPlotLabel(
 		data = data, 
-		paramVar = "yVar", paramGroupVar = c(selectVars, paramGroupVar, paramVar), 
+		paramVar = "yVar", paramGroupVar = unique(c(selectVars, paramGroupVar, paramVar)), 
 		width = 20
 	)
 	
