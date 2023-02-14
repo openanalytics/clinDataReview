@@ -202,6 +202,19 @@ The default names of the folder and landing page are _report_dependencies_
 and _report.html_. The names can be changed by the user.
 
 
+### Convert to .aspx format
+
+When reports are to be deployed and displayed as webpages on SharePoint, the function:
+
+```{r convertReportToAspx, eval = FALSE}
+
+clinDataReview::convertReportToAspx(reportDir = ".")
+
+```
+
+can be used to change all extensions and cross-links of all files within the _reportDir_ to .aspx-format.
+
+
 ### Zip and send the report to collaborators
 
 A dedicated functionality is available to zip the report and send it to

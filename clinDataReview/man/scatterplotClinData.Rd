@@ -99,11 +99,20 @@ defaults to empty list. Note this parameter overwrites other parameters set by \
 
 \item{aesLab}{Named character vector with labels for each aesthetic variable.}
 
-\item{xTrans, yTrans}{Transformation for the x/y- variables,
+\item{xTrans}{Transformation for the x/y- variables,
 passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
 \code{\link[ggplot2]{scale_y_continuous}}.}
 
-\item{xPars, yPars}{List with extra parameters for x/y axis, passed to the
+\item{yTrans}{Transformation for the x/y- variables,
+passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
+\code{\link[ggplot2]{scale_y_continuous}}.}
+
+\item{xPars}{List with extra parameters for x/y axis, passed to the
+\code{\link[ggplot2]{scale_x_continuous}}/
+\code{\link[ggplot2]{scale_y_continuous}} functions,
+besides \code{trans} and \code{limits}.}
+
+\item{yPars}{List with extra parameters for x/y axis, passed to the
 \code{\link[ggplot2]{scale_x_continuous}}/
 \code{\link[ggplot2]{scale_y_continuous}} functions,
 besides \code{trans} and \code{limits}.}
@@ -116,9 +125,17 @@ In case the variable(s) contain different elements
 by \code{xVar} or between facets, they are combined
 and displayed below each other.}
 
-\item{xLim, yLim}{Numeric vector of length 2 with limits for the x/y axes.}
+\item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
-\item{xLimExpandData, yLimExpandData}{Logical (TRUE by default), should the
+\item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
+
+\item{yLimExpandData}{Logical (TRUE by default), should the
+limits specified via \code{xLim}/\code{yLim} be 
+expanded to include any data points outside of these
+limits?
+Please note that the same limits are set for all facets.}
+
+\item{xLimExpandData}{Logical (TRUE by default), should the
 limits specified via \code{xLim}/\code{yLim} be 
 expanded to include any data points outside of these
 limits?

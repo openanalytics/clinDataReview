@@ -31,7 +31,8 @@ pipeline {
             steps {
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/clinUtils/master', selector: lastSuccessful()   
                 copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/patientProfilesVis/master', selector: lastSuccessful()
-                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/inTextSummaryTable/master', selector: lastSuccessful()   
+                copyArtifacts filter: '*.tar.gz', fingerprintArtifacts: true, projectName: 'git/inTextSummaryTable/master', selector: lastSuccessful()
+                library 'jenkins-ecr-libs'
                 withOARegistry {
                     sh "docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:${env.TAG} --cache-from ${env.REG}/${env.NS}/${env.IMAGE}:master -t ${env.NS}/${env.IMAGE}:${env.TAG} -f Dockerfile ."
                 }
