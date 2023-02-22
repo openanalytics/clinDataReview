@@ -1,4 +1,4 @@
-1.3.2
+1.4.0
   o option to convert reports to .aspx reports to facilitate deployment on sharepoint
   o timeProfileInterval fix no error when duplicate columns are included 
 1.3.1
