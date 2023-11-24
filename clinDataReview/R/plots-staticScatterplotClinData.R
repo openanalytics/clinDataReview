@@ -167,12 +167,11 @@ staticScatterplotClinData <- function(
 	      pars = linePars,
 	      generalPars = geomAes[c("color", "colour", "linetype")],
 	      layerFunction = geom_line
-	      )
+	     )
 #		}
 	}
 	
 	## scatterplot
-	
 	gg <- addLayerToScatterPlot(
 	  gg,
 	  aesVar = c(aesPointVar, if(!is.null(hoverVars))	{list(text = sym("hover"))}),
@@ -180,8 +179,7 @@ staticScatterplotClinData <- function(
 	  generalPars = geomAes[c("color", "colour", "fill", "shape")],
 	  layerFunction = switch(geomType, point = geom_point, col = geom_col),
 	  useHandlers = TRUE
-	  )
-	
+	 )
 	
 	## add smoothing layer
 	if(smoothInclude){
@@ -393,7 +391,13 @@ addLayerToScatterPlot <- function(gg, aesVar, pars, generalPars, layerFunction, 
   if( length(aesVar) > 0  ){
     aesVar <- sapply(aesVar, sym, simplify = FALSE)
   }
+  
+  # standardize color naming (US -> UK English spelling)
+  names(generalPars)[which(names(generalPars) == "color")] <- "colour"
+  names(pars)[which(names(pars) == "color")] <- "colour"
+  
   argsGeom <- modifyList(generalPars, pars)
+  
   argsGeom <- c(
     list(mapping = do.call(aes, aesVar)),
     argsGeom

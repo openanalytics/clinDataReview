@@ -108,6 +108,24 @@ test_that('Point parameters are set correctly in a scatterplot', {
   
 })
 
+test_that("Point parameters with 'colour' (UK English spelling) are set correctly in a scatterplot", {
+  
+  expect_silent(
+    pl <- scatterplotClinData(
+      data = exampleDataScatter(),
+      xVar = "time", yVar = "response",
+      pointPars = list(colour = 'red'),
+      idVar = "subj"
+    )
+  )
+  
+  plData <- plotly_build(pl)$x$data
+  plmarkerData <- plData[[which(sapply(plData, function(x){x$mode == 'markers'}))]]
+  colorRGB <- sub("^rgba\\((\\d{1,},\\d{1,},\\d{1,}),.+", "\\1\\2\\3", plmarkerData$marker$line$color)
+  expect_equal(object = colorRGB, expected = paste(col2rgb('red'), collapse =","))
+  
+})
+
 
 test_that('Line parameters are set correctly in a scatterplot', {
  
