@@ -1,3 +1,5 @@
+1.4.0.9000
+  o scatterplotClinData: support non character axis transformation
 1.4.0
   o option to convert reports to .aspx reports to facilitate deployment on sharepoint
   o timeProfileInterval fix no error when duplicate columns are included 

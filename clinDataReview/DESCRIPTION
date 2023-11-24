@@ -1,8 +1,8 @@
 Package: clinDataReview
 Type: Package
 Title: Clinical Data Review Tool
-Version: 1.4.0
-Date: 2023-02-22
+Version: 1.4.0.9000
+Date: 2023-11-24
 Authors@R: c(
   person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"), 
   email = "laure.cougnaud@openanalytics.eu"),
@@ -52,7 +52,8 @@ Suggests:
   inTextSummaryTable (>= 3.1.0),
   patientProfilesVis (>= 0.12.0), 
   testthat,
-  DT
+  DT,
+  scales
 SystemRequirements: pandoc (to create a clinical data review report)
 URL: https://github.com/openanalytics/clinDataReview
 BugReports: https://github.com/openanalytics/clinDataReview/issues

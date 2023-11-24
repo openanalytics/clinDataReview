@@ -216,7 +216,7 @@ staticScatterplotClinData <- function(
 	}
 
 	setAxis <- function(gg, trans, pars, lims, axis){
-		if(trans != "identity"){
+		if(!(is.character(trans) && trans == "identity")){
 			if("trans" %in% names(pars))
 				warning(paste0("'trans' in parameters for ", axis, " axis ",
 					"are ignored, because specified in dedicated '", axis, "Trans' parameter."))

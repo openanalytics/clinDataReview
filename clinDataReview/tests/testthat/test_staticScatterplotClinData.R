@@ -1,5 +1,8 @@
 context("Visualize clinical data with a static scatterplot")
 
+library(ggplot2)
+library(scales)
+
 # 'staticScatterplotClinData' is also tested in the scatterplotClinData
 # So other tests are skipped
 
@@ -66,4 +69,26 @@ test_that("A warning is generated if an axis transformation is specified both in
 		"'trans' in parameters for x axis are ignored"
 	)
       
+})
+
+test_that("An axis transformation can be specified as a non character in the scatterplot", {
+  
+  data <- data.frame(
+    A = c(1, 1, 2, 3),
+    B = c(2, 4, 1, 3),
+    C = c("trt1", "trt1", "trt2", "trt2")
+  )
+  xTrans <- scales::log10_trans()
+  expect_silent(
+    gg <- clinDataReview:::staticScatterplotClinData(
+      data = data,
+      xVar = "A", yVar = "B",
+      xTrans = xTrans
+    )
+  )
+  expect_equal(
+    object = ggplot2::layer_scales(gg)$x$trans,
+    expected = xTrans
+  )
+  
 })
