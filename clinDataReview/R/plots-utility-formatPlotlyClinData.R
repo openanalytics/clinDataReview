@@ -28,6 +28,8 @@
 #' file containing patient report.
 #' If not specified, the label are extracted based on the \code{idVarPlot}
 #' of the selected plot element.
+#' @param keyHighlightBox Logical, if TRUE (FALSE by default) a selectize box
+#' is included to highlight selected element(s) of the key variable.
 #' @inheritParams formatDataForPlotClinData
 #' @inheritParams clinDataReview-common-args
 #' @return Updated \code{\link[plotly]{plotly}} object.
@@ -48,7 +50,7 @@ formatPlotlyClinData <- function(
 	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	# selection
 	selectVars = NULL, selectLab = getLabelVar(selectVars, labelVars = labelVars),
-	keyVar = NULL, labelVars = NULL,
+	keyVar = NULL, keyHighlightBox = FALSE, labelVars = NULL,
 	verbose = FALSE){
 
 	idVarInit <- idVar
@@ -66,7 +68,8 @@ formatPlotlyClinData <- function(
 	)
 
 	# turn-off selection by double-clicking on the graph
-	pl <- pl %>% highlight(on = highlightOn, off = highlightOff)
+	pl <- pl %>% highlight(on = highlightOn, off = highlightOff, 
+	   selectize = keyHighlightBox)
 	
 	# to check attributes available in the plotly object:
 	#	plotly_json(pl)
@@ -132,8 +135,8 @@ formatPlotlyClinData <- function(
 	    id = id
     )
 	  
-	}else{res <- pl}
-	
+  }else{res <- pl}
+
 	return(res)
 	
 }

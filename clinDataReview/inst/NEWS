@@ -1,6 +1,8 @@
 1.4.0.9000
-  o scatterplotClinData: support non character axis transformation
-  o scatterplot: support 'colour' (UK English spelling)
+  o scatterplot: 
+    - support non character axis transformation
+    - support 'colour' (UK English spelling)
+    - new highlight box for id variable (idHighlightBox)
 1.4.0
   o option to convert reports to .aspx reports to facilitate deployment on sharepoint
   o timeProfileInterval fix no error when duplicate columns are included 

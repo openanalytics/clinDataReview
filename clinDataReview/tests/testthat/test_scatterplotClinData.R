@@ -793,3 +793,25 @@ test_that("A selection variable is correctly included in a scatterplot", {
   expect_equal(object = buttonData$items$value, expected = levels(data$group))
   
 })
+
+test_that("A box to highlight the elements of the ID variable is correctly included in a scatterplot", {
+  
+  data <- data.frame(
+    DY = c(1, 2, 1, 2),
+    AVAL = c(3, 4, 2, 6),
+    USUBJID = c(1, 1, 2, 2),
+    stringsAsFactors = FALSE
+  )	
+  
+  pl <- scatterplotClinData(
+    data = data, 
+    xVar = "DY",
+    yVar = "AVAL",
+    idHighlightBox = TRUE
+  )
+  
+  # check the output:
+  expect_s3_class(pl, "plotly")
+  expect_true(pl$x$highlight$selectize)
+  
+})

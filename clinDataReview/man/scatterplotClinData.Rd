@@ -44,6 +44,7 @@ scatterplotClinData(
   hoverLab,
   idVar = "USUBJID",
   idLab = getLabelVar(idVar, labelVars = labelVars),
+  idHighlightBox = FALSE,
   pathVar = NULL,
   pathExpand = FALSE,
   id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
@@ -208,6 +209,9 @@ by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 \item{idVar}{String with variable containing subject ID.}
 
 \item{idLab}{String with label for \code{idVar}.}
+
+\item{idHighlightBox}{Logical, if TRUE (FALSE by default) a selectize box
+is included to highlight selected element(s) of the ID variable (\code{idVar}).}
 
 \item{pathVar}{String with variable of \code{data} containing
 path to a subject-specific report. The report info should be unique 
