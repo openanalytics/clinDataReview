@@ -25,8 +25,8 @@ This function receives the metadata information from \code{\link{getMetadata}} a
 prints them in a format for an Rmd report.
 In general, any list could be called as long as it is composed by two elements:
 \itemize{
-\item{\code{summaryInfo}}{ an R object.}
-\item{\code{datasetInfo}}{ a data.frame or a matrix.}
+\item \code{summaryInfo}: an R object.
+\item \code{datasetInfo}: a data.frame or a matrix.
 }
 The first (\code{summaryInfo}) is printed as \code{\link[knitr]{kable}} object 
 and the second (\code{datasetInfo}) is printed as hide/show html button with 

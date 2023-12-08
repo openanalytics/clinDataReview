@@ -27,11 +27,11 @@ with path to the subject-specific report, formatted as: \cr
 If multiple, they should be separated by: ', '.\cr
 The report(s) will be:
 \itemize{
-\item{compressed to a zip file and downloaded 
+\item compressed to a zip file and downloaded 
 if the user clicks on the 'p' (a.k.a 'profile') key
-when hovering on a point of the plot}
-\item{included in a collapsible row, and clickable with hyperlinks
-in the table}
+when hovering on a point of the plot
+\item included in a collapsible row, and clickable with hyperlinks
+in the table
 }}
 
 \item{pathLab}{String with label for \code{pathVar},

@@ -100,20 +100,11 @@ defaults to empty list. Note this parameter overwrites other parameters set by \
 
 \item{aesLab}{Named character vector with labels for each aesthetic variable.}
 
-\item{xTrans}{Transformation for the x/y- variables,
+\item{xTrans, yTrans}{Transformation for the x/y- variables,
 passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
 \code{\link[ggplot2]{scale_y_continuous}}.}
 
-\item{yTrans}{Transformation for the x/y- variables,
-passed to the \code{trans} parameter of \code{\link[ggplot2]{scale_x_continuous}}/
-\code{\link[ggplot2]{scale_y_continuous}}.}
-
-\item{xPars}{List with extra parameters for x/y axis, passed to the
-\code{\link[ggplot2]{scale_x_continuous}}/
-\code{\link[ggplot2]{scale_y_continuous}} functions,
-besides \code{trans} and \code{limits}.}
-
-\item{yPars}{List with extra parameters for x/y axis, passed to the
+\item{xPars, yPars}{List with extra parameters for x/y axis, passed to the
 \code{\link[ggplot2]{scale_x_continuous}}/
 \code{\link[ggplot2]{scale_y_continuous}} functions,
 besides \code{trans} and \code{limits}.}
@@ -126,17 +117,9 @@ In case the variable(s) contain different elements
 by \code{xVar} or between facets, they are combined
 and displayed below each other.}
 
-\item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
+\item{xLim, yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
-\item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
-
-\item{yLimExpandData}{Logical (TRUE by default), should the
-limits specified via \code{xLim}/\code{yLim} be 
-expanded to include any data points outside of these
-limits?
-Please note that the same limits are set for all facets.}
-
-\item{xLimExpandData}{Logical (TRUE by default), should the
+\item{xLimExpandData, yLimExpandData}{Logical (TRUE by default), should the
 limits specified via \code{xLim}/\code{yLim} be 
 expanded to include any data points outside of these
 limits?
@@ -159,8 +142,8 @@ below the title.}
 
 \item{facetType}{String with facetting type, either:
 \itemize{
-\item{'wrap': }{\code{\link[ggplot2]{facet_wrap}}}
-\item{'grid': }{\code{\link[ggplot2]{facet_grid}}}
+\item 'wrap': \code{\link[ggplot2]{facet_wrap}}
+\item 'grid': \code{\link[ggplot2]{facet_grid}}
 }}
 
 \item{scalePars}{List with parameters to customize
@@ -179,18 +162,16 @@ If palette(s) are not specified, default palettes are used
 \item{refLinePars}{(optional) Nested list, with parameters for each reference line(s).
 Each sublist (a.k.a reference line) contains:
 \itemize{
-\item{aesthetic value(s) or variable(s) for the lines
+\item aesthetic value(s) or variable(s) for the lines
 (in this case column names of \code{data}) for reference lines.
 The line position is controlled by the aesthetics supported in
 \code{\link[ggplot2]{geom_vline}}, \code{\link[ggplot2]{geom_hline}} 
 and \code{\link[ggplot2]{geom_abline}}.
-}
-\item{'label': }{(optional) Logical specifying if the line
+\item 'label': (optional) Logical specifying if the line
 should be annotated (\code{FALSE} to not annotate the line)
 or string with annotation label. By default, the value
 of the position of the horizontal/vertical line or the equation
 of the diagonal line is displayed.
-}
 }}
 
 \item{labelVars}{Named character vector containing variable labels.}
@@ -218,9 +199,9 @@ path to a subject-specific report. The report info should be unique
 for each element of \code{idVar}.
 The report will be:
 \itemize{
-\item{opened in a different window in the browser if the user clicks on the 'p' (a.k.a 'profile') key
-when hovering on a point of the plot}
-\item{opened in the browser via hyperlink in the table}
+\item opened in a different window in the browser if the user clicks on the 
+'p' (a.k.a 'profile') key when hovering on a point of the plot
+\item opened in the browser via hyperlink in the table
 }}
 
 \item{pathExpand}{Logical, if FALSE (by default)
@@ -232,8 +213,8 @@ are included for each row in \code{pathVar}
 
 \item{id}{String with general id for the plot:
 \itemize{
-\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+\item 'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}
+\item 'button:[id]' is used as button ID if \code{table} is TRUE
 }
 If not specified, a random id, as 'plotClinData[X]' is used.}
 
@@ -271,11 +252,10 @@ of subject-specific report are displayed in the browser console.}
 \value{
 Either:
 \itemize{
-\item{if a \code{table} is requested: }{
-a \code{clinDataReview} object, a.k.a a list with the 
-'plot' (\code{\link[plotly]{plotly}} object) and 'table'
-(\code{\link[DT]{datatable}} object)}
-\item{otherwise: }{a \code{\link[plotly]{plotly}} object}
+\item if a \code{table} is requested: a \code{clinDataReview} object, 
+a.k.a a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
+(\code{\link[DT]{datatable}} object)
+\item otherwise: a \code{\link[plotly]{plotly}} object
 }
 }
 \description{

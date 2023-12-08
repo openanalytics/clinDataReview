@@ -2,10 +2,10 @@
 #' 
 #' The depth is extracted:
 #' \enumerate{
-#' \item{from the \code{settings} if a
+#' \item from the \code{settings} if a
 #' specified depth is provided in the 'rmd_file_depth' for the
-#' current knitted file}
-#' \item{\code{level} parameter otherwise}
+#' current knitted file
+#' \item \code{level} parameter otherwise
 #' }
 #' @param title String with header title.
 #' @param level Integer of length 1 with header depth/level,
@@ -48,9 +48,9 @@ getMdHeader <- function(
 #' @param x Object of class \code{clinDataReview}
 #' @return \code{x} object:
 #' \itemize{
-#' \item{with the \code{plot} element containing a combination of the 
-#' \code{buttons} and the \code{plot}}
-#' \item{without the \code{buttons} element}
+#' \item with the \code{plot} element containing a combination of the 
+#' \code{buttons} and the \code{plot}
+#' \item without the \code{buttons} element
 #' }
 #' @importFrom utils hasName
 #' @importFrom htmltools div
@@ -139,12 +139,12 @@ knit_print.clinDataReview <- function(x, ...){
 #' the names are used for the section header.
 #' If several section header should be created, either:
 #' \itemize{
-#' \item{a list of level 1 named by the different group elements,
+#' \item a list of level 1 named by the different group elements,
 #' separated by \code{sep}, e.g. 
 #' \code{list('group1.param1' = .., 'group1.param2' = ...)}.
-#' Such list is e.g. created with \code{\link[plyr]{dlply}}.}
-#' \item{a nested list, named with the different groups,
-#' e.g. created with \code{lapply}}
+#' Such list is e.g. created with \code{\link[plyr]{dlply}}.
+#' \item a nested list, named with the different groups,
+#' e.g. created with \code{lapply}
 #' }
 #' @param sep String with separator used to distinguish 
 #' different levels in the labels of the list.

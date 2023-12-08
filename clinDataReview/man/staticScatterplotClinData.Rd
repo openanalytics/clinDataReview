@@ -99,9 +99,7 @@ In case the variable(s) contain different elements
 by \code{xVar} or between facets, they are combined
 and displayed below each other.}
 
-\item{yLim}{Numeric vector of length 2 with limits for the x/y axes.}
-
-\item{xLim}{Numeric vector of length 2 with limits for the x/y axes.}
+\item{xLim, yLim}{Numeric vector of length 2 with limits for the x/y axes.}
 
 \item{xLimExpandData, yLimExpandData}{Logical (TRUE by default), should the
 limits specified via \code{xLim}/\code{yLim} be 
@@ -117,8 +115,8 @@ Please note that the same limits are set for all facets.}
 
 \item{facetType}{String with facetting type, either:
 \itemize{
-\item{'wrap': }{\code{\link[ggplot2]{facet_wrap}}}
-\item{'grid': }{\code{\link[ggplot2]{facet_grid}}}
+\item 'wrap': \code{\link[ggplot2]{facet_wrap}}
+\item 'grid': \code{\link[ggplot2]{facet_grid}}
 }}
 
 \item{scalePars}{List with parameters to customize
@@ -137,18 +135,16 @@ If palette(s) are not specified, default palettes are used
 \item{refLinePars}{(optional) Nested list, with parameters for each reference line(s).
 Each sublist (a.k.a reference line) contains:
 \itemize{
-\item{aesthetic value(s) or variable(s) for the lines
+\item aesthetic value(s) or variable(s) for the lines
 (in this case column names of \code{data}) for reference lines.
 The line position is controlled by the aesthetics supported in
 \code{\link[ggplot2]{geom_vline}}, \code{\link[ggplot2]{geom_hline}} 
 and \code{\link[ggplot2]{geom_abline}}.
-}
-\item{'label': }{(optional) Logical specifying if the line
+\item 'label': (optional) Logical specifying if the line
 should be annotated (\code{FALSE} to not annotate the line)
 or string with annotation label. By default, the value
 of the position of the horizontal/vertical line or the equation
 of the diagonal line is displayed.
-}
 }}
 
 \item{labelVars}{Named character vector containing variable labels.}
@@ -158,8 +154,8 @@ by default \code{xVar}, \code{yVar} and any aesthetic variables.}
 
 \item{geomType}{String with type of the geom used, either:
 \itemize{
-\item{'point': }{scatterplot with \code{\link[ggplot2]{geom_point}} is created}
-\item{'col': }{barplot with \code{\link[ggplot2]{geom_col}} is created}
+\item 'point': scatterplot with \code{\link[ggplot2]{geom_point}} is created
+\item 'col': barplot with \code{\link[ggplot2]{geom_col}} is created
 }}
 }
 \value{

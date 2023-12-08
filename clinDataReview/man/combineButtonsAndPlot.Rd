@@ -12,9 +12,9 @@ combineButtonsAndPlot(x)
 \value{
 \code{x} object:
 \itemize{
-\item{with the \code{plot} element containing a combination of the 
-\code{buttons} and the \code{plot}}
-\item{without the \code{buttons} element}
+\item with the \code{plot} element containing a combination of the 
+\code{buttons} and the \code{plot}
+\item without the \code{buttons} element
 }
 }
 \description{

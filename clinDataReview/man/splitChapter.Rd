@@ -53,13 +53,13 @@ Split a chapter based on the 'split_by' parameter.
 
 The bookdown 'split_by' parameter is extended, to support:
 \itemize{
-\item{chapter-specific split, specified in the configuration file
-of the specific chapter, via the \code{split_by} parameter}
-\item{specification as a number (if specified within a config file), 
+\item chapter-specific split, specified in the configuration file
+of the specific chapter, via the \code{split_by} parameter
+\item specification as a number (if specified within a config file), 
 e.g. '0' for no split, 1' for chapter, '2' for
-section, '3' for subsection, ...}
-\item{split at section level higher than 2 (until 7)  
-(if specified within a config file)}
+section, '3' for subsection, ...
+\item split at section level higher than 2 (until 7)  
+(if specified within a config file)
 }
 }
 

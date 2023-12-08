@@ -11,11 +11,11 @@
 #' and the general config file: \code{config.yml}.\cr
 #' There are two specific handlers:
 #' \itemize{
-#' \item{parameters tagged with '[param] !r [value]'
-#' are evaluated in R, and their evaluated value is returned}
-#' \item{parameters tagged with '[param] !r-lazy [value]'
+#' \item parameters tagged with '[param] !r [value]'
+#' are evaluated in R, and their evaluated value is returned
+#' \item parameters tagged with '[param] !r-lazy [value]'
 #' are imported as character, and need to be further process
-#' with \code{\link{forceParams}} inside the report.}
+#' with \code{\link{forceParams}} inside the report.
 #' }
 #' Parameters with YAML type 'r-lazy' are imported as character,
 #' with this additional class.

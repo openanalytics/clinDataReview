@@ -11,24 +11,22 @@ transformData(data, transformations, verbose = FALSE, labelVars = NULL)
 
 \item{transformations}{Transformations (or list of those) as a list with:
 \itemize{
-\item{'type': }{String with type of transformation.
-Currently, only: 'pivot_wider' is available}
-\item{extra parameters for the transformation, for:
+\item 'type': String with type of transformation.
+Currently, only: 'pivot_wider' is available
+\item extra parameters for the transformation, for:
 \itemize{
-\item{'pivot_wider': }{
+\item 'pivot_wider': 
 \itemize{
-\item{'varsID': }{Character vector with variable(s) of \code{data}
+\item 'varsID': Character vector with variable(s) of \code{data}
 defining unique records in the wide format.
-Corresponds to the \code{idvar} parameter of the \code{reshape} function.}
-\item{'varPivot': }{String with unique variable of \code{data}
+Corresponds to the \code{idvar} parameter of the \code{reshape} function.
+\item 'varPivot': String with unique variable of \code{data}
 containing elements to pivot in different columns in the wide format
 (used for column names).
-Corresponds to the \code{timevar} parameter of the \code{reshape} function.}
-\item{'varsValue': }{Character vector with variable(s) of \code{data}
+Corresponds to the \code{timevar} parameter of the \code{reshape} function.
+\item 'varsValue': Character vector with variable(s) of \code{data}
 used to fill the columns in the wide format.
-Corresponds to the \code{v.names} parameter of the \code{reshape} function.}
-}
-}
+Corresponds to the \code{v.names} parameter of the \code{reshape} function.
 }
 }
 }}

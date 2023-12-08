@@ -107,10 +107,10 @@ createTemplateDoc <- function(
 		"corresponds to the type in the config file (in YAML/JSON format).",
 		"The mapping to R data type is as followed:",
 		"\\itemize{",
-		"\\item{string: }{character vector of length 1}",
-		"\\item{integer: }{integer vector of length 1}",
-		"\\item{array: }{vector/list without names}",
-		"\\item{object: }{list with names}",
+		"\\item string: character vector of length 1",
+		"\\item integer: integer vector of length 1",
+		"\\item array: vector/list without names",
+		"\\item object: list with names",
 		"}}"
 	)
 	docRox2All <- c(docRoxParType, docRox2All)
@@ -129,22 +129,23 @@ createTemplateDoc <- function(
 #' 
 #' @section Supported JSON schema tags: 
 #' \itemize{
-#' \item{'title' is used as Rd section header}
-#' \item{'description' is included in the text}
-#' \item{parameters are extracted from the following 'properties' tag: }{
+#' \item 'title' is used as Rd section header
+#' \item 'description' is included in the text
+#' \item parameters are extracted from the following 'properties' tag: 
 #' \itemize{
-#' \item{'type': }{object type}
-#' \item{'doc': }{documentation for the parameter (custom JSON schema tag).
-#' This can contain any Roxygen tags, e.g.: \verb{\link[package]{function}}}.
-#' \item{'pattern' (optional): }{required value for the parameter}
-#' \item{'items' (optional): }{JSON schema for the different elements of an 'object'}
-#' \item{'minItems'/'maxItems' (optional): }{minimum/maximum number of elements in an 'array'}
-#' \item{'enum' (optional): }{set of possible values}
-#' \item{'const' (optional): }{fixed value for the parameter (a.k.a 'constant')}
+#' \item 'type': object type
+#' \item 'doc': documentation for the parameter (custom JSON schema tag).
+#' This can contain any Roxygen tags, e.g.: \verb{\link[package]{function}}.
+#' \item 'pattern' (optional): required value for the parameter
+#' \item 'items' (optional): JSON schema for the different elements of an 
+#' 'object'
+#' \item 'minItems'/'maxItems' (optional): minimum/maximum number of elements 
+#' in an 'array'
+#' \item 'enum' (optional): set of possible values
+#' \item 'const' (optional): fixed value for the parameter (a.k.a 'constant')
 #' }
 #' If a parameter is required, it should be listed in the 'required'
 #' tag of the schema (outside of the 'properties' tag).
-#' }
 #' }
 #' @param JSONSch List with JSON schema, as returned by \code{\link[jsonlite]{fromJSON}}.
 #' @param title (optional) String with title.
@@ -158,9 +159,8 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 	paramsReq <- JSONSch$req
 	
 	getItem <- function(x, name = NULL){
-		itemsRox2Start <- paste0("\\item", 
-			if(!is.null(name))	paste0("{", name, ": }"), 
-			"{"
+		itemsRox2Start <- paste0("\\item{", 
+			if(!is.null(name))	paste0(name, ": ")
 		)
 		items <- paste0(itemsRox2Start, x, "}")
 		return(items)

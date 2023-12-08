@@ -65,26 +65,24 @@ associated table.}
 \item{refLinePars}{(optional) Nested list, with parameters for each reference line(s).
 Each sublist (a.k.a reference line) contains:
 \itemize{
-\item{aesthetic value(s) or variable(s) for the lines
+\item aesthetic value(s) or variable(s) for the lines
 (in this case column names of \code{data}) for reference lines.
 The line position is controlled by the aesthetics supported in
 \code{\link[ggplot2]{geom_vline}}, \code{\link[ggplot2]{geom_hline}} 
 and \code{\link[ggplot2]{geom_abline}}.
-}
-\item{'label': }{(optional) Logical specifying if the line
+\item 'label': (optional) Logical specifying if the line
 should be annotated (\code{FALSE} to not annotate the line)
 or string with annotation label. By default, the value
 of the position of the horizontal/vertical line or the equation
 of the diagonal line is displayed.
-}
 }}
 
 \item{labelVars}{Named character vector containing variable labels.}
 
 \item{id}{String with general id for the plot:
 \itemize{
-\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+\item 'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}
+\item 'button:[id]' is used as button ID if \code{table} is TRUE
 }
 If not specified, a random id, as 'plotClinData[X]' is used.}
 

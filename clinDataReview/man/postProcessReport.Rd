@@ -55,8 +55,8 @@ in \code{configDir} are ignored.}
 (1 by default). If more than 1, two steps of the report creation are 
 run in parallel across chapters: 
 \itemize{
-\item{the rendering of the Rmarkdown file to Markdown}
-\item{the conversion from Markdown to HTML}
+\item the rendering of the Rmarkdown file to Markdown
+\item the conversion from Markdown to HTML
 }}
 
 \item{logFile}{(optional) String with path to a log file,

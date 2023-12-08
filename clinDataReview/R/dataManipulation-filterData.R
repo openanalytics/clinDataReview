@@ -2,12 +2,12 @@
 #' 
 #' A dataset can be filtered:
 #' \itemize{
-#' \item{on a specific \code{value} of interest}
-#' \item{on a function of a variable (\code{valueFct} parameter), 
-#' e.g. maximum of the variable)}
-#' \item{to retain only non missing values of a variable (\code{keepNA} 
-#' set to \code{FALSE})}
-#' \item{by groups (\code{varsBy} parameter)}
+#' \item on a specific \code{value} of interest
+#' \item on a function of a variable (\code{valueFct} parameter), 
+#' e.g. maximum of the variable)
+#' \item to retain only non missing values of a variable (\code{keepNA} 
+#' set to \code{FALSE})
+#' \item by groups (\code{varsBy} parameter)
 #' }
 #' \strong{Note that by default, missing values in the filtering variable are retained
 #' (which differs from the default behaviour in R).}
@@ -16,33 +16,33 @@
 #' @param filters Unique filter or list of filters.\cr
 #' Each filter is a list containing:
 #' \itemize{
-#' \item{'var': }{String with variable from \code{data} to filter on.}
-#' \item{'value': }{(optional) Character vector with values from \code{var} 
-#' \strong{to consider/keep}.}
-#' \item{'valueFct': }{(optional) Function (or string with this function)
+#' \item 'var': String with variable from \code{data} to filter on.
+#' \item 'value': (optional) Character vector with values from \code{var} 
+#' \strong{to consider/keep}.
+#' \item 'valueFct': (optional) Function (or string with this function)
 #' to be applied on \code{var} to extract value to consider.\cr
 #' For example, \code{valueFct = max} will extract the records
-#' with the maximum value of the variable.}
-#' \item{'op': }{(optional) String with operator used to retain records 
+#' with the maximum value of the variable.
+#' \item 'op': (optional) String with operator used to retain records 
 #' from \code{value}.
 #' If not specified, the inclusion operator: '\%in\%' is considered, so
-#' records with \code{var} in \code{value} are retained.}
-#' \item{'rev': }{(optional) Logical, if TRUE (FALSE by default), 
-#' filtering condition based on \code{value}/\code{valueFct} is reversed.}
-#' \item{'keepNA': }{(optional) Logical, if TRUE (by default), 
+#' records with \code{var} in \code{value} are retained.
+#' \item 'rev': (optional) Logical, if TRUE (FALSE by default), 
+#' filtering condition based on \code{value}/\code{valueFct} is reversed.
+#' \item 'keepNA': (optional) Logical, if TRUE (by default), 
 #' missing values in \code{var} are retained.\cr
-#' If not specified, \code{keepNA} general parameter is used.}
-#' \item{'varsBy': }{(optional) Character vector with variables in 
-#' \code{data} containing groups to filter by}
-#' \item{'postFct': }{(optional) Function (or string with this function) with
+#' If not specified, \code{keepNA} general parameter is used.
+#' \item 'varsBy': (optional) Character vector with variables in 
+#' \code{data} containing groups to filter by
+#' \item 'postFct': (optional) Function (or string with this function) with
 #' post-processing applied on the results of the filtering criteria 
 #' (TRUE/FALSE for each record). This function should return TRUE/FALSE
 #' (for each record or for all considered records).\cr
 #' For example, '\code{postFct = any, varsBy = "group"}' retains all groups
-#' which contain at least one record that fulfills the criteria.}
-#' \item{'varNew': }{(optional) String with name of a new variable containing
-#' the results of the filtering criteria (as TRUE/FALSE).}
-#' \item{'labelNew': }{(optional) String with label for the \code{varNew} variable.}
+#' which contain at least one record that fulfills the criteria.
+#' \item 'varNew': (optional) String with name of a new variable containing
+#' the results of the filtering criteria (as TRUE/FALSE).
+#' \item 'labelNew': (optional) String with label for the \code{varNew} variable.
 #' }
 #' If a list of filters is specified, the different filters are \strong{independently
 #' executed on the entire dataset to identify the records to retain for
@@ -57,10 +57,10 @@
 #' @inheritParams clinDataReview-common-args
 #' @return If \code{returnAll}
 #' \itemize{
-#' \item{is \code{FALSE}: }{\code{data} filtered with the specified filters}
-#' \item{is \code{TRUE}: }{\code{data} with the additional column: \code{keep} 
+#' \item is \code{FALSE}: \code{data} filtered with the specified filters
+#' \item is \code{TRUE}: \code{data} with the additional column: \code{keep} 
 #'  or \code{varNew} (if specified), containing \code{TRUE} for records 
-#'  which fulfill the specified condition(s) and \code{FALSE} otherwise.}
+#'  which fulfill the specified condition(s) and \code{FALSE} otherwise.
 #' }
 #' The output contains the additional attribute: \code{msg} which contains a message
 #' describing the filtered records.
@@ -171,12 +171,12 @@ filterData <- function(
 #' The specification within \code{filters} prevails on this parameter.
 #' @param returnAll Logical:
 #' \itemize{
-#' \item{if FALSE (by default): }{the \code{data} for only the filtered records
-#' is returned.}
-#' \item{if TRUE: }{the full \code{data} is returned. 
+#' \item if FALSE (by default): the \code{data} for only the filtered records
+#' is returned.
+#' \item if TRUE: the full \code{data} is returned. 
 #' Records are flagged based on the \code{filters} condition, in a new column:
 #' \code{varNew} (if specified), or 'keep' otherwise; containing TRUE
-#'  if the record fulfill all conditions, FALSE otherwise}
+#'  if the record fulfill all conditions, FALSE otherwise
 #' } 
 #' @param labelData (optional) String with label for input \code{data},
 #' that will be included in progress messages.
@@ -185,10 +185,10 @@ filterData <- function(
 #' @importFrom clinUtils simpleCap
 #' @return Updated \code{data} with attributes:
 #' \itemize{
-#' \item{'labelVars': }{input \code{labelVars} with any new variables 
-#'  if \code{labelNew} is specified.}
-#' \item{'msg': }{message describing the filtering process}
-#' \item{'warn': }{warning describing the filtering process}
+#' \item 'labelVars': input \code{labelVars} with any new variables 
+#'  if \code{labelNew} is specified.
+#' \item 'msg': message describing the filtering process
+#' \item 'warn': warning describing the filtering process
 #' }
 #' @author Laure Cougnaud
 filterDataSingle <- function(data,

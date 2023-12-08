@@ -5,12 +5,12 @@
 #' This function checks for existance of the metadata file and its content.
 #' In particular, within the yaml file matches the following strings:
 #' \itemize{
-#' \item{\code{path}}{ Path to the data. More than one path is allowed.}
-#' \item{\code{dateTime}}{ Date and time, usually of the SDTM data creation. 
+#' \item \code{path}: Path to the data. More than one path is allowed.
+#' \item \code{dateTime}: Date and time, usually of the SDTM data creation. 
 #' When printing the metadata in Rmd document, there is the possibility to add
 #'  the date and time of the report generation. 
-#' See \code{\link{knit_print.clinDataReviewMetadata}}. }
-#' \item{\code{datasetInfo}}{ General information about the data sets.}
+#' See \code{\link{knit_print.clinDataReviewMetadata}}.
+#' \item \code{datasetInfo}: General information about the data sets.
 #' }
 #' 
 #' Note that the input names do not necessarly have to match the exact names. 
@@ -24,9 +24,9 @@
 #' The renaming happens only if the metadata info are printed in Rmd and not in the console.
 #' @return A list of:
 #' \itemize{
-#' \item{\code{summaryInfo}}{ Information extracted from the inputs 
-#' \code{path}, and \code{dateTime}.}
-#' \item{\code{datasetInfo}}{ Information extracted from \code{datasetInfo}.}
+#' \item \code{summaryInfo} Information extracted from the inputs 
+#' \code{path}, and \code{dateTime}.
+#' \item \code{datasetInfo} Information extracted from \code{datasetInfo}.
 #' }
 #' @example inst/examples/metadata-example.R
 #' @importFrom data.table rbindlist
@@ -76,8 +76,8 @@ getMetadata <- function(filePath, namesInfo) {
 #' prints them in a format for an Rmd report.
 #' In general, any list could be called as long as it is composed by two elements:
 #' \itemize{
-#' \item{\code{summaryInfo}}{ an R object.}
-#' \item{\code{datasetInfo}}{ a data.frame or a matrix.}
+#' \item \code{summaryInfo}: an R object.
+#' \item \code{datasetInfo}: a data.frame or a matrix.
 #' }
 #' The first (\code{summaryInfo}) is printed as \code{\link[knitr]{kable}} object 
 #' and the second (\code{datasetInfo}) is printed as hide/show html button with 

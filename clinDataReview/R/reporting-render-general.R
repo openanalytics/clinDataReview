@@ -4,51 +4,50 @@
 #' This function is based on the \link[bookdown]{render_book}
 #' function, with the extra functionalities:
 #' \itemize{
-#' \item{specification of chapter-specific input parameters, 
-#' specified in YAML configuration files}
-#' \item{(optional) creation of each chapter in parallel if \code{nCores} 
+#' \item specification of chapter-specific input parameters, 
+#' specified in YAML configuration files
+#' \item (optional) creation of each chapter in parallel if \code{nCores} 
 #' > 1. In that case, all chapters are run in parallel, excepted the 
 #' chapter(s) run internally in parallel (config file with \code{parallel} set 
-#' to 'TRUE').}
-#' \item{(optional) split of each chapter into html file specific 
+#' to 'TRUE').
+#' \item (optional) split of each chapter into html file specific 
 #' for each chapter, by specifying the \code{split_by} parameter in the 
-#' chapter-specific config file}
+#' chapter-specific config file
 #' }
 #' This consists of:
 #' \enumerate{
-#' \item{importing the general config file ('config'.yml) to identify
-#' each report of interest ('config' tag)}
-#' \item{for each report of interest:
+#' \item importing the general config file ('config'.yml) to identify
+#' each report of interest ('config' tag)
+#' \item for each report of interest:
 #' \itemize{
-#' \item{loading the report specific parameters from the associated 'config' file
-#' (see the \code{\link{getParamsFromConfig}} function)}
-#' \item{if the template should be extracted from a specified package
+#' \item loading the report specific parameters from the associated 'config' file
+#' (see the \code{\link{getParamsFromConfig}} function)
+#' \item if the template should be extracted from a specified package
 #' (\code{templatePackage} tag), this template is copied to the
 #' current directory.
 #' Please note that if a file with same name is available in
 #' the working directory, this file will be overwritten.
-#' }
-#' \item{running the report ('template' tag) with the associated
+#' \item running the report ('template' tag) with the associated
 #' parameters in a \strong{new R session for reproducibility}, 
 #' to obtain the associated Markdown file.\cr
 #' This step is parallelized across the different config files, if the 
-#' \code{nCores} parameter is specified.}
-#' }}
-#' \item{checking if the associated \code{Markdown} and \code{rds} file
-#' (list of Js dependencies) are available in \code{intermediateDir}}
-#' \item{split each chapter into separated Markdown documents, 
+#' \code{nCores} parameter is specified.
+#' }
+#' \item checking if the associated \code{Markdown} and \code{rds} file
+#' (list of Js dependencies) are available in \code{intermediateDir}
+#' \item split each chapter into separated Markdown documents, 
 #' based on the \code{split_by} parameter 
-#' (specified at the report or config level)}
-#' \item{conversion of each Markdown document to an HTML document. \cr
+#' (specified at the report or config level)
+#' \item conversion of each Markdown document to an HTML document. \cr
 #' This step is parallelized across the different Markdown documents, if the 
-#' \code{nCores} parameter is specified.}
-#' \item{build the book: }{
+#' \code{nCores} parameter is specified.
+#' \item build the book: 
 #' \enumerate{
-#' \item{creation of a common TOC for the book}
-#' \item{inclusion of the TOC in each Markdown file}
-#' \item{update of the section number in each chapter}
-#' \item{inclusion of the section number in each HTML file name}
-#' }}
+#' \item creation of a common TOC for the book
+#' \item inclusion of the TOC in each Markdown file
+#' \item update of the section number in each chapter
+#' \item inclusion of the section number in each HTML file name
+#' }
 #' }
 #' If the execution of a specific report fails with error, 
 #' a warning message is triggered. A report containing
@@ -62,13 +61,12 @@
 #' @param configFiles (optional) Character vector with specific config files
 #' to be converted from Rmarkdown to Markdown. If
 #' \itemize{
-#' \item{not specified (by default): }{all config files
-#' specified in the general 'config.yml' will be run (Rmd -> md)}
-#' \item{specified (\strong{expert use only}): }{only the specified files will be run (Rmd -> md).
-#' Other config files mentioned in the general 
+#' \item not specified (by default): all config files
+#' specified in the general 'config.yml' will be run (Rmd -> md)
+#' \item specified (\strong{expert use only}): only the specified files will 
+#' be run (Rmd -> md). Other config files mentioned in the general 
 #' 'config.yml' file won't be rerun, so the associated 'md' file
 #' should be already available in the \code{intermediateDir} folder.
-#' }
 #' }
 #' @param quiet Logical, if TRUE (FALSE by default)
 #' messages during the execution of each report are not displayed
@@ -400,8 +398,8 @@ checkReportTitles <- function(
 #' (1 by default). If more than 1, two steps of the report creation are 
 #' run in parallel across chapters: 
 #' \itemize{
-#' \item{the rendering of the Rmarkdown file to Markdown}
-#' \item{the conversion from Markdown to HTML}
+#' \item the rendering of the Rmarkdown file to Markdown
+#' \item the conversion from Markdown to HTML
 #' }
 #' @param verbose Logical, if TRUE (FALSE by default) progress messages are printed
 #' during the report execution.

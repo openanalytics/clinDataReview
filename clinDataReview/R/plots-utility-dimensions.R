@@ -69,20 +69,19 @@ getDimGgplot <- function(gg){
 #' for a plot in the package.
 #' This includes:
 #' \itemize{
-#' \item{setting a default width for a figure to 
-#' fit in a standard clinical data review report}
-#' \item{increasing the figure height:}{
+#' \item setting a default width for a figure to 
+#' fit in a standard clinical data review report
+#' \item increasing the figure height:
 #' \itemize{
-#' \item{for facetted plot, ensuring that each 
-#' facet is relatively squared}
-#' \item{if a caption, subtitle, title, title
-#' for the x-axis are specified}
-#' \item{if a legend is set at the bottom or the top
-#' of the plot}
+#' \item for facetted plot, ensuring that each 
+#' facet is relatively squared
+#' \item if a caption, subtitle, title, title
+#' for the x-axis are specified
+#' \item if a legend is set at the bottom or the top
+#' of the plot
 #' }
-#' \item{increasing the figure width if a legend
-#' is set at the left or the right of the plot}
-#' }
+#' \item increasing the figure width if a legend
+#' is set at the left or the right of the plot
 #' }
 #' @param gg \code{\link[ggplot2]{ggplot}}
 #' @param nrow single-length integer specifying the 
@@ -192,20 +191,19 @@ getSizePlot <- function(
 #' 
 #' The elements are positioned as following:
 #' \itemize{
-#' \item{on top of the plot}{
+#' \item on top of the plot
 #' \enumerate{
-#' \item{title}
-#' \item{subtitle}
-#' \item{legend, if positioned on top of the plot}
-#' \item{facet title}
-#' }}
-#' \item{at the bottom of the plot}{
+#' \item title
+#' \item subtitle
+#' \item legend, if positioned on top of the plot
+#' \item facet title
+#' }
+#' \item at the bottom of the plot
 #' \enumerate{
-#' \item{label for the x-axis}
-#' \item{legend, if positioned on the bottom
-#' of the plot}
-#' \item{caption}
-#' }}
+#' \item label for the x-axis
+#' \item legend, if positioned on the bottom of the plot
+#' \item caption
+#' }
 #' }
 #' Margins are computed based on the presence
 #' of these elements.\cr
@@ -215,25 +213,23 @@ getSizePlot <- function(
 #' @inheritParams getSizePlot
 #' @return List with:
 #' \itemize{
-#' \item{'margin': }{List with bottom ('t') and top ('t')
-#' margins in pixels}
-#' \item{'position': }{List with position
-#' of the following plot elements:
+#' \item 'margin': List with bottom ('t') and top ('t') margins in pixels
+#' \item 'position': List with position of the following plot elements:
 #' \itemize{
-#' \item{on top of the plot: subtitle and legend
+#' \item on top of the plot: subtitle and legend
 #' (if positioned at the top).\cr
 #' The position is defined as the distance in pixels
 #' from the top of the plotting area to the bottom
-#' of the element (\code{yanchor = 'bottom'})}
-#' \item{at the bottom of the plot: caption, xLab
+#' of the element (\code{yanchor = 'bottom'})
+#' \item at the bottom of the plot: caption, xLab
 #' and legend (if positioned at the bottom).\cr
 #' The position is defined as the distance in pixels
 #' from the bottom of the plotting area to the top
 #' of the element (\code{yanchor = 'top'})\cr
 #' Especially, the legend should be positioned with
 #' anchor 'top' such as the margins are automatically
-#' expanded if the legend contains multiple rows.}
-#' }}
+#' expanded if the legend contains multiple rows.
+#' }
 #' }
 #' @author Laure Cougnaud
 getPositionAndMargins <- function(

@@ -32,11 +32,11 @@ getExtraDirs <- function(
 #' 
 #' The name of the \code{Markdown} file is based on:
 #' \itemize{
-#' \item{for the general \code{config.yml} file: }{
-#' the basename of the specified \code{indexPath}}
-#' \item{for other config file (each sub-report): }{
+#' \item for the general \code{config.yml} file: 
+#' the basename of the specified \code{indexPath}
+#' \item for other config file (each sub-report): 
 #' the name of the config file, after removal of the
-#' '\code{config-}' part.}
+#' '\code{config-}' part.
 #' }
 #' @param configFiles Character vector with name or path of the config file(s).
 #' @inheritParams clinDataReview-common-args-report

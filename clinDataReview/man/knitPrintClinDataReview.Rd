@@ -12,12 +12,12 @@ knitPrintClinDataReview(list, sep = ".", level = 1)
 the names are used for the section header.
 If several section header should be created, either:
 \itemize{
-\item{a list of level 1 named by the different group elements,
+\item a list of level 1 named by the different group elements,
 separated by \code{sep}, e.g. 
 \code{list('group1.param1' = .., 'group1.param2' = ...)}.
-Such list is e.g. created with \code{\link[plyr]{dlply}}.}
-\item{a nested list, named with the different groups,
-e.g. created with \code{lapply}}
+Such list is e.g. created with \code{\link[plyr]{dlply}}.
+\item a nested list, named with the different groups,
+e.g. created with \code{lapply}
 }}
 
 \item{sep}{String with separator used to distinguish 

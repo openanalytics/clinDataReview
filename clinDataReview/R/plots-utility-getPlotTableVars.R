@@ -9,8 +9,8 @@
 #' in the plot template report.\cr
 #' The following framework is used:
 #' \itemize{
-#' \item{if variables to be displayed in the table (\code{tableVars})
-#' are not specified:\cr}{all variables displayed in the plot
+#' \item if variables to be displayed in the table (\code{tableVars})
+#' are not specified:\cr all variables displayed in the plot
 #' are selected, based on the plot arguments.\cr
 #'  For example: the variables
 #' displayed in the x and y axis and for coloring are extracted
@@ -18,12 +18,11 @@
 #' Label for these variable(s) are extracted from the associated parameter 
 #' (e.g. \code{xLab} for \code{xVar} and so on) or the general
 #' parameter for the variable labels (\code{labelVars}) if not specified.
-#' }
-#' \item{if variables to be displayed in the table (\code{tableVars})
-#' are specified:\cr}{these variable(s) are returned.\cr
+#' \item if variables to be displayed in the table (\code{tableVars})
+#' are specified:\cr these variable(s) are returned.\cr
 #' The associated label(s) are extracted from the associated 
 #' parameter (\code{tableLab}) or the general
-#' parameter for the variable labels (\code{labelVars}) if not specified.}
+#' parameter for the variable labels (\code{labelVars}) if not specified.
 #' }
 #' For the functions: \code{\link{plotCountClinData}}, 
 #' \code{\link{treemapClinData}}, \code{\link{sunburstClinData}}:
@@ -34,11 +33,10 @@
 #' @return Character vector with variable to include in the table,
 #' with extra attributes (passed to \code{\link{tableClinData}}): 
 #' \itemize{
-#' \item{'tableLab': }{Named character vector with labels 
-#' for the table variables}
-#' \item{'tablePars' :}{extra table parameters, only
-#' included if specified as input or specified internally.
-#' }
+#' \item 'tableLab': Named character vector with labels 
+#' for the table variables
+#' \item 'tablePars' : extra table parameters, only included if specified as 
+#' input or specified internally.
 #' }
 #' labels and the table parameters .
 #' @author Laure Cougnaud

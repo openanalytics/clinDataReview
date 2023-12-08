@@ -41,44 +41,41 @@ among: 'top'/'left'/'bottom'/'right', 'right' by default.}
 \value{
 List with:
 \itemize{
-\item{'margin': }{List with bottom ('t') and top ('t')
-margins in pixels}
-\item{'position': }{List with position
-of the following plot elements:
+\item 'margin': List with bottom ('t') and top ('t') margins in pixels
+\item 'position': List with position of the following plot elements:
 \itemize{
-\item{on top of the plot: subtitle and legend
+\item on top of the plot: subtitle and legend
 (if positioned at the top).\cr
 The position is defined as the distance in pixels
 from the top of the plotting area to the bottom
-of the element (\code{yanchor = 'bottom'})}
-\item{at the bottom of the plot: caption, xLab
+of the element (\code{yanchor = 'bottom'})
+\item at the bottom of the plot: caption, xLab
 and legend (if positioned at the bottom).\cr
 The position is defined as the distance in pixels
 from the bottom of the plotting area to the top
 of the element (\code{yanchor = 'top'})\cr
 Especially, the legend should be positioned with
 anchor 'top' such as the margins are automatically
-expanded if the legend contains multiple rows.}
-}}
+expanded if the legend contains multiple rows.
+}
 }
 }
 \description{
 The elements are positioned as following:
 \itemize{
-\item{on top of the plot}{
+\item on top of the plot
 \enumerate{
-\item{title}
-\item{subtitle}
-\item{legend, if positioned on top of the plot}
-\item{facet title}
-}}
-\item{at the bottom of the plot}{
+\item title
+\item subtitle
+\item legend, if positioned on top of the plot
+\item facet title
+}
+\item at the bottom of the plot
 \enumerate{
-\item{label for the x-axis}
-\item{legend, if positioned on the bottom
-of the plot}
-\item{caption}
-}}
+\item label for the x-axis
+\item legend, if positioned on the bottom of the plot
+\item caption
+}
 }
 Margins are computed based on the presence
 of these elements.\cr

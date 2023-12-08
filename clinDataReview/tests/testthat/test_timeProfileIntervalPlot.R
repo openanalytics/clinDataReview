@@ -176,9 +176,8 @@ test_that("A selection variable is correctly included in the time interval plot"
   expect_length(res$buttons, 1)
   
   # check button values
-  buttonData <- jsonlite::fromJSON(
-    txt = rapply(res$buttons[[1]], function(x) x, class = "json")
-  )
+  btnScriptTag <- htmltools::tagQuery(res$buttons)$find("script")$selectedTags()
+  buttonData <- jsonlite::fromJSON(txt = as.character(btnScriptTag[[1]]$children))
   expect_equal(object = buttonData$items$value, expected = levels(data$group))
   
 })

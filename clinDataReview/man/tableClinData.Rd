@@ -40,11 +40,11 @@ with path to the subject-specific report, formatted as: \cr
 If multiple, they should be separated by: ', '.\cr
 The report(s) will be:
 \itemize{
-\item{compressed to a zip file and downloaded 
+\item compressed to a zip file and downloaded 
 if the user clicks on the 'p' (a.k.a 'profile') key
-when hovering on a point of the plot}
-\item{included in a collapsible row, and clickable with hyperlinks
-in the table}
+when hovering on a point of the plot
+\item included in a collapsible row, and clickable with hyperlinks
+in the table
 }}
 
 \item{pathLab}{String with label for \code{pathVar},
@@ -69,8 +69,8 @@ the table is included within an HTML button.}
 
 \item{id}{String with general id for the plot:
 \itemize{
-\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+\item 'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}
+\item 'button:[id]' is used as button ID if \code{table} is TRUE
 }
 If not specified, a random id, as 'plotClinData[X]' is used.}
 

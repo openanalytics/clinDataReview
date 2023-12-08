@@ -1,8 +1,10 @@
-1.4.0.9000
+1.5.0
   o scatterplot: 
     - support non character axis transformation
     - support 'colour' (UK English spelling)
     - new highlight box for id variable (idHighlightBox)
+  o doc: remove description-like items in itemize (R-devel 11/10/2023)
+  o tests - selection variable: fix for crosstalk 1.2.1
 1.4.0
   o option to convert reports to .aspx reports to facilitate deployment on sharepoint
   o timeProfileInterval fix no error when duplicate columns are included 

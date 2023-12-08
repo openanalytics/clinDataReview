@@ -73,20 +73,19 @@ This function set sensitive defaults dimensions
 for a plot in the package.
 This includes:
 \itemize{
-\item{setting a default width for a figure to 
-fit in a standard clinical data review report}
-\item{increasing the figure height:}{
+\item setting a default width for a figure to 
+fit in a standard clinical data review report
+\item increasing the figure height:
 \itemize{
-\item{for facetted plot, ensuring that each 
-facet is relatively squared}
-\item{if a caption, subtitle, title, title
-for the x-axis are specified}
-\item{if a legend is set at the bottom or the top
-of the plot}
+\item for facetted plot, ensuring that each 
+facet is relatively squared
+\item if a caption, subtitle, title, title
+for the x-axis are specified
+\item if a legend is set at the bottom or the top
+of the plot
 }
-\item{increasing the figure width if a legend
-is set at the left or the right of the plot}
-}
+\item increasing the figure width if a legend
+is set at the left or the right of the plot
 }
 }
 \author{

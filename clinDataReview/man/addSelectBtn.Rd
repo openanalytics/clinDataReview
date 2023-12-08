@@ -29,8 +29,8 @@ displayed in the plot (and associated table).}
 
 \item{id}{String with general id for the plot:
 \itemize{
-\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+\item 'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}
+\item 'button:[id]' is used as button ID if \code{table} is TRUE
 }
 If not specified, a random id, as 'plotClinData[X]' is used.}
 

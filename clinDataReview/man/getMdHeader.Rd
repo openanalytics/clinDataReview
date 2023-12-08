@@ -19,10 +19,10 @@ to be included in R within \code{cat}.
 \description{
 The depth is extracted:
 \enumerate{
-\item{from the \code{settings} if a
+\item from the \code{settings} if a
 specified depth is provided in the 'rmd_file_depth' for the
-current knitted file}
-\item{\code{level} parameter otherwise}
+current knitted file
+\item \code{level} parameter otherwise
 }
 }
 \seealso{

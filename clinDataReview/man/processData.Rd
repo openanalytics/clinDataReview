@@ -14,9 +14,9 @@ Each element in the list should be a named list containing the parameters
 for the specific processing function. The name specifies the processing
 step, among: 
 \itemize{
-\item{'annotate' for \code{\link{annotateData}} (\code{annotations} parameter)}
-\item{'filter' for \code{\link{filterData}} (\code{filters} parameter)}
-\item{'transform' for \code{\link{transformData}} (\code{transformations} parameter)}
+\item 'annotate' for \code{\link{annotateData}} (\code{annotations} parameter)
+\item 'filter' for \code{\link{filterData}} (\code{filters} parameter)
+\item 'transform' for \code{\link{transformData}} (\code{transformations} parameter)
 }
 Multiple steps of each kind can be specified after each other (e.g. 1: filter,
 2: transform,  3: filter, ...).\cr

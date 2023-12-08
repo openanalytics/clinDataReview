@@ -21,53 +21,49 @@ annotateData(
 
 \item{annotations}{Annotations (or list of those) either as a:
 \itemize{
-\item{string with standard annotation type, among:
+\item string with standard annotation type, among:
 \itemize{
-\item{demographics: }{standard variables from the demographics data (DM or ADSL) are extracted}
-\item{exposed_subjects: }{a logical variable: \code{EXFL} is added to \code{data},
+\item demographics: standard variables from the demographics data (DM or ADSL) are extracted
+\item exposed_subjects: a logical variable: \code{EXFL} is added to \code{data},
 identifying exposed subjects, i.e. subjects included in the exposure dataset (EX/ADEX)
-dataset and with non empty and non missing start date ('EXSTDTC', 'STDY' or 'ASTDY')}
-\item{functional_groups_lab: }{a character variable: 'LBFCTGRP' is added to \code{data}
-based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)}
+dataset and with non empty and non missing start date ('EXSTDTC', 'STDY' or 'ASTDY')
+\item functional_groups_lab: a character variable: 'LBFCTGRP' is added to \code{data}
+based on standard naming of the parameter code ('PARAMCD' or 'LBTESTCD' variable)
 }
+\item list of custom annotation, with:
+\itemize{
+\item (optional) annotation dataset, either:
+\itemize{
+\item 'dataset': String with name of the annotation dataset,
+ e.g. 'ex' to import data from the file: '[dataset].sas7bdat'in \code{dataPath}
+\item 'data': Data.frame with annotation dataset
 }
-\item{list of custom annotation, with:
+The input \code{data} is used if 'data' and 'dataset' are not specified.
+\item 'vars': Either:
 \itemize{
-\item{(optional) annotation dataset, either:
-\itemize{
-\item{'dataset': }{String with name of the annotation dataset,
- e.g. 'ex' to import data from the file: '[dataset].sas7bdat'in \code{dataPath}}
-\item{'data': }{Data.frame with annotation dataset}
+\item Character vector with variables of interest from annotation dataset.
+If not specified, all variables of the dataset are considered.
+\item String with new variable name computed from \code{varFct}
 }
-The input \code{data} is used if 'data' and 'dataset' are not specified.}
-\item{'vars': }{Either:
+\item 'varFct': (optional) Either:
 \itemize{
-\item{Character vector with variables of interest from annotation dataset.
-If not specified, all variables of the dataset are considered.}
-\item{String with new variable name computed from \code{varFct}}
-}}
-\item{'varFct': }{(optional) Either:
-\itemize{
-\item{function of \code{data} or string containing such function (e.g. 'function(data) ...')}
-\item{string containing manipulations from column names of \code{data} (e.g. 'col1 + col2')}
+\item function of \code{data} or string containing such function (e.g. 'function(data) ...')
+\item string containing manipulations from column names of \code{data} (e.g. 'col1 + col2')
 }
- used to create a new variable specified in \code{vars}.}
-\item{'filters': }{(optional) Filters for the \strong{annotation dataset}, 
+ used to create a new variable specified in \code{vars}.
+\item 'filters': (optional) Filters for the \strong{annotation dataset}, 
 see \code{filters} parameter of \code{\link{filterData}}.\cr
 The annotation dataset is first filtered, before being combined to the 
 input \code{data}, such as only the records retained in the annotation dataset
 will be annotated in the output \code{data}. Other records will 
 have missing values in the annotated variables.
-}
-\item{'varLabel': }{(optional) label for new variable in case \code{varFct} is specified.}
-\item{'varsBy': }{(optional) Character vector with variables used to merge input data and
+\item 'varLabel': (optional) label for new variable in case \code{varFct} is specified.
+\item 'varsBy': (optional) Character vector with variables used to merge input data and
 the annotation dataset. If not specified:
 \itemize{
-\item{if an external dataset (\code{dataset}/\code{data}) is specified:}{
-\code{subjectVar} is used}
-\item{otherwise: }{annotation dataset and input data are merged by rows IDs}
-}
-}
+\item if an external dataset (\code{dataset}/\code{data}) is specified:
+\code{subjectVar} is used
+\item otherwise: annotation dataset and input data are merged by rows IDs
 }
 }
 }}

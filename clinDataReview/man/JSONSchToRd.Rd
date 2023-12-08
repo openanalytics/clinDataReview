@@ -24,22 +24,23 @@ required by the templates of the package are implemented.
 \section{Supported JSON schema tags}{
  
 \itemize{
-\item{'title' is used as Rd section header}
-\item{'description' is included in the text}
-\item{parameters are extracted from the following 'properties' tag: }{
+\item 'title' is used as Rd section header
+\item 'description' is included in the text
+\item parameters are extracted from the following 'properties' tag: 
 \itemize{
-\item{'type': }{object type}
-\item{'doc': }{documentation for the parameter (custom JSON schema tag).
-This can contain any Roxygen tags, e.g.: \verb{\link[package]{function}}}.
-\item{'pattern' (optional): }{required value for the parameter}
-\item{'items' (optional): }{JSON schema for the different elements of an 'object'}
-\item{'minItems'/'maxItems' (optional): }{minimum/maximum number of elements in an 'array'}
-\item{'enum' (optional): }{set of possible values}
-\item{'const' (optional): }{fixed value for the parameter (a.k.a 'constant')}
+\item 'type': object type
+\item 'doc': documentation for the parameter (custom JSON schema tag).
+This can contain any Roxygen tags, e.g.: \verb{\link[package]{function}}.
+\item 'pattern' (optional): required value for the parameter
+\item 'items' (optional): JSON schema for the different elements of an 
+'object'
+\item 'minItems'/'maxItems' (optional): minimum/maximum number of elements 
+in an 'array'
+\item 'enum' (optional): set of possible values
+\item 'const' (optional): fixed value for the parameter (a.k.a 'constant')
 }
 If a parameter is required, it should be listed in the 'required'
 tag of the schema (outside of the 'properties' tag).
-}
 }
 }
 

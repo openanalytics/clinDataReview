@@ -32,11 +32,11 @@ with path to the subject-specific report, formatted as: \cr
 If multiple, they should be separated by: ', '.\cr
 The report(s) will be:
 \itemize{
-\item{compressed to a zip file and downloaded 
+\item compressed to a zip file and downloaded 
 if the user clicks on the 'p' (a.k.a 'profile') key
-when hovering on a point of the plot}
-\item{included in a collapsible row, and clickable with hyperlinks
-in the table}
+when hovering on a point of the plot
+\item included in a collapsible row, and clickable with hyperlinks
+in the table
 }}
     \item{\code{pathLab}}{String with label for \code{pathVar},
 included in the collapsible row in the table.}
@@ -44,20 +44,10 @@ included in the collapsible row in the table.}
 returns also a \code{datatable} containing the plot data.
 (The plot and the table are not linked.)}
     \item{\code{data}}{Data.frame with data.}
-    \item{\code{colorLab}}{String with label for \code{colorVar}.}
-    \item{\code{colorPalette}}{(optional) Named character vector with color palette.
-If not specified, the viridis color palette is used.\cr
-See \code{\link[clinUtils]{clinColors}}.}
-    \item{\code{titleExtra}}{String with extra title for the plot (appended after \code{title}).}
-    \item{\code{title}}{String with title for the plot.}
-    \item{\code{subtitle}}{String with subtitle.\cr
-The subtitle is included at the top left of the plot,
-below the title.}
-    \item{\code{caption}}{String with caption. \cr
-The caption is included at the bottom right of the plot.
-Please note that this might overlap with 
-vertical or rotated x-axis labels.}
-    \item{\code{labelVars}}{Named character vector containing variable labels.}
+    \item{\code{verbose}}{Logical, if TRUE (FALSE by default) progress messages are printed
+in the current console.
+For the visualizations, progress messages during download
+of subject-specific report are displayed in the browser console.}
     \item{\code{width}}{Numeric, width of the plot in pixels,
 700 by default.}
     \item{\code{height}}{Numeric, height of the plot in pixels,
@@ -65,22 +55,32 @@ vertical or rotated x-axis labels.}
     \item{\code{hoverVars}}{Character vector with variable(s) to be displayed in the hover,
 by default any position and aesthetic variables displayed in the plot.}
     \item{\code{hoverLab}}{Named character vector with labels for \code{hoverVars}.}
+    \item{\code{labelVars}}{Named character vector containing variable labels.}
     \item{\code{id}}{String with general id for the plot:
 \itemize{
-\item{'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}}
-\item{'button:[id]' is used as button ID if \code{table} is TRUE}
+\item 'id' is used as \code{group} for the \code{\link[crosstalk]{SharedData}}
+\item 'button:[id]' is used as button ID if \code{table} is TRUE
 }
 If not specified, a random id, as 'plotClinData[X]' is used.}
-    \item{\code{verbose}}{Logical, if TRUE (FALSE by default) progress messages are printed
-in the current console.
-For the visualizations, progress messages during download
-of subject-specific report are displayed in the browser console.}
+    \item{\code{title}}{String with title for the plot.}
+    \item{\code{titleExtra}}{String with extra title for the plot (appended after \code{title}).}
+    \item{\code{caption}}{String with caption. \cr
+The caption is included at the bottom right of the plot.
+Please note that this might overlap with 
+vertical or rotated x-axis labels.}
+    \item{\code{subtitle}}{String with subtitle.\cr
+The subtitle is included at the top left of the plot,
+below the title.}
+    \item{\code{colorLab}}{String with label for \code{colorVar}.}
+    \item{\code{colorPalette}}{(optional) Named character vector with color palette.
+If not specified, the viridis color palette is used.\cr
+See \code{\link[clinUtils]{clinColors}}.}
+    \item{\code{tableButton}}{Logical, if TRUE (by default)
+the table is included within an HTML button.}
     \item{\code{tableVars}}{Character vector with variables to be included 
 in the table.}
     \item{\code{tableLab}}{Named character vector with labels
 for each \code{tableVars}.}
-    \item{\code{tableButton}}{Logical, if TRUE (by default)
-the table is included within an HTML button.}
     \item{\code{tablePars}}{List with parameters passed to the
 \code{\link[clinUtils]{getClinDT}} function.}
   }}
@@ -88,11 +88,10 @@ the table is included within an HTML button.}
 \value{
 Either:
 \itemize{
-\item{if a \code{table} is requested: }{
-a \code{clinDataReview} object, a.k.a a list with the 
-'plot' (\code{\link[plotly]{plotly}} object) and 'table'
-(\code{\link[DT]{datatable}} object)}
-\item{otherwise: }{a \code{\link[plotly]{plotly}} object}
+\item if a \code{table} is requested: a \code{clinDataReview} object, 
+a.k.a a list with the 'plot' (\code{\link[plotly]{plotly}} object) and 'table'
+(\code{\link[DT]{datatable}} object)
+\item otherwise: a \code{\link[plotly]{plotly}} object
 }
 }
 \description{

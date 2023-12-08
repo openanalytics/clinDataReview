@@ -44,8 +44,8 @@
 #' Please note that the same limits are set for all facets.
 #' @param facetType String with facetting type, either:
 #' \itemize{
-#' \item{'wrap': }{\code{\link[ggplot2]{facet_wrap}}}
-#' \item{'grid': }{\code{\link[ggplot2]{facet_grid}}}
+#' \item 'wrap': \code{\link[ggplot2]{facet_wrap}}
+#' \item 'grid': \code{\link[ggplot2]{facet_grid}}
 #' }
 #' @param themePars List with general theme parameters 
 #' (see \code{\link[ggplot2]{theme}}).
@@ -53,8 +53,8 @@
 #' by default \code{xVar}, \code{yVar} and any aesthetic variables.
 #' @param geomType String with type of the geom used, either:
 #' \itemize{
-#' \item{'point': }{scatterplot with \code{\link[ggplot2]{geom_point}} is created}
-#' \item{'col': }{barplot with \code{\link[ggplot2]{geom_col}} is created}
+#' \item 'point': scatterplot with \code{\link[ggplot2]{geom_point}} is created
+#' \item 'col': barplot with \code{\link[ggplot2]{geom_col}} is created
 #' }
 #' @inheritParams clinDataReview-common-args
 #' @inheritParams setPaletteStaticScatterplotClinData

@@ -5,8 +5,8 @@ pipeline {
     }
     environment {
         IMAGE = 'clindatareview'
-        NS = 'clindatareview'
-        REGISTRY = '196229073436.dkr.ecr.eu-west-1.amazonaws.com'
+        NS = 'shared'
+        REGISTRY = 'registry.openanalytics.eu'
         TAG = sh(returnStdout: true, script: "echo $BRANCH_NAME | sed -e 's/[A-Z]/\\L&/g' -e 's/[^a-z0-9._-]/./g'").trim()
         REGION = 'eu-west-1'
         NOT_CRAN = 'true'
@@ -19,9 +19,15 @@ pipeline {
                     apiVersion: v1
                     kind: Pod
                     spec:
+                      imagePullSecrets:
+                        - name: registry-robot
+                      volumes:
+                        - name: kaniko-dockerconfig
+                          secret:
+                            secretName: registry-robot
                       containers:
                       - name: kaniko
-                        image: gcr.io/kaniko-project/executor:v1.5.2-debug
+                        image: gcr.io/kaniko-project/executor:v1.9.1-debug
                         env:
                         - name: AWS_SDK_LOAD_CONFIG
                           value: "true"
@@ -32,31 +38,19 @@ pipeline {
                         resources:
                           requests:
                               memory: "2Gi"
-                              ephemeral-storage: "5Gi"
                           limits:
                               memory: "6Gi"
                               ephemeral-storage: "10Gi"
                         imagePullPolicy: Always
-                      - name: aws-cli
-                        image: amazon/aws-cli:2.1.33
-                        command:
-                        - cat
-                        tty: true
-                        resources:
-                          requests:
-                              memory: "100Mi"
-                          limits:
-                              memory: "1024Mi"'''
+                        volumeMounts:
+                          - name: kaniko-dockerconfig
+                            mountPath: /kaniko/.docker/config.json
+                            subPath: .dockerconfigjson
+                    '''
                     defaultContainer 'kaniko'
                 }
             }
             steps {
-                container('aws-cli') {
-                    sh """aws --region ${env.REGION} ecr describe-repositories \
-                    	--repository-names ${env.NS}/${env.IMAGE} \
-                    	|| aws --region ${env.REGION} ecr create-repository \
-                    	--repository-name ${env.NS}/${env.IMAGE}"""
-                }
                 container('kaniko') {
                     sh """/kaniko/executor \
                     	-v info \
@@ -77,6 +71,8 @@ pipeline {
                     apiVersion: v1
                     kind: Pod
                     spec:
+                      imagePullSecrets:
+                        - name: registry-robot
                       containers:
                       - name: r
                         image: ${env.REGISTRY}/${env.NS}/${env.IMAGE}:${env.TAG}
@@ -126,9 +122,7 @@ pipeline {
                                     sh '''R -q -e \'code <- "testthat::test_package(\\"clinDataReview\\", reporter = testthat::MultiReporter$new(list(testthat::SummaryReporter$new(file = file.path(getwd(), \\"test-results.txt\\")), testthat::JunitReporter$new(file = file.path(getwd(), \\"results.xml\\")))))"
                                     packageCoverage <- covr::package_coverage(type = "none", code = code)
                                     cat(readLines(file.path(getwd(), "test-results.txt")), sep = "\n")
-                                    covr::report(x = packageCoverage, file = paste0("testCoverage-", attr(packageCoverage, "package")$package, "-", attr(packageCoverage, "package")$version, ".html"));
                                     covr::to_cobertura(packageCoverage)\''''
-                                    sh 'zip -r testCoverage.zip lib/ testCoverage*.html'
                                 }
                             }
                             post {
@@ -144,7 +138,7 @@ pipeline {
                 }
                 stage('Archive artifacts') {
                     steps {
-                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, test-results.txt, testCoverage.zip', fingerprint: true
+                        archiveArtifacts artifacts: '*.tar.gz, *.pdf, **/00check.log, test-results.txt', fingerprint: true
                     }
                 }
             }

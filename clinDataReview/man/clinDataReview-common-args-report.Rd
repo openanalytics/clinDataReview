@@ -45,8 +45,8 @@ If specified, the entire output is re-directed to this file.}
 (1 by default). If more than 1, two steps of the report creation are 
 run in parallel across chapters: 
 \itemize{
-\item{the rendering of the Rmarkdown file to Markdown}
-\item{the conversion from Markdown to HTML}
+\item the rendering of the Rmarkdown file to Markdown
+\item the conversion from Markdown to HTML
 }}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed

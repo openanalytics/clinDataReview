@@ -5,8 +5,8 @@
 #' @inheritParams clinDataReview-common-args
 #' @return Data.frame with limits of the:
 #' \itemize{
-#' \item{x-axis: }{'xmin'/'xmax'}
-#' \item{y-axis: }{'ymin'/'ymax'}
+#' \item x-axis: 'xmin'/'xmax'
+#' \item y-axis: 'ymin'/'ymax'
 #' }
 #' for each element of the facetting variable (if any).
 #' @importFrom plyr ddply rbind.fill

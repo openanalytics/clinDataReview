@@ -4,8 +4,8 @@
 #' of a continuous variable with (confidence) intervals.\cr
 #' The intervals are either displayed:
 #' \itemize{
-#' \item{vertically if \code{yErrorVar} is specified}
-#' \item{horizontally if \code{xErrorVar} is specified}
+#' \item vertically if \code{yErrorVar} is specified
+#' \item horizontally if \code{xErrorVar} is specified
 #' }
 #' Error bars can visualized by group, via the color variable parameter.\cr
 #' Different symbols are set for each central point of the error bar

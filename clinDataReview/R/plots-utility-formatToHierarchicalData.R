@@ -10,15 +10,15 @@
 #' @return Updated data.frame with \code{vars} in 
 #' hierarchical format, with extra attributes (in 'metadat'):
 #' \itemize{
-#' \item{'varID': }{String with column of output
+#' \item 'varID':  String with column of output
 #' containing ID of specific element.\cr
 #' This is a combination from the specified \code{vars},
-#' or 'Overall' for the grand total.}
-#' \item{'varParent': }{String with column of output
-#' containing ID of the parent element}
-#' \item{'varLabel': }{String with column of output
+#' or 'Overall' for the grand total.
+#' \item 'varParent': String with column of output
+#' containing ID of the parent element
+#' \item 'varLabel': String with column of output
 #' containing the label to display.\cr
-#' This is usually the name of the child element.}
+#' This is usually the name of the child element.
 #' }
 #' @importFrom utils head tail capture.output
 #' @importFrom plyr colwise

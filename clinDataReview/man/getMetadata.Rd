@@ -17,9 +17,9 @@ The renaming happens only if the metadata info are printed in Rmd and not in the
 \value{
 A list of:
 \itemize{
-\item{\code{summaryInfo}}{ Information extracted from the inputs 
-\code{path}, and \code{dateTime}.}
-\item{\code{datasetInfo}}{ Information extracted from \code{datasetInfo}.}
+\item \code{summaryInfo} Information extracted from the inputs 
+\code{path}, and \code{dateTime}.
+\item \code{datasetInfo} Information extracted from \code{datasetInfo}.
 }
 }
 \description{
@@ -27,12 +27,12 @@ Read the metadata file from a yaml format.
 This function checks for existance of the metadata file and its content.
 In particular, within the yaml file matches the following strings:
 \itemize{
-\item{\code{path}}{ Path to the data. More than one path is allowed.}
-\item{\code{dateTime}}{ Date and time, usually of the SDTM data creation. 
+\item \code{path}: Path to the data. More than one path is allowed.
+\item \code{dateTime}: Date and time, usually of the SDTM data creation. 
 When printing the metadata in Rmd document, there is the possibility to add
  the date and time of the report generation. 
-See \code{\link{knit_print.clinDataReviewMetadata}}. }
-\item{\code{datasetInfo}}{ General information about the data sets.}
+See \code{\link{knit_print.clinDataReviewMetadata}}.
+\item \code{datasetInfo}: General information about the data sets.
 }
 }
 \details{
