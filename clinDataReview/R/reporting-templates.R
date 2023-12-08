@@ -104,7 +104,7 @@ createTemplateDoc <- function(
 	
 	docRoxParType <- paste0(
 		"\\section{Parameter type}{Please note that the type mentioned below ",
-		"corresponds to the type in the config file (in YAML/JSON format).",
+		"corresponds to the type in the config file (in YAML/JSON format).\\cr\n",
 		"The mapping to R data type is as followed:",
 		"\\itemize{",
 		"\\item string: character vector of length 1",
@@ -255,14 +255,14 @@ JSONSchToRd <- function(JSONSch, title = NULL){
 			}else{
 				pDocEl <- getElement(param = jsonSchPropParam)
 			}
-			pDocVect <-c(pDocVect, pDocEl)
+			pDocVect <- c(pDocVect, pDocEl)
 			
 			# combine all elements to build the doc
 			pDocText <- paste(pDocVect, collapse = " ")
 			
 			# Rd doc
 			if(hasName(jsonSchPropParam, "doc"))	
-				pDocText <- paste0(pDocText, ",", jsonSchPropParam$doc)
+				pDocText <- paste0(pDocText, ", ", jsonSchPropParam$doc)
 					
 			pDocName <- paste0(
 				if(isRequired)	"\\strong{",

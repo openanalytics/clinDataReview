@@ -57,7 +57,7 @@
           "typePlot": {
             "type": "string",
             "enum": ["text", "line", "interval", "event"],
-            "doc": "plot type, used to get the appropriate plot module function: \\itemize{\\item{'text': }{\\link[patientProfilesVis]{subjectProfileTextPlot}}\\item{'line': }{\\link[patientProfilesVis]{subjectProfileLinePlot}}\\item{'interval': }{\\link[patientProfilesVis]{subjectProfileIntervalPlot}}\\item{'event': }{\\link[patientProfilesVis]{subjectProfileEventPlot}}}"
+            "doc": "plot type, used to get the appropriate plot module function: \\itemize{\\item{'text': \\link[patientProfilesVis]{subjectProfileTextPlot}}\\item{'line': \\link[patientProfilesVis]{subjectProfileLinePlot}}\\item{'interval': \\link[patientProfilesVis]{subjectProfileIntervalPlot}}\\item{'event': \\link[patientProfilesVis]{subjectProfileEventPlot}}}"
           },
           "dataFileName": {
             "type": "string",

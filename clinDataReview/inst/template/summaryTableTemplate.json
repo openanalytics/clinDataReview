@@ -70,9 +70,8 @@
     
     "comparisonTableType": {
       "type": "string",
-      "doc": "output type of the comparison table",
-      "enum": ["none", "table-comparison-interactive", "newData-diff", "table-combine"],
-      "doc": "\\itemize{\\item{'table-comparison-interactive': }{the summary statistics are computed for the old and new batch separately, and the statistics are compared}\\item{'newData-diff': }{the differences at a record level between the new and old batch are first identified, and then summarized}\\item{'table-combine': }{the summary tables are computed for the old and new batch and displayed next to each other in a combined table}}"
+      "doc": "output type of the comparison table: \\itemize{\\item{'table-comparison-interactive': the summary statistics are computed for the old and new batch separately, and the statistics are compared}\\item{'newData-diff': the differences at a record level between the new and old batch are first identified, and then summarized}\\item{'table-combine': the summary tables are computed for the old and new batch and displayed next to each other in a combined table}}",
+      "enum": ["none", "table-comparison-interactive", "newData-diff", "table-combine"]
     },
     "comparisonTableParams": {
       "type": "object",
