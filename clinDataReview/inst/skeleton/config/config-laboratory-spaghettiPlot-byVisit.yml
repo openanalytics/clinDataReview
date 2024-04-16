@@ -1,9 +1,9 @@
 # Report-specific parameters
 template: plotTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: Laboratory profiles by visit
+reportTitle: "Laboratory profiles by visit"
 reportTitleLevel: 2
-split_by: 3
+split_by: 4
 
 # Dataset of interest
 dataFileName: lb.xpt
@@ -13,16 +13,27 @@ dataProcessing:
       vars: ["RFXSTDTC", "ARM", "ARMCD"]
     - vars: VISIT
       varFct: reorder(VISIT, VISITNUM)
+    - vars: LBCAT
+      varFct: 'ifelse(LBCAT == "", "Not Coded", LBCAT)'
+    # combine parameter name and unit
+    - vars: LBTESTSP
+      varLabel: "Lab Test (Standard Units)"
+      varFct: paste0(LBTEST, " (", LBSTRESU, ")")
+      
   - filter:
     # safety analysis set: treated-patients
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+    # unscheduled visits
+    - var: "VISIT"
+      valueFct: 'function(x) grep("UNSCHEDULED|AMBUL|RETRIEVAL", x, value = TRUE)'
+      rev: true
 
-# Compute number of subjects by visit/treatment/parameter (without missing value)
+# Compute number of subjects by visit/treatment/parameter
 tableParams:
   var: LBSTRESN
-  rowVar: ["LBTEST", "VISIT"]
+  rowVar: ["LBTESTSP", "VISIT"]
   colVar: ["ARM", "ARMCD"]
   stats: 'n'
 tableProcessing:
@@ -31,7 +42,7 @@ tableProcessing:
       varFct: 'paste0(ARMCD, ": N = ", n)'
 
 # Looping parameters
-loopingVar: ["LBCAT", "LBTEST"]
+loopingVar: ["LBCAT", "LBTESTSP"]
 
 # Plot parameters
 plotFunction: "scatterplotClinData"
@@ -51,3 +62,4 @@ plotParams:
   themePars:
       legend.position: "none"
   width: 1000
+  subtitle: "Only scheduled visits are displayed."

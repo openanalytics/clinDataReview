@@ -1,0 +1,53 @@
+# Report-specific parameters
+template: summaryTableTemplate.Rmd
+templatePackage: clinDataReview
+reportTitleLevel: 2
+reportTitle: "Discontinuation table"
+
+# Dataset of interest
+dataFileName: "ds.xpt"
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC", "ARM"]
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true    
+    # only keep disposition events
+    - var: "DSCAT"
+      value: "DISPOSITION EVENT"
+  - annotate:
+    # Completers at Week 24
+    - dataset: suppdm
+      vars: "W24CMPLFL"
+      varFct: 'ifelse(QLABEL == "Completers of Week 24 Population Flag" & QVAL == "Y", "Y", "N")'
+      varLabel: 'Week 24 Completed'
+    # Completers at Week 26
+    - vars: "COMPLTFL"
+      varFct: 'ifelse(DSDECOD == "COMPLETED" & VISIT == "WEEK 26", "Y", "")'
+      varLabel: 'Week 26 Completed'
+    # Discontinuation
+    - vars: "DISCTFL"
+      varFct: 'ifelse(!DSDECOD %in% c("COMPLETED", "ADVERSE EVENT"), "Y", "N")'
+      varLabel: 'Discontinued'
+
+# Table parameters
+tableParams:
+  var: ["W24CMPLFL", "COMPLTFL", "DISCTFL"]
+  varFlag: ["W24CMPLFL", "COMPLTFL", "DISCTFL"]
+  colVar: "ARM"
+  colTotalInclude: true
+  stats: 'getStats(type = c("n", "%", "n (%)"))' 
+
+# for docx export (optional):
+tableParamsDocx:
+  file: summaryDisposition.docx
+  statsVar: "n (%)"
+  footer: "The percentages are calculated over the safety analysis set"
+# for interactive table
+tableParamsDT:
+  statsVar: ["n", "%"]
+  statsLayout: rowInSepCol # col by default for DT output
+  footer: "The percentages are calculated over the safety analysis set"

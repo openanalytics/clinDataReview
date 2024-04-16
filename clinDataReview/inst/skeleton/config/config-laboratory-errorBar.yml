@@ -1,0 +1,64 @@
+# Report-specific parameters
+template: summaryPlotTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: "Laboratory aggregate profiles"
+reportTitleLevel: 2
+split_by: 3
+
+# Dataset of interest
+dataFileName: lb.xpt
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC", "ARM", "ARMCD"]
+    - vars: VISIT
+      varFct: reorder(VISIT, VISITNUM)
+    - vars: LBCAT
+      varFct: 'ifelse(LBCAT == "", "Not Coded", LBCAT)'
+    # combine parameter name and unit
+    - vars: LBTESTSP
+      varLabel: "Lab Test (Standard Units)"
+      varFct: paste0(LBTEST, " (", LBSTRESU, ")")
+
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+    # missing value
+    - var: "LBSTRESN"
+      keepNA: false
+    # unscheduled visits
+    - var: "VISIT"
+      valueFct: 'function(x) grep("UNSCHEDULED|AMBUL|RETRIEVAL", x, value = TRUE)'
+      rev: true
+     
+# Looping parameters
+loopingVar: ["LBCAT", "LBTESTSP"]
+
+# Compute mean/SE/number of subjects by visit/treatment/parameter
+tableParams:
+  var: "LBSTRESN"
+  # checkVarDiffBySubj: warning
+  rowVar: ["LBCAT", "LBTESTSP", "VISIT"]
+  colVar: ["ARM", "ARMCD"]
+  stats: 'getStats(c("n", "Mean", "SD"))'
+  
+# Plot parameters
+plotFunction: 'errorbarClinData'
+plotParams:
+  title: "Mean and standard deviation versus visit"
+  caption: "Only scheduled visits are displayed."
+  xVar: "VISIT"
+  yVar: "statMean"
+  yErrorVar: "statSD"
+  mode: "markers+lines"
+  yLab: "Mean"
+  yErrorLab: "Standard Deviation"
+  colorVar: "ARM"
+  legendPosition: "top"
+  width: 800
+  
+  hoverVars: ["ARM", "VISIT", "n", "Mean", "SD"]
+  tableVars: ["LBCAT", "LBTESTSP", "ARM", "VISIT", "n", "Mean", "SD"]
+

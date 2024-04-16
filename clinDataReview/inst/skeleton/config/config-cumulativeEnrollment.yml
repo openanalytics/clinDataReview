@@ -2,7 +2,8 @@
 template: summaryPlotTemplate.Rmd
 templatePackage: clinDataReview
 reportTitleLevel: 2
-reportTitle: "Enrollment: cumulative number of randomizations"
+reportTitle: "Cumulative enrollment by date"
+
 # Dataset of interest
 dataFileName: "dm.xpt"
 dataProcessing:
@@ -11,6 +12,7 @@ dataProcessing:
     - var: "RFXSTDTC"
       value: ""
       rev: true
+      
 # Table parameters
 tableParams:
   var: RFXSTDTC
@@ -27,6 +29,8 @@ tableProcessing:
     - vars: RFXSTDTCDate
       varFct: 'as.Date(variableGroup)'
       varLabel: "Treatment Start Date"
+      
+# Plot parameters
 plotFunction: scatterplotClinData
 plotParams:
   xVar: "RFXSTDTCDate"
@@ -34,6 +38,3 @@ plotParams:
   lineInclude: TRUE
   themePars:
     legend.position: "none"
-
-    
-

@@ -1,0 +1,60 @@
+# Report-specific parameters
+template: summaryPlotTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: "Efficacy aggregate profiles"
+reportTitleLevel: 2
+
+# Dataset of interest
+dataFileName: qs.xpt
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC", "ARM", "ARMCD"]
+    - vars: VISIT
+      varFct: reorder(VISIT, VISITNUM)
+
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+    # unscheduled visits
+    - var: "VISIT"
+      valueFct: 'function(x) grep("UNSCHEDULED|AMBUL|RETRIEVAL|\\(T\\)", x, value = TRUE)'
+      rev: true
+    # parameters of interest (primary and secondary efficacy endpoints)
+    - var: "QSTESTCD"
+      value: ["ACTOT", "CIBIC", "NPTOT"]
+      
+loopingVar: ["QSCAT", "QSTEST"]
+
+# Compute mean/SE/number of subjects by visit/treatment/parameter
+tableParams:
+  var: "QSSTRESN"
+  # checkVarDiffBySubj: warning
+  rowVar: ["QSCAT", "QSTEST", "QSTESTCD", "VISIT"]
+  colVar: ["ARM", "ARMCD"]
+  stats: 'getStats(c("n", "Mean", "SD"))'
+tableProcessing:
+  - annotate:
+    - vars: ARMCD_n
+      varFct: 'paste0(ARMCD, ": N = ", n)'
+  
+plotFunction: 'errorbarClinData'
+
+plotParams:
+  title: "Mean and standard deviation versus visit"
+  subtitle: "Only scheduled visits are displayed."
+  xVar: "VISIT"
+  xLabVars: ["VISIT", "ARMCD_n"]
+  yVar: "statMean"
+  yErrorVar: "statSD"
+  mode: "markers+lines"
+  yLab: "Mean"
+  yErrorLab: "Standard Deviation"
+  colorVar: "ARM"
+  legendPosition: "top"
+  width: 1000
+  
+  hoverVars: ["ARM", "VISIT", "n", "Mean", "SD"]
+  tableVars: ["QSCAT", "QSTEST", "ARM", "VISIT", "n", "Mean", "SD"]

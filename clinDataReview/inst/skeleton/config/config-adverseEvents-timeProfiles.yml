@@ -1,9 +1,10 @@
 # Report-specific parameters
 template: plotTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: "Adverse events: treatment-emergent time intervals"
+reportTitle: "Treatment-emergent adverse events time intervals"
 reportTitleLevel: 2
-split_level: 3
+split_by: 3
+
 # Dataset of interest
 dataFileName: ae.xpt
 dataProcessing:
@@ -20,9 +21,11 @@ dataProcessing:
       rev: true
     - var: TRTEMFL
       value: 'Y'
+
 # Looping parameters
 loopingVar: ["AEBODSYS", "AEDECOD"]
 #loopingNMax: 5
+
 # Plot parameters
 plotFunction: "timeProfileIntervalPlot"
 plotParams:
@@ -30,8 +33,5 @@ plotParams:
   paramGroupVar: "AESTDY"
   timeStartVar: "AESTDY"
   timeEndVar: "AEENDY"
-  #timeStartShapeVar: "AEENDY"
-  #timeEndShapeVar: "AENFLG"
   colorVar: "AESEV"
   tableVars: ["USUBJID", "AEBODSYS", "AEDECOD", "AESEV", "AESTDY", "AEENDY"]
-

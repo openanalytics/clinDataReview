@@ -1,0 +1,43 @@
+# Report-specific parameters
+template: listingTemplate.Rmd
+templatePackage: clinDataReview
+reportTitle: "Discontinuation listing: comparison"
+reportTitleLevel: 2
+
+# Dataset of interest
+dataFileName: "ds.xpt"
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC", "ARM", "COUNTRY"]
+    - vars: VISIT
+      varFct: 'reorder(VISIT, VISITNUM)'
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true    
+    # only keep disposition events
+    - var: "DSCAT"
+      value: "DISPOSITION EVENT"
+    # leading to discontinuation
+    - var: "DSDECOD"
+      value: ["COMPLETED", "ADVERSE EVENT"]
+      rev: true
+
+# Table parameters
+tableParams:
+  tableVars:
+    - "USUBJID"
+    - "ARM"
+    - "COUNTRY"
+    - "DSCAT"
+    - "DSDECOD"
+    - "DSTERM"
+    - "VISIT"
+    
+# Comparison with previous batch
+comparisonTableType: 'newData-diff-interactive'
+comparisonTableParams:
+   referenceVars: ["USUBJID"]
+   changeableVars: ["DSDECOD", "DSTERM", "VISIT"]

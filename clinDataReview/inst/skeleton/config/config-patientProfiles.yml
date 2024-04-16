@@ -1,7 +1,7 @@
 # Report-specific parameters
 template: patientProfilesTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: Patient profiles
+reportTitle: "Patient profiles"
 reportTitleLevel: 1
 createPatientProfiles: TRUE
 

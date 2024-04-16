@@ -1,3 +1,9 @@
+1.5.0.9000
+  o add extra config files: 
+    - discontinuation: summary table and listing
+    - summary barplot of visits
+    - laboratory: error bar and shift plots
+    - efficacy: error bar
 1.5.0
   o scatterplot: 
     - support non character axis transformation

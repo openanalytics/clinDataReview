@@ -1,8 +1,9 @@
 # Report-specific parameters
 template:  plotTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: Hepatoxicity (eDISH)
+reportTitle: "Hepatoxicity (eDISH)"
 reportTitleLevel: 2
+
 # Dataset of interest
 dataFileName: lb.xpt
 dataProcessing:
@@ -26,6 +27,8 @@ dataProcessing:
        varsID: ["USUBJID", "VISIT"]
        varPivot: "LBTESTCD"
        varsValue: "ULN_ratio"
+       
+# Plot parameters
 plotFunction: "scatterplotClinData"
 plotParams:
   title: "Hy's Law evaluation"
@@ -48,4 +51,3 @@ plotParams:
   themePars:
     legend.position: "right"
   hoverVars: ["USUBJID", "VISIT", "ULN_ratio.ALT", "ULN_ratio.BILI"]
-

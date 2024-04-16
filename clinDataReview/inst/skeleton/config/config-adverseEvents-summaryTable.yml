@@ -1,8 +1,9 @@
 # Report-specific parameters
 template: summaryTableTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: "Adverse events: summary table"
+reportTitle: "Adverse events summary"
 reportTitleLevel: 2
+
 # Dataset of interest
 dataFileName: ae.xpt
 dataProcessing:
@@ -28,6 +29,7 @@ dataProcessing:
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+
 # Total dataset
 dataTotalFileName: dm.xpt
 dataTotalProcessing:
@@ -36,6 +38,7 @@ dataTotalProcessing:
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+
 # Table parameters
 tableParams:
   var: ["TRTEMFL", "AESER", "AESDTH", "WORSTINT", "AEREL", "AEOUT"] # "AEACN" is empty
@@ -45,15 +48,16 @@ tableParams:
   varGeneralLab: "Subjects with, n (%)"
   stats: 'getStats(type = c("n", "%", "n (%)"))'
   varSubgroupLab: Group
+
 # for docx export (optional):
 tableParamsDocx:
   statsVar: "n (%)"
   file: summaryAE.docx
   footer: "The percentages are calculated over the safety analysis set"
+# for interactive table:
 tableParamsDT:
   statsVar: ["n", "%"]
   statsLayout: rowInSepCol # col by default for DT output
   pageLength: Inf
   searchBox: TRUE 
   footer: "The percentages are calculated over the safety analysis set"
-

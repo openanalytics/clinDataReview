@@ -1,5 +1,5 @@
 # Report-specific parameters
 template: divisionTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: Laboratory
+reportTitle: "Laboratory"
 reportTitleLevel: 1

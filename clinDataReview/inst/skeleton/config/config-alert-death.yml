@@ -3,6 +3,7 @@ template: summaryTableTemplate.Rmd
 templatePackage: clinDataReview
 reportTitleLevel: 2
 reportTitle: "Death"
+
 # Dataset of interest
 dataFileName: ae.xpt
 dataProcessing:
@@ -14,6 +15,7 @@ dataProcessing:
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+      
 # Total dataset
 dataTotalFileName: dm.xpt
 dataTotalProcessing:
@@ -22,6 +24,7 @@ dataTotalProcessing:
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+      
 # Table parameters
 tableParams:
   var: "AESDTH"
@@ -31,11 +34,13 @@ tableParams:
   varGeneralLab: "Subjects with, n (%)"
   stats: 'getStats(type = c("n", "%", "n (%)"))'
   varSubgroupLab: Group
+  
 # for docx export (optional):
 tableParamsDocx:
   statsVar: "n (%)"
   file: alertDeath.docx
   footer: "The percentages are calculated over the safety analysis set"
+# for interactive table:
 tableParamsDT:
   statsVar: ["n", "%"]
   statsLayout: rowInSepCol # col by default for DT output

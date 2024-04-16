@@ -1,0 +1,42 @@
+# Report-specific parameters
+template: summaryPlotTemplate.Rmd
+templatePackage: clinDataReview
+reportTitleLevel: 2
+reportTitle: "Randomized patients by visit"
+
+# Dataset of interest
+dataFileName: sv.xpt
+dataProcessing:
+  - annotate:
+    - dataset: dm
+      vars: ["RFXSTDTC", "ARM"]
+  - filter:
+    # safety analysis set: treated-patients
+    - var: "RFXSTDTC" 
+      value: ""
+      rev: true
+    # filter unscheduled visits
+    - var: VISIT
+      valueFct: 'function(x) grep("UNSCHEDULED", x, value = TRUE)'
+      rev: true
+  - annotate:
+    - vars: VISIT
+      varFct: 'reorder(VISIT, VISITNUM)'
+      
+# Table parameters
+tableParams:
+  rowVar: ['VISIT', 'ARM']
+  stats: 'getStats("count")'
+  
+# Plot parameters
+plotFunction: 'barplotClinData'
+plotParams:
+  xVar: "VISIT"
+  xLab: 'Visit'
+  yVar: "statN"
+  textVar: 'n'
+  yLab: 'Number of patients'
+  colorVar: 'ARM'
+  barmode: 'group'
+  width: 1000
+  height: 700

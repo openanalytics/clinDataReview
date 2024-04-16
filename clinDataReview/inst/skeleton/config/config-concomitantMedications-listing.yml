@@ -1,8 +1,9 @@
 # Report-specific parameters
 template: listingTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: "Concomitant medication: listing"
+reportTitle: "Concomitant medications listing"
 reportTitleLevel: 2
+
 # Dataset of interest
 dataFileName: cm.xpt
 dataProcessing:
@@ -14,6 +15,7 @@ dataProcessing:
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+
 # Table parameters
 tableParams:
   tableVars:

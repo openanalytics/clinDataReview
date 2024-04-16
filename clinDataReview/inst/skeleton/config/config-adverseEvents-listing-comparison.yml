@@ -1,8 +1,9 @@
 # Report-specific parameters
 template: listingTemplate.Rmd
 templatePackage: clinDataReview
-reportTitle: "Adverse events: listing: comparison with previous data transfer"
+reportTitle: "Adverse events listing: comparison"
 reportTitleLevel: 2
+
 # Dataset of interest
 dataFileName: ae.xpt
 dataProcessing:
@@ -17,6 +18,8 @@ dataProcessing:
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+      
+# Table parameters
 tableParams:
   tableVars:
     - "USUBJID"
@@ -33,11 +36,9 @@ tableParams:
     - "AEREL"
     #- "AEACN"
     - "AEOUT"
+
 # Comparison with previous batch
 comparisonTableType: "table-comparison-interactive"
 comparisonTableParams:
   referenceVars: ["USUBJID", "AEBODSYS", "AEDECOD"]
   changeableVars: ["AESER", "TRTEMFL", "AESTDTC", "AESTDY","AEENDTC","AEENDY","AESEV", "AEREL","AEOUT"]
-
-
-

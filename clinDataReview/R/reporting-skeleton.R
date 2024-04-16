@@ -195,11 +195,14 @@ createMainConfigSkeleton <- function(dir, dirData) {
         "config-subjectDisposition-division.yml",
         "config-enrollment-countsVisualization.yml",
         "config-cumulativeEnrollment.yml",
+        "config-subjectVisits-summaryBarplot.yml",
+        "config-summaryDisposition.yml",
+        "config-discontinuation-listing.yml",
         "config-demographics-summaryTable.yml",
         "config-adverseEvents-division.yml",
         "config-adverseEvents-summaryTable.yml",
 			  "config-adverseEvents-summaryTable-comparison.yml",
-			  "config-adverseEvents-all-countsVisualization.yml",
+			  "config-adverseEvents-countsVisualization.yml",
 			  "config-adverseEvents-listing-comparison.yml",
 			  "config-adverseEvents-timeProfiles.yml",
 			  "config-concomitantMedications-division.yml",
@@ -208,7 +211,11 @@ createMainConfigSkeleton <- function(dir, dirData) {
 			  "config-laboratory-summaryBarplot.yml",
 			  "config-laboratory-eDISH-ALT.yml",
 			  "config-laboratory-spaghettiPlot.yml",
-			  "config-laboratory-spaghettiPlot-byVisit.yml"
+			  "config-laboratory-spaghettiPlot-byVisit.yml",
+			  "config-laboratory-shiftPlot.yml",
+			  "config-laboratory-errorBar.yml",
+			  "config-efficacy-division.yml",
+			  "config-efficacy-errorBar.yml"
       )
     ),
     file = fileName

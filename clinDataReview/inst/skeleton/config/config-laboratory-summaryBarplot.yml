@@ -2,13 +2,18 @@
 template: summaryPlotTemplate.Rmd
 templatePackage: clinDataReview
 reportTitleLevel: 2
-reportTitle: "Laboratory abnormalities: post-baseline patient counts per (ab)normality"
+reportTitle: "Laboratory abnormalities summary"
+
 # Dataset of interest
 dataFileName: lb.xpt
 dataProcessing:
   - annotate:
     - dataset: dm
       vars: ["RFXSTDTC"]
+    # combine parameter name and unit
+    - vars: LBTESTSP
+      varLabel: "Lab Test (Standard Units)"
+      varFct: paste0(LBTEST, " (", LBSTRESU, ")")
   - filter:
     # safety analysis set: treated-patients
     - var: "RFXSTDTC" 
@@ -20,13 +25,16 @@ dataProcessing:
     - var: 'LBNRIND'
       value: ''
       rev: TRUE
+
 # Table parameters
 tableParams:
-  rowVar: ['LBTEST', 'LBNRIND']
+  rowVar: ['LBTESTSP', 'LBNRIND']
   stats: 'getStats("count")' 
+  
+# Plot parameters
 plotFunction: barplotClinData
 plotParams:
-  xVar: "LBTEST"
+  xVar: "LBTESTSP"
   xLab: 'Laboratory parameter'
   yVar: "statN"
   yLab: 'Number of patients with (ab)normality'

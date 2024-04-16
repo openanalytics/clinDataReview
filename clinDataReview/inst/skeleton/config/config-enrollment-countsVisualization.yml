@@ -3,6 +3,7 @@ template: countsVisualizationTemplate.Rmd
 templatePackage: clinDataReview
 reportTitle: "Enrollment by country and site"
 reportTitleLevel: 2
+
 # Dataset of interest
 dataFileName: "dm.xpt"
 dataProcessing:
@@ -11,8 +12,8 @@ dataProcessing:
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+
 # Parameters to define counts of interest
 countVar: "ARM"
 parentVar: ["COUNTRY","SITEID"]
 typePlot: [treemap]
-

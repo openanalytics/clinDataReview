@@ -2,7 +2,8 @@
 template: summaryTableTemplate.Rmd
 templatePackage: clinDataReview
 reportTitleLevel: 2
-reportTitle: Demographics
+reportTitle: "Demographics"
+
 # Dataset of interest
 dataFileName: "dm.xpt"
 dataProcessing:
@@ -11,6 +12,7 @@ dataProcessing:
     - var: "RFXSTDTC" 
       value: ""
       rev: true
+
 # Table parameters
 tableParams:
   var: ["AGE", "SEX", "RACE", "ETHNIC"]
@@ -24,15 +26,14 @@ tableParams:
   ' 
   varGeneralLab: "Parameter"
   varSubgroupLab: Group
+
 # for docx export (optional):
 tableParamsDocx:
   file: summaryDemographics.docx
   statsVar: ['Median (range)', 'n (%)']
+# for interactive table
 tableParamsDT:
   statsVar: ['n', '%', 'Min', 'Max', 'Median'] 
   statsLayout: rowInSepCol # col by default for DT output
   pageLength: Inf
   searchBox: TRUE
-    
-    
-

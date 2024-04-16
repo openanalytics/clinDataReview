@@ -279,7 +279,7 @@ pathsPatientProfiles <- do.call(createSubjectProfileReport, cReportParams)
 The different data collected for each subject in this study are 
 summarized in a subject specific profile report.
 
-In the Medical Oversight and Monitoring Report, this report can displayed by:
+In the Medical Oversight and Monitoring Report, this report can be displayed by:
 
 * selecting an element in a specific visualization,
 and clicking on the key 'P' (a.k.a 'Print Patient Profile').
