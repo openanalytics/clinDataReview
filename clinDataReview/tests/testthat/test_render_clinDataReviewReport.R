@@ -1097,7 +1097,7 @@ test_that("A clinical data report is created successfully in parallel", {
 		inputDir = testDir,
 		intermediateDir = file.path(testDir, "interim"),
 		outputDir = outputDir,
-		nCores = min(parallel::detectCores(), 2),
+		nCores = max(floor(parallel::detectCores()/2), 2),
 		quiet = TRUE, # suppress printing of pandoc cmd line
 		verbose = FALSE
 	)
@@ -1194,7 +1194,7 @@ test_that("A clinical data report is created successfully in parallel with one c
 		inputDir = testDir,
 		intermediateDir = file.path(testDir, "interim"),
 		outputDir = outputDir,
-		nCores = min(parallel::detectCores(), 2),
+		nCores = max(floor(parallel::detectCores()/2), 2),
 		quiet = TRUE, # suppress printing of pandoc cmd line
 		verbose = FALSE
 	),

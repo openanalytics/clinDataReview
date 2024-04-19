@@ -98,7 +98,6 @@ test_that("A skeleton report is successfully executed", {
 			inputDir = dirSkeleton,
 			outputDir = file.path(dirSkeleton, "report"), 
 			intermediateDir = file.path(dirSkeleton, "interim"),
-			# configFiles = "config-alert-division.yml",
 			quiet = TRUE, # suppress printing of pandoc cmd line
 			verbose = FALSE
 		),
@@ -117,4 +116,31 @@ test_that("A skeleton report is successfully executed", {
 		)
 	))
 			
+})
+
+test_that("A skeleton report is successfully executed in parallel", {
+  
+  skip_on_cran() 
+  
+  # fix for: 'Using anchor_sections requires Pandoc 2.0+'
+  skip_if_not(
+    condition = rmarkdown::pandoc_available(version = "2.0"), 
+    message = "pandoc 2.0 is not available"
+  )
+  
+  dirSkeleton <- tempfile("skeleton")
+  createClinDataReviewReportSkeleton(dirSkeleton)
+  
+  outputDir <- file.path(dirSkeleton, "report")
+  resReport <- render_clinDataReviewReport(
+    inputDir = dirSkeleton,
+    outputDir = outputDir, 
+    intermediateDir = file.path(dirSkeleton, "interim"),
+    quiet = TRUE, # suppress printing of pandoc cmd line
+    verbose = FALSE,
+    nCores = max(floor(parallel::detectCores()/2), 2)
+  )
+  resReport <- file.path(dirSkeleton, "report", "1-introduction.html")
+  expect_true(file.exists(resReport))
+  
 })

@@ -4,6 +4,8 @@
     - summary barplot of visits
     - laboratory: error bar and shift plots
     - efficacy: error bar
+  o skeleton:
+    - fix: absolute path for logo (if nCores > 1)
 1.5.0
   o scatterplot: 
     - support non character axis transformation

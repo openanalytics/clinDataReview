@@ -442,7 +442,9 @@ createOutputYaml <- function(indexPath, outputDir){
     stop(paste("The file:", shQuote(indexPath), "doesn't contain",
       "a proper YAML header."))
   yamlHeader <- indexCnt[seq(from = idxYAMLHeader[1]+1, to = idxYAMLHeader[2]-1)]
-  yamlOutput <- yaml::yaml.load(string = yamlHeader)$output
+  # Use eval.expr = TRUE to be able to specify !expr in the YAML header
+  # (e.g. to specify a relative path for a logo)
+  yamlOutput <- yaml::yaml.load(string = yamlHeader, eval.expr = TRUE)$output
   outputYAMLPath <- tempfile("_output", fileext = ".yml")
   yaml::write_yaml(x = yamlOutput, file = outputYAMLPath)
   

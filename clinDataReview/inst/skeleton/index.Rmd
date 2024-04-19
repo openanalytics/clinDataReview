@@ -5,7 +5,7 @@ date: "`r Sys.Date()`"
 documentclass: book
 output:   
   clinDataReview::gitbook_clinDataReview_report:
-    logo: "figures/logoText.svg"
+    logo: !expr system.file(package = "clinDataReview", "skeleton", "figures", "logoText.svg")
     logoHeight: "55px"
     split_by: 'section+number'
 editor_options: 
