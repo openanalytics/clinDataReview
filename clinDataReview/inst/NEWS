@@ -6,6 +6,8 @@
     - efficacy: error bar
   o skeleton:
     - fix: absolute path for logo (if nCores > 1)
+   o tests - render report in parallel: 
+    - fix for 'class.output' with upper-case character (knitr 1.46)
 1.5.0
   o scatterplot: 
     - support non character axis transformation
