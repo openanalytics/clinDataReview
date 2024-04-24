@@ -6,8 +6,9 @@
     - efficacy: error bar
   o skeleton:
     - fix: absolute path for logo (if nCores > 1)
-   o tests - render report in parallel: 
-    - fix for 'class.output' with upper-case character (knitr 1.46)
+   o tests: 
+    - render report in parallel: fix with upper-case 'class.output' (knitr 1.46)
+    - moveXpt: update for extra datasets (clinUtils 0.1.5)
 1.5.0
   o scatterplot: 
     - support non character axis transformation

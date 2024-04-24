@@ -6,10 +6,19 @@ test_that("Example xpt files are correctly extracted to the specified folder", {
 			
 	dirData <- tempfile("data")
 	clinDataReview:::moveXpt(dirData)
-	res <- list.files(dirData)
-	expect_length(res, 8)
-	expect_setequal(object = file_ext(res), expected = "xpt")
-      
+	filesCopied <- list.files(dirData)
+	
+	# check that the file extensions are xpt
+	expect_setequal(object = tools::file_ext(filesCopied), expected = "xpt")
+	
+	# check that all files available in the clinUtils package have been copied
+	filesClinUtils <- list.files(
+		path = system.file("extdata", "cdiscpilot01", "SDTM", 
+			package = "clinUtils"),
+		pattern = "*.xpt"
+	)
+	expect_setequal(object = filesClinUtils, expected = filesCopied)
+
 })
 
 test_that("An example metadata file is correctly created", {

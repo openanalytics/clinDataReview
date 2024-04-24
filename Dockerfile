@@ -164,7 +164,7 @@ RUN R -q -e "remotes::install_version('vroom', version = '1.6.5', upgrade = FALS
     R -q -e "remotes::install_version('haven', version = '2.5.4', upgrade = FALSE)"
 RUN R -q -e "remotes::install_version('plotly', version = '4.10.4', upgrade = FALSE)" && \
     R -q -e "remotes::install_version('testthat', version = '3.2.1.1', upgrade = FALSE)" && \
-    R -q -e "remotes::install_version('clinUtils', version = '0.1.4', upgrade = FALSE)" && \
+    R -q -e "remotes::install_version('clinUtils', version = '0.1.5', upgrade = FALSE)" && \
     R -q -e "remotes::install_version('inTextSummaryTable', version = '3.3.2', upgrade = FALSE)" && \
     R -q -e "remotes::install_version('patientProfilesVis', version = '2.0.7', upgrade = FALSE)"
 
