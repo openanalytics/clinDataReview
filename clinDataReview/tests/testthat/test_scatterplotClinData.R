@@ -1,6 +1,7 @@
 context("Visualize clinical data with a scatterplot")
 
 library(plotly)
+library(grDevices)
 
 test_that("A scatterplot is correctly created", {
 			
@@ -103,8 +104,10 @@ test_that('Point parameters are set correctly in a scatterplot', {
   ]]
   # test color parameter correclty
   colorRGB <- sub("^rgba\\((\\d{1,},\\d{1,},\\d{1,}),.+", "\\1\\2\\3", plmarkerData$marker$line$color)
-  expect_setequal(object = colorRGB, expected = paste(col2rgb('red'), collapse =","))
-  
+  expect_setequal(
+    object = colorRGB, 
+    expected = paste(grDevices::col2rgb('red'), collapse =",")
+  )
   
 })
 
@@ -122,7 +125,10 @@ test_that("Point parameters with 'colour' (UK English spelling) are set correctl
   plData <- plotly_build(pl)$x$data
   plmarkerData <- plData[[which(sapply(plData, function(x){x$mode == 'markers'}))]]
   colorRGB <- sub("^rgba\\((\\d{1,},\\d{1,},\\d{1,}),.+", "\\1\\2\\3", plmarkerData$marker$line$color)
-  expect_equal(object = colorRGB, expected = paste(col2rgb('red'), collapse =","))
+  expect_equal(
+    object = colorRGB, 
+    expected = paste(grDevices::col2rgb('red'), collapse = ",")
+  )
   
 })
 
@@ -231,7 +237,10 @@ test_that("Smoothing parameters are set correctly in a scatterplot", {
   colors <- sapply(plSmoothNoSEData[isLine], function(x) x$line$color)
   colorsRGB <- sub("^rgba\\((\\d{1,},\\d{1,},\\d{1,}),.+", "\\1\\2\\3", colors)[-1]
   
-  expect_setequal(object = colorsRGB, expected = paste(col2rgb('green'), collapse =","))
+  expect_setequal(
+    object = colorsRGB, 
+    expected = paste(grDevices::col2rgb('green'), collapse =",")
+  )
   
 }
 )
@@ -566,7 +575,7 @@ test_that("A color palette is correctly set in a scatterplot", {
 	plData <- plData[do.call(order, plData), ]
       
 	# plotly specifies color in rgba
-	colorPaletteRGB <- col2rgb(colorPalette)
+	colorPaletteRGB <- grDevices::col2rgb(colorPalette)
 	colorPaletteRGBA <- paste0(
 		"rgba(", 
 		apply(colorPaletteRGB, 2, paste, collapse = ","), 
@@ -585,6 +594,43 @@ test_that("A color palette is correctly set in a scatterplot", {
 		check.attributes = FALSE
 	)
       
+})
+
+test_that("The default color palette is correctly extracted", {
+  
+  data <- data.frame(
+    DY = c(1, 2, 1, 2),
+    AVAL = c(3, 4, 2, 6),
+    NRIND = c("Normal", "High", "Low", "Normal"),
+    USUBJID = c(1, 1, 2, 2),
+    stringsAsFactors = FALSE
+  )
+  
+  expect_error(
+    pl <- clinDataReview::scatterplotClinData(
+      data = data, 
+      xVar = "DY", 
+      yVar = "AVAL", 
+      aesPointVar = list(color = "NRIND")
+    ),
+    NA
+  )
+  
+  # plotly specifies color in rgba
+  colors <- sapply(plotly::plotly_build(pl)$x$data, function(x){
+    color <- x$marker$line$color
+    color <- sub("rgba\\((.+)\\)$", "\\1", color)
+    color <- strsplit(color, split = ",")[[1]][-4] # (remove transparency)
+    paste(color, collapse = ",")
+  })
+  
+  # default color palette
+  colorsDefault <- getOption("clinDataReview.colors")(3)
+  colorsDefault <- sapply(colorsDefault, function(color)
+    paste(grDevices::col2rgb(color), collapse = ",") # convert to RGB
+  )
+  expect_setequal(object = colors, expected = colorsDefault)
+  
 })
 	
 test_that("The x-axis labels are correctly set from variables in the scatterplot", {

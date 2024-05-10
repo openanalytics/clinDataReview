@@ -1,3 +1,8 @@
+1.5.1.9000
+  o default palettes: use .onLoad instead of .onAttach
+  o tests: 
+    - extra test for default color palette
+    - add grDevices to Suggests
 1.5.1
   o add extra config files: 
     - discontinuation: summary table and listing
