@@ -1,8 +1,8 @@
 Package: clinDataReview
 Type: Package
 Title: Clinical Data Review Tool
-Version: 1.5.1.9000
-Date: 2024-05-08
+Version: 1.5.2
+Date: 2024-05-17
 Authors@R: c(
   person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"), 
   email = "laure.cougnaud@openanalytics.eu"),

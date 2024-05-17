@@ -1,4 +1,4 @@
-1.5.1.9000
+1.5.2
   o default palettes: use .onLoad instead of .onAttach
   o tests: 
     - extra test for default color palette
