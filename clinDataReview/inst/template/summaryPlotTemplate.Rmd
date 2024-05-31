@@ -250,7 +250,9 @@ labelVars <- attr(summaryTable[[1]], "labelVars")
 
 listPlots <- sapply(summaryTable, function(summaryTableI){
 			
-	argsPlot <- plotParams
+  # evaluate !r-lazy parameters 
+  argsPlot <- forceParams(plotParams)
+	
 	argsPlot$data <- summaryTableI
 	argsPlot$labelVars <- labelVars
 	argsPlot$table <- TRUE

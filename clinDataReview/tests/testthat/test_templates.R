@@ -301,6 +301,69 @@ test_that("The summary plot template is successfully rendered", {
       
 })
 
+test_that("A plot parameter is correctly extracted from the data in a summary plot template", {
+  
+  skip_on_cran()
+  
+  dir <- tempfile("summaryPlot");dir.create(dir)
+  
+  templateName <- "summaryPlotTemplate.Rmd"
+  
+  # create example data
+  dataEX <- data.frame(
+    "USUBJID" = c(1, 1, 2, 3, 4),
+    "EXDOSE" = structure(rep("100", 5), label = "Dose"),
+    stringsAsFactors = FALSE
+  )
+  write_xpt(dataEX, file.path(dir, "adex.xpt"))
+  
+  # set parameters
+  params <- list(
+    pathDataFolder = dir,
+    template = templateName,
+    templatePackage = "clinDataReview",
+    reportTitle = gsub("(.+)Template[.].+", "\\1 template", templateName),
+    dataFileName =  list.files(dir, pattern = "xpt"),
+    tableParams = list(
+      rowVar = "EXDOSE",
+      stats = "getStats(type = 'n')"
+    ),
+    plotFunction = "barplotClinData",
+    plotParams = list(
+      xVar = "EXDOSE", 
+      yVar = "statN", 
+      title = structure(
+        "paste0(labelVars['EXDOSE'], ': ', unique(summaryTableI$EXDOSE))", 
+        class = "r-lazy"
+      )
+    )
+  )
+  
+  # run report
+  pathTemplate <- system.file("template", templateName, 
+      package = "clinDataReview")      
+  expect_error(
+    outputFile <- rmarkdown::render(
+      input = pathTemplate,
+      output_dir = dir,
+      intermediates_dir = dir,
+      quiet = TRUE,
+      output_options = outputOpts
+    ),
+    NA
+  )
+  expect_true(file.exists(outputFile))
+  
+  pl <- listPlots[[1]]$plot
+  expect_equal(
+    object = plotly::plotly_build(pl)$x$layout$title$text,
+    expected = "Dose: 100"
+  )
+  
+  detach(params);rm(params)
+  
+})
+
 test_that("The summary table template is successfully rendered", {
 			
 	skip_on_cran()

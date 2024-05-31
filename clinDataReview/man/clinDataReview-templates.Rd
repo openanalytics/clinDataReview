@@ -133,7 +133,7 @@ This report summarizes the data of interest (with the \code{inTextSummaryTable} 
 \item{\strong{\code{tableParams}}: object, parameters to summarize the data in a table, passed to \link[inTextSummaryTable]{computeSummaryStatisticsTable}}
 \item{\code{tableProcessing}: (optional) array, data processing parameters for the summary table, passed to \link[clinDataReview]{processData}}
 \item{\strong{\code{plotFunction}}: string among: \emph{ 'timeProfileIntervalPlot', 'scatterplotClinData', 'sunburstClinData', 'treemapClinData', 'barplotClinData', 'errorbarClinData' }, plotting function to visualize summary data}
-\item{\strong{\code{plotParams}}: object, parameters for the plotting function}
+\item{\strong{\code{plotParams}}: object, parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\cr \code{[parameterName]: !r-lazy [summaryTableI]}}
 \item{\code{loopingVar}: (optional) array or string, data variable(s) to loop over. Each group of the variable(s) is displayed in a separated section of the report.}
 \item{\code{loopingNMax}: (optional) integer, maximum number of elements of \code{loopingVar} to include in the report}
 \item{\code{loopingTotal}: (optional) boolean, should the total also be computed by \code{loopingVar} (TRUE by default)?}

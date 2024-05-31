@@ -1,3 +1,5 @@
+1.5.2.9000
+  o summary plot template: support 'r-lazy' parameters in 'plotParams'
 1.5.2
   o default palettes: use .onLoad instead of .onAttach
   o tests: 

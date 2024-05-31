@@ -71,7 +71,7 @@
     },
     "plotParams": {
       "type": "object",
-      "doc": "parameters for the plotting function"
+      "doc": "parameters for the plotting function. Parameters depending on the dataset of interest can be specified as:\\cr \\code{[parameterName]: !r-lazy [summaryTableI]}"
     },
     "loopingVar": {
       "type": ["array", "string"],
