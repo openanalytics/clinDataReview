@@ -94,8 +94,8 @@ staticScatterplotClinData <- function(
 	yLimExpandData = TRUE,
 	xLimExpandData = TRUE,
 	# general plot:
+	title = paste(c(paste(yLab, "vs", xLab), titleExtra), collapse = "<br>"),
 	titleExtra = NULL,
-	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	facetPars = list(), 
 	facetType = c("wrap", "grid"),
 	scalePars = list(),

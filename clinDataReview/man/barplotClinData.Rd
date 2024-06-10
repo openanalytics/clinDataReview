@@ -9,13 +9,15 @@ barplotClinData(
   xVar,
   yVar,
   xLab = getLabelVar(xVar, labelVars = labelVars),
+  xLabVar = NULL,
   yLab = getLabelVar(yVar, labelVars = labelVars),
+  yLabVar = NULL,
   colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
   barmode = "group",
+  title = paste(c(paste(yLab, "vs", xLab), titleExtra), collapse = "<br>"),
   titleExtra = NULL,
-  title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
   caption = NULL,
   subtitle = NULL,
   labelVars = NULL,
@@ -46,7 +48,13 @@ barplotClinData(
 
 \item{xLab}{String with label for \code{xVar}.}
 
+\item{xLabVar}{(optional) Character vector with column(s) of \code{data} 
+containing variable(s) to display in the label of the x-axis.}
+
 \item{yLab}{String with label for \code{xVar}.}
+
+\item{yLabVar}{(optional) Character vector with column(s) of \code{data} 
+containing variable(s) to display in the label of the y-axis.}
 
 \item{colorVar}{(optional) String with color variable.}
 
@@ -59,9 +67,9 @@ See \code{\link[clinUtils]{clinColors}}.}
 \item{barmode}{String with type of barplot, either:
 'group' or 'stack' (see parameter in \code{\link[plotly]{layout}}).}
 
-\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
-
 \item{title}{String with title for the plot.}
+
+\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{caption}{String with caption. \cr
 The caption is included at the bottom right of the plot.
@@ -81,7 +89,7 @@ below the title.}
 700 by default.}
 
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
-by default any position and aesthetic variables displayed in the plot.}
+by default any position (and axis) and aesthetic variables displayed in the plot.}
 
 \item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
 

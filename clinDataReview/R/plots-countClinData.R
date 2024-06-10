@@ -19,35 +19,34 @@
 #' @author Laure Cougnaud
 #' @export
 plotCountClinData <- function(
-    data, 
-    # plot variables:
-    vars, varsLab = getLabelVar(vars, labelVars = labelVars),
-    valueVar, valueLab = getLabelVar(valueVar, labelVars = labelVars),
-    colorVar = NULL, colorLab = getLabelVar(valueVar, labelVars = labelVars),
-    colorPalette = getOption("clinDataReview.colors"),
-    colorRange = NULL,
-    # general plot:
-    valueType = "total",
-    titleExtra = NULL,
-    title = paste(
-        paste(valueLab, "by", paste(varsLab, collapse = " and "), 
-            titleExtra), collapse = "<br>"
-    ),
+  data, 
+  # plot variables:
+  vars, varsLab = getLabelVar(vars, labelVars = labelVars),
+  valueVar, valueLab = getLabelVar(valueVar, labelVars = labelVars),
+  colorVar = NULL, colorLab = getLabelVar(valueVar, labelVars = labelVars),
+  colorPalette = getOption("clinDataReview.colors"),
+  colorRange = NULL,
+  # general plot:
+  valueType = "total",
+  title = paste(c(
+    paste(valueLab, "by", paste(varsLab, collapse = " and ")), 
+    titleExtra
+  ), collapse = "<br>"),
+  titleExtra = NULL,
 	subtitle = NULL, caption = NULL,
-    labelVars = NULL,
-    # interactivity:
-    width = NULL, height = NULL,
-    pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
-    hoverVars = c(vars, valueVar, colorVar), 
-    hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
-    table = FALSE, 
-    tableVars,
-    tableLab,
-    tableButton = TRUE, tablePars = list(),
-    id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
-    verbose = FALSE,
-    typePlot = c("sunburst", "treemap"))
-{
+  labelVars = NULL,
+  # interactivity:
+  width = NULL, height = NULL,
+  pathVar = NULL, pathLab = getLabelVar(pathVar, labelVars = labelVars),
+  hoverVars = c(vars, valueVar, colorVar), 
+  hoverLab = getLabelVar(hoverVars, labelVars = labelVars),
+  table = FALSE, 
+  tableVars,
+  tableLab,
+  tableButton = TRUE, tablePars = list(),
+  id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+  verbose = FALSE,
+  typePlot = c("sunburst", "treemap")){
   
   # store input parameter values for further use
   plotArgs <- c(as.list(environment()))

@@ -541,3 +541,44 @@ test_that("A selection variable is correctly included in a vertical errorbar vis
   expect_equal(object = buttonData$items$value, expected = levels(data$group))
   
 })
+
+test_that("Axis variable(s) are correctly included in a errorbar visualization", {
+  
+  data <- data.frame(
+    PHASE = "A",
+    AVISIT = c("Baseline", "Week 2"),
+    Mean = c(25.6, 40),
+    SE = c(2, 3),
+    LBSTRESU = c("mg/mL", "mg/L"), 
+    stringsAsFactors = FALSE
+  )
+  
+  pl <- errorbarClinData(
+    data = data,
+    xVar = "AVISIT", xLabVar = "PHASE",
+    yVar = "Mean", yErrorVar = "SE", yLabVar = "LBSTRESU",
+    labelVars = c(AVISIT = "Analysis Visit", PHASE = "Study Phase", 
+      LBSTRESU = "Standard Unit")
+  )
+  
+  plLayout <- plotly::plotly_build(pl)$x$layout
+  
+  # title for the x-axis
+  expect_match(
+    object = plLayout$xaxis$title$text, 
+    regexp = "Analysis Visit.+Study Phase: A"
+  )
+  
+  # title for the y-axis
+  expect_match(
+    object = plLayout$yaxis$title$text, 
+    regexp = "Mean.+SE.+Standard Unit: mg/L, mg/mL"
+  )
+  
+  # general title
+  expect_match(
+    object = plLayout$title$text, 
+    regexp = "Mean.+SE vs Analysis Visit"
+  )
+  
+})

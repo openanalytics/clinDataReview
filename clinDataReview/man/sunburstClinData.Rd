@@ -53,7 +53,7 @@ of subject-specific report are displayed in the browser console.}
     \item{\code{height}}{Numeric, height of the plot in pixels,
 700 by default.}
     \item{\code{hoverVars}}{Character vector with variable(s) to be displayed in the hover,
-by default any position and aesthetic variables displayed in the plot.}
+by default any position (and axis) and aesthetic variables displayed in the plot.}
     \item{\code{hoverLab}}{Named character vector with labels for \code{hoverVars}.}
     \item{\code{labelVars}}{Named character vector containing variable labels.}
     \item{\code{id}}{String with general id for the plot:

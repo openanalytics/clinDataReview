@@ -18,15 +18,15 @@ barplotClinData <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
-	xLab = getLabelVar(xVar, labelVars = labelVars),
-	yLab = getLabelVar(yVar, labelVars = labelVars), 
+	xLab = getLabelVar(xVar, labelVars = labelVars), xLabVar = NULL,
+	yLab = getLabelVar(yVar, labelVars = labelVars), yLabVar = NULL,
 	# aesthetic
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	barmode = "group",
 	# general plot:
+	title = paste(c(paste(yLab, "vs", xLab), titleExtra), collapse = "<br>"),
 	titleExtra = NULL,
-	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	caption = NULL, subtitle = NULL,
 	labelVars = NULL,
 	# interactivity:
@@ -55,11 +55,13 @@ barplotClinData <- function(
 	
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
-		hoverVars <- c(xVar, colorVar, yVar, selectVars)
+		hoverVars <- c(xVar, xLabVar, colorVar, yVar, yLabVar, selectVars)
 		hoverLab <- c(
 		  getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
+		  getLabelVar(var = xLabVar, labelVars = labelVars),
 		  getLabelVar(var = colorVar, label = colorLab, labelVars = labelVars),
 		  getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
+		  getLabelVar(var = yLabVar, labelVars = labelVars),
 		  getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 		)
 	}else	if(missing(hoverLab)){
@@ -75,6 +77,12 @@ barplotClinData <- function(
 		labelVars = labelVars
 	)
 	
+	# include xLabVar and yLabVar in the axes
+	xAxisLab <- getAxisLab(axisVar = xVar, axisLab = xLab, labVar = xLabVar, 
+	  data = data, labelVars = labelVars)
+	yAxisLab <- getAxisLab(axisVar = yVar, axisLab = yLab, labVar = yLabVar, 
+	  data = data, labelVars = labelVars)
+	
 	# get plot dim
 	dimPlot <- getSizePlot(
 		width = width, height = height,
@@ -83,7 +91,7 @@ barplotClinData <- function(
 		title = title,
 		caption = caption,
 		subtitle = subtitle,
-		xLab = xLab
+		xLab = xAxisLab
 	)
 	width <- dimPlot[["width"]]
 	height <- dimPlot[["height"]]
@@ -156,8 +164,8 @@ barplotClinData <- function(
 	
 	pl <- layoutClinData(
 		p = pl,
-		xLab = xLab,
-		yLab = yLab,
+		xLab = xAxisLab,
+		yLab = yAxisLab,
 		title = title,
 		caption = caption, 
 		subtitle = subtitle,

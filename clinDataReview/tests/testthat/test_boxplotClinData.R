@@ -182,3 +182,54 @@ test_that("A boxplot is successfully created without a color variable and facets
     expect_s3_class(res, "plotly")
 
 })
+
+test_that("Axis variable(s) are correctly included in a boxplot", {
+  
+  data <- data.frame(
+    USUBJID = c("1", "1", "2", "2", "2"),
+    PHASE = "A",
+    AVISIT = c("Week 1", "Week 1", "Baseline", "Week 1", "Week 1"),
+    AVAL = c(34, 29, 70, 13, 45),
+    LBSTRESU = rep(c("mg/mL", "mg/L"), length.out = 5)
+  )	
+  
+  pl <- ignoreBoxmodeWarning({
+    boxplotClinData(
+      data = data,
+      xVar = "AVISIT", xLabVar = "PHASE",
+      yVar = "AVAL", yLabVar = "LBSTRESU",
+      labelVars = c(
+        AVISIT = "Analysis Visit", 
+        PHASE = "Study Phase", 
+        AVAL = "Analysis Value",
+        LBSTRESU = "Standard Unit"
+      )
+    )
+  })
+  
+  plLayout <- plotly::plotly_build(pl)$x$layout
+  plAnnot <- plLayout$annotations
+  
+  # axis labels are created with annotations:
+  
+  # title for the x-axis
+  iXAxis <- which(sapply(plAnnot, `[[`, "y") == 0)
+  expect_match(
+    object = plAnnot[[iXAxis]]$text, 
+    regexp = "Analysis Visit.+Study Phase: A"
+  )
+  
+  # title for the y-axis
+  iYAxis <- which(sapply(plAnnot, `[[`, "x") == 0)
+  expect_match(
+    object = plAnnot[[iYAxis]]$text, 
+    regexp = "Analysis Value.+Standard Unit: mg/L, mg/mL"
+  )
+  
+  # general title
+  expect_match(
+    object = plLayout$title$text, 
+    regexp = "Analysis Value vs Analysis Visit"
+  )
+  
+})

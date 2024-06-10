@@ -173,3 +173,45 @@ test_that("A selection variable is correctly included in a barplot", {
   
 })
 
+test_that("Axis variable(s) are correctly included in a barplot", {
+  
+  data <- data.frame(
+    child = c("a", "b", "c"),
+    cat = c("A", "A", "B"),
+    n = c(1, 2, 5),
+    unit = "patients",
+    stringsAsFactors = FALSE
+  )
+  
+  # create plot
+  pl <- barplotClinData(
+    data = data,
+    xVar = "child", xLabVar = "cat",
+    yVar = "n", yLabVar = "unit",
+    labelVars = c(
+      child = "Child", cat = "Category", 
+      n = "Number", unit = "Unit"
+    )
+  )
+  
+  plLayout <- plotly::plotly_build(pl)$x$layout
+  
+  # title for the x-axis
+  expect_match(
+    object = plLayout$xaxis$title$text, 
+    regexp = "Child.+Category: A, B"
+  )
+  
+  # title for the y-axis
+  expect_match(
+    object = plLayout$yaxis$title$text, 
+    regexp = "Number.+Unit: patients"
+  )
+  
+  # general title
+  expect_match(
+    object = plLayout$title$text, 
+    regexp = "Number vs Child"
+  )
+  
+})

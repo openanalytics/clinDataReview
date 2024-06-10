@@ -77,12 +77,18 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 			
 			aesVar <- getPlotArgsAsVect(c("aesPointVar", "aesLineVar"))
 			selectVars <- getPlotArgsAsVect("selectVars")
-			tableVars <- unique(c(getPlotArgsAsVect(c("idVar", "xVar", "yVar")), aesVar, selectVars))
+			tableVars <- unique(c(
+			  getPlotArgsAsVect(c("idVar", "xVar")), getPlotArgsAsVect("xLabVar"), 
+			  getPlotArgsAsVect("yVar"), getPlotArgsAsVect("yLabVar"), 
+			  aesVar, selectVars
+			 ))
 			tableLab <- with(plotArgs, 
 				c(
 					getLabelVar(var = idVar, label = if(!missing(idLab))	idLab, labelVars = labelVars),
 					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = xLabVar, labelVars = labelVars),
 					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
+					getLabelVar(var = yLabVar, labelVars = labelVars),
 					getLabelVar(var = aesVar, label = if(!missing(aesLab))	aesLab, labelVars = labelVars),
 					getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 				)
@@ -98,11 +104,13 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 	}else	if(plotFunction == "barplotClinData"){
 			
 		if(tableVarsNotSpec){
-			tableVars <- with(plotArgs, c(xVar, colorVar, yVar))
+			tableVars <- with(plotArgs, c(xVar, xLabVar, colorVar, yVar, yLabVar))
 			tableLab <- with(plotArgs, 
 				c(
 					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = xLabVar, labelVars = labelVars),
 					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
+					getLabelVar(var = yLabVar, labelVars = labelVars),
 					getLabelVar(var = colorVar, label = if(!missing(colorLab))	colorLab, labelVars = labelVars)
 				)
 			)
@@ -118,16 +126,18 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 		
 		if(tableVarsNotSpec){
 			tableVars <- with(plotArgs, c(
-				if(!is.null(xErrorVar))	c(yVar, xVar, xErrorVar),
-				if(!is.null(yErrorVar))	c(xVar, yVar, yErrorVar),
+				if(!is.null(xErrorVar))	c(yVar, xVar, xErrorVar, xLabVar),
+				if(!is.null(yErrorVar))	c(xVar, yVar, yErrorVar, yLabVar),
 				colorVar, selectVars
 			))
 			tableLab <- with(plotArgs, 
 				c(
 					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
 					getLabelVar(var = xErrorVar, label = if(!missing(xErrorLab))	xErrorLab, labelVars = labelVars),
+					getLabelVar(var = xLabVar, labelVars = labelVars),
 					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
 					getLabelVar(var = yErrorVar, label = if(!missing(yErrorLab))	yErrorLab, labelVars = labelVars),
+					getLabelVar(var = yLabVar, labelVars = labelVars),
 					getLabelVar(var = colorVar, label = if(!missing(colorLab))	colorLab, labelVars = labelVars),
 					getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 				)
@@ -143,12 +153,14 @@ getPlotTableVars <- function(plotFunction, plotArgs){
 	}else	if(plotFunction == "boxplotClinData"){
 		
 		if(tableVarsNotSpec){
-			tableVars <- with(plotArgs, c(idVar, xVar, yVar, colorVar, facetVar))
+			tableVars <- with(plotArgs, c(idVar, xVar, xLabVar, yVar, yLabVar, colorVar, facetVar))
 			tableLab <- with(plotArgs, 
 				c(
 					getLabelVar(var = idVar, label = if(!missing(idLab))	idLab, labelVars = labelVars),
 					getLabelVar(var = xVar, label = if(!missing(xLab))	xLab, labelVars = labelVars),
+					getLabelVar(var = xLabVar, labelVars = labelVars),
 					getLabelVar(var = yVar, label = if(!missing(yLab))	yLab, labelVars = labelVars),
+					getLabelVar(var = yLabVar, labelVars = labelVars),
 					getLabelVar(var = colorVar, label = if(!missing(colorLab)) colorLab, labelVars = labelVars),
 					getLabelVar(var = facetVar, label = if(!missing(facetVar)) facetLab, labelVars = labelVars)
 				)

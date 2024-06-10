@@ -18,16 +18,16 @@ boxplotClinData <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
-	xLab = getLabelVar(xVar, labelVars = labelVars),
-	yLab = getLabelVar(yVar, labelVars = labelVars), 
+	xLab = getLabelVar(xVar, labelVars = labelVars), xLabVar = NULL,
+	yLab = getLabelVar(yVar, labelVars = labelVars), yLabVar = NULL,
 	# aesthetic
 	colorVar = NULL, colorLab = getLabelVar(colorVar, labelVars = labelVars),
 	colorPalette = NULL,
 	facetVar = NULL, facetLab = getLabelVar(facetVar, labelVars = labelVars),
 	ncol = 1L,
 	# general plot:
+	title = paste(c(paste(yLab, "vs", xLab), titleExtra), collapse = "<br>"),
 	titleExtra = NULL,
-	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	subtitle = NULL, caption = NULL,
 	labelVars = NULL,
 	# interactivity:
@@ -78,8 +78,15 @@ boxplotClinData <- function(
 	# Hover info:
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
-		hoverVars <- c(xVar, yVar, colorVar, facetVar)
-		hoverLab <- setNames(c(xLab, yLab, colorLab, facetLab), hoverVars)
+		hoverVars <- c(xVar, xLabVar, yVar, yLabVar, colorVar, facetVar)
+		hoverLab <- c(
+		  getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
+		  getLabelVar(var = xLabVar, labelVars = labelVars),
+		  getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
+		  getLabelVar(var = yLabVar, labelVars = labelVars),
+		  getLabelVar(var = colorVar, label = colorLab, labelVars = labelVars),
+		  getLabelVar(var = facetVar, label = facetLab, labelVars = labelVars)
+		)
 	}else	if(missing(hoverLab)){
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
 	}
@@ -97,6 +104,12 @@ boxplotClinData <- function(
 	
 	if(is.null(facetVar)) ncol <- 1
 	nrow = ceiling(length(dataList)/ncol)	
+	
+	# include xLabVar and yLabVar in the axes
+	xAxisLab <- getAxisLab(axisVar = xVar, axisLab = xLab, labVar = xLabVar, 
+	 data = data, labelVars = labelVars)
+	yAxisLab <- getAxisLab(axisVar = yVar, axisLab = yLab, labVar = yLabVar, 
+	 data = data, labelVars = labelVars)
 
 	# get plot dim
 	dimPlot <- getSizePlot(
@@ -104,7 +117,7 @@ boxplotClinData <- function(
 		title = title,
 		subtitle = subtitle,
 		caption = caption,
-		xLab = xLab,
+		xLab = xAxisLab,
 		facet = !is.null(facetVar),
 		includeLegend = !is.null(colorVar),
 		legendPosition = "bottom",
@@ -204,7 +217,7 @@ boxplotClinData <- function(
 		annotations = list(
 			list( #create y-label via annotation.
 				x = 0, y=0.5, xshift = -60, # position y-label
-				text = yLab,
+				text = yAxisLab,
 				textangle = 270,
 				showarrow = F,
 				font = list(size = axisLabelFontsize),
@@ -217,7 +230,7 @@ boxplotClinData <- function(
 				yref = 'paper',# important that yref = the same as the legend yref. 
 				yshift = -20,
 				yanchor = "top", # else collision with the figures. 
-				text = xLab,
+				text = xAxisLab,
 				showarrow = FALSE,
 				font = list(size = axisLabelFontsize)
 			)
@@ -242,7 +255,7 @@ boxplotClinData <- function(
 	
 	pl <- layoutClinData(
 		p = pl,
-		xLab = xLab,
+		xLab = xAxisLab,
 		caption = caption, 
 		subtitle = subtitle,
 		includeLegend = TRUE, 
@@ -326,14 +339,17 @@ boxplotClinData <- function(
 #' 
 #' @details plot title clipping.
 #' 
-#' Incase case side = 'top', the plot title (eg. layout(title = "title"))
-#' will clip with the top pannel. 
+#' In case side = 'top', the plot title (eg. layout(title = "title"))
+#' will clip with the top panel. 
 #' 
-#' Resolve this with the following configutations: (once all the subplots have already been combined)
+#' Resolve this with the following configurations: 
+#' (once all the subplots have already been combined)
 #' \code{
 #' layout(
-#' 		title = list(text = "title", yref = "container", y = 1)) # place the title at absolute top of the page
-#' 		margin = list(t = panelWidth + heightTitleTextInPixels) # If font size = 15 roughly equal to 20 pixels. 
+#'    # place the title at absolute top of the page
+#' 		title = list(text = "title", yref = "container", y = 1)) 
+#' 		# If font size = 15 roughly equal to 20 pixels. 
+#' 		margin = list(t = panelWidth + heightTitleTextInPixels) 
 #' }
 #' 
 addFacetPanel <- function(pl, panelLab,

@@ -33,14 +33,17 @@ Add facet-panel to single plotly plot.
 \details{
 plot title clipping.
 
-Incase case side = 'top', the plot title (eg. layout(title = "title"))
-will clip with the top pannel. 
+In case side = 'top', the plot title (eg. layout(title = "title"))
+will clip with the top panel. 
 
-Resolve this with the following configutations: (once all the subplots have already been combined)
+Resolve this with the following configurations: 
+(once all the subplots have already been combined)
 \code{
 layout(
-		title = list(text = "title", yref = "container", y = 1)) # place the title at absolute top of the page
-		margin = list(t = panelWidth + heightTitleTextInPixels) # If font size = 15 roughly equal to 20 pixels. 
+   # place the title at absolute top of the page
+		title = list(text = "title", yref = "container", y = 1)) 
+		# If font size = 15 roughly equal to 20 pixels. 
+		margin = list(t = panelWidth + heightTitleTextInPixels) 
 }
 }
 \author{

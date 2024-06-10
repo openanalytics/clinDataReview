@@ -28,8 +28,8 @@ staticScatterplotClinData(
   xLim = NULL,
   yLimExpandData = TRUE,
   xLimExpandData = TRUE,
+  title = paste(c(paste(yLab, "vs", xLab), titleExtra), collapse = "<br>"),
   titleExtra = NULL,
-  title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
   facetPars = list(),
   facetType = c("wrap", "grid"),
   scalePars = list(),
@@ -107,9 +107,9 @@ expanded to include any data points outside of these
 limits?
 Please note that the same limits are set for all facets.}
 
-\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
-
 \item{title}{String with title for the plot.}
+
+\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{facetPars}{List with facetting parameters, passed to the facetting function.}
 

@@ -9,15 +9,17 @@ boxplotClinData(
   xVar,
   yVar,
   xLab = getLabelVar(xVar, labelVars = labelVars),
+  xLabVar = NULL,
   yLab = getLabelVar(yVar, labelVars = labelVars),
+  yLabVar = NULL,
   colorVar = NULL,
   colorLab = getLabelVar(colorVar, labelVars = labelVars),
   colorPalette = NULL,
   facetVar = NULL,
   facetLab = getLabelVar(facetVar, labelVars = labelVars),
   ncol = 1L,
+  title = paste(c(paste(yLab, "vs", xLab), titleExtra), collapse = "<br>"),
   titleExtra = NULL,
-  title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
   subtitle = NULL,
   caption = NULL,
   labelVars = NULL,
@@ -47,7 +49,13 @@ boxplotClinData(
 
 \item{xLab}{String with label for \code{xVar}.}
 
+\item{xLabVar}{(optional) Character vector with column(s) of \code{data} 
+containing variable(s) to display in the label of the x-axis.}
+
 \item{yLab}{String with label for \code{xVar}.}
+
+\item{yLabVar}{(optional) Character vector with column(s) of \code{data} 
+containing variable(s) to display in the label of the y-axis.}
 
 \item{colorVar}{(optional) String with color variable.}
 
@@ -63,9 +71,9 @@ See \code{\link[clinUtils]{clinColors}}.}
 
 \item{ncol}{single-length integer denoting the number of columns for the facetting.}
 
-\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
-
 \item{title}{String with title for the plot.}
+
+\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{subtitle}{String with subtitle.\cr
 The subtitle is included at the top left of the plot,
@@ -85,7 +93,7 @@ vertical or rotated x-axis labels.}
 700 by default.}
 
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
-by default any position and aesthetic variables displayed in the plot.}
+by default any position (and axis) and aesthetic variables displayed in the plot.}
 
 \item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
 

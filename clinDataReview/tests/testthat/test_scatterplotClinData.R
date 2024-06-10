@@ -402,6 +402,52 @@ test_that("Axis labels and title are correctly set in a scatterplot", {
 	  
 })
 
+
+test_that("Axis variable(s) are correctly included in a scatterplot", {
+  
+  data <- data.frame(
+    LBSTRESNBL = c(10, 12, 13, 14, 9),
+    LBSTRESNBLU = factor("g/L"),
+    USUBJID = as.character(seq.int(5)),
+    LBSTRESN = c(39, 93, 10, 31, 13),
+    LBSTRESU = factor(rep(x = c("mg/mL", "mg/L"), times = c(3, 2))),
+    stringsAsFactors = FALSE
+  )
+  
+  pl <- scatterplotClinData(
+    data = data, 
+    xVar = "LBSTRESNBL", xLabVar = "LBSTRESNBLU",
+    yVar = "LBSTRESN", yLabVar = "LBSTRESU",
+    labelVars = c(
+      LBSTRESNBL = "Actual value at baseline",
+      LBSTRESNBLU = "Baseline Standard Unit",
+      LBSTRESN = "Actual value at visit X",
+      LBSTRESU = "Standard Unit"
+    )
+  )
+  
+  plLayout <- plotly::plotly_build(pl)$x$layout
+
+  # title for the x-axis
+  expect_match(
+    object = plLayout$xaxis$title$text, 
+    regexp = "Actual value at baseline.+Baseline Standard Unit: g/L"
+  )
+  
+  # title for the y-axis
+  expect_match(
+    object = plLayout$yaxis$title$text, 
+    regexp = "Actual value at visit X.+Standard Unit: mg/L, mg/mL"
+  )
+  
+  # general title
+  expect_match(
+    object = plLayout$title$text, 
+    regexp = "Actual value at visit X vs Actual value at baseline"
+  )
+  
+})
+
 test_that("An interactive table is created in addition to the scatterplot", {
       
 	data <- data.frame(

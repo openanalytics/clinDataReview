@@ -40,8 +40,10 @@ scatterplotClinData <- function(
 	data, 
 	# x/y variables:
 	xVar, yVar, 
-	xLab = getLabelVar(xVar, labelVars = labelVars),
-	yLab = getLabelVar(yVar, labelVars = labelVars), 
+	xLab = getLabelVar(var = xVar, labelVars = labelVars),
+	xLabVar = NULL, 
+	yLab = getLabelVar(var = yVar, labelVars = labelVars), 
+	yLabVar = NULL, 
 	# aesthetics specifications
 	aesPointVar = list(),
 	pointPars = list(),
@@ -59,8 +61,8 @@ scatterplotClinData <- function(
 	yLim = NULL, xLim = NULL, 
 	yLimExpandData = TRUE, xLimExpandData = TRUE,
 	# general plot:
+	title = paste(c(paste(yLab, "vs", xLab), titleExtra), collapse = "<br>"),
 	titleExtra = NULL,
-	title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
 	caption = NULL, subtitle = NULL,
 	facetPars = list(), facetType = c("wrap", "grid"),
 	scalePars = list(),
@@ -83,7 +85,6 @@ scatterplotClinData <- function(
 	tableButton = TRUE, tablePars = list(),
 	verbose = FALSE){
   
-
 	if(missing(aesLab)){
 		
 		aesVar <- unlist(c(aesPointVar, aesLineVar))
@@ -108,10 +109,12 @@ scatterplotClinData <- function(
 	# format data to: 'SharedData' object
 	if(missing(hoverVars)){
 		aesVar <- unlist(c(aesPointVar, aesLineVar))
-		hoverVars <- c(xVar, yVar, aesVar, selectVars)
+		hoverVars <- c(xVar, xLabVar, yVar, yLabVar, aesVar, selectVars)
 		hoverLab <- c(
 			getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
+			getLabelVar(var = xLabVar, labelVars = labelVars),
 			getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
+			getLabelVar(var = yLabVar, labelVars = labelVars),
 			getLabelVar(var = aesVar, label = aesLab, labelVars = labelVars),
 			getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 		)
@@ -138,15 +141,20 @@ scatterplotClinData <- function(
 		hoverByVar = idVars
 	)
 	
-
-	# create static plot:
+	# include xLabVar and yLabVar in the axes
+	xAxisLab <- getAxisLab(axisVar = xVar, axisLab = xLab, labVar = xLabVar, 
+    data = data, labelVars = labelVars)
+	yAxisLab <- getAxisLab(axisVar = yVar, axisLab = yLab, labVar = yLabVar, 
+    data = data, labelVars = labelVars)
+	
+	# create static plot
 	gg <- staticScatterplotClinData(
 		data = dataSharedData, 
 		# x/y variables:
 		xVar = xVar,
 		yVar = yVar, 
-		xLab = xLab,
-		yLab = yLab, 
+		xLab = xAxisLab,
+		yLab = yAxisLab,
 		# aesthetics specifications
 		aesPointVar = aesPointVar,
 		pointPars = pointPars,
@@ -190,7 +198,7 @@ scatterplotClinData <- function(
 		title = title,
 		caption = caption,
 		subtitle = subtitle,
-		xLab = xLab,
+		xLab = xAxisLab,
 		facet = length(facetPars) > 0,
 		includeLegend = length(c(aesPointVar, aesLineVar)) > 0,
 		legendPosition = legendPosition
@@ -210,7 +218,7 @@ scatterplotClinData <- function(
 	ncol <- plotDim[["ncol"]]
 	pl <- layoutClinData(
 		p = pl,
-		xLab = xLab,
+		xLab = xAxisLab,
 		title = title,
 		caption = caption, 
 		subtitle = subtitle,

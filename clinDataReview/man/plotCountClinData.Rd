@@ -15,9 +15,9 @@ plotCountClinData(
   colorPalette = getOption("clinDataReview.colors"),
   colorRange = NULL,
   valueType = "total",
-  titleExtra = NULL,
-  title = paste(paste(valueLab, "by", paste(varsLab, collapse = " and "), titleExtra),
+  title = paste(c(paste(valueLab, "by", paste(varsLab, collapse = " and ")), titleExtra),
     collapse = "<br>"),
+  titleExtra = NULL,
   subtitle = NULL,
   caption = NULL,
   labelVars = NULL,
@@ -69,9 +69,9 @@ for the color variable, in case it is a numeric variable.}
 among others: 'total' (default, only if sum(child) <= to parent)
 or 'relative'.}
 
-\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
-
 \item{title}{String with title for the plot.}
+
+\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{subtitle}{String with subtitle.\cr
 The subtitle is included at the top left of the plot,
@@ -107,7 +107,7 @@ in the table
 included in the collapsible row in the table.}
 
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
-by default any position and aesthetic variables displayed in the plot.}
+by default any position (and axis) and aesthetic variables displayed in the plot.}
 
 \item{hoverLab}{Named character vector with labels for \code{hoverVars}.}
 

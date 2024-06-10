@@ -8,8 +8,10 @@ scatterplotClinData(
   data,
   xVar,
   yVar,
-  xLab = getLabelVar(xVar, labelVars = labelVars),
-  yLab = getLabelVar(yVar, labelVars = labelVars),
+  xLab = getLabelVar(var = xVar, labelVars = labelVars),
+  xLabVar = NULL,
+  yLab = getLabelVar(var = yVar, labelVars = labelVars),
+  yLabVar = NULL,
   aesPointVar = list(),
   pointPars = list(),
   aesLineVar = list(),
@@ -28,8 +30,8 @@ scatterplotClinData(
   xLim = NULL,
   yLimExpandData = TRUE,
   xLimExpandData = TRUE,
+  title = paste(c(paste(yLab, "vs", xLab), titleExtra), collapse = "<br>"),
   titleExtra = NULL,
-  title = paste(paste(yLab, "vs", xLab, titleExtra), collapse = "<br>"),
   caption = NULL,
   subtitle = NULL,
   facetPars = list(),
@@ -67,7 +69,13 @@ scatterplotClinData(
 
 \item{xLab}{String with label for \code{xVar}.}
 
+\item{xLabVar}{(optional) Character vector with column(s) of \code{data} 
+containing variable(s) to display in the label of the x-axis.}
+
 \item{yLab}{String with label for \code{xVar}.}
+
+\item{yLabVar}{(optional) Character vector with column(s) of \code{data} 
+containing variable(s) to display in the label of the y-axis.}
 
 \item{aesPointVar}{List with specification of aesthetic variable(s),
 for the point, passed to the \code{mapping} parameter of \code{\link[ggplot2]{geom_point}},
@@ -125,9 +133,9 @@ expanded to include any data points outside of these
 limits?
 Please note that the same limits are set for all facets.}
 
-\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
-
 \item{title}{String with title for the plot.}
+
+\item{titleExtra}{String with extra title for the plot (appended after \code{title}).}
 
 \item{caption}{String with caption. \cr
 The caption is included at the bottom right of the plot.

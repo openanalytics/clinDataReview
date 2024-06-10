@@ -52,8 +52,8 @@
 errorbarClinData <- function(
 	data, 
 	# plot variables:
-	xVar, xLab = getLabelVar(xVar, labelVars = labelVars),
-	yVar, yLab = getLabelVar(yVar, labelVars = labelVars),
+	xVar, xLab = getLabelVar(xVar, labelVars = labelVars), xLabVar = NULL,
+	yVar, yLab = getLabelVar(yVar, labelVars = labelVars), yLabVar = NULL,
 	yErrorVar = NULL, yErrorLab = getLabelVar(yErrorVar, labelVars = labelVars),
 	xErrorVar = NULL, xErrorLab = getLabelVar(xErrorVar, labelVars = labelVars),
 	xLabVars = NULL,
@@ -64,13 +64,9 @@ errorbarClinData <- function(
 	shapeVar = NULL, shapeLab = getLabelVar(shapeVar, labelVars = labelVars),
 	shapePalette = NULL,
 	size = 6,
+	title = paste(c(paste(yAxisLab, "vs", xAxisLab), titleExtra),	
+	  collapse = "<br>"),
 	titleExtra = NULL,
-	title = paste(c(
-		paste(yAxisLab, "vs", xAxisLab),
-		titleExtra
-		), 
-		collapse = "<br>"
-	),
 	subtitle = NULL, caption = NULL,
 	labelVars = NULL,
 	mode = "markers",
@@ -116,10 +112,22 @@ errorbarClinData <- function(
 	
 	# extract default hover variables
 	if(missing(hoverVars)){
-		hoverVars <- c(xVar, xErrorVar, colorVar, yVar, yErrorVar, shapeVar, selectVars)
-		hoverLab <- setNames(
-			c(xLab, xErrorLab, colorLab, yLab, yErrorLab, shapeLab, selectLab), 
-			hoverVars
+		hoverVars <- c(
+		  xVar, xErrorVar, xLabVar, 
+		  colorVar, 
+		  yVar, yErrorVar, yLabVar, 
+		  shapeVar, selectVars
+		)
+		hoverLab <- c(
+		  getLabelVar(var = xVar, label = xLab, labelVars = labelVars),
+		  getLabelVar(var = xErrorVar, label = xErrorLab, labelVars = labelVars),
+		  getLabelVar(var = xLabVar, labelVars = labelVars),
+		  getLabelVar(var = colorVar, label = colorLab, labelVars = labelVars),
+		  getLabelVar(var = yVar, label = yLab, labelVars = labelVars),
+		  getLabelVar(var = yErrorVar, label = yErrorLab, labelVars = labelVars),
+		  getLabelVar(var = yLabVar, labelVars = labelVars),
+		  getLabelVar(var = shapeVar, label = shapeLab, labelVars = labelVars),		  
+		  getLabelVar(var = selectVars, label = selectLab, labelVars = labelVars)
 		)
 	}else	if(missing(hoverLab)){
 		hoverLab <- getLabelVar(hoverVars, labelVars = labelVars)
@@ -175,6 +183,12 @@ errorbarClinData <- function(
 		keyVar = keyVar, id = id,
 		labelVars = labelVars
 	)
+	
+	# include xLabVar and yLabVar in the axes
+	xAxisLab <- getAxisLab(axisVar = xVar, axisLab = xAxisLab, labVar = xLabVar, 
+	  data = data, labelVars = labelVars)
+	yAxisLab <- getAxisLab(axisVar = yVar, axisLab = yAxisLab, labVar = yLabVar, 
+	  data = data, labelVars = labelVars)
 	
 	# get plot dim
 	dimPlot <- getSizePlot(
