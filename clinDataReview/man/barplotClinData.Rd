@@ -36,6 +36,7 @@ barplotClinData(
   id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
   selectVars = NULL,
   selectLab = getLabelVar(selectVars, labelVars = labelVars),
+  watermark = NULL,
   verbose = FALSE
 )
 }
@@ -83,10 +84,10 @@ below the title.}
 \item{labelVars}{Named character vector containing variable labels.}
 
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
 
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
 by default any position (and axis) and aesthetic variables displayed in the plot.}
@@ -140,6 +141,8 @@ for which a selection box should be included. This enables to select the data
 displayed in the plot (and associated table).}
 
 \item{selectLab}{(Named) character vector with label for \code{selectVars}.}
+
+\item{watermark}{(optional) String with path to a file containing a watermark.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.

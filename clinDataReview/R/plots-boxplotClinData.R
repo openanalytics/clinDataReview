@@ -39,6 +39,7 @@ boxplotClinData <- function(
 	tableVars, tableLab,
 	tableButton = TRUE, tablePars = list(),
 	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+	watermark = NULL,
 	verbose = FALSE){
 	
 	
@@ -264,6 +265,7 @@ boxplotClinData <- function(
 		width = width,
 		height = height,
 		nrow = nrow, ncol = ncol,
+		watermark = watermark,
 		# extra params passed to plotly::layout
 		legend = list(title = list(text = colorLab))
 	)

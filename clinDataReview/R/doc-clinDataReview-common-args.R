@@ -18,9 +18,9 @@
 #' @param idVar String with variable containing subject ID.
 #' @param idLab String with label for \code{idVar}.
 #' @param width Numeric, width of the plot in pixels,
-#' 700 by default.
+#' 800 by default.
 #' @param height Numeric, height of the plot in pixels,
-#' 700 by default.
+#' 500 by default.
 #' @param facetPars List with facetting parameters, 
 #' passed to the facetting function. Variables should be specified
 #' as character or formula.
@@ -83,6 +83,7 @@
 #' @param selectLab (Named) character vector with label for \code{selectVars}.
 #' @param keyVar String with unique key variable, identifying unique
 #' group for which the link between the table and the plot should be done.
+#' @param watermark (optional) String with path to a file containing a watermark.
 #' @name clinDataReview-common-args
 #' @return No return value, used for the documentation of 
 #' the functions of the package.

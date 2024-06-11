@@ -57,6 +57,7 @@ scatterplotClinData(
   tableLab,
   tableButton = TRUE,
   tablePars = list(),
+  watermark = NULL,
   verbose = FALSE
 )
 }
@@ -185,10 +186,10 @@ of the diagonal line is displayed.
 \item{labelVars}{Named character vector containing variable labels.}
 
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
 
 \item{hoverVars}{Character vector with variables to be displayed in the hover,
 by default \code{xVar}, \code{yVar} and any aesthetic variables.}
@@ -251,6 +252,8 @@ the table is included within an HTML button.}
 
 \item{tablePars}{List with parameters passed to the
 \code{\link[clinUtils]{getClinDT}} function.}
+
+\item{watermark}{(optional) String with path to a file containing a watermark.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.

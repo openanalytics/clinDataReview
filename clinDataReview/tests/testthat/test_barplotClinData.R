@@ -173,6 +173,35 @@ test_that("A selection variable is correctly included in a barplot", {
   
 })
 
+test_that("A watermark is correctly included in a barplot", {
+  
+  data <- data.frame(
+    parent = c("A", "A", "B"),
+    child = c("a", "b", "c"),
+    n = c(1, 2, 5),
+    stringsAsFactors = FALSE
+  )
+  
+  file <- tempfile(pattern = "watermark", fileext = ".png")
+  getWatermark(file = file)
+  
+  # create plot
+  pl <- barplotClinData(
+    data = data,
+    xVar = "child", colorVar = "parent",
+    yVar = "n",
+    watermark = file
+  )
+  
+  # check that an image has been included below the plot
+  plBuild <- plotly::plotly_build(pl)
+  expect_equal(
+    object = sapply(plBuild$x$layout$images, `[[`, "layer"),
+    expected = "below"
+  )
+  
+})
+
 test_that("Axis variable(s) are correctly included in a barplot", {
   
   data <- data.frame(

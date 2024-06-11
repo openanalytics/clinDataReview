@@ -83,6 +83,7 @@ errorbarClinData <- function(
 	tableVars,
 	tableLab,
 	tableButton = TRUE, tablePars = list(),
+	watermark = NULL,
 	verbose = FALSE){
 	
 	# store input parameter values for further use
@@ -315,6 +316,7 @@ errorbarClinData <- function(
 		legendPosition = legendPosition,
 		width = width,
 		height = height,
+		watermark = watermark,
 		# extra params passed to plotly::layout
 		legend = list(title = list(text = colorLab)),
 		xaxis = xAxisArgs,

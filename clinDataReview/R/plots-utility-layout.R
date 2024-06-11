@@ -19,6 +19,7 @@ layoutClinData <- function(
 	facet = FALSE,
 	nrow = 1L, ncol = 1L,
 	width, height,
+	watermark = NULL,
 	...){
 
 	args <- list(...)
@@ -184,6 +185,9 @@ layoutClinData <- function(
 	}
 	
 	pl <- do.call(layout, args)
+	
+	# add watermark
+	pl <- addWatermark(pl = pl, watermark = watermark)
 		
 	return(pl)
 	

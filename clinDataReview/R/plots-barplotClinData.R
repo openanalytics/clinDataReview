@@ -40,6 +40,7 @@ barplotClinData <- function(
 	id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
 	# selection
 	selectVars = NULL, selectLab = getLabelVar(selectVars, labelVars = labelVars),
+	watermark = NULL,
 	verbose = FALSE){
 
 	# store input parameter values for further use
@@ -174,6 +175,7 @@ barplotClinData <- function(
 		legend = list(title = list(text = colorLab)),
 		width = width,
 		height = height,
+		watermark = watermark,
 		# extra params passed to plotly::layout
 		xaxis = xaxisArgs,
 		barmode = barmode

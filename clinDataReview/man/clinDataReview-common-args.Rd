@@ -36,10 +36,10 @@ containing variable(s) to display in the label of the y-axis.}
 \item{idLab}{String with label for \code{idVar}.}
 
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
 
 \item{facetPars}{List with facetting parameters, 
 passed to the facetting function. Variables should be specified
@@ -121,6 +121,8 @@ displayed in the plot (and associated table).}
 
 \item{keyVar}{String with unique key variable, identifying unique
 group for which the link between the table and the plot should be done.}
+
+\item{watermark}{(optional) String with path to a file containing a watermark.}
 }
 \value{
 No return value, used for the documentation of 

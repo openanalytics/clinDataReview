@@ -34,7 +34,8 @@ plotCountClinData(
   tablePars = list(),
   id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
   verbose = FALSE,
-  typePlot = c("sunburst", "treemap")
+  typePlot = c("sunburst", "treemap"),
+  watermark = NULL
 )
 }
 \arguments{
@@ -85,10 +86,10 @@ vertical or rotated x-axis labels.}
 \item{labelVars}{Named character vector containing variable labels.}
 
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
 
 \item{pathVar}{String with variable of \code{data} containing hyperlinks 
 with path to the subject-specific report, formatted as: \cr
@@ -140,6 +141,8 @@ For the visualizations, progress messages during download
 of subject-specific report are displayed in the browser console.}
 
 \item{typePlot}{String with plot type, 'treemap' or 'sunburst'.}
+
+\item{watermark}{(optional) String with path to a file containing a watermark.}
 }
 \value{
 Either:

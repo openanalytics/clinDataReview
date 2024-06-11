@@ -2,7 +2,7 @@ Package: clinDataReview
 Type: Package
 Title: Clinical Data Review Tool
 Version: 1.5.2.9000
-Date: 2024-05-31
+Date: 2024-06-10
 Authors@R: c(
   person(given = "Laure", family = "Cougnaud", role = c("aut", "cre"), 
   email = "laure.cougnaud@openanalytics.eu"),
@@ -30,6 +30,7 @@ Imports:
   crosstalk,
   data.table,
   ggplot2,
+  grid,
   haven,
   htmltools,
   htmlwidgets,
@@ -46,7 +47,8 @@ Imports:
   tools,
   yaml,
   xml2,
-  xfun
+  xfun,
+  base64enc
 Suggests: 
   countrycode,
   inTextSummaryTable (>= 3.1.0),

@@ -22,10 +22,10 @@ getSizePlot(
 }
 \arguments{
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
 
 \item{gg}{\code{\link[ggplot2]{ggplot}}}
 

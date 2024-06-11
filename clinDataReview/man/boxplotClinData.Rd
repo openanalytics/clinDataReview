@@ -37,6 +37,7 @@ boxplotClinData(
   tableButton = TRUE,
   tablePars = list(),
   id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
+  watermark = NULL,
   verbose = FALSE
 )
 }
@@ -87,10 +88,10 @@ vertical or rotated x-axis labels.}
 \item{labelVars}{Named character vector containing variable labels.}
 
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
 
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
 by default any position (and axis) and aesthetic variables displayed in the plot.}
@@ -139,6 +140,8 @@ the table is included within an HTML button.}
 \item 'button:[id]' is used as button ID if \code{table} is TRUE
 }
 If not specified, a random id, as 'plotClinData[X]' is used.}
+
+\item{watermark}{(optional) String with path to a file containing a watermark.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.

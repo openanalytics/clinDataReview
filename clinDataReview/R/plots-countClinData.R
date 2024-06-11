@@ -46,7 +46,8 @@ plotCountClinData <- function(
   tableButton = TRUE, tablePars = list(),
   id = paste0("plotClinData", sample.int(n = 1000, size = 1)),
   verbose = FALSE,
-  typePlot = c("sunburst", "treemap")){
+  typePlot = c("sunburst", "treemap"),
+  watermark = NULL){
   
   # store input parameter values for further use
   plotArgs <- c(as.list(environment()))
@@ -172,6 +173,7 @@ plotCountClinData <- function(
 		# remove the axis labels, included when color is specified in the treemap:
 		xaxis = list(showticklabels = FALSE),
 		yaxis = list(showticklabels = FALSE),
+		watermark = watermark,
 		# extra params passed to plotly::layout
 		legend = list(title = list(text = colorLab))
 	)

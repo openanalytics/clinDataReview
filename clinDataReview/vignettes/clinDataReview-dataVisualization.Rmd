@@ -771,6 +771,31 @@ clinUtils::knitPrintListObjects(
 
 ```
 
+## Watermark
+
+A watermark can be included in any of the visualization of the package, from a specified file, via the `watermark` parameter.  
+
+In this example, an exploratory watermark is added to the adverse events barplot.
+
+```{r watermark}
+# create a file with a 'EXPLORATORY' watermark
+file <- tempfile(pattern = "watermark", fileext = ".png")
+getWatermark(file = file)
+
+# create plot
+barplotClinData(
+  data = subset(tableAE, AEDECOD != "Total"),
+  xVar = "AEDECOD", 
+  yVar = "n",
+  yLab = "Number of patients with adverse events",
+  textVar = "n",
+  labelVars = labelVars,
+  # include the watermark
+  watermark = file,
+  table = FALSE
+)
+```
+
 # Palettes
 
 ## Set palette for the entire session

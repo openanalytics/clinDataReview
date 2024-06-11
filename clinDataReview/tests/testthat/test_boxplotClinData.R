@@ -183,6 +183,34 @@ test_that("A boxplot is successfully created without a color variable and facets
 
 })
 
+test_that("A watermark is correctly included in a boxplot", {
+  
+  data <- data.frame(
+    USUBJID = c("1", "1", "2", "2", "2"),
+    AVISIT = c("Week 1", "Week 1", "Baseline", "Week 1", "Week 1"),
+    AVAL = c(34, 29, 70, 13, 45)
+  )
+  
+  file <- tempfile(pattern = "watermark", fileext = ".png")
+  getWatermark(file = file)
+  
+  # create plot
+  pl <- ignoreBoxmodeWarning({
+    boxplotClinData(
+      data = data,
+      xVar = "AVISIT", yVar = "AVAL", 
+      watermark = file
+    )
+  })
+  
+  # check that an image has been included below the plot
+  plBuild <- plotly::plotly_build(pl)
+  expect_equal(
+    object = sapply(plBuild$x$layout$images, `[[`, "layer"),
+    expected = "below"
+  )
+})
+
 test_that("Axis variable(s) are correctly included in a boxplot", {
   
   data <- data.frame(

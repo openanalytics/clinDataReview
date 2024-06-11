@@ -906,3 +906,30 @@ test_that("A box to highlight the elements of the ID variable is correctly inclu
   expect_true(pl$x$highlight$selectize)
   
 })
+
+test_that("A watermark is correctly included in a (facetted) scatterplot", {
+  
+  data <- data.frame(
+    USUBJID = as.character(seq.int(5)),
+    LBSTRESN = c(39, 93, 10, 31, 13),
+    LBSTRESNBL = c(10, 12, 13, 14, 9)
+  )
+  
+  file <- tempfile(pattern = "watermark", fileext = ".png")
+  getWatermark(file = file)
+  
+  pl <- scatterplotClinData(
+    data = data, 
+    xVar = "LBSTRESNBL", yVar = "LBSTRESN",
+    facetPars = list(facets = "USUBJID"),
+    watermark = file
+  )
+  
+  # check that an image has been included below the plot
+  plBuild <- plotly::plotly_build(pl)
+  expect_equal(
+    object = sapply(plBuild$x$layout$images, `[[`, "layer"),
+    expected = "below"
+  )
+  
+})

@@ -262,3 +262,30 @@ test_that("The overall total is correctly included in the count visualization", 
 	)
 			
 })
+
+test_that("A watermark is correctly included in a count visualization", {
+  
+  data <- data.frame(
+    parent = c("A", "A", "A", "B", "B"),
+    child = c("a", "b", "Total", "c", "Total"),
+    n = c(1, 2, 3, 5, 5)
+  )
+  
+  file <- tempfile(pattern = "watermark", fileext = ".png")
+  getWatermark(file = file)
+  
+  pl <- plotCountClinData(
+    data = data, 
+    vars = c("parent", "child"), 
+    valueVar = "n",
+    watermark = file
+  )
+  
+  # check that an image has been included below the plot
+  plBuild <- plotly::plotly_build(pl)
+  expect_equal(
+    object = sapply(plBuild$x$layout$images, `[[`, "layer"),
+    expected = "below"
+  )
+  
+})

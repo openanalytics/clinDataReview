@@ -17,6 +17,7 @@ layoutClinData(
   ncol = 1L,
   width,
   height,
+  watermark = NULL,
   ...
 )
 }
@@ -54,10 +55,12 @@ number of facet columns in the plot. (default = 1)
 Overwritten if \code{gg} is specified.}
 
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
+
+\item{watermark}{(optional) String with path to a file containing a watermark.}
 
 \item{...}{Any parameters for the \code{\link[plotly]{layout}}
 function. This should contain at least the plot object.}

@@ -49,9 +49,9 @@ in the current console.
 For the visualizations, progress messages during download
 of subject-specific report are displayed in the browser console.}
     \item{\code{width}}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
     \item{\code{height}}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
     \item{\code{hoverVars}}{Character vector with variable(s) to be displayed in the hover,
 by default any position (and axis) and aesthetic variables displayed in the plot.}
     \item{\code{hoverLab}}{Named character vector with labels for \code{hoverVars}.}
@@ -75,6 +75,7 @@ below the title.}
     \item{\code{colorPalette}}{(optional) Named character vector with color palette.
 If not specified, the viridis color palette is used.\cr
 See \code{\link[clinUtils]{clinColors}}.}
+    \item{\code{watermark}}{(optional) String with path to a file containing a watermark.}
     \item{\code{tableButton}}{Logical, if TRUE (by default)
 the table is included within an HTML button.}
     \item{\code{tableVars}}{Character vector with variables to be included 

@@ -83,6 +83,7 @@ scatterplotClinData <- function(
 	tableVars,
 	tableLab,
 	tableButton = TRUE, tablePars = list(),
+	watermark = NULL,
 	verbose = FALSE){
   
 	if(missing(aesLab)){
@@ -227,7 +228,8 @@ scatterplotClinData <- function(
 		facet = length(facetPars) > 0,
 		width = width,
 		height = height,
-		nrow = nrow, ncol = ncol
+		nrow = nrow, ncol = ncol,
+		watermark = watermark
 	)
 
 	# convert static to interactive plot

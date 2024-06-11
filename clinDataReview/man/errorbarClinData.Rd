@@ -47,6 +47,7 @@ errorbarClinData(
   tableLab,
   tableButton = TRUE,
   tablePars = list(),
+  watermark = NULL,
   verbose = FALSE
 )
 }
@@ -130,10 +131,10 @@ See \code{mode} attribute for plotly scatter.}
 among: 'top'/'left'/'bottom'/'right', 'bottom' by default.}
 
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
 
 \item{pathVar}{String with variable of \code{data} containing hyperlinks 
 with path to the subject-specific report, formatted as: \cr
@@ -184,6 +185,8 @@ the table is included within an HTML button.}
 
 \item{tablePars}{List with parameters passed to the
 \code{\link[clinUtils]{getClinDT}} function.}
+
+\item{watermark}{(optional) String with path to a file containing a watermark.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.

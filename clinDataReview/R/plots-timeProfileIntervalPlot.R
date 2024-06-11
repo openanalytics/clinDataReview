@@ -65,6 +65,7 @@ timeProfileIntervalPlot <- function(data,
 	table = FALSE, 
 	tableVars, tableLab,
 	tableButton = TRUE, tablePars = list(),
+	watermark = NULL,
 	verbose = FALSE){
 
 	# store input parameter values for further use
@@ -282,6 +283,7 @@ timeProfileIntervalPlot <- function(data,
 		legendPosition = "bottom",
 		width = width,
 		height = height,
+		watermark = watermark,
 		# extra params passed to plotly::layout
 		legend = list(title = list(text = colorLab)),
 		yaxis = c(

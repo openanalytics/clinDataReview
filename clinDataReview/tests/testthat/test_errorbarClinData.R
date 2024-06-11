@@ -542,6 +542,37 @@ test_that("A selection variable is correctly included in a vertical errorbar vis
   
 })
 
+test_that("A watermark is correctly included in a errorbar visualization", {
+  
+  data <- data.frame(
+    AVISIT = c("Baseline", "Week 2", "Baseline", "Week 2"),
+    Mean = c(25.6, 40, 12, 5),
+    SE = c(2, 3, 1, 2),
+    TRT = c("A", "A", "B", "B"),
+    stringsAsFactors = FALSE
+  )
+  
+  file <- tempfile(pattern = "watermark", fileext = ".png")
+  getWatermark(file = file)
+  
+  # create plot
+  pl <- errorbarClinData(
+    data = data,
+    xVar = "AVISIT", 
+    yVar = "Mean", 
+    yErrorVar = "SE",
+    watermark = file
+  )
+  
+  # check that an image has been included below the plot
+  plBuild <- plotly::plotly_build(pl)
+  expect_equal(
+    object = sapply(plBuild$x$layout$images, `[[`, "layer"),
+    expected = "below"
+  )
+  
+})
+
 test_that("Axis variable(s) are correctly included in a errorbar visualization", {
   
   data <- data.frame(

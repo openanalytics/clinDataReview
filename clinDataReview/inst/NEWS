@@ -2,6 +2,7 @@
   o summary plot template: support 'r-lazy' parameters in 'plotParams'
   o boxplot, barplot, scatterplot, error bar: new parameters xLabVar and yLabVar
   o remove trailing space in default title
+  o support watermark in all plots
 1.5.2
   o default palettes: use .onLoad instead of .onAttach
   o tests: 

@@ -45,6 +45,7 @@ timeProfileIntervalPlot(
   tableLab,
   tableButton = TRUE,
   tablePars = list(),
+  watermark = NULL,
   verbose = FALSE
 )
 }
@@ -109,10 +110,10 @@ vertical or rotated x-axis labels.}
 \item{labelVars}{Named character vector containing variable labels.}
 
 \item{width}{Numeric, width of the plot in pixels,
-700 by default.}
+800 by default.}
 
 \item{height}{Numeric, height of the plot in pixels,
-700 by default.}
+500 by default.}
 
 \item{hoverVars}{Character vector with variable(s) to be displayed in the hover,
 by default any position (and axis) and aesthetic variables displayed in the plot.}
@@ -171,6 +172,8 @@ the table is included within an HTML button.}
 
 \item{tablePars}{List with parameters passed to the
 \code{\link[clinUtils]{getClinDT}} function.}
+
+\item{watermark}{(optional) String with path to a file containing a watermark.}
 
 \item{verbose}{Logical, if TRUE (FALSE by default) progress messages are printed
 in the current console.
