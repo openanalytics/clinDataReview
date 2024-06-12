@@ -1,4 +1,4 @@
-1.5.2.9000
+1.6.0
   o summary plot template: support 'r-lazy' parameters in 'plotParams'
   o boxplot, barplot, scatterplot, error bar: new parameters xLabVar and yLabVar
   o remove trailing space in default title
