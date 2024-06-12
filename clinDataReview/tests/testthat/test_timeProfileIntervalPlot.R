@@ -223,9 +223,9 @@ test_that("A label is correctly set for the selection variable in the time inter
 test_that("A watermark is correctly included in a time interval plot", {
   
   data <- data.frame(
-    subjectID = as.character(seq_len(9)),
-    startDay = c(NA, NA, 11, 44, 12, 7, 48, 54, 11),
-    endDay = c(NA, NA, 12, NA, 26, 9, 50, NA, 13),
+    subjectID = as.character(seq_len(5)),
+    startDay = c(11, 12, 7, 48, 11),
+    endDay = c(12, 26, 9, 50, 13),
     stringsAsFactors = FALSE
   )
   

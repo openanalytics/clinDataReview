@@ -3,6 +3,10 @@
   o boxplot, barplot, scatterplot, error bar: new parameters xLabVar and yLabVar
   o remove trailing space in default title
   o support watermark in all plots
+  o fixes for ggplot2 updates: 
+    - fix tests for new warnings
+    - no use of aes_string
+    - geom_line: use of linewidth instead of size
 1.5.2
   o default palettes: use .onLoad instead of .onAttach
   o tests: 

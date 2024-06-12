@@ -24,11 +24,16 @@ test_that("A scatterplot is correctly created", {
 			shape = "USUBJID", 
 			alpha = "LBSTRESNBL", size = "LBSTRESNBL"
 		),
-		aesLineVar = list(
-			group = "USUBJID", #color = "USUBJID", 
-			alpha = "LBSTRESNBL",
-			linetype = "USUBJID", 
-			size = "LBSTRESNBL"
+		aesLineVar = c(
+		  list(
+  			group = "USUBJID", #color = "USUBJID", 
+  			alpha = "LBSTRESNBL",
+  			linetype = "USUBJID"
+  		),
+		  setNames(
+		    list("LBSTRESNBL"), 
+		    ifelse(packageVersion("ggplot2") >= "3.4.0", "linewidth", "size")
+		  )
 		),
 		idVar = "USUBJID"
 	)
@@ -90,7 +95,6 @@ test_that('Point parameters are set correctly in a scatterplot', {
   pl <- scatterplotClinData(
     data = exampleDataScatter(),
     xVar = "time", yVar = "response",
-    aesPointVar = list(color = "treat"),
     pointPars = list( color = 'red'),
     idVar = "subj"
   )
@@ -199,12 +203,11 @@ test_that("Smoothing parameters are set correctly in a scatterplot", {
   plSmoothLayer <- scatterplotClinData(
     data = exampleData,
     xVar = "time", yVar = "response",
-    aesPointVar = list(color = "treat"),
     pointPars = list( color = 'red'),
     aesLineVar = list(group = 'subj'),
     linePars = list(linetype='dotted'),
     aesSmoothVar = list(group = 'subj'),
-    smoothPars = list(col='green', se=TRUE) ,
+    smoothPars = list(color = 'green', se=TRUE) ,
     idVar = "subj")
   
   plSmoothData <- plotly_build(plSmoothLayer)$x$data
@@ -214,12 +217,11 @@ test_that("Smoothing parameters are set correctly in a scatterplot", {
   plSmoothNoSE <- scatterplotClinData(
     data = exampleData,
     xVar = "time", yVar = "response",
-    aesPointVar = list(color = "treat"),
     pointPars = list( color = 'red'),
     aesLineVar = list(group = 'subj'),
     linePars = list(linetype='dotted'),
     aesSmoothVar = list(group = 'subj'),
-    smoothPars = list(col='green', se=FALSE),
+    smoothPars = list(color = 'green', se=FALSE),
     idVar = "subj"
   ) 
 
@@ -231,7 +233,7 @@ test_that("Smoothing parameters are set correctly in a scatterplot", {
     length(plSmoothNoSEData)
   )
   
-  # test that color is smoothing curves is set correctly
+  # test that color in smoothing curves is set correctly
   
   isLine <- sapply(plSmoothNoSEData, `[[`, "mode") == "lines"
   colors <- sapply(plSmoothNoSEData[isLine], function(x) x$line$color)
@@ -252,12 +254,11 @@ test_that("Smoothing layer can be disabled in scatterplot", {
   plWithSmoothLayer <- scatterplotClinData(
     data = exampleData,
     xVar = "time", yVar = "response",
-    aesPointVar = list(color = "treat"),
     pointPars = list( color = 'red'),
     aesLineVar = list(group = 'subj'),
     linePars = list(linetype='dotted'),
     aesSmoothVar = list(group = 'subj'),
-    smoothPars = list(col='green', se=TRUE),
+    smoothPars = list(color = 'green', se=TRUE),
     smoothInclude = TRUE,
     idVar = "subj"
   )
@@ -267,12 +268,11 @@ test_that("Smoothing layer can be disabled in scatterplot", {
   plNoSmoothLayer <- scatterplotClinData(
     data = exampleData,
     xVar = "time", yVar = "response",
-    aesPointVar = list(color = "treat"),
     pointPars = list( color = 'red'),
     aesLineVar = list(group = 'subj'),
     linePars = list(linetype='dotted'),
     aesSmoothVar = list(group = 'subj'),
-    smoothPars = list(col='green', se=TRUE),
+    smoothPars = list(color = 'green', se=TRUE),
     smoothInclude = FALSE,
     idVar = "subj"
     )

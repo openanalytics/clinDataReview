@@ -5,7 +5,7 @@
 #' @author Laure Cougnaud
 #' @importFrom plyr ddply
 #' @importFrom stats setNames
-#' @importFrom ggplot2 geom_text geom_vline geom_hline geom_abline aes_string
+#' @importFrom ggplot2 geom_text geom_vline geom_hline geom_abline sym aes
 addReferenceLinesClinDataPlot <- function(
 	gg, data, 
 	xVar, yVar, xLim = NULL, yLim = NULL,
@@ -47,7 +47,8 @@ addReferenceLinesClinDataPlot <- function(
 				
 				# create lines
 				lineParAes <- setNames(as.list(lineParNameAes), lineParNameAes)
-				lineAes <- do.call(aes_string, lineParAes)
+				lineParAes <- sapply(lineParAes, sym, simplify = FALSE)
+				lineAes <- do.call(aes, lineParAes)
 				lineParOther <- linePar[setdiff(names(linePar), c(lineParNameAes, "label"))]
 				lineArgs <- c(
 					list(mapping = lineAes, data = lineData, show.legend = FALSE), 
@@ -109,8 +110,9 @@ addReferenceLinesClinDataPlot <- function(
 					aesLineTextOther <- lineParOther[c("color", "alpha")]
 					aesLineTextOther <- aesLineTextOther[!sapply(aesLineTextOther, is.null)]
 					
+					aesLineText <- list(x = sym("x"), y = sym("y"), label = sym("label"))
 					argsLineText <- list(
-						mapping = aes_string(x = "x", y = "y", label = "label"),
+						mapping = do.call(aes, aesLineText),
 						data = dataLineText #, 
 						# hjust = 0, vjust = 0
 					)
