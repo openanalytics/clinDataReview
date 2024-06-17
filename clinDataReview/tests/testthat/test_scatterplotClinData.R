@@ -351,6 +351,86 @@ test_that("Reference lines are correctly implemented in a scatterplot", {
             
 })
 
+test_that("Reference lines as numeric with x-variable as character are successfully set in a scatterplot", {
+  
+  data <- data.frame(
+    USUBJID = as.character(seq.int(5)),
+    LBSTRESN = c(39, 93, 10, 31, 13),
+    LBSTNRLO = 0,
+    LBSTNRHI = 50,
+    VISIT = c("Screening 1", "Screening 1", "Screening 1", "Week 1", "Week 1"),
+    stringsAsFactors = FALSE
+  )
+  
+  expect_error(
+    pl <- scatterplotClinData(
+      data = data, 
+      xVar = "VISIT", yVar = "LBSTRESN",
+      refLinePars = list(
+        # from aesthetic
+        list(yintercept = "LBSTNRLO"), 
+        # custom label:
+        list(yintercept = "LBSTNRHI")
+      )
+    ),
+    NA
+  )
+  
+  # check reference lines
+  plData <- plotly::plotly_build(pl)$x$data
+  plDataRefLines <- plData[sapply(plData, function(x) 
+    (x$mode == "lines" & is.null(x$set)))]
+  plDataRefLinesY <- unlist(lapply(plDataRefLines, `[[`, "y"))
+  expect_setequal(object = plDataRefLinesY, expected = c(0, 50))
+  
+  # check x-axis
+  plDataPoints <- plData[sapply(plData, function(x) 
+    (x$mode == "markers" & !is.null(x$set)))]
+  plDataPointsX <- unlist(lapply(plDataPoints, `[[`, "x"))
+  expect_setequal(object = plDataPointsX, expected = c(1, 2))
+  
+})
+
+test_that("Reference lines as numeric with x-variable as factor are successfully set in a scatterplot", {
+  
+  data <- data.frame(
+    USUBJID = as.character(seq.int(5)),
+    LBSTRESN = c(39, 93, 10, 31, 13),
+    LBSTNRLO = 0,
+    LBSTNRHI = 50,
+    VISIT = c("Screening 1", "Screening 1", "Screening 1", "Week 1", "Week 1"),
+    stringsAsFactors = TRUE
+  )
+  
+  expect_error(
+      pl <- scatterplotClinData(
+      data = data, 
+      xVar = "VISIT", yVar = "LBSTRESN",
+      refLinePars = list(
+        # from aesthetic
+        list(yintercept = "LBSTNRLO"), 
+        # custom label:
+        list(yintercept = "LBSTNRHI")
+      )
+    ),
+    NA
+  )
+  
+  # check reference lines
+  plData <- plotly::plotly_build(pl)$x$data
+  plDataRefLines <- plData[sapply(plData, function(x) 
+    (x$mode == "lines" & is.null(x$set)))]
+  plDataRefLinesY <- unlist(lapply(plDataRefLines, `[[`, "y"))
+  expect_setequal(object = plDataRefLinesY, expected = c(0, 50))
+  
+  # check x-axis
+  plDataPoints <- plData[sapply(plData, function(x) 
+    (x$mode == "markers" & !is.null(x$set)))]
+  plDataPointsX <- unlist(lapply(plDataPoints, `[[`, "x"))
+  expect_setequal(object = plDataPointsX, expected = c(1, 2))
+      
+})
+
 test_that("Axis labels and title are correctly set in a scatterplot", {
 			
 	data <- data.frame(

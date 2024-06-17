@@ -1,3 +1,5 @@
+1.6.1
+  o fix when reference line is numeric and x-variable a factor/character
 1.6.0
   o summary plot template: support 'r-lazy' parameters in 'plotParams'
   o boxplot, barplot, scatterplot, error bar: new parameters xLabVar and yLabVar

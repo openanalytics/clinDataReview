@@ -35,9 +35,14 @@ getAxisLimPlot <- function(data,
 			xRefLine <- na.omit(refLineDataX$xintercept)
 			yRefLine <- na.omit(refLineDataX$yintercept)
 		}
-		xRange <- range(c(x[, xVar], xRefLine), na.rm = TRUE)
+		getNumVar <- function(x){
+			if(!is.numeric(x))
+				x <- as.numeric(as.factor(x))
+			return(x)
+		}
+		xRange <- range(c(getNumVar(x[, xVar]), xRefLine), na.rm = TRUE)
 		xRange <- setNames(xRange, paste0("x", c("min", "max")))
-		yRange <- range(c(x[, yVar], yRefLine), na.rm = TRUE)
+		yRange <- range(c(getNumVar(x[, yVar]), yRefLine), na.rm = TRUE)
 		yRange <- setNames(yRange, paste0("y", c("min", "max")))
 		c(xRange, yRange)
 		
