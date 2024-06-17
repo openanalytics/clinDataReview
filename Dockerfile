@@ -97,7 +97,7 @@ RUN R -q -e "options(warn = 2); \
     remotes::install_version('viridisLite', version = '0.4.2', upgrade = FALSE); \
     remotes::install_version('withr', version = '3.0.0', upgrade = FALSE)"
 RUN R -q -e "options(warn = 2); \
-    remotes::install_version('xfun', version = '0.44', upgrade = FALSE); \
+    remotes::install_version('xfun', version = '0.45', upgrade = FALSE); \
     remotes::install_version('xtable', version = '1.8-4', upgrade = FALSE); \
     remotes::install_version('yaml', version = '2.3.8', upgrade = FALSE); \
     remotes::install_version('zip', version = '2.3.1', upgrade = FALSE); \
@@ -188,7 +188,7 @@ RUN R -q -e "options(warn = 2); \
     remotes::install_version('plotly', version = '4.10.4', upgrade = FALSE); \
     remotes::install_version('testthat', version = '3.2.1.1', upgrade = FALSE); \
     remotes::install_version('clinUtils', version = '0.2.0', upgrade = FALSE); \
-    remotes::install_version('inTextSummaryTable', version = '3.3.2', upgrade = FALSE); \
-    remotes::install_version('patientProfilesVis', version = '2.0.7', upgrade = FALSE)"
+    remotes::install_version('inTextSummaryTable', version = '3.3.3', upgrade = FALSE); \
+    remotes::install_version('patientProfilesVis', version = '2.0.8', upgrade = FALSE)"
 
 
